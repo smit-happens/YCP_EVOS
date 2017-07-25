@@ -13,7 +13,10 @@
   #error "Teensy 3.6 with dual CAN bus is required to run this example"
 #endif
 
-static CAN_message_t msg;
+static CAN_message_t msgON;
+static CAN_message_t msgOFF;
+static CAN_message_t msgRD;
+
 static uint8_t hex[17] = "0123456789abcdef";
 
 class ExampleClass : public CANListener 
@@ -50,38 +53,55 @@ void setup(void)
   delay(1000);
   Serial.println(F("Hello Teensy 3.6 dual CAN Test With Objects."));
 
-  Can0.begin(1000000);  
-  Can1.begin(1000000);
+  Can0.begin(500000);  
+  Can1.begin(500000);
 
-  Can0.attachObj(&exampleClass);
+  Can1.attachObj(&exampleClass);
   exampleClass.attachGeneralHandler();
 
-  msg.ext = 0;
-  msg.id = 0x100;
-  msg.len = 8;
-  msg.buf[0] = 10;
-  msg.buf[1] = 20;
-  msg.buf[2] = 0;
-  msg.buf[3] = 100;
-  msg.buf[4] = 128;
-  msg.buf[5] = 64;
-  msg.buf[6] = 32;
-  msg.buf[7] = 16;
+  msgON.ext = 0;
+  msgON.id = 0x201;
+  msgON.len = 3;
+  msgON.buf[0] = 0xd1;
+  msgON.buf[1] = 100;
+  msgON.buf[2] = 100;
+
+  msgOFF.ext = 0;
+  msgOFF.id = 0x201;
+  msgOFF.len = 3;
+  msgOFF.buf[0] = 0xd1;
+  msgOFF.buf[1] = 0;
+  msgOFF.buf[2] = 0;
+
+  msgRD.ext = 0;        //no can extended IDs
+  msgRD.id = 0x201;     //id of MC
+  msgRD.len = 3;        //length of message (in bytes)
+  msgRD.buf[0] = 0x3d;  //Read command
+  msgRD.buf[1] = 0x59;  //Register to read from
+  msgRD.buf[2] = 0;     //blank
+
+  //NOTE: MC sends information in reverse byte order with RegID first
+  //      EX: 59 70 17 0 => 0x1770 (6000)
+  //ID of MC is 0x181 when it tx's
+
+  
+  
+
+  Serial.println(F("Type any character to start"));
+  while (!Serial.available()) {
+    
+  }
+  Serial.println(F("Starting test"));
+  Can0.write(msgRD);
+
 }
 
 
 // -------------------------------------------------------------
 void loop(void)
 {
-  msg.buf[0]++;
-  Can1.write(msg);
-  msg.buf[0]++;
-  Can1.write(msg);
-  msg.buf[0]++;
-  Can1.write(msg);
-  msg.buf[0]++;
-  Can1.write(msg);
-  msg.buf[0]++;
-  Can1.write(msg);  
-  delay(20);
+//  Can0.write(msgON);
+//  delay(500);
+//  Can0.write(msgOFF);
+//  delay(500);
 }
