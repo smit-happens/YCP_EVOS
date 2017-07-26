@@ -85,7 +85,6 @@ void setup(void)
   //ID of MC is 0x181 when it tx's
 
   
-  
 
   Serial.println(F("Type any character to start"));
   while (!Serial.available()) {
