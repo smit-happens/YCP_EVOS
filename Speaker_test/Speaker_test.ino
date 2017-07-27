@@ -4,7 +4,7 @@
   Plays a melody
 
   circuit:
-  - 8 ohm speaker on digital pin 8
+  - 8 ohm speaker on digital pin 32
 
   created 21 Jan 2010
   modified 30 Aug 2011
@@ -37,6 +37,10 @@ void setup() {
   //32 is pin the button is connected to
   pinMode(32, INPUT);
   attachInterrupt(digitalPinToInterrupt(32), btnPress, CHANGE);
+
+  //status LED on pin 13
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH); 
   
 }
 

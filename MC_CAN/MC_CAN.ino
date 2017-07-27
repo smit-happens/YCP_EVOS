@@ -53,6 +53,10 @@ void setup(void)
   delay(1000);
   Serial.println(F("Hello Teensy 3.6 dual CAN Test With Objects."));
 
+  //status LED on pin 13
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH); 
+
   Can0.begin(500000);  
   Can1.begin(500000);
 
