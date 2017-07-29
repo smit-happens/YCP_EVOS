@@ -39,4 +39,5 @@
 #define REG_TEMPM      0x  //[0:15] Temperature of Motor
 
 
+#define REG_TEMPM      0x  //[0:15] Temperature of Motor
 
