@@ -6,7 +6,7 @@
 const char *menu =
   "\nWelcome to EVOS!\n"
   "Select an option to continue\n"
-  "0: Back\n"
+  "0: Menu\n"
   "1: Send a CAN message\n"
   "2: Blink an LED\n\n";
 

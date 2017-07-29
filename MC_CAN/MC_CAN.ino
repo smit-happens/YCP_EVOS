@@ -15,7 +15,6 @@ class ExampleClass : public CANListener
 {
 public:
    void printFrame(CAN_message_t &frame, int mailbox);
-   
    //overrides the parent version so we can actually do something
    void gotFrame(CAN_message_t &frame, int mailbox); 
 };
@@ -64,6 +63,8 @@ void setup(void)
   msgON.buf[0] = 0xd1;
   msgON.buf[1] = 2;
   msgON.buf[2] = 100;
+//the MC receives this as 0x64 0x02 0xD1
+//need to send values to store in registers in reverse-byte format
 
   msgOFF.ext = 0;
   msgOFF.id = 0x201;
@@ -107,7 +108,7 @@ void setup(void)
     
   }
   Serial.println(F("Starting test"));
-  Can0.write(msgRD);
+  Can0.write(msgON);
   
 
 //  Serial.println(F("Type any character to send a message"));
