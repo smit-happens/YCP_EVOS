@@ -31,8 +31,8 @@ const char *readMCRegMenu =
   "7: High Voltage line value\n"
   "8: Current speed limit\n"
   "9: Current speed amount\n"
-  "A: Tempurature of the motor\n"
-  "B: Tempurature inside the MC\n";
+  "A: Temperature of the motor\n"
+  "B: Temperature inside the MC\n";
   
 const char *setMCRegMenu =
   "\nSelect a register to set\n"
@@ -43,7 +43,7 @@ const char *setMCRegMenu =
   "4: Comparison value 2\n"
   "5: Comparison value 3\n"
   "6: Comparison value 4\n"
-  "7: Tempurature limit for the motor\n";
+  "7: Temperature limit for the motor\n";
 
 char rx_byte;
 bool ledState = HIGH;
@@ -379,11 +379,13 @@ void readMCReg()
           regID = REG_SPEEDRN;
         break;
 
+        case 'a':
         case 'A':
           Serial.print(F("REG_TEMPM\n"));
           regID = REG_TEMPM;
         break;
 
+        case 'b':
         case 'B':
           Serial.print(F("REG_TEMPAIRMC\n"));
           regID = REG_TEMPAIRMC;
@@ -453,7 +455,8 @@ void case1()
         break;
 
         case '3':
-          Serial.print(F("Case 3: config polling from MC\n"));
+          Serial.print(F("Case 3: config polling from MC (TODO)\n"));
+          Serial.print(F("Not implemented at all lol\n"));
           //configMCPolling();
           Serial.print(F(menuCAN));
         break;
@@ -523,17 +526,6 @@ void setup()
   CANMessage.attachGeneralHandler();
   
   Serial.println(F(menuMain));
-
-  msgON.ext = 0;
-  msgON.id = 0x201;
-  msgON.len = 3;
-  msgON.buf[0] = 0xd1;
-  msgON.buf[1] = 2;
-  msgON.buf[2] = 100;
-
-  Can0.write(msgON);
-
-  CANMessage.testFunc();
   
 }
 
