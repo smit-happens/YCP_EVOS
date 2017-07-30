@@ -479,10 +479,7 @@ void readMCReg()
       if(caseReadMCReg && !defaultCase)
       { 
         CAN_message_t txMessage = setupMCMessage(REG_READ, regID);  
-
-        //send message if the user confirms they want to send it
-        if(confirmPopUp(txMessage))
-          Can0.write(txMessage);
+        Can0.write(txMessage);
 
         Serial.print(F(readMCRegMenu));
       }
@@ -610,7 +607,7 @@ void setup()
 //Main menu for the program
 void loop() {
 
-  //only display the menu system if anything is typed into the serial terminal
+  //Menu system for anything typed into the serial terminal
   if (Serial.available() > 0) 
   {
     rx_byte = Serial.read();
