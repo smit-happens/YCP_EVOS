@@ -52,8 +52,6 @@ bool blinking = false;
 
 //CAN stuffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 
-static CAN_message_t msgON;
-
 //static uint8_t hex[17] = "0123456789abcdef";
 
 class CANClass : public CANListener 
@@ -216,12 +214,85 @@ bool confirmPopUp(CAN_message_t message)
 }
 
 
+//for validation on user input for setting correct values of registers
+uint16_t setValInput()
+{
+  bool waitingOnUser = true;
+  
+  uint8_t rx_byte;
+  char userInput[6];
+  uint8_t index = 0;
+  
+  uint16_t registerVal = 0x0000;
+
+  //make sure the buffer is clear before reading in any values
+  clearSerialBuf();
+
+  Serial.print(F("\nEnter the value you want to send (in base 10)\n"));
+  Serial.print(F("Type 'D' when done\n"));
+  while(waitingOnUser)
+  {
+    if (Serial.available() > 0) 
+    {
+      rx_byte = Serial.read();
+
+      //input validation
+      switch(rx_byte)
+      {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+          if(index<6)
+          {
+            userInput[index] = rx_byte;
+            index++;
+          }
+          else
+          {
+             Serial.print(F("Number is too large! Try again\n"));
+             //make sure there aren't any remaining characters in the buffer
+             clearSerialBuf();
+             index = 0;
+          }
+        break;
+
+        case 'd':
+        case 'D':
+          //the user has completed their number
+          waitingOnUser = false;
+          //just incase
+          clearSerialBuf();
+        break;
+        
+        default:
+          Serial.print(F("ENTER A NUMBER DOOFUS\n"));
+        break;
+      }
+      
+    }//end if(serial.available())
+  }
+
+  //convert user string into integer values
+  registerVal = atoi(userInput);
+  
+  return registerVal;
+}
+
+
 //TODO: WORK ON THIS///////////////////////////////////
 void setMCReg()
 {
   bool caseSetMCReg = true;
+  bool defaultCase;
   uint8_t regID;
-  uint16_t value = 0x0000;
+  uint16_t value = 0;
 
   
   //discard anything more than one char long from prev call
@@ -237,6 +308,9 @@ void setMCReg()
   
       //discard anything more than one char long
       clearSerialBuf();
+
+      //assume the user doesn't trigger the default condition
+      defaultCase = false;
       
       switch(rx_byte)
       {
@@ -283,17 +357,21 @@ void setMCReg()
         default:
           Serial.print(F("Invalid syntax\n"));
           Serial.print(F(setMCRegMenu));
+          defaultCase = true;
         break; 
       }
 
-      if(caseSetMCReg)
+      if(caseSetMCReg && !defaultCase)
       {
-        CAN_message_t txMessage = setupMCMessage(regID, (value && 0xFF00), (value && 0x00FF));  
+        value = setValInput();
+        
+        Serial.println(value);
+        
+        CAN_message_t txMessage = setupMCMessage(regID, (uint8_t)(value >> 8), (uint8_t)value);  
 
         //send message if the user confirms they want to send it
         if(confirmPopUp(txMessage))
-          Serial.print(F("\nNothing sent :) (WIP)\n"));
-          //Can0.write(txMessage);
+          Can0.write(txMessage);
 
         Serial.print(F(setMCRegMenu));
       }
@@ -308,6 +386,7 @@ void setMCReg()
 void readMCReg()
 {
   bool caseReadMCReg = true;
+  bool defaultCase;
 
   //register that the user chooses to read
   uint8_t regID;
@@ -326,6 +405,7 @@ void readMCReg()
       //discard anything more than one char long
       clearSerialBuf();
       
+      defaultCase = false;
       
       switch(rx_byte)
       {
@@ -394,11 +474,12 @@ void readMCReg()
         default:
           Serial.print(F("Invalid syntax\n"));
           Serial.print(F(readMCRegMenu));
+          defaultCase = true;
         break; 
       }
    
-      if(caseReadMCReg)
-      {
+      if(caseReadMCReg && !defaultCase)
+      { 
         CAN_message_t txMessage = setupMCMessage(REG_READ, regID);  
 
         //send message if the user confirms they want to send it
@@ -510,10 +591,8 @@ void blinkLED(void)
 //setup code executed before anything else
 void setup() 
 { 
+  delay(1000);  // wait for serial port to connect
   Serial.begin(9600);
-  while (!Serial) {
-    ; // wait for serial port to connect
-  }
 
   //status LED on pin 13
   pinMode(LED_BUILTIN, OUTPUT);
@@ -532,7 +611,9 @@ void setup()
 
 //Main menu for the program
 void loop() {
-if (Serial.available() > 0) 
+
+  //only display the menu system if anything is typed into the serial terminal
+  if (Serial.available() > 0) 
   {
     rx_byte = Serial.read();
 
