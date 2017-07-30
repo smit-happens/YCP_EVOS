@@ -61,7 +61,7 @@ void CANClass::gotFrame(CAN_message_t &frame, int mailbox)
 
 void CANClass::testFunc()
 {
-  Serial.println(F("YCP EV YAY! :("));
+  Serial.println(F("YCP EV is making me go crazy! "));
 }
 
 
