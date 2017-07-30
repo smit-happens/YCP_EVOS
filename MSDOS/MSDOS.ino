@@ -29,7 +29,7 @@ const char *readMCRegMenu =
   "5: BTB relay status\n"
   "6: Internal GO status\n"
   "7: High Voltage line value\n"
-  "8: Current speed limit\n"
+  "8: RPM limit\n"
   "9: Current speed amount\n"
   "A: Temperature of the motor\n"
   "B: Temperature inside the MC\n";
