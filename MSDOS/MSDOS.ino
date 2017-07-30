@@ -15,9 +15,9 @@ const char *menuMain =
 const char *menuCAN =
   "\nSelect a CAN option\n"
   "0: Back to main menu\n"
-  "1: Set a value in the MC *WIP*\n"
+  "1: Set a value in the MC\n"
   "2: Read a value from MC\n"
-  "3: Configure MC register for polling\n";
+  "3: Configure MC register for polling *TODO*\n";
 
 const char *readMCRegMenu =
   "\nSelect a register to read from\n"
@@ -37,8 +37,8 @@ const char *readMCRegMenu =
 const char *setMCRegMenu =
   "\nSelect a register to set\n"
   "0: Back to CAN menu\n"
-  "1: REG_SPEEDVAL\n"
-  "2: REG_SPEEDLIM\n"
+  "1: Speed value in RPM\n"
+  "2: RPM limit\n"
   "3: Comparison value 1\n"
   "4: Comparison value 2\n"
   "5: Comparison value 3\n"
@@ -51,8 +51,6 @@ bool blinking = false;
 
 
 //CAN stuffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-
-//static uint8_t hex[17] = "0123456789abcdef";
 
 class CANClass : public CANListener 
 {
@@ -70,17 +68,16 @@ public:
 void CANClass::printFrame(CAN_message_t &frame, int mailbox)
 {
    Serial.print("This just in!\n");
-   Serial.print("ID: ");
+   Serial.print("ID: 0x");
    Serial.print(frame.id, HEX);
 
    //Print regID from buf[0]
-   Serial.print(" RegID: ");
+   Serial.print(" RegID: 0x");
    Serial.print(frame.buf[0], HEX);
 
    //Print value from register in reverse byte order
-   Serial.print(" Data: ");
+   Serial.print(" Data: 0x");
    Serial.print(frame.buf[2], HEX);
-   Serial.print(" ");
    Serial.print(frame.buf[1], HEX);
 
    Serial.write('\n');
@@ -159,20 +156,19 @@ bool confirmPopUp(CAN_message_t message)
   clearSerialBuf();
 
   Serial.print(F("\nAre you sure you want to send: \n"));
-  Serial.print("ID: ");
+  Serial.print("ID: 0x");
   Serial.print(message.id, HEX);
 
   //Print regID from buf[0]
-  Serial.print(" RegID: ");
+  Serial.print(" RegID: 0x");
   Serial.print(message.buf[0], HEX);
 
   //Print value from register in reverse byte order
-  Serial.print(" Data: ");
+  Serial.print(" Data: 0x");
   Serial.print(message.buf[2], HEX);
-  Serial.print(" ");
   Serial.print(message.buf[1], HEX);
   
-  Serial.print(F("\ny/n?\n"));
+  Serial.print(F("\ny/n? "));
   
 
   while(waitingOnUser)
@@ -204,11 +200,12 @@ bool confirmPopUp(CAN_message_t message)
 
         default:
           Serial.print(F("Invalid syntax\n"));
-          Serial.print(F("\ny/n?\n"));
+          Serial.print(F("\ny/n? "));
         break;
       }
     }
   }
+  Serial.println(rx_byte);
   
   return feedback;
 }
@@ -286,7 +283,8 @@ uint16_t setValInput()
 }
 
 
-//TODO: WORK ON THIS///////////////////////////////////
+//Mostly working (need to check for certain but seems okay now)
+//function for setting a register value in the MC
 void setMCReg()
 {
   bool caseSetMCReg = true;
