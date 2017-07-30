@@ -65,6 +65,8 @@ void setup(void)
   msgON.buf[2] = 100;
 //the MC receives this as 0x64 0x02 0xD1
 //need to send values to store in registers in reverse-byte format
+//this means I have to send it with the value bytes swapped
+//EX: 0x02 0x64 -> 0x64 0x02
 
   msgOFF.ext = 0;
   msgOFF.id = 0x201;

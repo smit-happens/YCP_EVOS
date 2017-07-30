@@ -21,7 +21,7 @@
 
 //Speed related registers
 #define REG_SPEEDVAL   0x31  //(SP) [0:15] Speed (in RPM) from 0-100% (0-7FFF) of RPM limit (0x59)
-#define REG_SPEEDLIM   0x59  //(RW) [0:15] Speed limit (in RPM) max will be 6000rpm
+#define REG_SPEEDLIM   0xC8  //(RW) [0:15] 100% Speed limit (in RPM) max will be 6000rpm
 #define REG_SPEEDRN    0x30  //[0:15] Current speed value right now (RN)
 
 //Digital input/output states
@@ -48,8 +48,5 @@
 //Mode and Core option registers
 #define REG_MODE       0x51  //(RW) [0:9]  Mode bits for some drive settings
 #define REG_CORE       0x5A  //(RW) [0:31] Core option bits for Motor/MC settings
-
-
-
 
 
