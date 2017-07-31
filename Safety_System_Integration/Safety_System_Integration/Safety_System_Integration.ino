@@ -14,30 +14,20 @@
 #define BSPD_ERR_LED  33
 #define BSPD_IN 23
 #define ACCEL_IN 32
+#define RELAY_OUT 31
 #define LED_BUILTIN 13
-// Super loop variable to track which interrupts have occurred
+
+// Global Super loop variable to track which interrupts have occurred
 uint8_t glblIntTrack = 0;
 
 
 int main(void)
 {
-  // Setup code. Initializes I/O pins and enables interrupts
-  pinMode(BSPD_ERR_LED, OUTPUT);  // Sets pin 33 as an output
-  pinMode(BSPD_IN, INPUT);  // Sets pin 23 as input
-  attachInterrupt(digitalPinToInterrupt(BSPD_IN), ISR_BSPD_Fault, RISING);
-  int lclIntTrack;
+  uint16_t adcValue, lclIntTrack;
 
-  // Following is test code for Accelerator pedal position sensing
-  Timer1.initialize(500000);  // Sets a 1000 ms period for the timer
-  Timer1.attachInterrupt(ISR_ADC_TIMER);
-  int adcValue;
+  // Call init() function to initialize hardware
+  init();
 
-  Serial.begin(9600); // Starts 9600 baud serial connection for ADC reading
-  delay(500);
-
-  // delete code below
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, 1);
   // Super dooper looper
   while(1)
   {
@@ -49,19 +39,18 @@ int main(void)
      * Bit 0 is BSPD error interrupt, bit 1 is ADC timer interrupt
      */
 
-    noInterrupts(); // disables all interrupts
-
+    noInterrupts();             // disables all interrupts
     lclIntTrack = glblIntTrack;
     glblIntTrack = 0;
-
-    interrupts();   // re-enables interrupts
+    interrupts();               // re-enables interrupts
 
 
     // Check for BSPD Error
     if(bitRead(lclIntTrack, 0))
     {
-      digitalWrite(BSPD_ERR_LED, HIGH);
-      bitWrite(lclIntTrack, 0, 0);    // Resets the "interrupt flag" for BSPD Error
+      digitalWrite(BSPD_ERR_LED, HIGH); // Turns on BSPD error LED
+      digitalWrite(RELAY_OUT, HIGH);     // Disengages safety system relay
+      bitWrite(lclIntTrack, 0, 0);      // Resets the "interrupt flag" for BSPD Error
     }
 
 
@@ -78,6 +67,36 @@ int main(void)
 
   }
 }
+
+
+
+void init()
+{
+  // Setup code. Initializes I/O pins and enables interrupts
+  pinMode(BSPD_ERR_LED, OUTPUT);  // Sets pin 33 as an output
+  pinMode(BSPD_IN, INPUT);  // Sets pin 23 as input
+  attachInterrupt(digitalPinToInterrupt(BSPD_IN), ISR_BSPD_Fault, RISING);
+
+
+  // Following is test code for Accelerator pedal position sensing
+  Timer1.initialize(10000);  // Sets a 10 ms period for the timer
+  Timer1.attachInterrupt(ISR_ADC_TIMER);
+
+
+  // Light up built in LED so it is easy to tell if the Teensy is powered on
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, 1);
+
+  // Set mode for safety system relay. Set output to high;
+  // when output is low, relay will turn off.
+  pinMode(RELAY_OUT, OUTPUT);
+  digitalWrite(RELAY_OUT, LOW);
+
+  Serial.begin(9600); // Starts 9600 baud serial connection for ADC reading
+  delay(500);
+}
+
+
 
 
 void ISR_BSPD_Fault()
