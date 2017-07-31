@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 //Created by Smitty :D
 //7-28-17
 
@@ -33,7 +35,7 @@ const char *readMCRegMenu =
   "9: Current speed amount\n"
   "A: Temperature of the motor\n"
   "B: Temperature inside the MC\n";
-  
+
 const char *setMCRegMenu =
   "\nSelect a register to set\n"
   "0: Back to CAN menu\n"
@@ -52,16 +54,16 @@ bool blinking = false;
 
 //CAN stuffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 
-class CANClass : public CANListener 
+class CANClass : public CANListener
 {
 public:
    void printFrame(CAN_message_t &frame, int mailbox);
    //overrides the parent version so we can actually do something
-   void gotFrame(CAN_message_t &frame, int mailbox); 
+   void gotFrame(CAN_message_t &frame, int mailbox);
 
    void testFunc(void);
    CAN_message_t setupMCMessage(uint8_t regID, uint8_t buf1, uint8_t buf2 = 0x00, bool polling = false);
-   
+
 };
 
 
@@ -100,7 +102,7 @@ void CANClass::testFunc()
 void clearSerialBuf()
 {
   //discard anything within the buffer
-  while (Serial.available() > 0) 
+  while (Serial.available() > 0)
     Serial.read();
 }
 
@@ -112,13 +114,13 @@ CAN_message_t setupMCMessage(uint8_t regID, uint8_t buf1 = 0x00, uint8_t buf2 = 
   tx.ext = 0;
   tx.id = 0x201;
   tx.len = 3;
-  
+
   if(regID == REG_READ)
   {
     //performing a read operation set buf[0] to READ command
     tx.buf[0] = REG_READ;
     tx.buf[1] = buf1;
-    
+
     //default is 0 but can represent time (in ms) for polling
     tx.buf[2] = buf2;
 
@@ -167,19 +169,19 @@ bool confirmPopUp(CAN_message_t message)
   Serial.print(" Data: 0x");
   Serial.print(message.buf[2], HEX);
   Serial.print(message.buf[1], HEX);
-  
+
   Serial.print(F("\ny/n? "));
-  
+
 
   while(waitingOnUser)
   {
-    if (Serial.available() > 0) 
+    if (Serial.available() > 0)
     {
       rx_byte = Serial.read();
-  
+
       //discard anything more than one char long
       clearSerialBuf();
-      
+
       switch(rx_byte)
       {
         case '0':
@@ -189,7 +191,7 @@ bool confirmPopUp(CAN_message_t message)
           //No long waiting on user
           waitingOnUser = false;
         break;
-        
+
         case '1':
         case 'Y':
         case 'y':
@@ -206,7 +208,7 @@ bool confirmPopUp(CAN_message_t message)
     }
   }
   Serial.println(rx_byte);
-  
+
   return feedback;
 }
 
@@ -215,11 +217,11 @@ bool confirmPopUp(CAN_message_t message)
 uint16_t setValInput()
 {
   bool waitingOnUser = true;
-  
+
   uint8_t rx_byte;
   char userInput[6];
   uint8_t index = 0;
-  
+
   uint16_t registerVal = 0x0000;
 
   //make sure the buffer is clear before reading in any values
@@ -229,7 +231,7 @@ uint16_t setValInput()
   Serial.print(F("Type 'D' when done\n"));
   while(waitingOnUser)
   {
-    if (Serial.available() > 0) 
+    if (Serial.available() > 0)
     {
       rx_byte = Serial.read();
 
@@ -267,18 +269,18 @@ uint16_t setValInput()
           //just incase
           clearSerialBuf();
         break;
-        
+
         default:
           Serial.print(F("ENTER A NUMBER DOOFUS\n"));
         break;
       }
-      
+
     }//end if(serial.available())
   }
 
   //convert user string into integer values
   registerVal = atoi(userInput);
-  
+
   return registerVal;
 }
 
@@ -292,36 +294,36 @@ void setMCReg()
   uint8_t regID;
   uint16_t value = 0;
 
-  
+
   //discard anything more than one char long from prev call
   clearSerialBuf();
-  
+
   Serial.print(F(setMCRegMenu));
   Serial.print("\n");
   while(caseSetMCReg)
   {
-    if (Serial.available() > 0) 
+    if (Serial.available() > 0)
     {
       rx_byte = Serial.read();
-  
+
       //discard anything more than one char long
       clearSerialBuf();
 
       //assume the user doesn't trigger the default condition
       defaultCase = false;
-      
+
       switch(rx_byte)
       {
         case '0':
           Serial.print(F("CAN Menu\n"));
           caseSetMCReg = false;
         break;
-        
+
         case '1':
           Serial.print(F("REG_SPEEDVAL\n"));
           regID = REG_SPEEDVAL;
         break;
-        
+
         case '2':
           Serial.print(F("REG_SPEEDLIM\n"));
           regID = REG_SPEEDLIM;
@@ -351,21 +353,21 @@ void setMCReg()
           Serial.print(F("REG_MTEMPLIM\n"));
           regID = REG_MTEMPLIM;
         break;
-        
+
         default:
           Serial.print(F("Invalid syntax\n"));
           Serial.print(F(setMCRegMenu));
           defaultCase = true;
-        break; 
+        break;
       }
 
       if(caseSetMCReg && !defaultCase)
       {
         value = setValInput();
-        
+
         Serial.println(value);
-        
-        CAN_message_t txMessage = setupMCMessage(regID, (uint8_t)(value >> 8), (uint8_t)value);  
+
+        CAN_message_t txMessage = setupMCMessage(regID, (uint8_t)(value >> 8), (uint8_t)value);
 
         //send message if the user confirms they want to send it
         if(confirmPopUp(txMessage))
@@ -373,7 +375,7 @@ void setMCReg()
 
         Serial.print(F(setMCRegMenu));
       }
-      
+
       Serial.print("\n");
     }
   }
@@ -391,32 +393,32 @@ void readMCReg()
 
   //discard anything more than one char long from prev call
   clearSerialBuf();
-  
+
   Serial.print(F(readMCRegMenu));
   Serial.print("\n");
   while(caseReadMCReg)
   {
-    if (Serial.available() > 0) 
+    if (Serial.available() > 0)
     {
       rx_byte = Serial.read();
-  
+
       //discard anything more than one char long
       clearSerialBuf();
-      
+
       defaultCase = false;
-      
+
       switch(rx_byte)
       {
         case '0':
           Serial.print(F("CAN Menu\n"));
           caseReadMCReg = false;
         break;
-        
+
         case '1':
           Serial.print(F("REG_ERROR\n"));
           regID = REG_ERROR;
         break;
-        
+
         case '2':
           Serial.print(F("REG_STATE\n"));
           regID = REG_STATE;
@@ -468,17 +470,17 @@ void readMCReg()
           Serial.print(F("REG_TEMPAIRMC\n"));
           regID = REG_TEMPAIRMC;
         break;
-        
+
         default:
           Serial.print(F("Invalid syntax\n"));
           Serial.print(F(readMCRegMenu));
           defaultCase = true;
-        break; 
+        break;
       }
-   
+
       if(caseReadMCReg && !defaultCase)
-      { 
-        CAN_message_t txMessage = setupMCMessage(REG_READ, regID);  
+      {
+        CAN_message_t txMessage = setupMCMessage(REG_READ, regID);
         Can0.write(txMessage);
 
         Serial.print(F(readMCRegMenu));
@@ -494,7 +496,7 @@ void readMCReg()
 void case1()
 {
   bool caseCAN = true;
-  
+
   //discard anything more than one char long
   clearSerialBuf();
 
@@ -503,27 +505,27 @@ void case1()
   Serial.print("\n");
   while(caseCAN)
   {
-    if (Serial.available() > 0) 
+    if (Serial.available() > 0)
     {
       rx_byte = Serial.read();
-  
+
       //discard anything more than one char long
-      while (Serial.available() > 0) 
+      while (Serial.available() > 0)
         Serial.read();
-      
+
       switch(rx_byte)
       {
         case '0':
           Serial.print(F("Main Menu\n"));
           caseCAN = false;
         break;
-        
+
         case '1':
           Serial.print(F("Case 1: set a val\n"));
           setMCReg();
           Serial.print(F(menuCAN));
         break;
-        
+
         case '2':
           Serial.print(F("Case 2: read a val\n"));
           readMCReg();
@@ -536,11 +538,11 @@ void case1()
           //configMCPolling();
           Serial.print(F(menuCAN));
         break;
-        
+
         default:
           Serial.print(F("Invalid syntax\n"));
           Serial.print(F(menuCAN));
-        break; 
+        break;
       }
       Serial.print("\n");
     }
@@ -551,11 +553,11 @@ void case1()
 //blinking an LED using a Timer
 void case2()
 {
-  if(!blinking) 
+  if(!blinking)
   {
     Timer1.initialize(150000);
     // blinkLED to run every 0.15 seconds
-    Timer1.attachInterrupt(blinkLED); 
+    Timer1.attachInterrupt(blinkLED);
     blinking = true;
   }
   else
@@ -576,31 +578,35 @@ void blinkLED(void)
 {
   if (ledState == LOW)
     ledState = HIGH;
-  else 
+  else
     ledState = LOW;
-    
+
   digitalWrite(LED_BUILTIN, ledState);
 }
 
 
 //setup code executed before anything else
-void setup() 
-{ 
+int main(void)
+{
   delay(1000);  // wait for serial port to connect
   Serial.begin(9600);
 
   //status LED on pin 13
   pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, ledState); 
+  digitalWrite(LED_BUILTIN, ledState);
 
-  Can0.begin(500000);  
+  Can0.begin(500000);
   Can1.begin(500000);
 
   Can1.attachObj(&CANMessage);
   CANMessage.attachGeneralHandler();
-  
+
   Serial.println(F(menuMain));
-  
+
+  while(1)
+    loop();
+
+  return 1;
 }
 
 
@@ -608,38 +614,38 @@ void setup()
 void loop() {
 
   //Menu system for anything typed into the serial terminal
-  if (Serial.available() > 0) 
+  if (Serial.available() > 0)
   {
     rx_byte = Serial.read();
 
     //discard anything more than one char long
     clearSerialBuf();
-    
+
     Serial.print("You typed: ");
     Serial.println(rx_byte);
-    
+
     switch(rx_byte)
     {
       case '0':
         Serial.print(F("Case 0\n"));
         Serial.print(F(menuMain));
       break;
-      
+
       case '1':
         Serial.print(F("Case CAN\n"));
         case1();
         Serial.print(F(menuMain));
       break;
-      
+
       case '2':
         Serial.print(F("Case 2: LED\n"));
         case2();
       break;
-      
+
       default:
         Serial.print(F("Invalid syntax\n"));
         Serial.print(F(menuMain));
-      break; 
+      break;
     }
 
     Serial.print("\n");

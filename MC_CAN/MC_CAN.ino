@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include <FlexCAN.h>
 
 #ifndef __MK66FX1M0__
