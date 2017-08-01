@@ -510,8 +510,7 @@ void case1()
       rx_byte = Serial.read();
 
       //discard anything more than one char long
-      while (Serial.available() > 0)
-        Serial.read();
+      clearSerialBuf();
 
       switch(rx_byte)
       {
