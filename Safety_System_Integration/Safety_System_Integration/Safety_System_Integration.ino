@@ -4,7 +4,7 @@
  * Safety System Integration
  * YCP FSAE Formula Electric Car Team 2017
  * Patrick Hock
- * July 30 2017
+ * July 31 2017
  *
  * For now, this is mostly test code. Follows similar structure to the
  * Super Dooper Looper
@@ -49,7 +49,7 @@ int main(void)
     if(bitRead(lclIntTrack, 0))
     {
       digitalWrite(BSPD_ERR_LED, HIGH); // Turns on BSPD error LED
-      digitalWrite(RELAY_OUT, HIGH);     // Disengages safety system relay
+      digitalWrite(RELAY_OUT, LOW);     // Disengages safety system relay
       bitWrite(lclIntTrack, 0, 0);      // Resets the "interrupt flag" for BSPD Error
     }
 
@@ -90,7 +90,7 @@ void init()
   // Set mode for safety system relay. Set output to high;
   // when output is low, relay will turn off.
   pinMode(RELAY_OUT, OUTPUT);
-  digitalWrite(RELAY_OUT, LOW);
+  digitalWrite(RELAY_OUT, HIGH);
 
   Serial.begin(9600); // Starts 9600 baud serial connection for ADC reading
   delay(500);
