@@ -72,6 +72,7 @@ void CANClass::printFrame(CAN_message_t &frame, int mailbox)
    Serial.print("This just in!\n");
    Serial.print("ID: 0x");
    Serial.print(frame.id, HEX);
+   ///ourtiprueopirwtu
 
    //Print regID from buf[0]
    Serial.print(" RegID: 0x");
