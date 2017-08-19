@@ -4,69 +4,17 @@
 #include <Arduino.h>
 #include <FlexCAN.h>
 #include <MCRegIDs.h>
-#include <string>
-#include <vector>
 #include <Encoder.h>
 #include <Display.h>
+
+//TODO use these later
 // #include <SPI.h>
 // #include "SdFat.h"
 
-using namespace std;
 
-#define menuMainLen 8
-
-void encoderWrapperA(void);
-void encoderWrapperB(void);
-
-// String menuMain[menuMainLen] {
-//   "Smit item1",
-//   "Smit item2",
-//   "Smit item3",
-//   "Smit item4",
-//   "Smit item5",
-//   "Smit item6",
-//   "Smit item7",
-//   "Smit item8"
-// };
-
-vector<string> menuMain {
-  "Smit item1",
-  "Smit item2",
-  "Smit item3",
-  "Smit item4",
-  "Smit item5",
-  "Smit item6",
-  "Smit item7",
-  "Smit item8"
-};
-
+//---------------------------------------------------------------
+//declaring encoder class variable and setting up interrupt functions
 Encoder knob;
-Display screen;
-
-int main(void)
-{
-  // Serial.begin(9600);
-
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, 1);
-
-  // encoder pinA interrupt
-  attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
-  // encoder pinB interrupt
-  attachInterrupt(encoderPinB, encoderWrapperB, CHANGE);
-
-  while(1)
-  {
-    // Serial.println(REG_READ);
-
-    knob.updateIndex();
-
-    screen.printMenu(&menuMain, knob.getIndex());
-
-  }
-  return 0;
-}
-
 
 void encoderWrapperA(){
  knob.doEncoderA();
@@ -74,4 +22,34 @@ void encoderWrapperA(){
 
 void encoderWrapperB(){
  knob.doEncoderB();
+}
+
+
+//---------------------------------------------------------------
+//Begin main function
+int main(void)
+{
+  Serial.begin(9600);
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, 1);
+
+  Display screen;
+
+  //attachInterrupt function can't be called in any classes
+  //encoder pinA & pinB interrupts
+  attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
+  attachInterrupt(encoderPinB, encoderWrapperB, CHANGE);
+
+  while(1)
+  {
+    // Serial.println(REG_READ);
+    // delay(200);
+
+    knob.updateIndex();
+
+    screen.printMenu(knob.getIndex());
+
+  }
+  return 0;
 }

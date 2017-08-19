@@ -1,3 +1,6 @@
+#ifndef ENCODER_H
+#define ENCODER_H
+
 #include <Arduino.h>
 
 #define encoderPinA  17
@@ -25,3 +28,5 @@ private:
 
   volatile int8_t encoderPos = 0;
 };
+
+#endif

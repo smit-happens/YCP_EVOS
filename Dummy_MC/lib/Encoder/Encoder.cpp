@@ -43,6 +43,14 @@ void Encoder::doEncoderB(void)
 
 
 //---------------------------------------------------------------
+//returns index value
+int Encoder::getIndex(void)
+{
+  return index;
+}
+
+
+//---------------------------------------------------------------
 //updates index based on encoder direction
 void Encoder::updateIndex(void) {
   if (0 > encoderPos)
@@ -69,7 +77,8 @@ void Encoder::updateIndex(void) {
     if(cw >= 4)
     {
       cw = 0;
-      index--;
+      if(index > 0)
+        index--;
     }
     else if(ccw >= 4)
     {
