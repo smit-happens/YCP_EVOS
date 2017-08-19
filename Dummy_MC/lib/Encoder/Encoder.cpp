@@ -41,7 +41,10 @@ void Encoder::doEncoderB(void)
   encoderPos = (A_set == B_set) ? +1 : -1;
 }
 
-void Encoder::updateIndex(/* arguments */) {
+
+//---------------------------------------------------------------
+//updates index based on encoder direction
+void Encoder::updateIndex(void) {
   if (0 > encoderPos)
   {
     cw++;

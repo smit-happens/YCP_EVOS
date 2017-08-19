@@ -1,5 +1,8 @@
 #include <Arduino.h>
 #include <LiquidCrystalFast.h>
+#include <string>
+#include <vector>
+using namespace std;
 
 #define lcdHeight 4
 
@@ -10,7 +13,7 @@ class Display
 {
 public:
   Display(void);
-  void printMenu(String * menu, int index);
+  void printMenu(vector<string> * menu, int index);
 
   void testFunc(void);
 // private:
