@@ -77,13 +77,30 @@ void Encoder::updateIndex(void) {
     if(cw >= 4)
     {
       cw = 0;
-      if(index > 0)
+
+      //loop back to the bottom
+      if(index <= 0)
+      {
+        index = 3;
+      }
+      else
+      {
         index--;
+      }
     }
     else if(ccw >= 4)
     {
       ccw = 0;
-      index++;
+
+      //loop back to the top if greater than our menu limit (TODO)
+      if(index >= 3)
+      {
+        index = 0;
+      }
+      else
+      {
+        index++;
+      }
     }
   }
 }
