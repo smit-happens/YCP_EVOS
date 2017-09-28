@@ -38,6 +38,8 @@ int main(void)
 
   Display screen;
 
+  Stepper motor;
+
   //attachInterrupt function can't be called in any classes
   //encoder pinA & pinB interrupts
   attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
@@ -49,6 +51,7 @@ int main(void)
 
     screen.printMenu(knob.getIndex());
 
+    motor.spin();
   }
   return 0;
 }
