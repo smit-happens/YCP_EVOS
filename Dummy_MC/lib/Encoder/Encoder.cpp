@@ -104,3 +104,10 @@ void Encoder::updateIndex(void) {
     }
   }
 }
+
+
+//---------------------------------------------------------------
+//TODO implement pushbutton of the encoder to select things
+void Encoder::isButtonPressed(void) {
+    //insert code here
+}

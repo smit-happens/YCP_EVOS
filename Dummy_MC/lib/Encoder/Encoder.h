@@ -18,6 +18,8 @@ public:
   void doEncoderA(void);
   void doEncoderB(void);
 
+  void isButtonPressed(void);
+
 private:
   int index;
   int8_t cw, ccw;
