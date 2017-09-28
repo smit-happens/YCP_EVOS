@@ -11,13 +11,13 @@
 // #include <SPI.h>
 // #include "SdFat.h"
 
-#define STEPPER_COIL_PIN_A 24
-#define STEPPER_COIL_PIN_B 25
-#define STEPPER_COIL_PIN_C 26
-#define STEPPER_COIL_PIN_D 27
+#define STEPPER_COIL_PIN_A 29
+#define STEPPER_COIL_PIN_B 30
+#define STEPPER_COIL_PIN_C 31
+#define STEPPER_COIL_PIN_D 32
 
 //---------------------------------------------------------------
-//declaring encoder class variable and setting up interrupt functions
+// declaring encoder class variable and setting up interrupt functions
 Encoder knob;
 
 void encoderWrapperA(){
@@ -39,15 +39,15 @@ int main(void)
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWriteFast(LED_BUILTIN, 1);
 
-  // pinMode(STEPPER_COIL_PIN_A, OUTPUT);
-  // pinMode(STEPPER_COIL_PIN_B, OUTPUT);
-  // pinMode(STEPPER_COIL_PIN_C, OUTPUT);
-  // pinMode(STEPPER_COIL_PIN_D, OUTPUT);
-  //
-  // digitalWriteFast(STEPPER_COIL_PIN_A, 0);
-  // digitalWriteFast(STEPPER_COIL_PIN_B, 0);
-  // digitalWriteFast(STEPPER_COIL_PIN_C, 0);
-  // digitalWriteFast(STEPPER_COIL_PIN_D, 0);
+  pinMode(STEPPER_COIL_PIN_A, OUTPUT);
+  pinMode(STEPPER_COIL_PIN_B, OUTPUT);
+  pinMode(STEPPER_COIL_PIN_C, OUTPUT);
+  pinMode(STEPPER_COIL_PIN_D, OUTPUT);
+
+  digitalWriteFast(STEPPER_COIL_PIN_A, 1);
+  digitalWriteFast(STEPPER_COIL_PIN_B, 1);
+  digitalWriteFast(STEPPER_COIL_PIN_C, 1);
+  digitalWriteFast(STEPPER_COIL_PIN_D, 1);
 
   Display screen;
 
@@ -56,42 +56,51 @@ int main(void)
   attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
   attachInterrupt(encoderPinB, encoderWrapperB, CHANGE);
 
-  // //Setting the stepper's inital state
-  // digitalWriteFast(STEPPER_COIL_PIN_B, 1);
-  // digitalWriteFast(STEPPER_COIL_PIN_D, 1);
+  //Setting the stepper's inital state
+  digitalWriteFast(STEPPER_COIL_PIN_B, 0);
+  digitalWriteFast(STEPPER_COIL_PIN_D, 0);
 
+  // while(1)
+  // {
+  //   // Serial.println(REG_READ);
+  //   // delay(200);
+  //
+  //   // knob.updateIndex();
+  //   //
+  //   // screen.printMenu(knob.getIndex());
+  //
+  // }
   while(1)
   {
-    // Serial.println(REG_READ);
-    // delay(200);
+    // Serial.println("Looping stepper");
 
     knob.updateIndex();
 
     screen.printMenu(knob.getIndex());
 
-    //From a fail stepper motor attempt (Hardware issue) 
-    // Serial.println("Looping stepper");
-    //
-    // digitalWriteFast(STEPPER_COIL_PIN_D, 0);
-    // delay(50);
-    // digitalWriteFast(STEPPER_COIL_PIN_C, 1);
-    // delay(100);
-    //
-    // digitalWriteFast(STEPPER_COIL_PIN_B, 0);
-    // delay(50);
-    // digitalWriteFast(STEPPER_COIL_PIN_A, 1);
-    // delay(100);
-    //
-    // digitalWriteFast(STEPPER_COIL_PIN_C, 0);
-    // delay(50);
     // digitalWriteFast(STEPPER_COIL_PIN_D, 1);
-    // delay(100);
+    // // delay(2);
+    // digitalWriteFast(STEPPER_COIL_PIN_C, 0);
+    // // delay(100);
+    // delay(3);
     //
-    // digitalWriteFast(STEPPER_COIL_PIN_A, 0);
-    // delay(50);
     // digitalWriteFast(STEPPER_COIL_PIN_B, 1);
-    // delay(100);
-
+    // // delay(2);
+    // digitalWriteFast(STEPPER_COIL_PIN_A, 0);
+    // // delay(100);
+    // delay(3);
+    //
+    // digitalWriteFast(STEPPER_COIL_PIN_C, 1);
+    // // delay(2);
+    // digitalWriteFast(STEPPER_COIL_PIN_D, 0);
+    // // delay(100);
+    // delay(3);
+    //
+    // digitalWriteFast(STEPPER_COIL_PIN_A, 1);
+    // // delay(2);
+    // digitalWriteFast(STEPPER_COIL_PIN_B, 0);
+    // // delay(100);
+    // delay(3);
   }
   return 0;
 }
