@@ -14,7 +14,10 @@ class Stepper
 public:
   Stepper();
 
-  void spin(void);  
+  void spin(void);
+
+  void setRpm(int rpm);
+  int getRpm(void);
 };
 
 #endif

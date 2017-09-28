@@ -46,3 +46,20 @@ void Stepper::spin(void)
   digitalWriteFast(STEPPER_COIL_PIN_B, 0);
   delay(3);
 }
+
+
+//---------------------------------------------------------------
+//Returns current rpm
+//TODO implement functionality
+int Stepper::getRpm()
+{
+  return -1;
+}
+
+//---------------------------------------------------------------
+//Sets rpm of the stepper
+//TODO implement functionality
+void Stepper::setRpm(int rpm)
+{
+  //insert code
+}
