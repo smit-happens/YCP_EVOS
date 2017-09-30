@@ -2,7 +2,7 @@
 // Stepper.cpp
 // Created 9-27-17
 //
-#include "Stepper.h"
+#include "Stepper.hpp"
 
 
 //---------------------------------------------------------------

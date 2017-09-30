@@ -5,7 +5,7 @@
 
 #include <FlexCAN.h>
 #include <TimerOne.h>
-#include "MCRegIDs.h"
+#include "MCRegIDs.hpp"
 
 const char *menuMain =
   "\nWelcome to EVOS!\n"

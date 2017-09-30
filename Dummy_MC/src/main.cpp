@@ -2,11 +2,10 @@
 //8-16-17
 
 #include <Arduino.h>
-#include <FlexCAN.h>
-#include <MCRegIDs.h>
-#include <Encoder.h>
-#include <Display.h>
-#include <Stepper.h>
+#include <MCRegIDs.hpp>
+#include <Encoder.hpp>
+#include <Display.hpp>
+#include <Stepper.hpp>
 
 //TODO use these later
 // #include <SPI.h>

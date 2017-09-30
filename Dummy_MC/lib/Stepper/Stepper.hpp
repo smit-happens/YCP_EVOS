@@ -1,5 +1,10 @@
-#ifndef STEPPER_H
-#define STEPPER_H
+//***************************************************************
+// Stepper.hpp
+// Created 9-27-17
+//
+
+#ifndef STEPPER_HPP
+#define STEPPER_HPP
 
 #include <Arduino.h>
 

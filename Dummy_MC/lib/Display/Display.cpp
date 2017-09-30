@@ -1,7 +1,7 @@
 //***************************************************************
 // Display.cpp
 //
-#include "Display.h"
+#include "Display.hpp"
 
 //LiquidCrystalFast lcd(RS, RW, Enable, D4, D5, D6, D7);
 LiquidCrystalFast lcd(33, 34, 35, 36, 37, 38, 39);
