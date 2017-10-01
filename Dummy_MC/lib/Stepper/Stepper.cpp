@@ -1,6 +1,10 @@
-//***************************************************************
-// Stepper.cpp
-// Created 9-27-17
+/**  A one line description of the class.
+ *
+ * Stepper.cpp
+ * Created 09-27-17 By: Smitty
+ *
+ * A longer description.
+ */
 
 #include "Stepper.hpp"
 

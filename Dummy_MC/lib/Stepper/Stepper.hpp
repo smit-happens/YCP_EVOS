@@ -1,10 +1,13 @@
-//***************************************************************
-// Stepper.hpp
-// Created 9-27-17
-//
+/**  A one line description of the class.
+ *
+ * #include Stepper.hpp
+ * Created 09-27-17 By: Smitty
+ *
+ * A longer description.
+ */
 
-#ifndef __STEPPER_HPP_INCLUDED__
-#define __STEPPER_HPP_INCLUDED__
+#ifndef STEPPER_HPP
+#define STEPPER_HPP
 
 #include <Arduino.h>
 
@@ -25,4 +28,4 @@ public:
   int getRpm(void);
 };
 
-#endif  //__STEPPER_HPP_INCLUDED__
+#endif  //STEPPER_HPP

@@ -1,5 +1,13 @@
-#ifndef __DISPLAY_HPP_INCLUDED__
-#define __DISPLAY_HPP_INCLUDED__
+/**  A one line description of the class.
+ *
+ * #include "Display.hpp"
+ * Created XX-XX-17 By: Smitty
+ *
+ * A longer description.
+ */
+
+#ifndef DISPLAY_HPP
+#define DISPLAY_HPP
 
 #include <Arduino.h>
 #include <LiquidCrystalFast.h>
@@ -16,4 +24,4 @@ public:
 
 };
 
-#endif  //__DISPLAY_HPP_INCLUDED__
+#endif  //DISPLAY_HPP

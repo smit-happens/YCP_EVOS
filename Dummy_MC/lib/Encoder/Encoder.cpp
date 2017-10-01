@@ -1,5 +1,10 @@
-//***************************************************************
-// Encoder.cpp
+/**  A one line description of the class.
+ *
+ * Encoder.cpp
+ * Created XX-XX-17 By: Smitty
+ *
+ * A longer description.
+ */
 
 #include "Encoder.hpp"
 

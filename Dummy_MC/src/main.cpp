@@ -1,5 +1,10 @@
-//Created by Smitty :D
-//8-16-17
+/**  A one line description of the class.
+ *
+ * main.cpp
+ * Created 08-16-17 By: Smitty
+ *
+ * A longer description.
+ */
 
 #include <Arduino.h>
 #include <Encoder.hpp>

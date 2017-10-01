@@ -1,5 +1,10 @@
-//***************************************************************
-// Display.cpp
+/**  A one line description of the class.
+ *
+ * Display.cpp
+ * Created XX-XX-17 By: Smitty
+ *
+ * A longer description.
+ */
 
 #include "Display.hpp"
 

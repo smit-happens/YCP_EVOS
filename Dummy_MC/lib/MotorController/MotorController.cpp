@@ -1,6 +1,10 @@
-//***************************************************************
-// MotorController.cpp
-// Created 9-30-17
+/**  A one line description of the class.
+ *
+ * MotorController.cpp
+ * Created 09-30-17 By: Smitty
+ *
+ * A longer description.
+ */
 
 #include "MotorController.hpp"
 

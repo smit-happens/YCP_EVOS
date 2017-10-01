@@ -1,5 +1,13 @@
-#ifndef __ENCODER_HPP_INCLUDED__
-#define __ENCODER_HPP_INCLUDED__
+/**  A one line description of the class.
+ *
+ * #include "Encoder.hpp"
+ * Created XX-XX-17 By: Smitty
+ *
+ * A longer description.
+ */
+
+#ifndef ENCODER_HPP
+#define ENCODER_HPP
 
 #include <Arduino.h>
 
@@ -33,4 +41,4 @@ private:
   volatile int8_t encoderPos = 0;
 };
 
-#endif  //__ENCODER_HPP_INCLUDED__
+#endif  //ENCODER_HPP

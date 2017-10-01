@@ -1,9 +1,13 @@
-//***************************************************************
-// MotorController.hpp
-// Created 9-30-17
+/**  A one line description of the class.
+ *
+ * #include MotorController.hpp
+ * Created 09-30-17 By: Smitty
+ *
+ * A longer description.
+ */
 
-#ifndef __MOTORCONTROLLER_HPP_INCLUDED__
-#define __MOTORCONTROLLER_HPP_INCLUDED__
+#ifndef MOTORCONTROLLER_HPP
+#define MOTORCONTROLLER_HPP
 
 #include <Arduino.h>
 #include "MotorControllerRegisters.hpp"
@@ -18,4 +22,4 @@ public:
 };
 
 
-#endif  //__MOTORCONTROLLER_HPP_INCLUDED__
+#endif  //MOTORCONTROLLER_HPP
