@@ -30,7 +30,7 @@ void encoderWrapperB(){
 //Begin main function
 int main(void)
 {
-  Serial.begin(9600);
+  // Serial.begin(9600);
 
   //using the builtin LED as a status light
   pinMode(LED_BUILTIN, OUTPUT);
@@ -41,6 +41,11 @@ int main(void)
   Stepper motor;
 
   MotorController mctest;
+
+  uint8_t var = mctest.testFunc();
+  String sentence = String(var) + " testing\n";
+
+  screen.print(sentence);
 
   //attachInterrupt() can only be called in main()
   //encoder pinA & pinB interrupts
@@ -55,10 +60,7 @@ int main(void)
     //
     // motor.spin();
 
-    uint8_t var = mctest.testFunc();
-    String sentence = String(var) + " testing";
 
-    Serial.print(sentence);
 
     delay(1000);
 

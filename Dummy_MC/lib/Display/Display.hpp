@@ -11,7 +11,7 @@ class Display
 public:
   Display();
 
-  void print();
+  void print(String text);
   void printMenu(int index);
 
 };

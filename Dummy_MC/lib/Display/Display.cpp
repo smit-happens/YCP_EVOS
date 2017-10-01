@@ -29,6 +29,14 @@ Display::Display(void)
 
 
 //---------------------------------------------------------------
+//Print a given String to the display
+void Display::print(String text)
+{
+  lcd.print(text);
+}
+
+
+//---------------------------------------------------------------
 //prints out menu on lcd based on index given
 void Display::printMenu(int index)
 {
