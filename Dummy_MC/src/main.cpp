@@ -9,6 +9,7 @@
 #include <Arduino.h>
 #include <Encoder.hpp>
 #include <Display.hpp>
+#include <Menu.hpp>
 #include <Stepper.hpp>
 #include <MotorController.hpp>
 
@@ -53,6 +54,9 @@ int main(void)
   //encoder pinA & pinB interrupts
   attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
   attachInterrupt(encoderPinB, encoderWrapperB, CHANGE);
+
+  BaseMenu* aCurrentMenu = new FirstMenu;
+  String sentence = aCurrentMenu->printText();
 
   // uint8_t var = mctest.testFunc();
   // String sentence = String(var) + " testing\n";

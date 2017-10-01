@@ -1,4 +1,4 @@
-/**  Class for creating the various menus using OOP
+/**  Virtual class for creating the various menus using OOP
  *
  * #include "Menu.hpp"
  * Created 10-01-17 By: Smitty
@@ -12,12 +12,11 @@
 
 #include <Arduino.h>
 
-class testFunc
-{
-public:
-  testFunc();
-};
-
+// class testFunc
+// {
+// public:
+//   testFunc();
+// };
 
 class BaseMenu
 {
@@ -32,13 +31,12 @@ public:
   virtual BaseMenu *getNextMenu(int iChoice, bool& iIsQuitOptionSelected) = 0;
 
   // This is made virtual, but doesn't *have* to be redefined. In the current code I have written, it is not redefined as we store the menu text as a string in the object
-  virtual void printText() { Serial.println(m_MenuText); }
+  virtual String printText() { return m_MenuText; }
 
 protected:
   // This string will be shared by all children (i.e. derived) menu classes
   String m_MenuText;
 };
-
 
 // FirstMenu class is a type of BaseMenu
 class FirstMenu : public BaseMenu
