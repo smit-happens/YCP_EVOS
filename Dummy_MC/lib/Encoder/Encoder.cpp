@@ -52,7 +52,8 @@ int Encoder::getIndex(void)
 
 //---------------------------------------------------------------
 //updates index based on encoder direction
-void Encoder::updateIndex(void) {
+void Encoder::updateIndex(void)
+{
   if (0 > encoderPos)
   {
     cw++;
@@ -92,7 +93,7 @@ void Encoder::updateIndex(void) {
     {
       ccw = 0;
 
-      //loop back to the top if greater than our menu limit (TODO)
+      //loop back to the top if greater than our menu limit (TODO: paramaterize)
       if(index >= 3)
       {
         index = 0;
@@ -108,6 +109,15 @@ void Encoder::updateIndex(void) {
 
 //---------------------------------------------------------------
 //TODO implement pushbutton of the encoder to select things
-void Encoder::isButtonPressed(void) {
+void Encoder::doButtonPress(void)
+{
+    //insert code here
+}
+
+
+//---------------------------------------------------------------
+//TODO implement pushbutton of the encoder to select things
+void Encoder::isButtonPressed(void)
+{
     //insert code here
 }

@@ -18,6 +18,12 @@ char menuMain[8][17] {
   "Smit item8~"
 };
 
+// const char *menuMain =
+//   "Welcome to MC_SIM!\n"
+//   "Select an option\n"
+//   "1: Send a CAN message\n"
+//   "2: Blink an LED\n";
+
 //---------------------------------------------------------------
 //Display class constructor
 Display::Display(void)

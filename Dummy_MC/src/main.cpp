@@ -2,7 +2,6 @@
 //8-16-17
 
 #include <Arduino.h>
-//Custom libraries
 #include <Encoder.hpp>
 #include <Display.hpp>
 #include <Stepper.hpp>
@@ -14,7 +13,7 @@
 
 
 //---------------------------------------------------------------
-//Declaring encoder class variable and setting up interrupt functions
+//Declaring encoder object variable and setting up interrupt functions
 Encoder knob;
 
 void encoderWrapperA(){
@@ -25,6 +24,10 @@ void encoderWrapperB(){
  knob.doEncoderB();
 }
 
+void encoderWrapperButton(){
+  knob.doButtonPress();
+}
+
 
 //---------------------------------------------------------------
 //Begin main function
@@ -32,32 +35,31 @@ int main(void)
 {
   // Serial.begin(9600);
 
+  //object declarations
+  Display screen;
+  // Stepper motor;
+  MotorController mctest;
+
   //using the builtin LED as a status light
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWriteFast(LED_BUILTIN, 1);
-
-  Display screen;
-
-  Stepper motor;
-
-  MotorController mctest;
-
-  uint8_t var = mctest.testFunc();
-  String sentence = String(var) + " testing\n";
-
-  screen.print(sentence);
 
   //attachInterrupt() can only be called in main()
   //encoder pinA & pinB interrupts
   attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
   attachInterrupt(encoderPinB, encoderWrapperB, CHANGE);
 
+  // uint8_t var = mctest.testFunc();
+  // String sentence = String(var) + " testing\n";
+  //
+  // screen.print(sentence);
+
   while(1)
   {
-    // knob.updateIndex();
-    //
-    // screen.printMenu(knob.getIndex());
-    //
+    knob.updateIndex();
+
+    screen.printMenu(knob.getIndex());
+
     // motor.spin();
 
 

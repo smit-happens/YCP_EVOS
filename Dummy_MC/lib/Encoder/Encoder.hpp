@@ -5,6 +5,7 @@
 
 const uint8_t encoderPinA = 17;
 const uint8_t encoderPinB = 18;
+const uint8_t buttonPin = 20;
 
 class Encoder
 {
@@ -18,6 +19,7 @@ public:
   void doEncoderA(void);
   void doEncoderB(void);
 
+  void doButtonPress(void);
   void isButtonPressed(void);
 
 private:
