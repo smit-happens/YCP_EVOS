@@ -1,18 +1,19 @@
-#ifndef DISPLAY_HPP
-#define DISPLAY_HPP
+#ifndef __DISPLAY_HPP_INCLUDED__
+#define __DISPLAY_HPP_INCLUDED__
 
 #include <Arduino.h>
 #include <LiquidCrystalFast.h>
 
-#define lcdHeight 4
+const uint8_t lcdHeight = 4;
 
 class Display
 {
 public:
   Display();
 
+  void print();
   void printMenu(int index);
 
 };
 
-#endif
+#endif  //__DISPLAY_HPP_INCLUDED__

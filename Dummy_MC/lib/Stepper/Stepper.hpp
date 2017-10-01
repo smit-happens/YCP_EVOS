@@ -3,16 +3,16 @@
 // Created 9-27-17
 //
 
-#ifndef STEPPER_HPP
-#define STEPPER_HPP
+#ifndef __STEPPER_HPP_INCLUDED__
+#define __STEPPER_HPP_INCLUDED__
 
 #include <Arduino.h>
 
 // Pin assignments for the two H-bridges
-#define STEPPER_COIL_PIN_A 29
-#define STEPPER_COIL_PIN_B 30
-#define STEPPER_COIL_PIN_C 31
-#define STEPPER_COIL_PIN_D 32
+const uint8_t STEPPER_COIL_PIN_A = 29;
+const uint8_t STEPPER_COIL_PIN_B = 30;
+const uint8_t STEPPER_COIL_PIN_C = 31;
+const uint8_t STEPPER_COIL_PIN_D = 32;
 
 class Stepper
 {
@@ -25,4 +25,4 @@ public:
   int getRpm(void);
 };
 
-#endif
+#endif  //__STEPPER_HPP_INCLUDED__

@@ -1,15 +1,15 @@
 //***************************************************************
-// CAN.hpp
+// CanController.hpp
 // Created 9-30-17
 //
 
-#ifndef CAN_HPP
-#define CAN_HPP
+#ifndef __CANCONTROLLER_HPP_INCLUDED__
+#define __CANCONTROLLER_HPP_INCLUDED__
 
 #include <Arduino.h>
 #include <FlexCAN.h>
 
-class CAN : public CANListener
+class CanController : public CANListener
 {
 public:
   CAN();
@@ -24,4 +24,4 @@ public:
 };
 
 
-#endif
+#endif  //__CANCONTROLLER_HPP_INCLUDED__

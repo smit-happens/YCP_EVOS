@@ -1,10 +1,10 @@
-#ifndef ENCODER_HPP
-#define ENCODER_HPP
+#ifndef __ENCODER_HPP_INCLUDED__
+#define __ENCODER_HPP_INCLUDED__
 
 #include <Arduino.h>
 
-#define encoderPinA  17
-#define encoderPinB  18
+const uint8_t encoderPinA = 17;
+const uint8_t encoderPinB = 18;
 
 class Encoder
 {
@@ -31,4 +31,4 @@ private:
   volatile int8_t encoderPos = 0;
 };
 
-#endif
+#endif  //__ENCODER_HPP_INCLUDED__

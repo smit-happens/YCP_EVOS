@@ -1,14 +1,14 @@
 //***************************************************************
-// CAN.cpp
+// CanController.cpp
 // Created 9-30-17
 //
 
-#include "CAN.hpp"
+#include "CanController.hpp"
 
 
 //---------------------------------------------------------------
-//CAN constructor
-CAN::CAN(void)
+//CanController constructor
+CanController::CanController(void)
 {
 
 }
@@ -16,7 +16,7 @@ CAN::CAN(void)
 
 //---------------------------------------------------------------
 //Prints out a given CAN frame
-void CANClass::printFrame(CAN_message_t &frame, int mailbox)
+void CanController::printFrame(CAN_message_t &frame, int mailbox)
 {
   Serial.print("This just in!\n");
   Serial.print("ID: 0x");
@@ -37,7 +37,7 @@ void CANClass::printFrame(CAN_message_t &frame, int mailbox)
 
 //---------------------------------------------------------------
 //Called whenever a new CAN frame is recieved
-void CANClass::gotFrame(CAN_message_t &frame, int mailbox)
+void CanController::gotFrame(CAN_message_t &frame, int mailbox)
 {
   printFrame(frame, mailbox);
 }
@@ -45,7 +45,7 @@ void CANClass::gotFrame(CAN_message_t &frame, int mailbox)
 
 //---------------------------------------------------------------
 //Constructs a formatted MC message
-CAN_message_t setupMCMessage(uint8_t regID, uint8_t buf1 = 0x00, uint8_t buf2 = 0x00, bool stopPolling = false)
+CAN_message_t CanController::setupMCMessage(uint8_t regID, uint8_t buf1 = 0x00, uint8_t buf2 = 0x00, bool stopPolling = false)
 {
   CAN_message_t tx;
 

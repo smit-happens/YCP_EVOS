@@ -2,17 +2,19 @@
 //8-16-17
 
 #include <Arduino.h>
-#include <MCRegIDs.hpp>
+//Custom libraries
 #include <Encoder.hpp>
 #include <Display.hpp>
 #include <Stepper.hpp>
+#include <MotorController.hpp>
 
-//TODO use these later
+//TODO implement these later
 // #include <SPI.h>
 // #include "SdFat.h"
 
+
 //---------------------------------------------------------------
-// declaring encoder class variable and setting up interrupt functions
+//Declaring encoder class variable and setting up interrupt functions
 Encoder knob;
 
 void encoderWrapperA(){
@@ -28,8 +30,7 @@ void encoderWrapperB(){
 //Begin main function
 int main(void)
 {
-  // Serial.begin(9600);
-  // Serial.println(REG_READ);
+  Serial.begin(9600);
 
   //using the builtin LED as a status light
   pinMode(LED_BUILTIN, OUTPUT);
@@ -39,18 +40,28 @@ int main(void)
 
   Stepper motor;
 
-  //attachInterrupt function can't be called in any classes
+  MotorController mctest;
+
+  //attachInterrupt() can only be called in main()
   //encoder pinA & pinB interrupts
   attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
   attachInterrupt(encoderPinB, encoderWrapperB, CHANGE);
 
   while(1)
   {
-    knob.updateIndex();
+    // knob.updateIndex();
+    //
+    // screen.printMenu(knob.getIndex());
+    //
+    // motor.spin();
 
-    screen.printMenu(knob.getIndex());
+    uint8_t var = mctest.testFunc();
+    String sentence = String(var) + " testing";
 
-    motor.spin();
+    Serial.print(sentence);
+
+    delay(1000);
+
   }
   return 0;
 }
