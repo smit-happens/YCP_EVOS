@@ -18,10 +18,10 @@ LiquidCrystalFast lcd(33, 34, 35, 36, 37, 38, 39);
 // Defining the main menu
 FirstMenu::FirstMenu(void)
 {
-  menuText = "Main Menu\n"
-             "1 - Start game\n"
-             "2 - Options\n"
-             "3 - Quit\n";
+  menuText.push_back("About");
+  menuText.push_back("Monitor CAN");
+  menuText.push_back("Blink LED");
+  // menuText.push_back("Start game");
 }
 
 
@@ -43,24 +43,27 @@ BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
 
   switch (choice)
   {
+    case 0:
+    {
+      // We're creating our new menu object here
+      // newMenu = new SecondMenu;
+      Serial.println("ABOUT!");
+    }
+    break;
+
     case 1:
     {
-      // We're creating our new menu object here, and will send it back to the main function below
-      newMenu = new SecondMenu;
+      // We're creating our new menu object here
+      // newMenu = new SecondMenu;
+      Serial.println("MONITOR CAN!");
     }
     break;
 
     case 2:
     {
-      // We're creating our new menu object here, and will send it back to the main function below
-      newMenu = new SecondMenu;
-    }
-    break;
-
-    case 3:
-    {
       // Selected quit! Update the bool we got as input
-      iIsQuitOptionSelected = true;
+      // iIsQuitOptionSelected = true;
+
     }
     break;
 
@@ -79,20 +82,8 @@ BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
 // Printing the menu to the LCD
 void FirstMenu::print(int index)
 {
-  // implement code
-  char menuMain[8][18] {
-    "About~",
-    "Send CAN message~",
-    "Smit item3~",
-    "Smit item4~",
-    "Smit item5~",
-    "Smit item6~",
-    "Smit item7~",
-    "Smit item8~"
-  };
-
   //displaying initial menu so lcd doesn't start up blank
-  for(uint16_t i = 0; i < lcdHeight; i++)
+  for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
   {
     lcd.setCursor(0, i);
 
@@ -103,26 +94,25 @@ void FirstMenu::print(int index)
       lcd.print(" ");
 
     lcd.printf("%i ");
-    for(int j = 0; j<10; j++)
-    {
-      if(menuMain[i][j] != '~')
-        lcd.write(menuMain[i][j]);
-      else
-        break;
-    }
+    lcd.print(menuText[i]);
   }
 }
 
+
+// int FirstMenu::getMenuLength(void)
+// {
+//   return static_cast<int>(menuText.size());
+// }
 
 //---------------------------------------------------------------
 // Defining the CAN menu
 SecondMenu::SecondMenu(void)
 {
-  menuText = "CAN Menu\n"
-             "0: Back to main menu\n"
-             "1 - Display CAN messages"
-             "2 - dafuq?"
-             "2 - dafuq?";
+  // menuText = "CAN Menu",
+  //            "0: Back to main menu",
+  //            "1 - Display CAN messages",
+  //            "2 - dafuq?",
+  //            "2 - dafuq?";
 }
 
 
@@ -130,16 +120,23 @@ SecondMenu::SecondMenu(void)
 // CAN menu option logic
 BaseMenu *SecondMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected) // This is us actually defining the pure virtual method above
 {
-  BaseMenu *newMenu = 0; // We're setting up the pointer here, but makin sure it's null (0)
+  // We're setting up the pointer here, but makin sure it's null (0)
+  BaseMenu *newMenu = 0;
 
   switch (choice)
   {
     case 1:
-      newMenu = new FirstMenu; // We're creating our new menu object here, and will send it back to the main function below
+    {
+      // We're creating our new menu object here
+      newMenu = new FirstMenu;
+    }
     break;
 
     case 2:
-      newMenu = new FirstMenu; // We're creating our new menu object here, and will send it back to the main function below
+    {
+      // We're creating our new menu object here
+      newMenu = new FirstMenu;
+    }
     break;
 
     default:

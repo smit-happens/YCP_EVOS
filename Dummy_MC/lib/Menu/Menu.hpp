@@ -12,6 +12,7 @@
 
 #include <Arduino.h>
 #include <LiquidCrystalFast.h>
+#include <vector>  //vector <type>
 
 const uint8_t lcdHeight = 4;
 
@@ -19,10 +20,10 @@ const uint8_t lcdHeight = 4;
 class BaseMenu
 {
 public:
-  // This is the constructor - we use it to set class-specific information. Each menu object has its own menu text.
-  BaseMenu() { menuText[0] = "This should never be shown!"; }
+  // Constructor for setting class-specific information. Each menu object has its own menu text.
+  BaseMenu() { }
 
-  // Virtual destructor. It must be made virtual, else you get memory leaks - read up on it
+  // Virtual destructor. It must be made virtual, else you get memory leaks - need read up on it
   virtual ~BaseMenu() { }
 
   virtual void initLcd(void) { }
@@ -33,9 +34,12 @@ public:
   // This is made virtual, but doesn't *have* to be redefined. In the current code I have written, it is not redefined as we store the menu text as a string in the object
   virtual void print(int index) { }
 
+  // Gets the size of the vector (type std::vector<T>::size_type), converts it to an int
+  virtual int getMenuLength(void) { return static_cast<int>(menuText.size()); }
+
 protected:
   // This string will be shared by all derived menu classes
-  String menuText[10];
+  std::vector<String> menuText;
 };
 
 

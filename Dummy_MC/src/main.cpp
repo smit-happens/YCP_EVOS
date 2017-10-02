@@ -8,7 +8,6 @@
 
 #include <Arduino.h>
 #include <Encoder.hpp>
-// #include <Display.hpp>
 #include <Menu.hpp>
 #include <Stepper.hpp>
 #include <MotorController.hpp>
@@ -39,12 +38,11 @@ void encoderWrapperButton(){
 // Begin main function
 int main(void)
 {
-  // Serial.begin(9600);
+  Serial.begin(9600);
 
   // Object declarations
-  // Display screen;
   // Stepper motor;
-  MotorController mctest;
+  // MotorController mctest;
 
   // using the builtin LED as a status light
   pinMode(LED_BUILTIN, OUTPUT);
@@ -65,31 +63,36 @@ int main(void)
 
   // Variables
   bool isQuitOptionSelected = false;
-  int choice = 0;
+  int choice = -1;
 
 
   //---------------------------------------------------------------
   // Begin main program loop
   while(1)
   {
-    knob.updateIndex();
-    // screen.printMenu(knob.getIndex());
     // motor.spin();
 
-    // Call the method of whichever MenuObject we're using, and print its text
+    knob.updateIndex(currentMenu->getMenuLength());
+
+    // Call the print method of whichever MenuObject we're using
+    // Print its text and the current cursor position
     currentMenu->print(knob.getIndex());
 
     if(knob.isButtonPressed())
     {
       choice = knob.getIndex();
     }
+    else
+    {
+      // So that we don't execute any of the menu cases
+      choice = -1;
+    }
 
-    // This will return a new object, of the type of the new menu we want
+    // Will return a new object, of the type of the new menu we want
     // Also checks if quit was selected
     BaseMenu* newMenuPointer = currentMenu->getNextMenu(choice, isQuitOptionSelected);
 
-    // This is why we set the pointer to 0 when we were creating the new menu
-    // if it's 0, we didn't create a new menu, so we will stick with the old one
+    // if pointer is 0, we didn't create a new menu, so keep the current one
     if (newMenuPointer)
     {
       // Clean up the old menu, and not leak memory.

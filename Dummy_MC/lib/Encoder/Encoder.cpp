@@ -88,7 +88,7 @@ void Encoder::updateIndex(int menuLength)
     {
       cw = 0;
 
-      // Loop back to the bottom
+      // Loop back to the bottom (index = menuLength -1)
       if(index <= 0)
       {
         index = menuLength - 1;
@@ -102,8 +102,8 @@ void Encoder::updateIndex(int menuLength)
     {
       ccw = 0;
 
-      // Loop back to the top if greater than our menu length
-      if(index > menuLength)
+      // Loop back to the top (index = 0) if greater than our menu length
+      if(index >= menuLength - 1)
       {
         index = 0;
       }
@@ -118,6 +118,7 @@ void Encoder::updateIndex(int menuLength)
 
 //---------------------------------------------------------------
 // Iterrupt on a changing button state
+// TODO: fix this, either through hardware or this method
 void Encoder::pressButton(void)
 {
     buttonState = !buttonState;
@@ -125,7 +126,7 @@ void Encoder::pressButton(void)
 
 
 //---------------------------------------------------------------
-// TODO implement pushbutton of the encoder to select things
+// TODO: (better) implement pushbutton of the encoder to select things
 bool Encoder::isButtonPressed(void)
 {
     return buttonState;
