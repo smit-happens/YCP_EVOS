@@ -10,7 +10,7 @@
 
 
 //---------------------------------------------------------------
-//Encoder constructor
+// Encoder constructor
 Encoder::Encoder(void)
 {
   index = 0;
@@ -48,7 +48,7 @@ void Encoder::doEncoderB(void)
 
 
 //---------------------------------------------------------------
-//returns index value
+// Returns index value
 int Encoder::getIndex(void)
 {
   return index;
@@ -56,9 +56,11 @@ int Encoder::getIndex(void)
 
 
 //---------------------------------------------------------------
-//updates index based on encoder direction
-void Encoder::updateIndex(void)
+// Updates index based on encoder direction
+// TODO: maybe refactor logic here (ugly-ish but it works)
+void Encoder::updateIndex(int menuLength)
 {
+  // Checking for any change in rotation cw or ccw represented by encoderPos variable
   if (0 > encoderPos)
   {
     cw++;
@@ -74,20 +76,22 @@ void Encoder::updateIndex(void)
 
   if(change == true)
   {
-    //reset values so this condition isn't executed repeatedly
+    // Reset values so this condition isn't executed repeatedly
     encoderPos = 0;
     change = false;
 
-    //notches are at every 4 steps on the encoder
-    //checks every 4 steps to move up/down a menu item
+    //TODO: ADD/FIX SCROLLING/////////////////////////// (verify now)
+
+    // Notches are at every 4 steps on the encoder
+    // Checks every 4 steps to move up/down a menu item
     if(cw >= 4)
     {
       cw = 0;
 
-      //loop back to the bottom
+      // Loop back to the bottom
       if(index <= 0)
       {
-        index = 3;
+        index = menuLength - 1;
       }
       else
       {
@@ -98,8 +102,8 @@ void Encoder::updateIndex(void)
     {
       ccw = 0;
 
-      //loop back to the top if greater than our menu limit (TODO: paramaterize)
-      if(index >= 3)
+      // Loop back to the top if greater than our menu length
+      if(index > menuLength)
       {
         index = 0;
       }
@@ -113,16 +117,16 @@ void Encoder::updateIndex(void)
 
 
 //---------------------------------------------------------------
-//TODO implement pushbutton of the encoder to select things
-void Encoder::doButtonPress(void)
+// Iterrupt on a changing button state
+void Encoder::pressButton(void)
 {
-    //insert code here
+    buttonState = !buttonState;
 }
 
 
 //---------------------------------------------------------------
-//TODO implement pushbutton of the encoder to select things
-void Encoder::isButtonPressed(void)
+// TODO implement pushbutton of the encoder to select things
+bool Encoder::isButtonPressed(void)
 {
-    //insert code here
+    return buttonState;
 }

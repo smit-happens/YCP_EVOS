@@ -12,7 +12,7 @@
 //LiquidCrystalFast lcd(RS, RW, Enable, D4, D5, D6, D7);
 LiquidCrystalFast lcd(33, 34, 35, 36, 37, 38, 39);
 
-char menuMain[8][17] {
+char menuMain[8][18] {
   "Smit item1~",
   "Smit item2~",
   "Smit item3~",
@@ -34,7 +34,6 @@ char menuMain[8][17] {
 Display::Display(void)
 {
   lcd.begin(20, lcdHeight);
-
   lcd.clear();
 }
 
@@ -43,6 +42,7 @@ Display::Display(void)
 //Print a given String to the display
 void Display::print(String text)
 {
+  lcd.clear();
   lcd.print(text);
 }
 

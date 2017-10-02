@@ -22,13 +22,13 @@ public:
 
   int getIndex(void);
 
-  void updateIndex(void);
+  void updateIndex(int menuLength);
 
   void doEncoderA(void);
   void doEncoderB(void);
 
-  void doButtonPress(void);
-  void isButtonPressed(void);
+  void pressButton(void);
+  bool isButtonPressed(void);
 
 private:
   int index;
@@ -39,6 +39,7 @@ private:
   bool B_set;
 
   volatile int8_t encoderPos = 0;
+  volatile bool buttonState = false;
 };
 
 #endif  //ENCODER_HPP
