@@ -9,12 +9,9 @@
 #include <Arduino.h>
 #include <Encoder.hpp>
 #include <Menu.hpp>
+#include <Logger.hpp>
 #include <Stepper.hpp>
 #include <MotorController.hpp>
-
-//TODO implement these later
-// #include <SPI.h>
-// #include "SdFat.h"
 
 
 //---------------------------------------------------------------
@@ -31,6 +28,7 @@ void encoderWrapperB(){
 
 void encoderWrapperButton(){
   knob.pressButton();
+  delay(10);
 }
 
 
@@ -38,7 +36,7 @@ void encoderWrapperButton(){
 // Begin main function
 int main(void)
 {
-  Serial.begin(9600);
+  // Serial.begin(9600);
 
   // Object declarations
   // Stepper motor;
@@ -53,6 +51,7 @@ int main(void)
   attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
   attachInterrupt(encoderPinB, encoderWrapperB, CHANGE);
   // encoder button interrupt
+  // TODO: fix interrupt logic (make more reliable)
   attachInterrupt(buttonPin, encoderWrapperButton, CHANGE);
 
   // A pointer to the menu
@@ -62,7 +61,7 @@ int main(void)
   currentMenu->initLcd();
 
   // Variables
-  bool isQuitOptionSelected = false;
+  bool extraParams = false;  //get rid of this
   int choice = -1;
 
 
@@ -82,15 +81,12 @@ int main(void)
     {
       choice = knob.getIndex();
     }
-    else
-    {
-      // So that we don't execute any of the menu cases
-      choice = -1;
-    }
 
     // Will return a new object, of the type of the new menu we want
-    // Also checks if quit was selected
-    BaseMenu* newMenuPointer = currentMenu->getNextMenu(choice, isQuitOptionSelected);
+    // extraParams can be filled in with values of things
+    BaseMenu* newMenuPointer = currentMenu->getNextMenu(choice, extraParams);
+
+    choice = -1;
 
     // if pointer is 0, we didn't create a new menu, so keep the current one
     if (newMenuPointer)

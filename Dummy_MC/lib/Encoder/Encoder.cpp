@@ -22,6 +22,7 @@ Encoder::Encoder(void)
 
   pinMode(encoderPinA, INPUT);
   pinMode(encoderPinB, INPUT);
+  pinMode(buttonPin, INPUT);
 }
 
 
@@ -80,7 +81,7 @@ void Encoder::updateIndex(int menuLength)
     encoderPos = 0;
     change = false;
 
-    //TODO: ADD/FIX SCROLLING/////////////////////////// (verify now)
+    //TODO: ADD/FIX SCROLLING/////////////////////////// (in menu.cpp)
 
     // Notches are at every 4 steps on the encoder
     // Checks every 4 steps to move up/down a menu item
@@ -118,7 +119,7 @@ void Encoder::updateIndex(int menuLength)
 
 //---------------------------------------------------------------
 // Iterrupt on a changing button state
-// TODO: fix this, either through hardware or this method
+// TODO: fix this, either through hardware or software
 void Encoder::pressButton(void)
 {
     buttonState = !buttonState;

@@ -9,7 +9,6 @@
 
 #include "Menu.hpp"
 
-
 //LiquidCrystalFast lcd(RS, RW, Enable, D4, D5, D6, D7);
 LiquidCrystalFast lcd(33, 34, 35, 36, 37, 38, 39);
 
@@ -18,6 +17,7 @@ LiquidCrystalFast lcd(33, 34, 35, 36, 37, 38, 39);
 // Defining the main menu
 FirstMenu::FirstMenu(void)
 {
+  lcd.clear();
   menuText.push_back("About");
   menuText.push_back("Monitor CAN");
   menuText.push_back("Blink LED");
@@ -46,16 +46,16 @@ BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
     case 0:
     {
       // We're creating our new menu object here
-      // newMenu = new SecondMenu;
-      Serial.println("ABOUT!");
+      newMenu = new SecondMenu;
+      // Serial.println("ABOUT!");
     }
     break;
 
     case 1:
     {
       // We're creating our new menu object here
-      // newMenu = new SecondMenu;
-      Serial.println("MONITOR CAN!");
+      newMenu = new SecondMenu;
+      // Serial.println("MONITOR CAN!");
     }
     break;
 
@@ -82,7 +82,6 @@ BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
 // Printing the menu to the LCD
 void FirstMenu::print(int index)
 {
-  //displaying initial menu so lcd doesn't start up blank
   for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
   {
     lcd.setCursor(0, i);
@@ -99,20 +98,15 @@ void FirstMenu::print(int index)
 }
 
 
-// int FirstMenu::getMenuLength(void)
-// {
-//   return static_cast<int>(menuText.size());
-// }
-
 //---------------------------------------------------------------
 // Defining the CAN menu
 SecondMenu::SecondMenu(void)
 {
-  // menuText = "CAN Menu",
-  //            "0: Back to main menu",
-  //            "1 - Display CAN messages",
-  //            "2 - dafuq?",
-  //            "2 - dafuq?";
+  lcd.clear();
+  menuText.push_back("Version 0.0.001?");
+  menuText.push_back("By Smitty");
+  menuText.push_back("Select any option");
+  menuText.push_back("to go back");
 }
 
 
@@ -125,6 +119,13 @@ BaseMenu *SecondMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected) // Th
 
   switch (choice)
   {
+    case 0:
+    {
+      // We're creating our new menu object here
+      newMenu = new FirstMenu;
+    }
+    break;
+
     case 1:
     {
       // We're creating our new menu object here
@@ -139,6 +140,13 @@ BaseMenu *SecondMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected) // Th
     }
     break;
 
+    case 3:
+    {
+      // We're creating our new menu object here
+      newMenu = new FirstMenu;
+    }
+    break;
+
     default:
       // Do nothing
     break;
@@ -146,4 +154,24 @@ BaseMenu *SecondMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected) // Th
 
   // returning menu back
   return newMenu;
+}
+
+
+//---------------------------------------------------------------
+// Printing the menu to the LCD
+void SecondMenu::print(int index)
+{
+  for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
+  {
+    lcd.setCursor(0, i);
+
+    //the user display cursor logic
+    if(i == index)
+      lcd.print(">");
+    else
+      lcd.print(" ");
+
+    lcd.printf("%i ");
+    lcd.print(menuText[i]);
+  }
 }
