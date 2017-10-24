@@ -4,7 +4,7 @@
  * Created 10-24-17 By: Smitty
  *
  * In order to use unit testing functionality one needs to sign up for a basic platformio account
- * http://platformio.org/pricing students/teachers pay 3$ per month, not a bad idea to consider
+ * http://platformio.org/pricing students/teachers pay 4$ per month, not a bad idea to consider
  * if only for the semester
  */
 
