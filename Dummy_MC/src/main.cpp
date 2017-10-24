@@ -31,6 +31,8 @@ void encoderWrapperButton(){
   delay(10);
 }
 
+// Testing unit Testing
+// #ifndef UNIT_TEST
 
 //---------------------------------------------------------------
 // Begin main function
@@ -100,3 +102,5 @@ int main(void)
 
   return 0;
 }
+
+// #endif
