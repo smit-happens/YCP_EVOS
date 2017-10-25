@@ -6,8 +6,8 @@
  * A longer description.
  */
 
-#ifndef MOTORCONTROLLER_HPP
-#define MOTORCONTROLLER_HPP
+#ifndef ORIONCONTROLLER_HPP
+#define ORIONCONTROLLER_HPP
 
 #include <Arduino.h>
 
@@ -20,4 +20,4 @@ public:
 };
 
 
-#endif  //CANCONTROLLER_HPP
+#endif  //ORIONCONTROLLER_HPP
