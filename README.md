@@ -4,6 +4,7 @@ Development for the 2018 YCP Formula Electric Vehicle
 ## Programs used for developement
 * Atom.io
   * platformio-ide package
+  * docblockr
 * Git (obviously)
 
 ## Main Hardware Used

@@ -25,8 +25,9 @@ FirstMenu::FirstMenu(void)
 }
 
 
-//---------------------------------------------------------------
-// FirstMenu should be the only menu able to initialize the LCD
+/**
+ * The only menu able to initialize the LCD
+ */
 void FirstMenu::initLcd(void)
 {
   lcd.begin(20, lcdHeight);
@@ -34,18 +35,22 @@ void FirstMenu::initLcd(void)
 }
 
 
-//---------------------------------------------------------------
-// This is defining the pure virtual method above
+/**
+ * Defining the pure virtual method
+ * @param  choice                Index number user chose
+ * @param  iIsQuitOptionSelected Debricated param
+ * @return                       BaseMenu pointer
+ */
 BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
 {
-  // Setting up the pointer here, but making sure it's null (0)
+  // Setting up the pointer, but making sure it's null (0)
   BaseMenu *newMenu = 0;
 
   switch (choice)
   {
     case 0:
     {
-      // We're creating our new menu object here
+      // Creating a new menu object
       newMenu = new SecondMenu;
       // Serial.println("ABOUT!");
     }
@@ -53,7 +58,7 @@ BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
 
     case 1:
     {
-      // We're creating our new menu object here
+      // Creating a new menu object
       newMenu = new SecondMenu;
       // Serial.println("MONITOR CAN!");
     }
@@ -61,7 +66,7 @@ BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
 
     case 2:
     {
-      // Selected quit! Update the bool we got as input
+      // TODO: remove/modify this
       // iIsQuitOptionSelected = true;
 
     }
@@ -78,8 +83,11 @@ BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
   return newMenu;
 }
 
-//---------------------------------------------------------------
-// Printing the menu to the LCD
+
+/**
+ * Printing the menu to the LCD
+ * @param index Current index the user is at
+ */
 void FirstMenu::print(int index)
 {
   for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
@@ -98,8 +106,9 @@ void FirstMenu::print(int index)
 }
 
 
-//---------------------------------------------------------------
-// Defining the CAN menu
+/**
+ * Defining the CAN menu
+ */
 SecondMenu::SecondMenu(void)
 {
   lcd.clear();
@@ -110,39 +119,43 @@ SecondMenu::SecondMenu(void)
 }
 
 
-//---------------------------------------------------------------
-// CAN menu option logic
+/**
+ * CAN menu option logic
+ * @param  choice                Index number user chose
+ * @param  iIsQuitOptionSelected Debricated param
+ * @return                       BaseMenu pointer
+ */
 BaseMenu *SecondMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected) // This is us actually defining the pure virtual method above
 {
-  // We're setting up the pointer here, but makin sure it's null (0)
+  // Setting up the pointer, but makin sure it's null (0)
   BaseMenu *newMenu = 0;
 
   switch (choice)
   {
     case 0:
     {
-      // We're creating our new menu object here
+      // Creating a new menu object
       newMenu = new FirstMenu;
     }
     break;
 
     case 1:
     {
-      // We're creating our new menu object here
+      // Creating a new menu object
       newMenu = new FirstMenu;
     }
     break;
 
     case 2:
     {
-      // We're creating our new menu object here
+      // Creating a new menu object
       newMenu = new FirstMenu;
     }
     break;
 
     case 3:
     {
-      // We're creating our new menu object here
+      // Creating a new menu object
       newMenu = new FirstMenu;
     }
     break;
@@ -152,13 +165,15 @@ BaseMenu *SecondMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected) // Th
     break;
   }
 
-  // returning menu back
+  // returning menu pointer back
   return newMenu;
 }
 
 
-//---------------------------------------------------------------
-// Printing the menu to the LCD
+/**
+ * Printing the menu to the LCD
+ * @param index Current index the user is at
+ */
 void SecondMenu::print(int index)
 {
   for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)

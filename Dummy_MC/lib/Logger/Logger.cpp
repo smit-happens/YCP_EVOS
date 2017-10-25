@@ -1,4 +1,5 @@
-/**  A one line description of the class.
+/**  Most likely not going to be used in place of Plog plugin
+ *   will need an SD class (maybe)
  *
  * Logger.cpp
  * Created 10-02-17 By: Smitty
@@ -9,8 +10,9 @@
 #include "Logger.hpp"
 
 
-//---------------------------------------------------------------
-// Encoder constructor
+/**
+ * Logger constructor
+ */
 Logger::Logger(void)
 {
 

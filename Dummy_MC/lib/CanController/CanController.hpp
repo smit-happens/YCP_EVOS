@@ -20,11 +20,11 @@ public:
 
   void printFrame(CAN_message_t &frame, int mailbox);
 
-  //overrides the parent version so we can actually do something
+  //overrides the parent version
   void gotFrame(CAN_message_t &frame, int mailbox);
 
-  // TODO: move this into MotorController lib
-  // CAN_message_t setupMCMessage(uint8_t regID, uint8_t buf1, uint8_t buf2 = 0x00, bool polling = false);
+  //TODO: implement function to construct CAN message given ID and data
+  //TODO: should be able to work for BMS and MC easily
 
 };
 

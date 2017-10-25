@@ -9,8 +9,9 @@
 #include "Stepper.hpp"
 
 
-//---------------------------------------------------------------
-//Stepper constructor
+/**
+ * Stepper constructor
+ */
 Stepper::Stepper(void)
 {
   pinMode(STEPPER_COIL_PIN_A, OUTPUT);
@@ -29,9 +30,10 @@ Stepper::Stepper(void)
 }
 
 
-//---------------------------------------------------------------
-//Spins the motor
-//TODO add arguements for rpm
+/**
+ * Spins the motor
+ * TODO add arguements for rpm
+ */
 void Stepper::spin(void)
 {
   digitalWriteFast(STEPPER_COIL_PIN_D, 1);
@@ -52,17 +54,20 @@ void Stepper::spin(void)
 }
 
 
-//---------------------------------------------------------------
-//Returns current rpm
-//TODO implement functionality
+/**
+ * Get stepper motor rpm
+ * @return Current rpm
+ */
 int Stepper::getRpm()
 {
   return -1;
 }
 
-//---------------------------------------------------------------
-//Sets rpm of the stepper
-//TODO implement functionality
+
+/**
+ * Sets stepper rpm
+ * @param rpm Set rpm
+ */
 void Stepper::setRpm(int rpm)
 {
   //insert code
