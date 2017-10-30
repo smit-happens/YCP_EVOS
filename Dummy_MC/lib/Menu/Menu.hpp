@@ -16,7 +16,6 @@
 
 const uint8_t lcdHeight = 4;
 
-
 class BaseMenu
 {
 public:
@@ -26,12 +25,13 @@ public:
   // Virtual destructor. It must be made virtual, else you get memory leaks - need read up on it
   virtual ~BaseMenu() { }
 
+  // Only really used for the first menu
   virtual void initLcd(void) { }
 
   // This is a 'pure virtual method', as shown by the "= 0". It means it doesn't do anything. It's used to set up the framework
   virtual BaseMenu *getNextMenu(int iChoice, bool& iIsQuitOptionSelected) = 0;
 
-  // This is made virtual, but doesn't *have* to be redefined. In the current code I have written, it is not redefined as we store the menu text as a string in the object
+  // Virtual method, might move more code here if it gets repetitive
   virtual void print(int index) { }
 
   // Gets the size of the vector (type std::vector<T>::size_type), converts it to an int
@@ -65,6 +65,8 @@ public:
 
   // Defining the pure virtual method above
   BaseMenu *getNextMenu(int choice, bool& iIsQuitOptionSelected);
+
+  void print(int index);
 };
 
 

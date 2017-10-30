@@ -9,8 +9,9 @@
 #include "Encoder.hpp"
 
 
-//---------------------------------------------------------------
-// Encoder constructor
+/*
+ * Encoder constructor
+ */
 Encoder::Encoder(void)
 {
   index = 0;
@@ -22,11 +23,13 @@ Encoder::Encoder(void)
 
   pinMode(encoderPinA, INPUT);
   pinMode(encoderPinB, INPUT);
+  pinMode(buttonPin, INPUT);
 }
 
 
-//---------------------------------------------------------------
-// Interrupt on A changing state
+/**
+ * Interrupt on A changing state
+ */
 void Encoder::doEncoderA(void)
 {
   // Test transition
@@ -36,8 +39,9 @@ void Encoder::doEncoderA(void)
 }
 
 
-//---------------------------------------------------------------
-// Interrupt on B changing state
+/**
+ * Interrupt on B changing state
+ */
 void Encoder::doEncoderB(void)
 {
   // Test transition
@@ -47,17 +51,21 @@ void Encoder::doEncoderB(void)
 }
 
 
-//---------------------------------------------------------------
-// Returns index value
+/**
+ * For finding the current encoder index
+ * @return  Index value
+ */
 int Encoder::getIndex(void)
 {
   return index;
 }
 
 
-//---------------------------------------------------------------
-// Updates index based on encoder direction
-// TODO: maybe refactor logic here (ugly-ish but it works)
+/**
+ * Updates index based on encoder direction
+ * TODO: maybe refactor logic here (ugly-ish but it works)
+ * @param menuLength Used for wrap around calculation
+ */
 void Encoder::updateIndex(int menuLength)
 {
   // Checking for any change in rotation cw or ccw represented by encoderPos variable
@@ -80,7 +88,7 @@ void Encoder::updateIndex(int menuLength)
     encoderPos = 0;
     change = false;
 
-    //TODO: ADD/FIX SCROLLING/////////////////////////// (verify now)
+    //TODO: ADD/FIX SCROLLING/////////////////////////// (in menu.cpp)
 
     // Notches are at every 4 steps on the encoder
     // Checks every 4 steps to move up/down a menu item
@@ -116,17 +124,20 @@ void Encoder::updateIndex(int menuLength)
 }
 
 
-//---------------------------------------------------------------
-// Iterrupt on a changing button state
-// TODO: fix this, either through hardware or this method
+/**
+ * Iterrupt on a changing button state
+ * TODO: fix this, either through hardware or software
+ */
 void Encoder::pressButton(void)
 {
     buttonState = !buttonState;
 }
 
 
-//---------------------------------------------------------------
-// TODO: (better) implement pushbutton of the encoder to select things
+/**
+ * TODO: (better) implement pushbutton of the encoder to select things
+ * @return  State of the button
+ */
 bool Encoder::isButtonPressed(void)
 {
     return buttonState;

@@ -9,7 +9,6 @@
 
 #include "Menu.hpp"
 
-
 //LiquidCrystalFast lcd(RS, RW, Enable, D4, D5, D6, D7);
 LiquidCrystalFast lcd(33, 34, 35, 36, 37, 38, 39);
 
@@ -18,6 +17,7 @@ LiquidCrystalFast lcd(33, 34, 35, 36, 37, 38, 39);
 // Defining the main menu
 FirstMenu::FirstMenu(void)
 {
+  lcd.clear();
   menuText.push_back("About");
   menuText.push_back("Monitor CAN");
   menuText.push_back("Blink LED");
@@ -25,8 +25,9 @@ FirstMenu::FirstMenu(void)
 }
 
 
-//---------------------------------------------------------------
-// FirstMenu should be the only menu able to initialize the LCD
+/**
+ * The only menu able to initialize the LCD
+ */
 void FirstMenu::initLcd(void)
 {
   lcd.begin(20, lcdHeight);
@@ -34,34 +35,38 @@ void FirstMenu::initLcd(void)
 }
 
 
-//---------------------------------------------------------------
-// This is defining the pure virtual method above
+/**
+ * Defining the pure virtual method
+ * @param  choice                Index number user chose
+ * @param  iIsQuitOptionSelected Debricated param
+ * @return                       BaseMenu pointer
+ */
 BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
 {
-  // Setting up the pointer here, but making sure it's null (0)
+  // Setting up the pointer, but making sure it's null (0)
   BaseMenu *newMenu = 0;
 
   switch (choice)
   {
     case 0:
     {
-      // We're creating our new menu object here
-      // newMenu = new SecondMenu;
-      Serial.println("ABOUT!");
+      // Creating a new menu object
+      newMenu = new SecondMenu;
+      // Serial.println("ABOUT!");
     }
     break;
 
     case 1:
     {
-      // We're creating our new menu object here
-      // newMenu = new SecondMenu;
-      Serial.println("MONITOR CAN!");
+      // Creating a new menu object
+      newMenu = new SecondMenu;
+      // Serial.println("MONITOR CAN!");
     }
     break;
 
     case 2:
     {
-      // Selected quit! Update the bool we got as input
+      // TODO: remove/modify this
       // iIsQuitOptionSelected = true;
 
     }
@@ -78,11 +83,13 @@ BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
   return newMenu;
 }
 
-//---------------------------------------------------------------
-// Printing the menu to the LCD
+
+/**
+ * Printing the menu to the LCD
+ * @param index Current index the user is at
+ */
 void FirstMenu::print(int index)
 {
-  //displaying initial menu so lcd doesn't start up blank
   for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
   {
     lcd.setCursor(0, i);
@@ -99,42 +106,56 @@ void FirstMenu::print(int index)
 }
 
 
-// int FirstMenu::getMenuLength(void)
-// {
-//   return static_cast<int>(menuText.size());
-// }
-
-//---------------------------------------------------------------
-// Defining the CAN menu
+/**
+ * Defining the CAN menu
+ */
 SecondMenu::SecondMenu(void)
 {
-  // menuText = "CAN Menu",
-  //            "0: Back to main menu",
-  //            "1 - Display CAN messages",
-  //            "2 - dafuq?",
-  //            "2 - dafuq?";
+  lcd.clear();
+  menuText.push_back("Version 0.0.001?");
+  menuText.push_back("By Smitty");
+  menuText.push_back("Select any option");
+  menuText.push_back("to go back");
 }
 
 
-//---------------------------------------------------------------
-// CAN menu option logic
+/**
+ * CAN menu option logic
+ * @param  choice                Index number user chose
+ * @param  iIsQuitOptionSelected Debricated param
+ * @return                       BaseMenu pointer
+ */
 BaseMenu *SecondMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected) // This is us actually defining the pure virtual method above
 {
-  // We're setting up the pointer here, but makin sure it's null (0)
+  // Setting up the pointer, but makin sure it's null (0)
   BaseMenu *newMenu = 0;
 
   switch (choice)
   {
+    case 0:
+    {
+      // Creating a new menu object
+      newMenu = new FirstMenu;
+    }
+    break;
+
     case 1:
     {
-      // We're creating our new menu object here
+      // Creating a new menu object
       newMenu = new FirstMenu;
     }
     break;
 
     case 2:
     {
-      // We're creating our new menu object here
+      // Creating a new menu object
+      newMenu = new FirstMenu;
+    }
+    break;
+
+    case 3:
+    {
+      // Creating a new menu object
       newMenu = new FirstMenu;
     }
     break;
@@ -144,6 +165,28 @@ BaseMenu *SecondMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected) // Th
     break;
   }
 
-  // returning menu back
+  // returning menu pointer back
   return newMenu;
+}
+
+
+/**
+ * Printing the menu to the LCD
+ * @param index Current index the user is at
+ */
+void SecondMenu::print(int index)
+{
+  for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
+  {
+    lcd.setCursor(0, i);
+
+    //the user display cursor logic
+    if(i == index)
+      lcd.print(">");
+    else
+      lcd.print(" ");
+
+    lcd.printf("%i ");
+    lcd.print(menuText[i]);
+  }
 }
