@@ -1,18 +1,18 @@
 /**  A one line description of the class.
  *
- * MotorController.cpp
+ * UnitekController.cpp
  * Created 09-30-17 By: Smitty
  *
  * A longer description.
  */
 
-#include "MotorController.hpp"
+#include "UnitekController.hpp"
 
 
 /**
- * MotorController constructor
+ * UnitekController constructor
  */
-MotorController::MotorController(void)
+UnitekController::UnitekController(void)
 {
 
 }
@@ -22,14 +22,14 @@ MotorController::MotorController(void)
  * Just a test function
  * @return  Hex value of REG_READ
  */
-uint8_t MotorController::testFunc(void)
+uint8_t UnitekController::testFunc(void)
 {
   return REG_READ;
 }
 
 
 // TODO: implement this, aka partition out the CAN methods from MC data
-// CAN_message_t MotorController::setupMCMessage(uint8_t regID, uint8_t buf1 = 0x00, uint8_t buf2 = 0x00, bool stopPolling = false)
+// CAN_message_t UnitekController::setupMCMessage(uint8_t regID, uint8_t buf1 = 0x00, uint8_t buf2 = 0x00, bool stopPolling = false)
 // {
 //   CAN_message_t tx;
 //

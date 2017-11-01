@@ -11,7 +11,12 @@
 #include <Menu.hpp>
 #include <Logger.hpp>
 #include <Stepper.hpp>
+<<<<<<< Updated upstream
 #include <MotorController.hpp>
+=======
+#include <UnitekController.hpp>
+#include <../lib/plog/Log.h>
+>>>>>>> Stashed changes
 
 
 //---------------------------------------------------------------
@@ -42,7 +47,7 @@ int main(void)
 
   // Object declarations
   // Stepper motor;
-  // MotorController mctest;
+  // UnitekController mctest;
 
   // using the builtin LED as a status light
   pinMode(LED_BUILTIN, OUTPUT);

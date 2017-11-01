@@ -1,21 +1,21 @@
 /**  A one line description of the class.
  *
- * #include MotorController.hpp
+ * #include UnitekController.hpp
  * Created 09-30-17 By: Smitty
  *
  * A longer description.
  */
 
-#ifndef MOTORCONTROLLER_HPP
-#define MOTORCONTROLLER_HPP
+#ifndef UNITEKCONTROLLER_HPP
+#define UNITEKCONTROLLER_HPP
 
 #include <Arduino.h>
-#include "MotorControllerRegisters.hpp"
+#include "UnitekRegisters.hpp"
 
-class MotorController
+class UnitekController
 {
 public:
-  MotorController(void);
+  UnitekController(void);
 
   uint8_t testFunc(void);
 
@@ -25,4 +25,4 @@ public:
 };
 
 
-#endif  //MOTORCONTROLLER_HPP
+#endif  //UNITEKCONTROLLER_HPP

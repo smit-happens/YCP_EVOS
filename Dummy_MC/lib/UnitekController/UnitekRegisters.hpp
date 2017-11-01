@@ -1,6 +1,6 @@
 /**  Constants for the Motor Controller
  *
- * #include MotorControllerRegisters.hpp
+ * #include UnitekRegisters.hpp
  * Created XX-XX-17 By: Smitty
  *
  * NOTE: All registers are Read Only (RO) unless otherwise stated
@@ -9,8 +9,8 @@
  * NOTE: MC == Unitek Bamocar-D3 Motor Contoller
  */
 
-#ifndef MOTORCONTROLLERREGISTERS_HPP
-#define MOTORCONTROLLERREGISTERS_HPP
+#ifndef UNITEKREGISTERS_HPP
+#define UNITEKREGISTERS_HPP
 
 #include <Arduino.h>
 
@@ -58,4 +58,4 @@ const uint8_t REG_TEMPAIRMC = 0x4B;  //[0:15] Temperature of MC interior air
 const uint8_t REG_MODE      = 0x51;  //(RW) [0:9]  Mode bits for some drive settings
 const uint8_t REG_CORE      = 0x5A;  //(RW) [0:31] Core option bits for Motor/MC settings
 
-#endif  //MOTORCONTROLLERREGISTERS_HPP
+#endif  //UNITEKREGISTERS_HPP
