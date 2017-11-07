@@ -10,7 +10,6 @@
 #include <Encoder.hpp>
 #include <Menu.hpp>
 #include <Logger.hpp>
-#include <Stepper.hpp>
 #include <UnitekController.hpp>
 
 
@@ -71,8 +70,6 @@ int main(void)
   // Begin main program loop
   while(1)
   {
-    // motor.spin();
-
     knob.updateIndex(currentMenu->getMenuLength());
 
     // Call the print method of whichever MenuObject we're using
