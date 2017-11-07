@@ -11,11 +11,11 @@
 #define DISPLAY_HPP
 
 #include <Arduino.h>
-#include <LiquidCrystalFast.h>
-#include <vector>  //vector <type>
+#include "ST7565.h"
 
-const uint8_t lcdHeight = 4;
-
+/*
+ * Contains the common code that will be using among all the various menus
+ */
 class BaseMenu
 {
 public:
@@ -35,11 +35,12 @@ public:
   virtual void print(int index) { }
 
   // Gets the size of the vector (type std::vector<T>::size_type), converts it to an int
-  virtual int getMenuLength(void) { return static_cast<int>(menuText.size()); }
+  virtual int getMenuLength(void) { return 0; }
 
 protected:
-  // This string will be shared by all derived menu classes
-  std::vector<String> menuText;
+  // TODO: modify this for graphical layouts
+  // This will be shared by all derived menu classes
+  // std::vector<String> menuText;
 };
 
 

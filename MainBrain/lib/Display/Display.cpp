@@ -9,18 +9,72 @@
 
 #include "Display.hpp"
 
-//LiquidCrystalFast lcd(RS, RW, Enable, D4, D5, D6, D7);
-LiquidCrystalFast lcd(33, 34, 35, 36, 37, 38, 39);
 
+// TODO: implement this backlight (wiring and code)
+// the LCD backlight is connected up to a pin so you can turn it on & off
+const uint8_t BACKLIGHT_LED = 4;
+
+// pin 17 - Serial data out (SID)
+// pin 39 - Serial clock out (SCLK)
+// pin 38 - Data/Command select (RS or A0)
+// pin 37 - LCD reset (RST)
+// pin 36 - LCD chip select (CS)
+ST7565 glcd(17, 39, 38, 37, 36);
+
+
+void testdrawchar(void) {
+  for (uint8_t i=0; i < 168; i++) {
+    glcd.drawchar((i % 21) * 6, i/21, i);
+  }
+}
+
+void testdrawcircle(void) {
+  for (uint8_t i=0; i<64; i+=2) {
+    glcd.drawcircle(63, 31, i, BLACK);
+  }
+}
+
+
+void testdrawrect(void) {
+  for (uint8_t i=0; i<64; i+=2) {
+    glcd.drawrect(i, i, 128-i, 64-i, BLACK);
+  }
+}
+
+void testfillrect(void) {
+  for (uint8_t i=0; i<64; i++) {
+      // alternate colors for moire effect
+    glcd.fillrect(i, i, 128-i, 64-i, i%2);
+  }
+}
+
+void testdrawline() {
+  for (uint8_t i=0; i<128; i+=4) {
+    glcd.drawline(0, 0, i, 63, BLACK);
+  }
+  for (uint8_t i=0; i<64; i+=4) {
+    glcd.drawline(0, 0, 127, i, BLACK);
+  }
+
+  glcd.display();
+  delay(1000);
+
+  for (uint8_t i=0; i<128; i+=4) {
+    glcd.drawline(i, 63, 0, 0, WHITE);
+  }
+  for (uint8_t i=0; i<64; i+=4) {
+    glcd.drawline(127, i, 0, 0, WHITE);
+  }
+}
 
 //---------------------------------------------------------------
 // Defining the main menu
 FirstMenu::FirstMenu(void)
 {
-  lcd.clear();
-  menuText.push_back("About");
-  menuText.push_back("Monitor CAN");
-  menuText.push_back("Blink LED");
+  // lcd.clear();
+  // menuText.push_back("About");
+  // menuText.push_back("Monitor CAN");
+  // menuText.push_back("Blink LED");
 }
 
 
@@ -29,8 +83,60 @@ FirstMenu::FirstMenu(void)
  */
 void FirstMenu::initLcd(void)
 {
-  lcd.begin(20, lcdHeight);
-  lcd.clear();
+  // initialize and set the contrast to 0x18
+  glcd.begin(0x18);
+
+  glcd.display(); // show splashscreen
+  delay(2000);
+  glcd.clear();
+
+  // draw a single pixel
+  glcd.setpixel(10, 10, BLACK);
+  glcd.display();        // show the changes to the buffer
+  delay(2000);
+  glcd.clear();
+
+  // draw many lines
+  testdrawline();
+  glcd.display();       // show the lines
+  delay(2000);
+  glcd.clear();
+
+  // draw rectangles
+  testdrawrect();
+  glcd.display();
+  delay(2000);
+  glcd.clear();
+
+  // draw multiple rectangles
+  testfillrect();
+  glcd.display();
+  delay(2000);
+  glcd.clear();
+
+  // draw mulitple circles
+  testdrawcircle();
+  glcd.display();
+  delay(2000);
+  glcd.clear();
+
+  // draw a black circle, 10 pixel radius, at location (32,32)
+  glcd.fillcircle(32, 32, 10, BLACK);
+  glcd.display();
+  delay(2000);
+  glcd.clear();
+
+  // draw the first ~120 characters in the font
+  testdrawchar();
+  glcd.display();
+  delay(2000);
+  glcd.clear();
+
+  // draw a string at location (0,0)
+  glcd.drawstring(0, 0, (char*)"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation");
+  glcd.display();
+  delay(2000);
+  glcd.clear();
 }
 
 
@@ -80,19 +186,19 @@ BaseMenu *FirstMenu::getNextMenu(int choice)
  */
 void FirstMenu::print(int index)
 {
-  for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
-  {
-    lcd.setCursor(0, i);
-
-    //the user display cursor logic
-    if(i == index)
-      lcd.print(">");
-    else
-      lcd.print(" ");
-
-    lcd.printf("%i ");
-    lcd.print(menuText[i]);
-  }
+  // for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
+  // {
+  //   lcd.setCursor(0, i);
+  //
+  //   //the user display cursor logic
+  //   if(i == index)
+  //     lcd.print(">");
+  //   else
+  //     lcd.print(" ");
+  //
+  //   lcd.printf("%i ");
+  //   lcd.print(menuText[i]);
+  // }
 }
 
 
@@ -101,11 +207,11 @@ void FirstMenu::print(int index)
  */
 SecondMenu::SecondMenu(void)
 {
-  lcd.clear();
-  menuText.push_back("Version 0.0.001?");
-  menuText.push_back("By Smitty");
-  menuText.push_back("Select any option");
-  menuText.push_back("to go back");
+  // lcd.clear();
+  // menuText.push_back("Version 0.0.001?");
+  // menuText.push_back("By Smitty");
+  // menuText.push_back("Select any option");
+  // menuText.push_back("to go back");
 }
 
 
@@ -165,17 +271,17 @@ BaseMenu *SecondMenu::getNextMenu(int choice) // This is us actually defining th
  */
 void SecondMenu::print(int index)
 {
-  for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
-  {
-    lcd.setCursor(0, i);
-
-    //the user display cursor logic
-    if(i == index)
-      lcd.print(">");
-    else
-      lcd.print(" ");
-
-    lcd.printf("%i ");
-    lcd.print(menuText[i]);
-  }
+  // for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
+  // {
+  //   lcd.setCursor(0, i);
+  //
+  //   //the user display cursor logic
+  //   if(i == index)
+  //     lcd.print(">");
+  //   else
+  //     lcd.print(" ");
+  //
+  //   lcd.printf("%i ");
+  //   lcd.print(menuText[i]);
+  // }
 }

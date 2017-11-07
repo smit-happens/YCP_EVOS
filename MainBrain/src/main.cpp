@@ -49,13 +49,13 @@ int main(void)
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWriteFast(LED_BUILTIN, 1);
 
-  // attachInterrupt() can only be called in main()
-  // encoder pinA & pinB interrupts
-  attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
-  attachInterrupt(encoderPinB, encoderWrapperB, CHANGE);
-  // encoder button interrupt
-  // TODO: fix interrupt logic (make more reliable)
-  attachInterrupt(buttonPin, encoderWrapperButton, CHANGE);
+  // // attachInterrupt() can only be called in main()
+  // // encoder pinA & pinB interrupts
+  // attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
+  // attachInterrupt(encoderPinB, encoderWrapperB, CHANGE);
+  // // encoder button interrupt
+  // // TODO: fix interrupt logic (make more reliable)
+  // attachInterrupt(buttonPin, encoderWrapperButton, CHANGE);
 
   // A pointer to the menu
   BaseMenu* currentMenu = new FirstMenu;
@@ -64,38 +64,38 @@ int main(void)
   currentMenu->initLcd();
 
   // Variables
-  int choice = -1;
+  // int choice = -1;
 
 
   //---------------------------------------------------------------
   // Begin main program loop
   while(1)
   {
-    knob.updateIndex(currentMenu->getMenuLength());
-
-    // Call the print method of whichever MenuObject we're using
-    // Print its text and the current cursor position
-    currentMenu->print(knob.getIndex());
-
-    if(knob.isButtonPressed())
-    {
-      choice = knob.getIndex();
-    }
-
-    // Will return a new object, of the type of the new menu we want
-    // extraParams can be filled in with values of things
-    BaseMenu* newMenuPointer = currentMenu->getNextMenu(choice);
-
-    choice = -1;
-
-    // if pointer is 0, we didn't create a new menu, so keep the current one
-    if (newMenuPointer)
-    {
-      // Clean up the old menu, and not leak memory.
-      delete currentMenu;
-      // Update the 'current menu' with the new menu just created
-      currentMenu = newMenuPointer;
-    }
+  //   knob.updateIndex(currentMenu->getMenuLength());
+  //
+  //   // Call the print method of whichever MenuObject we're using
+  //   // Print its text and the current cursor position
+  //   currentMenu->print(knob.getIndex());
+  //
+  //   if(knob.isButtonPressed())
+  //   {
+  //     choice = knob.getIndex();
+  //   }
+  //
+  //   // Will return a new object, of the type of the new menu we want
+  //   // extraParams can be filled in with values of things
+  //   BaseMenu* newMenuPointer = currentMenu->getNextMenu(choice);
+  //
+  //   choice = -1;
+  //
+  //   // if pointer is 0, we didn't create a new menu, so keep the current one
+  //   if (newMenuPointer)
+  //   {
+  //     // Clean up the old menu, and not leak memory.
+  //     delete currentMenu;
+  //     // Update the 'current menu' with the new menu just created
+  //     currentMenu = newMenuPointer;
+  //   }
   }
 
   return 0;
