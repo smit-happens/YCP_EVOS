@@ -1,13 +1,13 @@
-/**  Class for creating the various menus using OOP
+/**  Class for managing the Display and creating menus using OOP
  *
- * Menu.cpp
+ * Display.cpp
  * Created 10-01-17 By: Smitty
  *
  * Implemented based off the code found here: https://stackoverflow.com/questions/16852978/navigating-console-menu
  * by user: https://stackoverflow.com/users/2386397/mike-b
  */
 
-#include "Menu.hpp"
+#include "Display.hpp"
 
 //LiquidCrystalFast lcd(RS, RW, Enable, D4, D5, D6, D7);
 LiquidCrystalFast lcd(33, 34, 35, 36, 37, 38, 39);
@@ -21,7 +21,6 @@ FirstMenu::FirstMenu(void)
   menuText.push_back("About");
   menuText.push_back("Monitor CAN");
   menuText.push_back("Blink LED");
-  // menuText.push_back("Start game");
 }
 
 
@@ -38,10 +37,9 @@ void FirstMenu::initLcd(void)
 /**
  * Defining the pure virtual method
  * @param  choice                Index number user chose
- * @param  iIsQuitOptionSelected Debricated param
  * @return                       BaseMenu pointer
  */
-BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
+BaseMenu *FirstMenu::getNextMenu(int choice)
 {
   // Setting up the pointer, but making sure it's null (0)
   BaseMenu *newMenu = 0;
@@ -61,14 +59,6 @@ BaseMenu *FirstMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected)
       // Creating a new menu object
       newMenu = new SecondMenu;
       // Serial.println("MONITOR CAN!");
-    }
-    break;
-
-    case 2:
-    {
-      // TODO: remove/modify this
-      // iIsQuitOptionSelected = true;
-
     }
     break;
 
@@ -122,10 +112,9 @@ SecondMenu::SecondMenu(void)
 /**
  * CAN menu option logic
  * @param  choice                Index number user chose
- * @param  iIsQuitOptionSelected Debricated param
  * @return                       BaseMenu pointer
  */
-BaseMenu *SecondMenu::getNextMenu(int choice, bool& iIsQuitOptionSelected) // This is us actually defining the pure virtual method above
+BaseMenu *SecondMenu::getNextMenu(int choice) // This is us actually defining the pure virtual method above
 {
   // Setting up the pointer, but makin sure it's null (0)
   BaseMenu *newMenu = 0;

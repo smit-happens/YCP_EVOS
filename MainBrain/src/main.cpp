@@ -1,16 +1,20 @@
 /**  A one line description of the class.
  *
  * main.cpp
- * Created 08-16-17 By: Smitty
+ * Created 11-06-17 By: Smitty
  *
  * A longer description.
  */
 
+ // Testing unit Testing
+ #ifndef UNIT_TEST
+
 #include <Arduino.h>
 #include <Encoder.hpp>
-#include <Menu.hpp>
+#include <Display.hpp>
 #include <Logger.hpp>
 #include <UnitekController.hpp>
+#include <WatchdogHandler.hpp>
 
 
 //---------------------------------------------------------------
@@ -30,8 +34,6 @@ void encoderWrapperButton(){
   delay(10);
 }
 
-// Testing unit Testing
-// #ifndef UNIT_TEST
 
 //---------------------------------------------------------------
 // Begin main function
@@ -40,8 +42,8 @@ int main(void)
   // Serial.begin(9600);
 
   // Object declarations
-  // Stepper motor;
   // UnitekController mctest;
+  WatchdogHandler puppy;
 
   // using the builtin LED as a status light
   pinMode(LED_BUILTIN, OUTPUT);
@@ -62,7 +64,6 @@ int main(void)
   currentMenu->initLcd();
 
   // Variables
-  bool extraParams = false;  //get rid of this
   int choice = -1;
 
 
@@ -83,7 +84,7 @@ int main(void)
 
     // Will return a new object, of the type of the new menu we want
     // extraParams can be filled in with values of things
-    BaseMenu* newMenuPointer = currentMenu->getNextMenu(choice, extraParams);
+    BaseMenu* newMenuPointer = currentMenu->getNextMenu(choice);
 
     choice = -1;
 
@@ -100,4 +101,4 @@ int main(void)
   return 0;
 }
 
-// #endif
+#endif

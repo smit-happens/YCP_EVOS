@@ -1,14 +1,14 @@
 /**  Virtual class for creating the various menus using OOP
  *
- * #include "Menu.hpp"
+ * #include "Display.hpp"
  * Created 10-01-17 By: Smitty
  *
  * Implemented based off the code found here: https://stackoverflow.com/questions/16852978/navigating-console-menu
  * by user: https://stackoverflow.com/users/2386397/mike-b
  */
 
-#ifndef MENU_HPP
-#define MENU_HPP
+#ifndef DISPLAY_HPP
+#define DISPLAY_HPP
 
 #include <Arduino.h>
 #include <LiquidCrystalFast.h>
@@ -29,7 +29,7 @@ public:
   virtual void initLcd(void) { }
 
   // This is a 'pure virtual method', as shown by the "= 0". It means it doesn't do anything. It's used to set up the framework
-  virtual BaseMenu *getNextMenu(int iChoice, bool& iIsQuitOptionSelected) = 0;
+  virtual BaseMenu *getNextMenu(int iChoice) = 0;
 
   // Virtual method, might move more code here if it gets repetitive
   virtual void print(int index) { }
@@ -52,7 +52,7 @@ public:
   void initLcd(void);
 
   // Defining the pure virtual method above
-  BaseMenu *getNextMenu(int choice, bool& iIsQuitOptionSelected);
+  BaseMenu *getNextMenu(int choice);
 
   void print(int index);
 };
@@ -64,10 +64,10 @@ public:
   SecondMenu();
 
   // Defining the pure virtual method above
-  BaseMenu *getNextMenu(int choice, bool& iIsQuitOptionSelected);
+  BaseMenu *getNextMenu(int choice);
 
   void print(int index);
 };
 
 
-#endif  //MENU_HPP
+#endif  //DISPLAY_HPP
