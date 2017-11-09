@@ -3,8 +3,7 @@
  * #include "DisplayController|.hpp"
  * Created 10-01-17 By: Smitty
  *
- * Implemented based off the code found here: https://stackoverflow.com/questions/16852978/navigating-console-menu
- * by user: https://stackoverflow.com/users/2386397/mike-b
+ * Controls a graphical LCD from here: https://www.adafruit.com/product/250
  */
 
 #ifndef DISPLAYCONTROLLER_HPP
@@ -13,8 +12,17 @@
 #include <Arduino.h>
 #include "ST7565.h"
 
+// might move the backlight stuff into the IoController class
+// only 3 pins though
+// may just make a declaration header that every file that uses pins can import
+
+// TODO: implement RGB backlight (wiring and code)
+// const uint8_t BACKLIGHT_LED_R = 4;
+// const uint8_t BACKLIGHT_LED_G = 4;
+// const uint8_t BACKLIGHT_LED_B = 4;
+
 /*
- * Contains the common code that will be using among all the various menus
+ * Contains the common code that will be used among all the various menus
  */
 class BaseMenu
 {
@@ -22,7 +30,7 @@ public:
   // Constructor for setting class-specific information. Each menu object has its own menu text.
   BaseMenu() { }
 
-  // Virtual destructor. It must be made virtual, else you get memory leaks - need read up on it
+  // Virtual destructor. It must be made virtual, else you get memory leaks - read up on it
   virtual ~BaseMenu() { }
 
   // Only really used for the first menu
@@ -34,13 +42,9 @@ public:
   // Virtual method, might move more code here if it gets repetitive
   virtual void print(int index) { }
 
-  // Gets the size of the vector (type std::vector<T>::size_type), converts it to an int
-  virtual int getMenuLength(void) { return 0; }
-
 protected:
   // TODO: modify this for graphical layouts
   // This will be shared by all derived menu classes
-  // std::vector<String> menuText;
 };
 
 
@@ -58,17 +62,6 @@ public:
   void print(int index);
 };
 
-
-class SecondMenu : public BaseMenu
-{
-public:
-  SecondMenu();
-
-  // Defining the pure virtual method above
-  BaseMenu *getNextMenu(int choice);
-
-  void print(int index);
-};
 
 
 #endif  //DISPLAYCONTROLLER_HPP

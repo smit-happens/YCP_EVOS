@@ -11,12 +11,12 @@
 
  #include <Arduino.h>
 
+// const uint8_t PinBrakePot = 4;
+
  class PedalHandler
  {
  public:
    PedalHandler();
-
-   //public pedal functions
 
    //TODO: readBrake()
    //TODO: readGas()
@@ -24,7 +24,6 @@
 
 
  private:
-   //private functions/variables
 
  };
 

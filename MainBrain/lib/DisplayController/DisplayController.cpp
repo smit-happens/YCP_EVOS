@@ -9,12 +9,6 @@
 
 #include "DisplayController.hpp"
 
-
-// TODO: implement RGB backlight (wiring and code)
-// const uint8_t BACKLIGHT_LED_R = 4;
-// const uint8_t BACKLIGHT_LED_G = 4;
-// const uint8_t BACKLIGHT_LED_B = 4;
-
 // pin 17 - Serial data out (SID)
 // pin 39 - Serial clock out (SCLK)
 // pin 38 - Data/Command select (RS or A0)
@@ -23,59 +17,22 @@
 ST7565 glcd(17, 39, 38, 37, 36);
 
 
-void testdrawchar(void) {
-  for (uint8_t i=0; i < 168; i++) {
-    glcd.drawchar((i % 21) * 6, i/21, i);
-  }
-}
-
-void testdrawcircle(void) {
-  for (uint8_t i=0; i<64; i+=2) {
-    glcd.drawcircle(63, 31, i, BLACK);
-  }
-}
+/**************************************************************************
+ * STEPS TO MODIFY AND TEST THIS CLASS                                    *
+ * TODO: 1. make one main menu                                            *
+ * TODO: 2. wire up the RGB backlight                                     *
+ * TODO: 3. implement a basic notification the goes away untouched        *
+ * TODO: 4. implement some alert-looking notification that is persistent  *
+ *          until some condition is met                                   *
+ **************************************************************************/
 
 
-void testdrawrect(void) {
-  for (uint8_t i=0; i<64; i+=2) {
-    glcd.drawrect(i, i, 128-i, 64-i, BLACK);
-  }
-}
-
-void testfillrect(void) {
-  for (uint8_t i=0; i<64; i++) {
-      // alternate colors for moire effect
-    glcd.fillrect(i, i, 128-i, 64-i, i%2);
-  }
-}
-
-void testdrawline() {
-  for (uint8_t i=0; i<128; i+=4) {
-    glcd.drawline(0, 0, i, 63, BLACK);
-  }
-  for (uint8_t i=0; i<64; i+=4) {
-    glcd.drawline(0, 0, 127, i, BLACK);
-  }
-
-  glcd.display();
-  delay(1000);
-
-  for (uint8_t i=0; i<128; i+=4) {
-    glcd.drawline(i, 63, 0, 0, WHITE);
-  }
-  for (uint8_t i=0; i<64; i+=4) {
-    glcd.drawline(127, i, 0, 0, WHITE);
-  }
-}
-
-//---------------------------------------------------------------
-// Defining the main menu
+/**
+ *  Main menu constructor
+ */
 FirstMenu::FirstMenu(void)
 {
-  // lcd.clear();
-  // menuText.push_back("About");
-  // menuText.push_back("Monitor CAN");
-  // menuText.push_back("Blink LED");
+
 }
 
 
@@ -90,8 +47,6 @@ void FirstMenu::initLcd(void)
   // draw a string at location (0,0)
   glcd.drawstring(0, 0, (char*)"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation");
   glcd.display();
-  delay(2000);
-  glcd.clear();
 }
 
 
@@ -140,91 +95,6 @@ BaseMenu *FirstMenu::getNextMenu(int choice)
  * @param index Current index the user is at
  */
 void FirstMenu::print(int index)
-{
-  // for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
-  // {
-  //   lcd.setCursor(0, i);
-  //
-  //   //the user display cursor logic
-  //   if(i == index)
-  //     lcd.print(">");
-  //   else
-  //     lcd.print(" ");
-  //
-  //   lcd.printf("%i ");
-  //   lcd.print(menuText[i]);
-  // }
-}
-
-
-/**
- * Defining the CAN menu
- */
-SecondMenu::SecondMenu(void)
-{
-  // lcd.clear();
-  // menuText.push_back("Version 0.0.001?");
-  // menuText.push_back("By Smitty");
-  // menuText.push_back("Select any option");
-  // menuText.push_back("to go back");
-}
-
-
-/**
- * CAN menu option logic
- * @param  choice                Index number user chose
- * @return                       BaseMenu pointer
- */
-BaseMenu *SecondMenu::getNextMenu(int choice) // This is us actually defining the pure virtual method above
-{
-  // Setting up the pointer, but makin sure it's null (0)
-  BaseMenu *newMenu = 0;
-
-  switch (choice)
-  {
-    case 0:
-    {
-      // Creating a new menu object
-      newMenu = new FirstMenu;
-    }
-    break;
-
-    case 1:
-    {
-      // Creating a new menu object
-      newMenu = new FirstMenu;
-    }
-    break;
-
-    case 2:
-    {
-      // Creating a new menu object
-      newMenu = new FirstMenu;
-    }
-    break;
-
-    case 3:
-    {
-      // Creating a new menu object
-      newMenu = new FirstMenu;
-    }
-    break;
-
-    default:
-      // Do nothing
-    break;
-  }
-
-  // returning menu pointer back
-  return newMenu;
-}
-
-
-/**
- * Printing the menu to the LCD
- * @param index Current index the user is at
- */
-void SecondMenu::print(int index)
 {
   // for(uint16_t i = 0; i < lcdHeight && i < menuText.size(); i++)
   // {
