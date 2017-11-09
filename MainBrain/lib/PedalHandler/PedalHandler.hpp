@@ -11,6 +11,7 @@
 
  #include <Arduino.h>
 
+// TODO: finish these constants (wiring and code)
 // const uint8_t PinBrakePot = 4;
 
  class PedalHandler
