@@ -1,18 +1,18 @@
 /**  A one line description of the class.
  *
- * Encoder.cpp
+ * EncoderHandler.cpp
  * Created XX-XX-17 By: Smitty
  *
  * A longer description.
  */
 
-#include "Encoder.hpp"
+#include "EncoderHandler.hpp"
 
 
 /*
  * Encoder constructor
  */
-Encoder::Encoder(void)
+EncoderHandler::EncoderHandler(void)
 {
   index = 0;
   cw = 0;
@@ -30,7 +30,7 @@ Encoder::Encoder(void)
 /**
  * Interrupt on A changing state
  */
-void Encoder::doEncoderA(void)
+void EncoderHandler::doEncoderA(void)
 {
   // Test transition
   A_set = digitalRead(encoderPinA) == HIGH;
@@ -42,7 +42,7 @@ void Encoder::doEncoderA(void)
 /**
  * Interrupt on B changing state
  */
-void Encoder::doEncoderB(void)
+void EncoderHandler::doEncoderB(void)
 {
   // Test transition
   B_set = digitalRead(encoderPinB) == HIGH;
@@ -55,7 +55,7 @@ void Encoder::doEncoderB(void)
  * For finding the current encoder index
  * @return  Index value
  */
-int Encoder::getIndex(void)
+int EncoderHandler::getIndex(void)
 {
   return index;
 }
@@ -66,7 +66,7 @@ int Encoder::getIndex(void)
  * TODO: maybe refactor logic here (ugly-ish but it works)
  * @param menuLength Used for wrap around calculation
  */
-void Encoder::updateIndex(int menuLength)
+void EncoderHandler::updateIndex(int menuLength)
 {
   // Checking for any change in rotation cw or ccw represented by encoderPos variable
   if (0 > encoderPos)
@@ -128,7 +128,7 @@ void Encoder::updateIndex(int menuLength)
  * Iterrupt on a changing button state
  * TODO: fix this, either through hardware or software
  */
-void Encoder::pressButton(void)
+void EncoderHandler::pressButton(void)
 {
     buttonState = !buttonState;
 }
@@ -138,7 +138,7 @@ void Encoder::pressButton(void)
  * TODO: (better) implement pushbutton of the encoder to select things
  * @return  State of the button
  */
-bool Encoder::isButtonPressed(void)
+bool EncoderHandler::isButtonPressed(void)
 {
     return buttonState;
 }

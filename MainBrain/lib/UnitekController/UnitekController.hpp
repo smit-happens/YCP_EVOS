@@ -9,15 +9,18 @@
 #ifndef UNITEKCONTROLLER_HPP
 #define UNITEKCONTROLLER_HPP
 
-#include <Arduino.h>
 #include "UnitekRegisters.hpp"
+
+const int RPM_LIMIT = 7000; //0xC8
+const int MAX_VAL = 32767;  //0x7FFF
 
 class UnitekController
 {
 public:
   UnitekController(void);
 
-  uint8_t testFunc(void);
+  int calculateSpeedValue(int rpm);
+  int calculateRpm(int speedValue);
 
   // TODO: implement/refactor
   // CAN_message_t setupMCMessage(uint8_t regID, uint8_t buf1, uint8_t buf2 = 0x00, bool polling = false);

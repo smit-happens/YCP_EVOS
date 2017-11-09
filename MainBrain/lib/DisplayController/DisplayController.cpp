@@ -1,18 +1,19 @@
 /**  Class for managing the Display and creating menus using OOP
  *
- * Display.cpp
+ * DisplayController.cpp
  * Created 10-01-17 By: Smitty
  *
  * Implemented based off the code found here: https://stackoverflow.com/questions/16852978/navigating-console-menu
  * by user: https://stackoverflow.com/users/2386397/mike-b
  */
 
-#include "Display.hpp"
+#include "DisplayController.hpp"
 
 
-// TODO: implement this backlight (wiring and code)
-// the LCD backlight is connected up to a pin so you can turn it on & off
-const uint8_t BACKLIGHT_LED = 4;
+// TODO: implement RGB backlight (wiring and code)
+// const uint8_t BACKLIGHT_LED_R = 4;
+// const uint8_t BACKLIGHT_LED_G = 4;
+// const uint8_t BACKLIGHT_LED_B = 4;
 
 // pin 17 - Serial data out (SID)
 // pin 39 - Serial clock out (SCLK)
@@ -85,52 +86,6 @@ void FirstMenu::initLcd(void)
 {
   // initialize and set the contrast to 0x18
   glcd.begin(0x18);
-
-  glcd.display(); // show splashscreen
-  delay(2000);
-  glcd.clear();
-
-  // draw a single pixel
-  glcd.setpixel(10, 10, BLACK);
-  glcd.display();        // show the changes to the buffer
-  delay(2000);
-  glcd.clear();
-
-  // draw many lines
-  testdrawline();
-  glcd.display();       // show the lines
-  delay(2000);
-  glcd.clear();
-
-  // draw rectangles
-  testdrawrect();
-  glcd.display();
-  delay(2000);
-  glcd.clear();
-
-  // draw multiple rectangles
-  testfillrect();
-  glcd.display();
-  delay(2000);
-  glcd.clear();
-
-  // draw mulitple circles
-  testdrawcircle();
-  glcd.display();
-  delay(2000);
-  glcd.clear();
-
-  // draw a black circle, 10 pixel radius, at location (32,32)
-  glcd.fillcircle(32, 32, 10, BLACK);
-  glcd.display();
-  delay(2000);
-  glcd.clear();
-
-  // draw the first ~120 characters in the font
-  testdrawchar();
-  glcd.display();
-  delay(2000);
-  glcd.clear();
 
   // draw a string at location (0,0)
   glcd.drawstring(0, 0, (char*)"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation");

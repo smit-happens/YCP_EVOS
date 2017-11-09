@@ -19,12 +19,28 @@ UnitekController::UnitekController(void)
 
 
 /**
- * Just a test function
- * @return  Hex value of REG_READ
+ * Convert RPM to a compatible MC speed value
+ * The speed value represents a percentage from 0 to 0x7FFF
+ * That percentage represents the RPM from 0 to RPM_LIMIT (Ex: 7000)
+ * @param  rpm RPM value
+ * @return     Speed value for the MC
  */
-uint8_t UnitekController::testFunc(void)
+int UnitekController::calculateSpeedValue(int rpm)
 {
-  return REG_READ;
+    float percentage = (float)rpm/RPM_LIMIT;
+    return percentage*MAX_VAL;
+}
+
+
+/**
+ * Convert a given MC speed value to RPM
+ * @param  speedValue Given from MC
+ * @return            RPM value
+ */
+int UnitekController::calculateRpm(int speedValue)
+{
+    float percentage = (float)speedValue/MAX_VAL;
+    return percentage*RPM_LIMIT;
 }
 
 

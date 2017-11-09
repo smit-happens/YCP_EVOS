@@ -16,7 +16,8 @@ class OrionController
 public:
   OrionController(void);
 
-  // uint8_t testFunc(void);
+
+
 };
 
 

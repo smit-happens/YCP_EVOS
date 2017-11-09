@@ -10,8 +10,8 @@
  #ifndef UNIT_TEST
 
 #include <Arduino.h>
-#include <Encoder.hpp>
-#include <Display.hpp>
+#include <EncoderHandler.hpp>
+#include <DisplayController.hpp>
 #include <Logger.hpp>
 #include <UnitekController.hpp>
 #include <WatchdogHandler.hpp>
@@ -19,7 +19,7 @@
 
 //---------------------------------------------------------------
 //Declaring encoder object variable and setting up interrupt functions
-Encoder knob;
+EncoderHandler knob;
 
 void encoderWrapperA(){
  knob.doEncoderA();

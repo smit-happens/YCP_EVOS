@@ -1,14 +1,14 @@
 /**  Virtual class for creating the various menus using OOP
  *
- * #include "Display.hpp"
+ * #include "DisplayController|.hpp"
  * Created 10-01-17 By: Smitty
  *
  * Implemented based off the code found here: https://stackoverflow.com/questions/16852978/navigating-console-menu
  * by user: https://stackoverflow.com/users/2386397/mike-b
  */
 
-#ifndef DISPLAY_HPP
-#define DISPLAY_HPP
+#ifndef DISPLAYCONTROLLER_HPP
+#define DISPLAYCONTROLLER_HPP
 
 #include <Arduino.h>
 #include "ST7565.h"
@@ -71,4 +71,4 @@ public:
 };
 
 
-#endif  //DISPLAY_HPP
+#endif  //DISPLAYCONTROLLER_HPP
