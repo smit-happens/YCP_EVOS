@@ -1,22 +1,22 @@
 /**  A one line description of the class.
  *
- * #include "IoController.hpp"
+ * #include "Dashboard.hpp"
  * Created 11-09-17 By: Smitty
  *
  * A longer description.
  */
 
- #ifndef IOCONTROLLER_HPP
- #define IOCONTROLLER_HPP
+ #ifndef DASHBOARD_HPP
+ #define DASHBOARD_HPP
 
  #include <Arduino.h>
 
 //TODO: Teensy pin declarations (const)
 
- class IoController
+ class Dashboard
  {
  public:
-   IoController();
+   Dashboard();
 
    //TODO: selfTest() //Turn on all the LEDs
    //TODO: Precharge pins (RFE, RTD)
@@ -26,4 +26,4 @@
 
  };
 
- #endif  //IOCONTROLLER_HPP
+ #endif  //DASHBOARD_HPP

@@ -43,6 +43,7 @@ void FirstMenu::initLcd(void)
 {
   // initialize and set the contrast to 0x18
   glcd.begin(0x18);
+  glcd.clear();
 
   // draw a string at location (0,0)
   glcd.drawstring(0, 0, (char*)"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation");
@@ -65,7 +66,7 @@ BaseMenu *FirstMenu::getNextMenu(int choice)
     case 0:
     {
       // Creating a new menu object
-      newMenu = new SecondMenu;
+      // newMenu = new SecondMenu;
       // Serial.println("ABOUT!");
     }
     break;
@@ -73,7 +74,7 @@ BaseMenu *FirstMenu::getNextMenu(int choice)
     case 1:
     {
       // Creating a new menu object
-      newMenu = new SecondMenu;
+      // newMenu = new SecondMenu;
       // Serial.println("MONITOR CAN!");
     }
     break;

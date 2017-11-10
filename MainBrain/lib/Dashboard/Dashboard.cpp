@@ -1,18 +1,18 @@
 /**  A one line description of the class.
  *
- * IoController.cpp
+ * Dashboard.cpp
  * Created 11-09-17 By: Smitty
  *
  * A longer description.
  */
 
- #include "IoController.hpp"
+ #include "Dashboard.hpp"
 
 
  /**
-  * IoController constructor
+  * Dashboard constructor
   */
- IoController::IoController(void)
+ Dashboard::Dashboard(void)
  {
 
  }

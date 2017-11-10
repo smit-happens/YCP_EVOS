@@ -1,6 +1,6 @@
 /**  Virtual class for creating the various menus using OOP
  *
- * #include "DisplayController|.hpp"
+ * #include "DisplayController.hpp"
  * Created 10-01-17 By: Smitty
  *
  * Controls a graphical LCD from here: https://www.adafruit.com/product/250
@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include "ST7565.h"
 
-// might move the backlight stuff into the IoController class
+// might move the backlight stuff into the Dashboard class
 // only 3 pins though
 // may just make a declaration header that every file that uses pins can import
 
