@@ -9,8 +9,8 @@
 #include "OrionController.hpp"
 
 
-/**
- * OrionController constructor
+/** 
+ * @brief  OrionController constructor
  */
 OrionController::OrionController(void)
 {

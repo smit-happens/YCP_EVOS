@@ -9,9 +9,9 @@
  #include "Dashboard.hpp"
 
 
- /**
-  * Dashboard constructor
-  */
+ /** 
+ * @brief  Dashboard constructor
+ */
  Dashboard::Dashboard(void)
  {
 

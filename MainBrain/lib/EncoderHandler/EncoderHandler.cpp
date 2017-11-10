@@ -9,8 +9,8 @@
 #include "EncoderHandler.hpp"
 
 
-/*
- * Encoder constructor
+/** 
+ * @brief  Encoder constructor
  */
 EncoderHandler::EncoderHandler(void)
 {
@@ -27,8 +27,10 @@ EncoderHandler::EncoderHandler(void)
 }
 
 
-/**
- * Interrupt on A changing state
+/** 
+ * @brief  Interrupt on A changing state
+ * @note   
+ * @retval None
  */
 void EncoderHandler::doEncoderA(void)
 {
@@ -39,8 +41,10 @@ void EncoderHandler::doEncoderA(void)
 }
 
 
-/**
- * Interrupt on B changing state
+/** 
+ * @brief  Interrupt on B changing state
+ * @note   
+ * @retval None
  */
 void EncoderHandler::doEncoderB(void)
 {
@@ -51,9 +55,10 @@ void EncoderHandler::doEncoderB(void)
 }
 
 
-/**
- * For finding the current encoder index
- * @return  Index value
+/** 
+ * @brief  For finding the current encoder index
+ * @note   
+ * @retval Index value
  */
 int EncoderHandler::getIndex(void)
 {
@@ -61,10 +66,11 @@ int EncoderHandler::getIndex(void)
 }
 
 
-/**
- * Updates index based on encoder direction
- * TODO: maybe refactor logic here (ugly-ish but it works)
- * @param menuLength Used for wrap around calculation
+/** 
+ * @brief  Updates index based on encoder direction
+ * @note   TODO: maybe refactor logic here (ugly-ish but it works)
+ * @param  menuLength: Used for wrap around calculation
+ * @retval None
  */
 void EncoderHandler::updateIndex(int menuLength)
 {
@@ -124,9 +130,10 @@ void EncoderHandler::updateIndex(int menuLength)
 }
 
 
-/**
- * Iterrupt on a changing button state
- * TODO: fix this, either through hardware or software
+/** 
+ * @brief  Iterrupt on a changing button state
+ * @note   TODO: fix this, either through hardware or software
+ * @retval None
  */
 void EncoderHandler::pressButton(void)
 {
@@ -134,9 +141,10 @@ void EncoderHandler::pressButton(void)
 }
 
 
-/**
- * TODO: (better) implement pushbutton of the encoder to select things
- * @return  State of the button
+/** 
+ * @brief  Returns the current state of the button
+ * @note   TODO: (better) implement pushbutton of the encoder to select things
+ * @retval State of the button
  */
 bool EncoderHandler::isButtonPressed(void)
 {

@@ -27,8 +27,8 @@ ST7565 glcd(17, 39, 38, 37, 36);
  **************************************************************************/
 
 
-/**
- *  Main menu constructor
+/** 
+ * @brief  Main menu constructor
  */
 FirstMenu::FirstMenu(void)
 {
@@ -36,8 +36,10 @@ FirstMenu::FirstMenu(void)
 }
 
 
-/**
- * The only menu able to initialize the LCD
+/** 
+ * @brief  The only menu able to initialize the LCD
+ * @note   
+ * @retval None
  */
 void FirstMenu::initLcd(void)
 {
@@ -51,10 +53,11 @@ void FirstMenu::initLcd(void)
 }
 
 
-/**
- * Defining the pure virtual method
- * @param  choice                Index number user chose
- * @return                       BaseMenu pointer
+/** 
+ * @brief  Defining the pure virtual method
+ * @note   
+ * @param  choice: Index number user chose
+ * @retval         BaseMenu pointer
  */
 BaseMenu *FirstMenu::getNextMenu(int choice)
 {
@@ -91,9 +94,11 @@ BaseMenu *FirstMenu::getNextMenu(int choice)
 }
 
 
-/**
- * Printing the menu to the LCD
- * @param index Current index the user is at
+/** 
+ * @brief  Printing the menu to the LCD
+ * @note   
+ * @param  index: index Current index the user is at
+ * @retval None
  */
 void FirstMenu::print(int index)
 {

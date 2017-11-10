@@ -9,8 +9,8 @@
 #include "CanController.hpp"
 
 
-/**
- * CanController constructor
+/** 
+ * @brief  CanController constructor
  */
 CanController::CanController(void)
 {
@@ -18,11 +18,12 @@ CanController::CanController(void)
 }
 
 
-/**
- * Prints out a given MC CAN frame
- * TODO: generalize this for MC and Orion (use CAN id)
- * @param frame   CAN_message_t reference
- * @param mailbox Port to listen to
+/** 
+ * @brief  Prints out a given MC CAN frame
+ * @note   TODO: generalize this for MC and Orion (use CAN id)
+ * @param  &frame:  CAN_message_t reference
+ * @param  mailbox: Port to listen to
+ * @retval None
  */
 void CanController::printFrame(CAN_message_t &frame, int mailbox)
 {
@@ -43,10 +44,12 @@ void CanController::printFrame(CAN_message_t &frame, int mailbox)
 }
 
 
-/**
- * Called whenever a new CAN frame is recieved
- * @param frame   CAN_message_t reference
- * @param mailbox Port to listen to
+/** 
+ * @brief  Called whenever a new CAN frame is recieved
+ * @note   
+ * @param  &frame:  CAN_message_t reference
+ * @param  mailbox: Port to listen to
+ * @retval None
  */
 void CanController::gotFrame(CAN_message_t &frame, int mailbox)
 {

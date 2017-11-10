@@ -12,8 +12,6 @@
 #include <Arduino.h>
 #include "ST7565.h"
 
-// might move the backlight stuff into the Dashboard class
-// only 3 pins though
 // may just make a declaration header that every file that uses pins can import
 
 // TODO: implement RGB backlight (wiring and code)

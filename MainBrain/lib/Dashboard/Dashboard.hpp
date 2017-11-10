@@ -12,6 +12,8 @@
  #include <Arduino.h>
 
 //TODO: Teensy pin declarations (const)
+//prechargeButton
+//readyToDriveButton
 
  class Dashboard
  {
@@ -19,7 +21,6 @@
    Dashboard();
 
    //TODO: selfTest() //Turn on all the LEDs
-   //TODO: Precharge pins (RFE, RTD)
 
 
  private:

@@ -9,8 +9,8 @@
 #include "PedalHandler.hpp"
 
 
-/**
- * PedalHandler constructor
+/** 
+ * @brief  PedalHandler constructor
  */
 PedalHandler::PedalHandler(void)
 {

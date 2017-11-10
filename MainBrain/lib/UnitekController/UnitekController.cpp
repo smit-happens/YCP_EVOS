@@ -9,8 +9,8 @@
 #include "UnitekController.hpp"
 
 
-/**
- * UnitekController constructor
+/** 
+ * @brief  UnitekController constructor
  */
 UnitekController::UnitekController(void)
 {
@@ -18,12 +18,12 @@ UnitekController::UnitekController(void)
 }
 
 
-/**
- * Convert RPM to a compatible MC speed value
- * The speed value represents a percentage from 0 to 0x7FFF
- * That percentage represents the RPM from 0 to RPM_LIMIT (Ex: 7000)
- * @param  rpm RPM value
- * @return     Speed value for the MC
+/** 
+ * @brief  Convert RPM to a compatible MC speed value
+ * @note   The speed value represents a percentage from 0 to 0x7FFF
+ *         That percentage represents the RPM from 0 to RPM_LIMIT (Ex: 7000)
+ * @param  rpm: RPM value
+ * @retval      Speed value for the MC
  */
 int UnitekController::calculateSpeedValue(int rpm)
 {
@@ -32,10 +32,11 @@ int UnitekController::calculateSpeedValue(int rpm)
 }
 
 
-/**
- * Convert a given MC speed value to RPM
- * @param  speedValue Given from MC
- * @return            RPM value
+/** 
+ * @brief  Convert a given MC speed value to RPM
+ * @note   
+ * @param  speedValue: Given from MC
+ * @retval             RPM value
  */
 int UnitekController::calculateRpm(int speedValue)
 {
@@ -43,6 +44,16 @@ int UnitekController::calculateRpm(int speedValue)
     return percentage*RPM_LIMIT;
 }
 
+
+/** 
+ * @brief  Handles the Precharging logic
+ * @note   
+ * @retval 0 for success, -1 for error
+ */
+int precharge(void)
+{
+    return 0;
+}
 
 // TODO: implement this, aka partition out the CAN methods from MC data
 // CAN_message_t UnitekController::setupMCMessage(uint8_t regID, uint8_t buf1 = 0x00, uint8_t buf2 = 0x00, bool stopPolling = false)
