@@ -65,14 +65,20 @@ int main(void)
 
   // Variables
   // int choice = -1;
-
-
+  uint16_t globalEventFlags = 0;
+  uint16_t localEventFlags = 0;
   //---------------------------------------------------------------
   // Begin main program loop
   while(1)
   {
-  //   knob.updateIndex(currentMenu->getMenuLength());
-  //
+
+    //volatile operations
+    noInterrupts();
+    localEventFlags = globalEventFlags;
+    globalEventFlags = 0;
+    interrupts();
+
+    
   //   // Call the print method of whichever MenuObject we're using
   //   // Print its text and the current cursor position
   //   currentMenu->print(knob.getIndex());
