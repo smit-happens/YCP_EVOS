@@ -3,6 +3,7 @@
  *
  * Logger.cpp
  * Created 10-02-17 By: Smitty
+ * Additional stuff by Patrick
  *
  * A longer description.
  */
@@ -15,6 +16,11 @@
  */
 Logger::Logger(void)
 {
+    // TODO: Create new file on SD 
+    
+    // TODO: Use RTC library to determine vehicle starting time
+    // and date, to be used for filename
+
 
 }
 
