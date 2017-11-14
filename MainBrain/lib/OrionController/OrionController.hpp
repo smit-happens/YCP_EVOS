@@ -16,7 +16,7 @@ class OrionController
 public:
   OrionController(void);
 
-
+  int parseCan(void);
 
 };
 

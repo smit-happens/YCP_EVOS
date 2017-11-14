@@ -26,8 +26,10 @@ public:
 
   int precharge(void);
 
-  // TODO: implement/refactor
-  // CAN_message_t setupMCMessage(uint8_t regID, uint8_t buf1, uint8_t buf2 = 0x00, bool polling = false);
+  //TODO: implement to construct CAN message
+  int setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2 = 0x00, bool polling = false);
+
+  int parseCan(void);
 
 };
 

@@ -56,38 +56,44 @@ int precharge(void)
 }
 
 // TODO: implement this, aka partition out the CAN methods from MC data
-// CAN_message_t UnitekController::setupMCMessage(uint8_t regID, uint8_t buf1 = 0x00, uint8_t buf2 = 0x00, bool stopPolling = false)
-// {
-//   CAN_message_t tx;
-//
-//   tx.ext = 0;
-//   tx.id = 0x201;
-//   tx.len = 3;
-//
-//   if(regID == REG_READ)
-//   {
-//     //performing a read operation set buf[0] to READ command
-//     tx.buf[0] = REG_READ;
-//     tx.buf[1] = buf1;
-//
-//     //default is 0 but can represent time (in ms) for polling
-//     tx.buf[2] = buf2;
-//
-//     //deactivates polling
-//     if(stopPolling)
-//     {
-//       tx.buf[2] = REG_HALTPOLL;
-//     }
-//   }
-//   else
-//   {
-//     //performing write opration
-//     tx.buf[0] = regID;
-//
-//     //storing the value in byte flipped order
-//     tx.buf[2] = buf1;
-//     tx.buf[1] = buf2;
-//   }
-//
-//   return tx;
-// }
+int UnitekController::setupCan(uint8_t regID, uint8_t buf1 = 0x00, uint8_t buf2 = 0x00, bool stopPolling = false)
+{
+  uint8_t extendedCan = 0;
+  uint8_t idCan = 0x201;
+  uint8_t lengthCan = 3;
+
+  uint8_t buffer[3];
+
+  if(regID == REG_READ)
+  {
+    //performing a read operation set buf[0] to READ command
+    buffer[0] = REG_READ;
+    buffer[1] = buf1;
+
+    //default is 0 but can represent time (in ms) for polling
+    buffer[2] = buf2;
+
+    //deactivates polling
+    if(stopPolling)
+    {
+      buffer[2] = REG_HALTPOLL;
+    }
+  }
+  else
+  {
+    //performing write opration
+    buffer[0] = regID;
+
+    //storing the value in byte flipped order
+    buffer[2] = buf1;
+    buffer[1] = buf2;
+  }
+
+  return 0;
+}
+
+int UnitekController::parseCan()
+{
+  // uint canId = 0x181;
+  return 0;
+}

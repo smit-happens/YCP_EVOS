@@ -16,3 +16,9 @@ OrionController::OrionController(void)
 {
 
 }
+
+
+int OrionController::parseCan()
+{
+  return 0;
+}

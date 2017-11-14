@@ -16,24 +16,14 @@
 #include <UnitekController.hpp>
 #include <WatchdogHandler.hpp>
 
-
-//---------------------------------------------------------------
-//Declaring encoder object variable and setting up interrupt functions
-EncoderHandler knob;
-
-void encoderWrapperA(){
- knob.doEncoderA();
-}
-
-void encoderWrapperB(){
- knob.doEncoderB();
-}
-
-void encoderWrapperButton(){
-  knob.pressButton();
-  delay(10);
-}
-
+enum VehicleState 
+{
+  Startup,
+  Standby,
+  Drive,
+  Shutdown,
+  Error
+};
 
 //---------------------------------------------------------------
 // Begin main function
@@ -44,18 +34,11 @@ int main(void)
   // Object declarations
   // UnitekController mctest;
   WatchdogHandler puppy;
+  VehicleState currentState = Startup;    //If Teensy is turning on, it's in the Startup state
 
   // using the builtin LED as a status light
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWriteFast(LED_BUILTIN, 1);
-
-  // // attachInterrupt() can only be called in main()
-  // // encoder pinA & pinB interrupts
-  // attachInterrupt(encoderPinA, encoderWrapperA, CHANGE);
-  // attachInterrupt(encoderPinB, encoderWrapperB, CHANGE);
-  // // encoder button interrupt
-  // // TODO: fix interrupt logic (make more reliable)
-  // attachInterrupt(buttonPin, encoderWrapperButton, CHANGE);
 
   // A pointer to the menu
   BaseMenu* currentMenu = new FirstMenu;
@@ -64,9 +47,9 @@ int main(void)
   currentMenu->initLcd();
 
   // Variables
-  // int choice = -1;
   uint16_t globalEventFlags = 0;
   uint16_t localEventFlags = 0;
+
   //---------------------------------------------------------------
   // Begin main program loop
   while(1)
@@ -79,29 +62,51 @@ int main(void)
     interrupts();
 
     
-  //   // Call the print method of whichever MenuObject we're using
-  //   // Print its text and the current cursor position
-  //   currentMenu->print(knob.getIndex());
-  //
-  //   if(knob.isButtonPressed())
-  //   {
-  //     choice = knob.getIndex();
-  //   }
-  //
-  //   // Will return a new object, of the type of the new menu we want
-  //   // extraParams can be filled in with values of things
-  //   BaseMenu* newMenuPointer = currentMenu->getNextMenu(choice);
-  //
-  //   choice = -1;
-  //
-  //   // if pointer is 0, we didn't create a new menu, so keep the current one
-  //   if (newMenuPointer)
-  //   {
-  //     // Clean up the old menu, and not leak memory.
-  //     delete currentMenu;
-  //     // Update the 'current menu' with the new menu just created
-  //     currentMenu = newMenuPointer;
-  //   }
+    switch(currentState)
+    {
+      case Startup:
+        //TODO: Finish this state
+        //Teensy SelfTest     //What would this even be?
+        //SD card initialize
+        //subsystem checks (log status of each)
+          //Dashboard
+          //LCD (boot logo)
+          //TS master switch through BMS/BSPD
+          //Orion
+          //Unitek
+          //Cooling system
+            //Alert: Turn cooling on
+        //Notification: All systens go. Ready to Precharge
+
+      break;
+
+      
+      // Enter this state from Startup once precharge button is pressed
+      case Standby:
+        //TODO: Finish this state
+        //CAN message sent to MC to start precharging
+        
+
+      break;
+
+
+      case Drive:
+        //TODO: Finish this state
+
+      break;
+
+
+      case Shutdown:
+        //TODO: Finish this state
+
+      break;
+
+
+      case Error:
+        //TODO: Finish this state
+
+      break;
+    }
   }
 
   return 0;

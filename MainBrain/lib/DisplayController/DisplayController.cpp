@@ -47,9 +47,9 @@ void FirstMenu::initLcd(void)
   glcd.begin(0x18);
   glcd.clear();
 
-  // draw a string at location (0,0)
-  glcd.drawstring(0, 0, (char*)"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation");
-  glcd.display();
+  // draw the bitmap
+  // glcd.drawbitmap(0, 0, JustBarelyLogo, 128, 64, BLACK);
+  // glcd.display();
 }
 
 

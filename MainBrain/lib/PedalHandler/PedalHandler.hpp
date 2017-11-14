@@ -12,7 +12,9 @@
  #include <Arduino.h>
 
 // TODO: finish these constants (wiring and code)
-// const uint8_t PinBrakePot = 4;
+// const uint8_t BrakePotPin1 = 4;
+// const uint8_t BrakePotPin2 = 4;
+// const uint8_t GasPotPin = 4;
 
  class PedalHandler
  {
@@ -21,7 +23,7 @@
 
    //TODO: readBrake()
    //TODO: readGas()
-   //TODO: checkImplausibility
+   //TODO: checkImplausibility()
 
 
  private:

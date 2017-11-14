@@ -56,6 +56,6 @@ void CanController::gotFrame(CAN_message_t &frame, int mailbox)
   printFrame(frame, mailbox);
 }
 
-
-//TODO: Function to construct CAN message given ID and data
-// should be able to work for BMS and MC easily
+  // TODO: implement
+  // void send(void)
+  // void read(void)
