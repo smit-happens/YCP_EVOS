@@ -20,7 +20,8 @@
  public:
    Dashboard();
 
-   //TODO: selfTest() //Turn on all the LEDs
+   //TODO: selfTest() //Turn on all the LEDs in sequence
+   //press buttons in order and have it light an LED (blinking to solid)
 
 
  private:
