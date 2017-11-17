@@ -27,7 +27,7 @@ public:
   int precharge(void);
 
   //TODO: implement to construct CAN message
-  int setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2 = 0x00, bool polling = false);
+  int setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2, bool polling);
 
   int parseCan(void);
 

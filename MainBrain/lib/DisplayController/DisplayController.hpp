@@ -19,13 +19,6 @@
 // const uint8_t BACKLIGHT_LED_G = 4;
 // const uint8_t BACKLIGHT_LED_B = 4;
 
-enum NotificationCategory
-{
-  Notification,
-  Warning,
-  Alert,
-  Error
-};
 
 #pragma region    //JustBarelyLogo
 const uint8_t JustBarelyLogo [] = {
@@ -120,6 +113,13 @@ public:
 protected:
   // TODO: modify this for graphical layouts
   // This will be shared by all derived menu classes
+  enum NotificationCategory
+  {
+    Notification,
+    Warning,
+    Alert,
+    Error
+  };
 };
 
 

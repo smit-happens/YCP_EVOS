@@ -56,7 +56,7 @@ int precharge(void)
 }
 
 // TODO: implement this, aka partition out the CAN methods from MC data
-int UnitekController::setupCan(uint8_t regID, uint8_t buf1 = 0x00, uint8_t buf2 = 0x00, bool stopPolling = false)
+int UnitekController::setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2, bool polling)
 {
   uint8_t extendedCan = 0;
   uint8_t idCan = 0x201;
@@ -74,7 +74,7 @@ int UnitekController::setupCan(uint8_t regID, uint8_t buf1 = 0x00, uint8_t buf2 
     buffer[2] = buf2;
 
     //deactivates polling
-    if(stopPolling)
+    if(polling)
     {
       buffer[2] = REG_HALTPOLL;
     }
