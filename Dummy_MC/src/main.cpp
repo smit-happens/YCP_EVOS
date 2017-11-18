@@ -11,12 +11,7 @@
 #include <Menu.hpp>
 #include <Logger.hpp>
 #include <Stepper.hpp>
-<<<<<<< Updated upstream
-#include <MotorController.hpp>
-=======
 #include <UnitekController.hpp>
-#include <../lib/plog/Log.h>
->>>>>>> Stashed changes
 
 
 //---------------------------------------------------------------
