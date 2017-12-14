@@ -1,13 +1,13 @@
 /**  A one line description of the class.
  *
- * #include UnitekController.hpp
+ * #include Unitek.hpp
  * Created 09-30-17 By: Smitty
  *
  * A longer description.
  */
 
-#ifndef UNITEKCONTROLLER_HPP
-#define UNITEKCONTROLLER_HPP
+#ifndef UNITEK_HPP
+#define UNITEK_HPP
 
 #include "UnitekRegisters.hpp"
 
@@ -16,10 +16,10 @@ const int MAX_VAL = 32767;  //0x7FFF
 
 //TODO: Precharge pins (RFE, RTD, RUN)
 
-class UnitekController
+class Unitek
 {
 public:
-  UnitekController(void);
+  Unitek(void);
 
   int calculateSpeedValue(int rpm);
   int calculateRpm(int speedValue);
@@ -34,4 +34,4 @@ public:
 };
 
 
-#endif  //UNITEKCONTROLLER_HPP
+#endif  //UNITEK_HPP

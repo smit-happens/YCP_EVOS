@@ -1,18 +1,18 @@
 /**  A one line description of the class.
  *
- * EncoderHandler.cpp
+ * Encoder.cpp
  * Created XX-XX-17 By: Smitty
  *
  * A longer description.
  */
 
-#include "EncoderHandler.hpp"
+#include "Encoder.hpp"
 
 
 /** 
  * @brief  Encoder constructor
  */
-EncoderHandler::EncoderHandler(void)
+Encoder::Encoder(void)
 {
   index = 0;
   cw = 0;
@@ -32,7 +32,7 @@ EncoderHandler::EncoderHandler(void)
  * @note   
  * @retval None
  */
-void EncoderHandler::doEncoderA(void)
+void Encoder::doEncoderA(void)
 {
   // Test transition
   A_set = digitalRead(encoderPinA) == HIGH;
@@ -46,7 +46,7 @@ void EncoderHandler::doEncoderA(void)
  * @note   
  * @retval None
  */
-void EncoderHandler::doEncoderB(void)
+void Encoder::doEncoderB(void)
 {
   // Test transition
   B_set = digitalRead(encoderPinB) == HIGH;
@@ -60,7 +60,7 @@ void EncoderHandler::doEncoderB(void)
  * @note   
  * @retval Index value
  */
-int EncoderHandler::getIndex(void)
+int Encoder::getIndex(void)
 {
   return index;
 }
@@ -72,7 +72,7 @@ int EncoderHandler::getIndex(void)
  * @param  menuLength: Used for wrap around calculation
  * @retval None
  */
-void EncoderHandler::updateIndex(int menuLength)
+void Encoder::updateIndex(int menuLength)
 {
   // Checking for any change in rotation cw or ccw represented by encoderPos variable
   if (0 > encoderPos)
@@ -135,7 +135,7 @@ void EncoderHandler::updateIndex(int menuLength)
  * @note   TODO: fix this, either through hardware or software
  * @retval None
  */
-void EncoderHandler::pressButton(void)
+void Encoder::pressButton(void)
 {
     buttonState = !buttonState;
 }
@@ -146,7 +146,7 @@ void EncoderHandler::pressButton(void)
  * @note   TODO: (better) implement pushbutton of the encoder to select things
  * @retval State of the button
  */
-bool EncoderHandler::isButtonPressed(void)
+bool Encoder::isButtonPressed(void)
 {
     return buttonState;
 }

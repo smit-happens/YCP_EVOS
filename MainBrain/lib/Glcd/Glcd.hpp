@@ -1,6 +1,6 @@
 /**  Virtual class for creating the various menus using OOP
  *
- * #include "DisplayController.hpp"
+ * #include "Glcd.hpp"
  * Created 10-01-17 By: Smitty
  *
  * Controls a graphical LCD from here: https://www.adafruit.com/product/250

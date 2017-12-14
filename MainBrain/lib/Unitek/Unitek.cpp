@@ -1,18 +1,19 @@
 /**  A one line description of the class.
  *
- * UnitekController.cpp
+ * Unitek.cpp
  * Created 09-30-17 By: Smitty
  *
  * A longer description.
  */
 
-#include "UnitekController.hpp"
+#include "Unitek.hpp"
 
+//TODO: separate this into the Unitek model and Unitek controller classes
 
 /** 
- * @brief  UnitekController constructor
+ * @brief  Unitek constructor
  */
-UnitekController::UnitekController(void)
+Unitek::Unitek(void)
 {
 
 }
@@ -25,7 +26,7 @@ UnitekController::UnitekController(void)
  * @param  rpm: RPM value
  * @retval      Speed value for the MC
  */
-int UnitekController::calculateSpeedValue(int rpm)
+int Unitek::calculateSpeedValue(int rpm)
 {
     float percentage = (float)rpm/RPM_LIMIT;
     return percentage*MAX_VAL;
@@ -38,7 +39,7 @@ int UnitekController::calculateSpeedValue(int rpm)
  * @param  speedValue: Given from MC
  * @retval             RPM value
  */
-int UnitekController::calculateRpm(int speedValue)
+int Unitek::calculateRpm(int speedValue)
 {
     float percentage = (float)speedValue/MAX_VAL;
     return percentage*RPM_LIMIT;
@@ -56,7 +57,7 @@ int precharge(void)
 }
 
 // TODO: implement this, aka partition out the CAN methods from MC data
-int UnitekController::setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2, bool polling)
+int Unitek::setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2, bool polling)
 {
   uint8_t extendedCan = 0;
   uint8_t idCan = 0x201;
@@ -92,7 +93,7 @@ int UnitekController::setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2, bool p
   return 0;
 }
 
-int UnitekController::parseCan()
+int Unitek::parseCan()
 {
   // uint canId = 0x181;
   return 0;

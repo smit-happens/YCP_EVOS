@@ -1,20 +1,20 @@
 /**  A one line description of the class.
  *
- * #include WatchdogHandler.hpp
+ * #include Watchdog.hpp
  * Created 11-06-17 By: Smitty
  *
  * Implemented based off the code found here: https://github.com/adafruit/Adafruit_SleepyDog
  */
 
-#ifndef WATCHDOGHANDLER_HPP
-#define WATCHDOGHANDLER_HPP
+#ifndef WATCHDOG_HPP
+#define WATCHDOG_HPP
 
 #include <kinetis.h>
 
-class WatchdogHandler
+class Watchdog
 {
 public:
-    WatchdogHandler(): setting(0) {}
+    Watchdog(): setting(0) {}
 
     // Enable the watchdog timer to reset the machine after a period of time
     // without any calls to reset().
@@ -33,4 +33,4 @@ private:
     int setting;
 };
 
-#endif    //WATCHDOGHANDLER_HPP
+#endif    //WATCHDOG_HPP

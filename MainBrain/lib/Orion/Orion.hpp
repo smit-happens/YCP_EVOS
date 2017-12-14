@@ -1,24 +1,24 @@
 /**  A one line description of the class.
  *
- * #include "OrionController.hpp"
+ * #include "Orion.hpp"
  * Created 10-24-17  By: Smitty
  *
  * A longer description.
  */
 
-#ifndef ORIONCONTROLLER_HPP
-#define ORIONCONTROLLER_HPP
+#ifndef ORION_HPP
+#define ORION_HPP
 
 #include <Arduino.h>
 
-class OrionController
+class Orion
 {
 public:
-  OrionController(void);
+  Orion(void);
 
   int parseCan(void);
 
 };
 
 
-#endif  //ORIONCONTROLLER_HPP
+#endif  //ORION_HPP

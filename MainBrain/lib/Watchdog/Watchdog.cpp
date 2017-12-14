@@ -1,12 +1,12 @@
 /**  A one line description of the class.
  *
- * WatchdogHandler.cpp
+ * Watchdog.cpp
  * Created 11-06-17 By: Smitty
  *
  * A longer description.
  */
 
-#include "WatchdogHandler.hpp"
+#include "Watchdog.hpp"
 
 static void one_bus_cycle(void) __attribute__((always_inline));
 static void watchdog_config(int cfg, int val);
@@ -18,7 +18,7 @@ static void watchdog_config(int cfg, int val);
 //
 // The actual period (in milliseconds) before a watchdog timer reset is
 // returned.
-int WatchdogHandler::enable(int maxPeriodMS)
+int Watchdog::enable(int maxPeriodMS)
 {
 	if (maxPeriodMS < 4) {
 		maxPeriodMS = 8000; // default is 8 seconds
@@ -31,7 +31,7 @@ int WatchdogHandler::enable(int maxPeriodMS)
 }
 
 // Reset or 'kick' the watchdog timer to prevent a reset of the device.
-void WatchdogHandler::reset()
+void Watchdog::reset()
 {
 	__disable_irq();
 	WDOG_REFRESH = 0xA602;
@@ -40,7 +40,7 @@ void WatchdogHandler::reset()
 }
 
 // Completely disable the watchdog timer.
-void WatchdogHandler::disable()
+void Watchdog::disable()
 {
 	if (setting > 0) {
 		watchdog_config(0, 4);

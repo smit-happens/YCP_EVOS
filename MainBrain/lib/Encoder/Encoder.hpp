@@ -1,6 +1,6 @@
 /**  A one line description of the class.
  *
- * #include "EncoderHandler.hpp"
+ * #include "Encoder.hpp"
  * Created XX-XX-17 By: Smitty
  *
  * A longer description.
@@ -15,10 +15,10 @@ const uint8_t encoderPinA = 17;
 const uint8_t encoderPinB = 18;
 const uint8_t buttonPin = 20;
 
-class EncoderHandler
+class Encoder
 {
 public:
-  EncoderHandler();
+  Encoder();
 
   int getIndex(void);
 

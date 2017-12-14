@@ -1,13 +1,13 @@
 /**  A one line description of the class.
  *
- * #include "PedalHandler.hpp"
+ * #include "GasPedal.hpp"
  * Created 11-09-17 By: Smitty
  *
  * A longer description.
  */
 
- #ifndef PEDALHANDLER_HPP
- #define PEDALHANDLER_HPP
+ #ifndef GASPEDAL_HPP
+ #define GASPEDAL_HPP
 
  #include <Arduino.h>
 
@@ -16,10 +16,10 @@
 // const uint8_t BrakePotPin2 = 4;
 // const uint8_t GasPotPin = 4;
 
- class PedalHandler
+ class GasPedal
  {
  public:
-   PedalHandler();
+   GasPedal();
 
    //TODO: readBrake()
    //TODO: readGas()
@@ -30,4 +30,4 @@
 
  };
 
- #endif  //PEDALHANDLER_HPP
+ #endif  //GASPEDAL_HPP

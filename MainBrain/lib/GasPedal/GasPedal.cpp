@@ -1,18 +1,18 @@
 /**  A one line description of the class.
  *
- * PedalHandler.cpp
+ * GasPedal.cpp
  * Created 11-09-17 By: Smitty
  *
  * A longer description.
  */
 
-#include "PedalHandler.hpp"
+#include "GasPedal.hpp"
 
 
 /** 
- * @brief  PedalHandler constructor
+ * @brief  GasPedal constructor
  */
-PedalHandler::PedalHandler(void)
+GasPedal::GasPedal(void)
 {
 
 }

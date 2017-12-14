@@ -1,13 +1,13 @@
 /**  Class for managing the Display and creating menus using OOP
  *
- * DisplayController.cpp
+ * Glcd.cpp
  * Created 10-01-17 By: Smitty
  *
  * Implemented based off the code found here: https://stackoverflow.com/questions/16852978/navigating-console-menu
  * by user: https://stackoverflow.com/users/2386397/mike-b
  */
 
-#include "DisplayController.hpp"
+#include "Glcd.hpp"
 
 // pin 17 - Serial data out (SID)
 // pin 39 - Serial clock out (SCLK)
@@ -18,12 +18,9 @@ ST7565 glcd(17, 39, 38, 37, 36);
 
 
 /**************************************************************************
- * STEPS TO MODIFY AND TEST THIS CLASS                                    *
+ * STEPS TO MODIFY THIS CLASS                                             *
  * TODO: 1. make one main menu                                            *
  * TODO: 2. wire up the RGB backlight                                     *
- * TODO: 3. implement a basic notification the goes away untouched        *
- * TODO: 4. implement some alert-looking notification that is persistent  *
- *          until some condition is met                                   *
  **************************************************************************/
 
 
@@ -71,14 +68,6 @@ BaseMenu *FirstMenu::getNextMenu(int choice)
       // Creating a new menu object
       // newMenu = new SecondMenu;
       // Serial.println("ABOUT!");
-    }
-    break;
-
-    case 1:
-    {
-      // Creating a new menu object
-      // newMenu = new SecondMenu;
-      // Serial.println("MONITOR CAN!");
     }
     break;
 
