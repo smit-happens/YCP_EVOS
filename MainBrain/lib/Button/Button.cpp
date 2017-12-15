@@ -17,8 +17,17 @@ Button::Button(void)
 
 }
 
+String Button::getName(void)
+{
+  return "";
+}
 
-int Button::getState()
+int Button::getState(void)
 {
   return 0;
+}
+
+void Button::setState(void)
+{
+
 }

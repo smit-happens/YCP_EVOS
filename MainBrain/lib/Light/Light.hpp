@@ -1,20 +1,20 @@
 /**  A one line description of the class.
  *
- * #include "Button.hpp"
- * Created 12-13-17  By: Smitty
+ * #include "Light.hpp"
+ * Created 12-15-17  By: Smitty
  *
  * A longer description.
  */
 
-#ifndef BUTTON_HPP
-#define BUTTON_HPP
+#ifndef LIGHT_HPP
+#define LIGHT_HPP
 
 #include <Arduino.h>
 
-class Button
+class Light
 {
 public:
-  Button(void);
+  Light(void);
 
   String getName(void);
 
@@ -23,4 +23,4 @@ public:
 };
 
 
-#endif  //BUTTON_HPP
+#endif  //LIGHT_HPP
