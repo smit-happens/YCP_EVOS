@@ -10,6 +10,8 @@
  #ifndef UNIT_TEST
 
 #include <Arduino.h>
+#include <Button.hpp>
+#include <Light.hpp>
 #include <Encoder.hpp>
 #include <Glcd.hpp>
 #include <Logger.hpp>
@@ -30,7 +32,6 @@ int main(void)
   // using the builtin LED as a status light
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWriteFast(LED_BUILTIN, 1);
-
 
 
   //---------------------------------------------------------------
