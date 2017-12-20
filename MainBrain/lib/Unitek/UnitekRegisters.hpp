@@ -12,9 +12,6 @@
 #ifndef UNITEKREGISTERS_HPP
 #define UNITEKREGISTERS_HPP
 
-#include <Arduino.h>
-
-
 //Command values/Registers
 const int REG_READ      = 0x3D;  //Read a register (followed by reg to rd from)
 const int REG_HALTPOLL  = 0xFF;  //Stop the MC sending values constantly

@@ -9,6 +9,7 @@
 #ifndef UNITEK_HPP
 #define UNITEK_HPP
 
+#include <Arduino.h>
 #include "UnitekRegisters.hpp"
 
 const int RPM_LIMIT = 7000; //0xC8

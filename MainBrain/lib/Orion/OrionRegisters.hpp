@@ -9,8 +9,6 @@
 #ifndef ORIONREGISTERS_HPP
 #define ORIONREGISTERS_HPP
 
-#include <Arduino.h>
-
 //TODO: Need to fill this out more
 
 const int REG_MAX_SUPPORTED_CELLS           = 0xF006;
