@@ -11,6 +11,14 @@
 
 #include <Arduino.h>
 
+//This will have to implement something like a method for the initialization of each set of ports
+//For Example: Imd constructor calls imdPortSetup()
+//             imdPortSetup() would correctly initialize the pin/s the IMD would be connected to
+
+//Note: Thinking over all the various libraries that interact with pins (GLCD, SdioEX, SPI, FlexCan)
+//      It might be easier for each class to have it's own initiallizer and make this Port class
+//      into a header file just for constants
+
 class Port
 {
 public:

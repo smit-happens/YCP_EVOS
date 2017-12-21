@@ -19,7 +19,7 @@ public:
   String getName(void);
 
   int getState(void);
-  void setState(void);
+  void setState(bool);
 };
 
 
