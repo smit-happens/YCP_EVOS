@@ -6,28 +6,26 @@
  * A longer description.
  */
 
- #ifndef GASPEDAL_HPP
- #define GASPEDAL_HPP
+#ifndef GASPEDAL_HPP
+#define GASPEDAL_HPP
 
- #include <Arduino.h>
+#include <Arduino.h>
 
-// TODO: finish these constants (wiring and code)
-// const uint8_t BrakePotPin1 = 4;
-// const uint8_t BrakePotPin2 = 4;
-// const uint8_t GasPotPin = 4;
+//Maybe have states the pedal can be in, since it has the chance
+//of causing an error if there's an implausibility or a short in
+//the wires
 
- class GasPedal
- {
- public:
-   GasPedal();
+class GasPedal
+{
+public:
+    GasPedal();
 
-   //TODO: readBrake()
-   //TODO: readGas()
-   //TODO: checkImplausibility()
+    float getPercentage(void);
+    bool isImplausibility(void);
 
+private:
+    float getLogValue(void);
+    float getLinValue(void);
+};
 
- private:
-
- };
-
- #endif  //GASPEDAL_HPP
+#endif  //GASPEDAL_HPP
