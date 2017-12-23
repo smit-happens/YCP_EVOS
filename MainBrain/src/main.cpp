@@ -10,13 +10,8 @@
 #ifndef UNIT_TEST
 
 #include <Arduino.h>
-#include <Button.hpp>
-#include <Light.hpp>
-#include <Encoder.hpp>
-#include <Glcd.hpp>
-#include <Logger.hpp>
-#include <Unitek.hpp>
-#include <Watchdog.hpp>
+
+#include "Model/Model.hpp"
 
 
 //---------------------------------------------------------------

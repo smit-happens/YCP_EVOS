@@ -1,13 +1,13 @@
-/**  A one line description of the class.
+/**  Represents the Model of a CAN message
  *
- * #include "CanController.hpp"
+ * #include "Can.hpp"
  * Created 09-30-17  By: Smitty
  *
  * A longer description.
  */
 
-#ifndef CANCONTROLLER_HPP
-#define CANCONTROLLER_HPP
+#ifndef CAN_HPP
+#define CAN_HPP
 
 #include <Arduino.h>
 #include <FlexCAN.h>
@@ -18,10 +18,10 @@ const int UNITEKSENDID = 0x201;
 // const int ORIONREADID = 0x181;   //not decided yet
 const int ORIONSENDID = 0x840;
 
-class CanController : public CANListener
+class Can : public CANListener
 {
 public:
-  CanController();
+  Can();
 
   void printFrame(CAN_message_t &frame, int mailbox);
 
@@ -36,4 +36,4 @@ public:
 };
 
 
-#endif  //CANCONTROLLER_HPP
+#endif  //CAN_HPP

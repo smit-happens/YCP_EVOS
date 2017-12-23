@@ -1,18 +1,18 @@
-/**  A one line description of the class.
+/**  Represents the Model of a CAN message
  *
- * CanController.cpp
+ * Can.cpp
  * Created 09-30-17  By: Smitty
  *
  * A longer description.
  */
 
-#include "CanController.hpp"
+#include "Can.hpp"
 
 
 /** 
- * @brief  CanController constructor
+ * @brief  Can constructor
  */
-CanController::CanController(void)
+Can::Can(void)
 {
 
 }
@@ -25,7 +25,7 @@ CanController::CanController(void)
  * @param  mailbox: Port to listen to
  * @retval None
  */
-void CanController::printFrame(CAN_message_t &frame, int mailbox)
+void Can::printFrame(CAN_message_t &frame, int mailbox)
 {
   Serial.print("This just in!\n");
   Serial.print("ID: 0x");
@@ -51,7 +51,7 @@ void CanController::printFrame(CAN_message_t &frame, int mailbox)
  * @param  mailbox: Port to listen to
  * @retval None
  */
-void CanController::gotFrame(CAN_message_t &frame, int mailbox)
+void Can::gotFrame(CAN_message_t &frame, int mailbox)
 {
   printFrame(frame, mailbox);
 }
