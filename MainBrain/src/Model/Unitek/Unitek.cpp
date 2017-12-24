@@ -20,29 +20,24 @@ Unitek::Unitek(void)
 
 
 /** 
- * @brief  Convert RPM to a compatible MC speed value
- * @note   The speed value represents a percentage from 0 to 0x7FFF
- *         That percentage represents the RPM from 0 to RPM_LIMIT (Ex: 7000)
- * @param  rpm: RPM value
- * @retval      Speed value for the MC
+ * @brief  Max value is used in reference to speed % converting
+ * @note   This might get shoved into the constants file since it won't change
+ * @retval The maximum value in the Unitek (32,767)
  */
-int Unitek::calculateSpeedValue(int rpm)
+int Unitek::getMaxValue(void)
 {
-    float percentage = (float)rpm/RPM_LIMIT;
-    return percentage*MAX_VAL;
+    return MAX_VALUE;
 }
 
 
 /** 
- * @brief  Convert a given MC speed value to RPM
- * @note   
- * @param  speedValue: Given from MC
- * @retval             RPM value
+ * @brief  RPM limit defined by the drivetrain subteam
+ * @note   This will stay in the model b/c it can be modified
+ * @retval Current RPM limit
  */
-int Unitek::calculateRpm(int speedValue)
+int Unitek::getRpmLimit(void)
 {
-    float percentage = (float)speedValue/MAX_VAL;
-    return percentage*RPM_LIMIT;
+    return RPM_LIMIT;
 }
 
 
@@ -51,47 +46,49 @@ int Unitek::calculateRpm(int speedValue)
  * @note   
  * @retval 0 for success, -1 for error
  */
-int precharge(void)
+int PrechargeStart(void)
 {
     return 0;
 }
 
+
 // TODO: implement this, aka partition out the CAN methods from MC data
 int Unitek::setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2, bool polling)
 {
-  uint8_t extendedCan = 0;
-  uint8_t idCan = 0x201;
-  uint8_t lengthCan = 3;
+    uint8_t extendedCan = 0;
+    uint8_t idCan = 0x201;
+    uint8_t lengthCan = 3;
 
-  uint8_t buffer[3];
+    uint8_t buffer[3];
 
-  if(regID == REG_READ)
-  {
-    //performing a read operation set buf[0] to READ command
-    buffer[0] = REG_READ;
-    buffer[1] = buf1;
-
-    //default is 0 but can represent time (in ms) for polling
-    buffer[2] = buf2;
-
-    //deactivates polling
-    if(polling)
+    if(regID == REG_READ)
     {
-      buffer[2] = REG_HALTPOLL;
+        //performing a read operation set buf[0] to READ command
+        buffer[0] = REG_READ;
+        buffer[1] = buf1;
+
+        //default is 0 but can represent time (in ms) for polling
+        buffer[2] = buf2;
+
+        //deactivates polling
+        if(polling)
+        {
+            buffer[2] = REG_HALTPOLL;
+        }
     }
-  }
-  else
-  {
-    //performing write opration
-    buffer[0] = regID;
+    else
+    {
+        //performing write opration
+        buffer[0] = regID;
 
-    //storing the value in byte flipped order
-    buffer[2] = buf1;
-    buffer[1] = buf2;
-  }
+        //storing the value in byte flipped order
+        buffer[2] = buf1;
+        buffer[1] = buf2;
+    }
 
-  return 0;
+    return 0;
 }
+
 
 int Unitek::parseCan()
 {

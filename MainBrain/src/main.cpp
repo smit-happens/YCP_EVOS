@@ -10,6 +10,7 @@
 #ifndef UNIT_TEST
 
 #include <Arduino.h>
+// #include <Encoder.h>     //TODO: Figure out if we're using this or not
 
 #include "Model/Model.hpp"
 
