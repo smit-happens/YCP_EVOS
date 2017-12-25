@@ -15,9 +15,19 @@
 class Orion
 {
 public:
-  Orion(void);
+    Orion(void);
 
-  int parseCan(void);
+    float getVoltageTotal(void);
+    float getVoltageAverage(void);
+    float getVoltageVariance(void);
+    float getVoltageMin(void);
+    float getVoltageMax(void);
+    
+    float getAmperageTotal(void);
+
+    float getTemperature(void);
+
+    int parseCan(void);
 
 };
 

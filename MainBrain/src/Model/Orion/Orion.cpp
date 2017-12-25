@@ -18,6 +18,11 @@ Orion::Orion(void)
 }
 
 
+/** 
+ * @brief For parsing Orion specific CAN messages
+ * @note   
+ * @retval TODO: figure out the return type
+ */
 int Orion::parseCan()
 {
   return 0;
