@@ -13,7 +13,6 @@
 #include "UnitekRegisters.hpp"
 
 
-//TODO: Precharge pins (RFE, RTD, RUN)
 
 class Unitek
 {
@@ -24,31 +23,30 @@ public:
     int getMaxValue(void);
 
     int getSpeedValue(void);
-    int setSpeedValue(void);
+    void setSpeedValue(int userSpeedVal);
 
     float getTemperature(void); //TODO: handle the different temperature registers
 
     uint16_t getWarnings(void);
     uint16_t getErrors(void);
 
-    //NOTE: any get...() method that returns void, needs to have work done on its return type
+    //FIXME: any get...() method that returns void, needs to have work done on its return type
     void getDigitalPort(void);  //TODO: create struct for the connections in the digital port
-    void setDigitalPort(void);  //Needs to be modified for whatever implimentation of the digital port
+    void setDigitalPort(void);  //TODO: Modify for whatever implimentation of the digital port
 
 
-    void PrechargeStart(void);
-    void PrechargeDone(void);
+    int PrechargeStart(void);
+    int PrechargeDone(void);
 
-    void enableDrive(void);     //should throw an error based on any bad status from the Unitek
+    int driveStart(void);       //should throw an error based on any bad status from the Unitek
+    int driveDone(void);        //for when the user doesn't want to completely shut off the car
 
     void pollingStart(void);
-    void pollingDone(void);
+    void pollingStop(void);
 
 
     //TODO: implement to construct CAN message
-    int setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2, bool polling);
-
-    int parseCan(void);
+    int setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2);
 
     private:
         const int RPM_LIMIT = 7000; //0xC8

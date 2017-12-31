@@ -43,3 +43,11 @@ float UnitekController::calculateRpm(int speedValue)
     float percentage = (float)speedValue / unitek.getMaxValue();
     return percentage * unitek.getRpmLimit();
 }
+
+
+//TODO: implement
+int UnitekController::parseCan()
+{
+  // uint canId = 0x181;
+  return 0;
+}
