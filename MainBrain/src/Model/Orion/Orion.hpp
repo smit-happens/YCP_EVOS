@@ -26,9 +26,6 @@ public:
     float getAmperageTotal(void);
 
     float getTemperature(void);
-
-    int parseCan(void);
-
 };
 
 

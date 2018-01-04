@@ -20,8 +20,6 @@ public:
     int calculateSpeedValue(float rpm);
     float calculateRpm(int speedValue);
 
-    int parseCan(void);
-
 private:
     Unitek unitek;
 

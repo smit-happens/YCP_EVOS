@@ -45,9 +45,6 @@ public:
     void pollingStop(void);
 
 
-    //TODO: implement to construct CAN message
-    int setupCan(uint8_t regID, uint8_t buf1, uint8_t buf2);
-
     private:
         const int RPM_LIMIT = 7000; //0xC8
         const int MAX_VALUE = 32767;  //0x7FFF

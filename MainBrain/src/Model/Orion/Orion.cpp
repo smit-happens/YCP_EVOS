@@ -19,22 +19,77 @@ Orion::Orion(void)
 
 
 /** 
- * @brief  Get total pack voltage from BMS
- * @note   Figure this out from micaiah
+ * @brief  Retrieve total pack voltage from BMS
+ * @note   TODO: Figure the range out from Micaiah
  * @retval Voltage value
  */
 float Orion::getVoltageTotal(void)
 {
-  return 0.0;
+    return 0.0;
 }
 
 
 /** 
- * @brief For parsing Orion specific CAN messages
+ * @brief  
  * @note   
- * @retval TODO: figure out the return type
+ * @retval 
  */
-int Orion::parseCan()
+float getVoltageAverage(void)
 {
-  return 0;
+    return 0.0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+float getVoltageVariance(void)
+{
+    return 0.0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+float getVoltageMin(void)
+{
+    return 0.0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+float getVoltageMax(void)
+{
+    return 0.0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+float getAmperageTotal(void)
+{
+    return 0.0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+float getTemperature(void)
+{
+
 }
