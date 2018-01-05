@@ -58,11 +58,16 @@ const uint8_t BTB           = 18;  //[0,1] Digital Input
 const uint8_t SPARE         = 17;  //[0,1] Digital Input
 
 //GLCD screen data
-const uint8_t SID           = 24;  //ST7565 glcd() Input
-const uint8_t SCLK          = 25;  //ST7565 glcd() Input
-const uint8_t RS            = 26;  //ST7565 glcd() Input
-const uint8_t _RST          = 27;  //ST7565 glcd() Input
-const uint8_t _CS           = 28;  //ST7565 glcd() Input
+// SID:     Serial data out
+// SCLK:    Serial clock out
+// RS/A0:   Data/Command select
+// _RST:    LCD reset
+// _CS:     LCD chip select
+const uint8_t SID           = 24;  //ST7565 display Output
+const uint8_t SCLK          = 25;  //ST7565 display Output
+const uint8_t RS            = 26;  //ST7565 display Output
+const uint8_t _RST          = 27;  //ST7565 display Output
+const uint8_t _CS           = 28;  //ST7565 display Output
 
 //GLCD RGB backlight
 const uint8_t R             = 37;  //[0,1] PWM Output

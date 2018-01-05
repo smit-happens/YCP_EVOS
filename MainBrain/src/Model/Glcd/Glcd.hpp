@@ -1,4 +1,4 @@
-/**  Virtual class for creating the various menus using OOP
+/**  Display model class
  *
  * #include "Glcd.hpp"
  * Created 10-01-17 By: Smitty
@@ -6,18 +6,23 @@
  * Controls a graphical LCD from here: https://www.adafruit.com/product/250
  */
 
-#ifndef DISPLAYCONTROLLER_HPP
-#define DISPLAYCONTROLLER_HPP
+#ifndef GLCD_HPP
+#define GLCD_HPP
 
-#include <Arduino.h>
 #include "ST7565.h"
+#include "../Constants/Port.hpp"
 
-// may just make a declaration header that every file that uses pins can import
 
-// TODO: implement RGB backlight (wiring and code)
-// const uint8_t BACKLIGHT_LED_R = 4;
-// const uint8_t BACKLIGHT_LED_G = 4;
-// const uint8_t BACKLIGHT_LED_B = 4;
+// This class should have all the menus structured out,
+// basically the controller should only have to worry about passing values into the functions here
+
+// Model stores the structure of the menus
+// Model stores the data related to each menu
+// View stores the user chosen values in the Model
+// View asks Controller which menus to display
+// Controller responds to View based on values in Model
+// Controller operates on the data stored in the Model
+
 
 
 #pragma region    //JustBarelyLogo
@@ -89,54 +94,35 @@ const uint8_t JustBarelyLogo [] = {
 };
 #pragma endregion
 
-/*
- * Contains the common code that will be used among all the various menus
- */
-class BaseMenu
+
+class Glcd
 {
 public:
-  // Constructor for setting class-specific information. Each menu object has its own menu text.
-  BaseMenu() { }
+    Glcd();
 
-  // Virtual destructor. It must be made virtual, else you get memory leaks - read up on it
-  virtual ~BaseMenu() { }
+    /**  
+     * Drafting up possible functions
+     * 
+     * void print(string);
+     * void clear(void);
+     * 
+     * void showBootLogo(void);
+     * void showList(void);     //maybe a private function?
+     * 
+     * void setBacklightRgb(int r, int g, int b);
+     */
 
-  // Only really used for the first menu
-  virtual void initLcd(void) { }
 
-  // This is a 'pure virtual method', as shown by the "= 0". It means it doesn't do anything. It's used to set up the framework
-  virtual BaseMenu *getNextMenu(int iChoice) = 0;
-
-  // Virtual method, might move more code here if it gets repetitive
-  virtual void print(int index) { }
-
-protected:
-  // TODO: modify this for graphical layouts
-  // This will be shared by all derived menu classes
-  enum NotificationCategory
-  {
+private:
+    enum NotificationCategory
+    {
     Notification,
     Warning,
     Alert,
     Error
-  };
+    };
+
 };
 
 
-// FirstMenu class is a type of BaseMenu
-class FirstMenu : public BaseMenu
-{
-public:
-  FirstMenu();
-
-  void initLcd(void);
-
-  // Defining the pure virtual method above
-  BaseMenu *getNextMenu(int choice);
-
-  void print(int index);
-};
-
-
-
-#endif  //DISPLAYCONTROLLER_HPP
+#endif  //GLCD_HPP

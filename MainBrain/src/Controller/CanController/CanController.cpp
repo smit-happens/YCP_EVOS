@@ -19,7 +19,7 @@ CanController::CanController(void)
 
 /** 
  * @brief  
- * @note   TODO: implement this
+ * @note   TODO: implement this the correct way
  * @param  regID: 
  * @param  buf1: 
  * @param  buf2: 
