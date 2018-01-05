@@ -19,13 +19,16 @@ class Unitek
 public:
     Unitek(void);
 
-    int getRpmLimit(void);  //All these get..() functions might be combined into a struct or something in the future
+    int getRpmLimit(void);
     int getMaxValue(void);
 
     int getSpeedValue(void);
     void setSpeedValue(int userSpeedVal);
 
-    float getTemperature(void); //TODO: handle the different temperature registers
+    float getTemperatureMotorLimit(void);   //These functions might require a convertToCelsius() funct
+    float getTemperatureMotor(void);
+    float getTemperatureOutputStage(void);
+    float getTemperatureInterior(void);
 
     uint16_t getWarnings(void);
     uint16_t getErrors(void);
@@ -45,9 +48,9 @@ public:
     void pollingStop(void);
 
 
-    private:
-        const int RPM_LIMIT = 7000; //0xC8
-        const int MAX_VALUE = 32767;  //0x7FFF
+private:
+    const int RPM_LIMIT = 7000; //0xC8
+    const int MAX_VALUE = 32767;  //0x7FFF
 
 };
 

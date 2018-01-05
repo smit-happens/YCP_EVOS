@@ -6,18 +6,19 @@
  * A longer description.
  */
 
-#ifndef ENCODERHANDLER_HPP
-#define ENCODERHANDLER_HPP
+#ifndef ENCODERWRAPPER_HPP
+#define ENCODERWRAPPER_HPP
 
 #include <Arduino.h>
+#include <Encoder.h>
 
 const uint8_t encoderPinA = 17;
 const uint8_t encoderPinB = 18;
 
-class Encoder
+class EncoderWrapper
 {
 public:
-  Encoder();
+  EncoderWrapper();
 
   int getIndex(void);
 
@@ -38,4 +39,4 @@ private:
   volatile int8_t encoderPos = 0;
 };
 
-#endif  //ENCODERHANDLER_HPP
+#endif  //ENCODERWRAPPER_HPP

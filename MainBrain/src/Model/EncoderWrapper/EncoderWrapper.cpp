@@ -6,14 +6,14 @@
  * A longer description.
  */
 
-#include "Encoder.hpp"
+#include "EncoderWrapper.hpp"
 
 //TODO: Get rid of this class in favor of the encoder library that Pat found
 
 /** 
  * @brief  Encoder constructor
  */
-Encoder::Encoder(void)
+EncoderWrapper::EncoderWrapper(void)
 {
   index = 0;
   cw = 0;
@@ -32,7 +32,7 @@ Encoder::Encoder(void)
  * @note   
  * @retval None
  */
-void Encoder::doEncoderA(void)
+void EncoderWrapper::doEncoderA(void)
 {
   // Test transition
   A_set = digitalRead(encoderPinA) == HIGH;
@@ -46,7 +46,7 @@ void Encoder::doEncoderA(void)
  * @note   
  * @retval None
  */
-void Encoder::doEncoderB(void)
+void EncoderWrapper::doEncoderB(void)
 {
   // Test transition
   B_set = digitalRead(encoderPinB) == HIGH;
@@ -60,7 +60,7 @@ void Encoder::doEncoderB(void)
  * @note   
  * @retval Index value
  */
-int Encoder::getIndex(void)
+int EncoderWrapper::getIndex(void)
 {
   return index;
 }
@@ -72,7 +72,7 @@ int Encoder::getIndex(void)
  * @param  menuLength: Used for wrap around calculation
  * @retval None
  */
-void Encoder::updateIndex(int menuLength)
+void EncoderWrapper::updateIndex(int menuLength)
 {
   // Checking for any change in rotation cw or ccw represented by encoderPos variable
   if (0 > encoderPos)

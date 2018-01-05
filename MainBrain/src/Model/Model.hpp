@@ -20,7 +20,7 @@
 #include "Can/Can.hpp"
 #include "Constants/Port.hpp"
 #include "CoolingSystem/CoolingSystem.hpp"
-#include "Encoder/Encoder.hpp"
+#include "EncoderWrapper/EncoderWrapper.hpp"
 #include "GasPedal/GasPedal.hpp"
 #include "Glcd/Glcd.hpp"
 #include "Imd/Imd.hpp"

@@ -45,7 +45,7 @@ const int REG_VAR3      = 0xD3;  //(RW) [0:15] Reference Value 3
 const int REG_VAR4      = 0xD4;  //(RW) [0:15] Reference Value 4
 
 //Tempurature registers
-const int REG_MTEMPLIM  = 0xA3;  //(RW) [0:15] Temp. limit for the motor temp. error bit to be set
+const int REG_TEMPMLIM  = 0xA3;  //(RW) [0:15] Temp. limit for the motor temp. error bit to be set
 const int REG_TEMPM     = 0x49;  //[0:15] Temperature of Motor
 //TODO: need to figure out what's an "output stage"/////////////////
 const int REG_TEMPOUTMC = 0x4A;  //[0:15] Temperature of Output stage
