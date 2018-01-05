@@ -1,130 +1,43 @@
-/**  A one line description of the class.
+/**  This class acts as a wrapper for the encoder library included in platformio
  *
- * Encoder.cpp
- * Created XX-XX-17 By: Smitty
+ * EncoderWrapper.cpp
+ * Created 1-4-18 By: Smitty
  *
  * A longer description.
  */
 
 #include "EncoderWrapper.hpp"
 
-//TODO: Get rid of this class in favor of the encoder library that Pat found
+
+Encoder dial(ENC_PINA, ENC_PINB);
 
 /** 
  * @brief  Encoder constructor
  */
 EncoderWrapper::EncoderWrapper(void)
 {
-  index = 0;
-  cw = 0;
-  ccw = 0;
-  change = false;
-  A_set = false;
-  B_set = false;
-
-  pinMode(encoderPinA, INPUT);
-  pinMode(encoderPinB, INPUT);
+    dial.write(0);
 }
 
 
 /** 
- * @brief  Interrupt on A changing state
- * @note   
- * @retval None
- */
-void EncoderWrapper::doEncoderA(void)
-{
-  // Test transition
-  A_set = digitalRead(encoderPinA) == HIGH;
-  // and adjust counter + if A leads B
-  encoderPos = (A_set != B_set) ? +1 : -1;
-}
-
-
-/** 
- * @brief  Interrupt on B changing state
- * @note   
- * @retval None
- */
-void EncoderWrapper::doEncoderB(void)
-{
-  // Test transition
-  B_set = digitalRead(encoderPinB) == HIGH;
-  // and adjust counter + if B follows A
-  encoderPos = (A_set == B_set) ? +1 : -1;
-}
-
-
-/** 
- * @brief  For finding the current encoder index
+ * @brief  Current encoder index
  * @note   
  * @retval Index value
  */
 int EncoderWrapper::getIndex(void)
 {
-  return index;
+  return dial.read();
 }
 
 
 /** 
- * @brief  Updates index based on encoder direction
- * @note   TODO: maybe refactor logic here (ugly-ish but it works)
- * @param  menuLength: Used for wrap around calculation
+ * @brief  Sets the value of the encoder based on
+ * @note   
+ * @param  index: 
  * @retval None
  */
-void EncoderWrapper::updateIndex(int menuLength)
+void EncoderWrapper::setIndex(int index)
 {
-  // Checking for any change in rotation cw or ccw represented by encoderPos variable
-  if (0 > encoderPos)
-  {
-    cw++;
-    ccw = 0;
-    change = true;
-  }
-  else if(0 < encoderPos)
-  {
-    ccw++;
-    cw = 0;
-    change = true;
-  }
-
-  if(change == true)
-  {
-    // Reset values so this condition isn't executed repeatedly
-    encoderPos = 0;
-    change = false;
-
-    //TODO: ADD/FIX SCROLLING/////////////////////////// (in menu.cpp)
-
-    // Notches are at every 4 steps on the encoder
-    // Checks every 4 steps to move up/down a menu item
-    if(cw >= 4)
-    {
-      cw = 0;
-
-      // Loop back to the bottom (index = menuLength -1)
-      if(index <= 0)
-      {
-        index = menuLength - 1;
-      }
-      else
-      {
-        index--;
-      }
-    }
-    else if(ccw >= 4)
-    {
-      ccw = 0;
-
-      // Loop back to the top (index = 0) if greater than our menu length
-      if(index >= menuLength - 1)
-      {
-        index = 0;
-      }
-      else
-      {
-        index++;
-      }
-    }
-  }
+    dial.write(index);
 }
