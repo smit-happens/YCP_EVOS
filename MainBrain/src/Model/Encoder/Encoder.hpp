@@ -13,7 +13,6 @@
 
 const uint8_t encoderPinA = 17;
 const uint8_t encoderPinB = 18;
-const uint8_t buttonPin = 20;
 
 class Encoder
 {
@@ -27,8 +26,6 @@ public:
   void doEncoderA(void);
   void doEncoderB(void);
 
-  void pressButton(void);
-  bool isButtonPressed(void);
 
 private:
   int index;
@@ -39,7 +36,6 @@ private:
   bool B_set;
 
   volatile int8_t encoderPos = 0;
-  volatile bool buttonState = false;
 };
 
 #endif  //ENCODERHANDLER_HPP

@@ -21,18 +21,19 @@ const int ORIONSENDID = 0x840;
 class Can : public CANListener
 {
 public:
-  Can();
+    Can();
 
-  void printFrame(CAN_message_t &frame, int mailbox);
+    void printFrame(CAN_message_t &frame, int mailbox);
 
-  //overrides the parent version
-  void gotFrame(CAN_message_t &frame, int mailbox);
+    //overrides the parent version
+    void gotFrame(CAN_message_t &frame, int mailbox);
 
-  //TODO: read() and send() should be able to work for BMS and MC easily
+    // Unitek/Orion functions should later be combined but for right now this is easier (I hope)
+    void sendUnitek(void);
+    void readUnitek(CAN_message_t &frame);
 
-  // void send(void);
-  // void read(void);
-
+    void sendOrion(void);
+    void readOrion(CAN_message_t &frame);
 };
 
 

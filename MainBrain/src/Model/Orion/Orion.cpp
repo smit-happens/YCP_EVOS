@@ -8,6 +8,7 @@
 
 #include "Orion.hpp"
 
+//TODO: Ask Micaiah about some of these functions and what's possible to retrieve from the Orion
 
 /** 
  * @brief  Orion constructor
@@ -32,9 +33,9 @@ float Orion::getVoltageTotal(void)
 /** 
  * @brief  
  * @note   
- * @retval 
+ * @retval Average voltage of all the cells in the pack
  */
-float getVoltageAverage(void)
+float Orion::getVoltageAverage(void)
 {
     return 0.0;
 }
@@ -42,10 +43,32 @@ float getVoltageAverage(void)
 
 /** 
  * @brief  
+ * @note   Possibly use this to see when the pack needs rebalancing
+ * @retval 
+ */
+float Orion::getVoltageVariance(void)
+{
+    return 0.0;
+}
+
+
+/** 
+ * @brief  Retrieves the min voltage value of all the cells
  * @note   
  * @retval 
  */
-float getVoltageVariance(void)
+float Orion::getVoltageMin(void)
+{
+    return 0.0;
+}
+
+
+/** 
+ * @brief  Retrieves the max voltage value of all the cells
+ * @note   
+ * @retval 
+ */
+float Orion::getVoltageMax(void)
 {
     return 0.0;
 }
@@ -53,10 +76,10 @@ float getVoltageVariance(void)
 
 /** 
  * @brief  
- * @note   
+ * @note   Could be used in power calculations in addition to the Unitek calculations (I think)
  * @retval 
  */
-float getVoltageMin(void)
+float Orion::getAmperageTotal(void)
 {
     return 0.0;
 }
@@ -64,10 +87,10 @@ float getVoltageMin(void)
 
 /** 
  * @brief  
- * @note   
- * @retval 
+ * @note   TODO: Is this average temperature? max? min?
+ * @retval Temperature of (all?) the cells
  */
-float getVoltageMax(void)
+float Orion::getTemperature(void)
 {
     return 0.0;
 }
@@ -75,21 +98,21 @@ float getVoltageMax(void)
 
 /** 
  * @brief  
- * @note   
- * @retval 
+ * @note   TODO: Is this possible?
+ * @retval Cell number with the min voltage
  */
-float getAmperageTotal(void)
+int Orion::getCellVoltageMin(void)
 {
-    return 0.0;
+    return 0;
 }
 
 
 /** 
  * @brief  
- * @note   
- * @retval 
+ * @note   TODO: Is this possible?
+ * @retval Cell number with the max voltage
  */
-float getTemperature(void)
+int Orion::getCellVoltageMax(void)
 {
-
+    return 0;
 }

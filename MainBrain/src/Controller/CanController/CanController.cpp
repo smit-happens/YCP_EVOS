@@ -28,7 +28,7 @@ CanController::CanController(void)
 int CanController::messageSetup(uint8_t regID, uint8_t buf1, uint8_t buf2)
 {
     uint8_t extendedCan = 0;
-    uint8_t idCan = 0x201;
+    uint16_t idCan = 0x201;
     uint8_t lengthCan = 3;
 
     uint8_t buffer[3];

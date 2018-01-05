@@ -10,7 +10,7 @@
 #ifndef CANCONTROLLER_HPP
 #define CANCONTROLLER_HPP
 
-#include <Arduino.h>
+#include "../../Model/Can/Can.hpp"
 
 //Might need additional methods to flesh out all the functionality
 
@@ -22,6 +22,8 @@ public:
     //TODO: figure out the input/return parameters
     int messageSetup(uint8_t regID, uint8_t buf1, uint8_t buf2);
     int messageParse(void);
+    int messageSend(void);
+
 };
 
 

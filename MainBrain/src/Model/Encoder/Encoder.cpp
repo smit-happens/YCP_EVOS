@@ -8,6 +8,7 @@
 
 #include "Encoder.hpp"
 
+//TODO: Get rid of this class in favor of the encoder library that Pat found
 
 /** 
  * @brief  Encoder constructor
@@ -23,7 +24,6 @@ Encoder::Encoder(void)
 
   pinMode(encoderPinA, INPUT);
   pinMode(encoderPinB, INPUT);
-  pinMode(buttonPin, INPUT);
 }
 
 
@@ -127,26 +127,4 @@ void Encoder::updateIndex(int menuLength)
       }
     }
   }
-}
-
-
-/** 
- * @brief  Iterrupt on a changing button state
- * @note   TODO: fix this, either through hardware or software
- * @retval None
- */
-void Encoder::pressButton(void)
-{
-    buttonState = !buttonState;
-}
-
-
-/** 
- * @brief  Returns the current state of the button
- * @note   TODO: (better) implement pushbutton of the encoder to select things
- * @retval State of the button
- */
-bool Encoder::isButtonPressed(void)
-{
-    return buttonState;
 }

@@ -45,10 +45,10 @@ void Can::printFrame(CAN_message_t &frame, int mailbox)
 
 
 /** 
- * @brief  Called whenever a new CAN frame is recieved
- * @note   
+ * @brief  Called whenever a new CAN frame is received
+ * @note   All CAN messages will be sent received from mailbox 1 (CAN port 1) 
  * @param  &frame:  CAN_message_t reference
- * @param  mailbox: Port to listen to
+ * @param  mailbox: Port to listen on
  * @retval None
  */
 void Can::gotFrame(CAN_message_t &frame, int mailbox)
@@ -56,6 +56,50 @@ void Can::gotFrame(CAN_message_t &frame, int mailbox)
   printFrame(frame, mailbox);
 }
 
-  // TODO: implement
-  // void send(void)
-  // void read(void)
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void sendUnitek(void)
+{
+    //Can1.write(CAN_message_t stuff);
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  &frame: 
+ * @param  mailbox: 
+ * @retval None
+ */
+void readUnitek(CAN_message_t &frame)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void sendOrion(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  &frame: 
+ * @param  mailbox: 
+ * @retval None
+ */
+void readOrion(CAN_message_t &frame)
+{
+
+}
