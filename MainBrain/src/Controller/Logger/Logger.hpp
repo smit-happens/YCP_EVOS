@@ -9,9 +9,9 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 
-#include <Arduino.h>
-#include <SPI.h>
-#include "SdFat.h"
+#include "../../Model/SdCard/SdCard.hpp"
+
+//Need to figure out if a controller for the sdcard class is even necissary
 
 class Logger
 {
