@@ -25,9 +25,9 @@ public:
      * Drafting up possible functions
      * 
      * newFile()
-     * newColumn()
-     * newDataPoint()
-     * writeHeader()
+     * newFolder()
+     * mount()
+     * openFile()
      * 
      * 
      */
