@@ -26,6 +26,8 @@
 #include "Imd/Imd.hpp"
 #include "Light/Light.hpp"
 #include "Orion/Orion.hpp"
+#include "Rtc/Rtc.hpp"
+#include "SdCard/SdCard.hpp"
 #include "Speaker/Speaker.hpp"
 #include "Unitek/Unitek.hpp"
 
