@@ -12,7 +12,7 @@
 
 
 /** 
- * @brief  Glcd constructor
+ * @brief  GlcdController constructor
  */
 GlcdController::GlcdController(void)
 {
