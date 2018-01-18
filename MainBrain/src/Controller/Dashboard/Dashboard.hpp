@@ -1,22 +1,22 @@
-/**  Dashboard controller class
+/**  Dashboard class
  *
- * #include "DashboardController.hpp"
+ * #include "Dashboard.hpp"
  * Created 1-17-17 By: Smitty
  *
  * A longer description.
  */
 
-#ifndef DASHBOARDCONTROLLER_HPP
-#define DASHBOARDCONTROLLER_HPP
+#ifndef DASHBOARD_HPP
+#define DASHBOARD_HPP
 
 #include "../../Model/Light/Light.hpp"
 #include "../../Model/Button/Button.hpp"
 
 
-class DashboardController
+class Dashboard
 {
 public:
-    DashboardController();
+    Dashboard();
 
     /**  
      * Drafting up possible functions
@@ -28,4 +28,4 @@ public:
 };
 
 
-#endif  //DASHBOARDCONTROLLER_HPP
+#endif  //DASHBOARD_HPP

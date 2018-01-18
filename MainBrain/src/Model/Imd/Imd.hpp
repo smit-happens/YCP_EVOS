@@ -21,4 +21,4 @@ public:
 };
 
 
-#endif  //BSPD_HPP
+#endif  //IMD_HPP
