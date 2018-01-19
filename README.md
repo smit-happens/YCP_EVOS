@@ -1,11 +1,16 @@
 # YCP_EVOS
 Development for the 2018 YCP Formula Electric Vehicle
 
-## Programs used for developement
-* Atom.io
-  * platformio-ide package
-  * docblockr
-* Git (obviously)
+## VSCode used for development
+Plugins installed in VSCode:
+  * platformio-ide 
+  * Banner Comments
+  * C-family Documentation Comments
+  * C/C++
+  * Git Lens
+  * Native Debug
+  * TODO Highlights
+  * vscode-icons
 
 ## Main Hardware Used
 * Teensy 3.6
