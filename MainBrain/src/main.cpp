@@ -11,8 +11,18 @@
 
 #include <Arduino.h>
 
-#include "Model/Model.hpp"
-// #include "Controller/Logger/Logger.hpp"
+#include "Controller/Controller.hpp"
+
+
+enum workflowStage
+{
+    BOOTUP,
+    SELF_TEST,
+    SUBSYSTEM_TEST,
+    DRIVE,
+    SHUTDOWN
+};
+
 
 //---------------------------------------------------------------
 // Begin main function
@@ -22,6 +32,8 @@ int main(void)
 
     // Object declarations
     // Unitek mctest;
+
+    workflowStage ExcecutingStep = BOOTUP;
 
 
     // using the builtin LED as a status light
@@ -33,18 +45,62 @@ int main(void)
     // Begin main program loop
     while(1)
     {
-        //TODO: Finish the startup state (Startup class?)
-        //Teensy SelfTest     //What would this even be?
-        //SD card initialize
-        //subsystem checks (log status of each)
-            //Dashboard
-            //LCD (boot logo)
-            //TS master switch through BMS/BSPD
-            //Orion
-            //Unitek
-            //Cooling system
-            //Alert: Turn cooling on
-        //Notification: All systens go. Ready to Precharge
+        switch(ExcecutingStep)
+        {
+            case BOOTUP:
+            {
+                //SD card initialize
+
+
+                if(/* Condition is met */ 1 )
+                    ExcecutingStep = SELF_TEST;
+
+                break;
+            }
+
+
+            case SELF_TEST:
+            {
+                //Teensy SelfTest
+
+                break;
+            }
+
+
+            case SUBSYSTEM_TEST:
+            {
+                //subsystem checks (log status of each)
+
+                //Dashboard
+                //LCD (boot logo)
+                //TS master switch through BMS/BSPD
+                //Orion
+                //Unitek
+                //Cooling system
+                    //Alert: Turn cooling on
+
+                //Notification: All systens go. Ready to Precharge
+                    //wait for precharge button
+
+                break;
+            }
+
+
+            case DRIVE:
+            {
+                //Driving stuff
+
+                break;
+            }
+
+
+            case SHUTDOWN:
+            {
+                //Shutdown stuff
+
+                break;
+            }
+        }   //end of switch
     }
 
     return 0;
