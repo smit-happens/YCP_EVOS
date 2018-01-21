@@ -12,6 +12,7 @@
 #include <Arduino.h>
 
 #include "Controller/Controller.hpp"
+// #include "Controller/Controller.hpp"
 
 
 enum workflowStage
@@ -28,13 +29,12 @@ enum workflowStage
 // Begin main function
 int main(void)
 {
-    // Serial.begin(9600);
+    Serial.begin(9600);
 
-    // Object declarations
-    // CanController unitek;
-    // ImdController unitek;
-    // UnitekController unitek;
-    // UnitekController unitek;
+    // Controller Object declarations
+    CanController canC;
+    UnitekController unitekC;
+    UnitekController unitek;
 
     workflowStage ExcecutingStep = BOOTUP;
 
@@ -48,6 +48,10 @@ int main(void)
     // Begin main program loop
     while(1)
     {
+        noInterrupts();
+        // localEventFlags
+        interrupts();
+
         switch(ExcecutingStep)
         {
             case BOOTUP:

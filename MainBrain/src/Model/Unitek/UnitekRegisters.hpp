@@ -17,7 +17,7 @@ const int REG_READ      = 0x3D;  //Read a register (followed by reg to rd from)
 const int REG_HALTPOLL  = 0xFF;  //Stop the MC sending values constantly
 
 //Status oriented registers
-const int REG_ERROR     = 0x8F;  //[0:31] Error bits; [16:31] Warning bits
+const int REG_ERROR     = 0x8F;  //[0:31] Erro r bits; [16:31] Warning bits
 const int REG_STATE     = 0x40;  //[0:28] Various internal states of the MC
 const int REG_DPORT     = 0xD8;  //[0:15] State of all ports on the dig conn. on MC
 const int REG_RUN       = 0xE8;  //[0:1]  Digital run pin enabled (FRG)
@@ -44,7 +44,7 @@ const int REG_VAR2      = 0xD2;  //(RW) [0:15] Reference Value 2
 const int REG_VAR3      = 0xD3;  //(RW) [0:15] Reference Value 3
 const int REG_VAR4      = 0xD4;  //(RW) [0:15] Reference Value 4
 
-//Tempurature registers
+//Temperature registers
 const int REG_TEMPMLIM  = 0xA3;  //(RW) [0:15] Temp. limit for the motor temp. error bit to be set
 const int REG_TEMPM     = 0x49;  //[0:15] Temperature of Motor
 //TODO: need to figure out what's an "output stage"/////////////////
@@ -54,5 +54,7 @@ const int REG_TEMPAIRMC = 0x4B;  //[0:15] Temperature of MC interior air
 //Mode and Core option registers
 const int REG_MODE      = 0x51;  //(RW) [0:9]  Mode bits for some drive settings
 const int REG_CORE      = 0x5A;  //(RW) [0:31] Core option bits for Motor/MC settings
+
+//TODO: add register data structs defines in here
 
 #endif  //UNITEKREGISTERS_HPP
