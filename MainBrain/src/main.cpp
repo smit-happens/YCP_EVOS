@@ -11,8 +11,9 @@
 
 #include <Arduino.h>
 
-#include "Controller/Controller.hpp"
+//#include "Controller/Controller.hpp"
 // #include "Controller/Controller.hpp"
+#include "Manager/Manager.hpp"
 
 
 enum workflowStage
@@ -31,17 +32,16 @@ int main(void)
 {
     Serial.begin(9600);
 
-    // Controller Object declarations
-    CanController canC;
-    UnitekController unitekC;
-    UnitekController unitek;
-
     workflowStage ExcecutingStep = BOOTUP;
 
 
     // using the builtin LED as a status light
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWriteFast(LED_BUILTIN, 1);
+
+    //creating the singletons
+    CanController* canC = Manager::getCanC();
+    UnitekController* unitekC = Manager::getUnitekC();
 
 
     //---------------------------------------------------------------

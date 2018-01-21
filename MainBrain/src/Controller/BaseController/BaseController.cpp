@@ -1,4 +1,4 @@
-/**  Cooling controller class
+/**  Basic functions that all controllers will inherit
  *
  * BaseController.cpp
  * Created 1-21-18 By: Smitty
