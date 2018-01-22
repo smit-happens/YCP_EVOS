@@ -6,23 +6,30 @@
  * A longer description.
  */
 
+
 #ifndef UNITEKCONTROLLER_HPP
 #define UNITEKCONTROLLER_HPP
 
+#include "../BaseController/BaseController.hpp"
 #include "../../Model/Unitek/Unitek.hpp"
 
 
-class UnitekController
+class UnitekController : public BaseController
 {
 public:
     UnitekController(void);
+    ~UnitekController(void);
+
+    void init(void);
+    void poll(void);
+    void display(void);     //TODO: implement
+    void shutdown(void);    //TODO: implement
 
     int calculateSpeedValue(float rpm);
     float calculateRpm(int speedValue);
 
 private:
-    Unitek unitek;
-
+    Unitek* unitek;
 };
 
 

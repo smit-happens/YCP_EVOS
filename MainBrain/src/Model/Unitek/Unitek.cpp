@@ -15,7 +15,7 @@
  */
 Unitek::Unitek(void)
 {
-
+    rpmLimit = 7000; //0xC8
 }
 
 
@@ -26,18 +26,7 @@ Unitek::Unitek(void)
  */
 int Unitek::getRpmLimit(void)
 {
-    return RPM_LIMIT;
-}
-
-
-/** 
- * @brief  Max value is used in reference to speed % converting
- * @note   This might get shoved into the constants file since it won't change
- * @retval The maximum value in the Unitek (32,767)
- */
-int Unitek::getMaxValue(void)
-{
-    return MAX_VALUE;
+    return rpmLimit;
 }
 
 

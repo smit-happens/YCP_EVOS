@@ -38,17 +38,4 @@ private:
      */
 };
 
-//Calling the constructor of each controller (Has to be after class declaration)
-//NOTE: Do NOT perform complex functions or anything harder than
-//      memory allocation in constructor
-UnitekController* Manager::unitekC = new UnitekController();
-CanController* Manager::canC = new CanController();
-
-/** 
- * TODO: Initialize the pointers for the other controllers 
- * PedalController* Manager::pedalC = new PedalController();
- * 
- * 
- */
-
 #endif  //MANAGER_HPP

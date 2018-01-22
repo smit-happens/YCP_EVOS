@@ -19,6 +19,17 @@ BaseController::BaseController(void)
 
 
 /** 
+ * @brief  Literally nothing happens
+ * @note   
+ * @retval None
+ */
+BaseController::~BaseController(void)
+{
+    
+}
+
+
+/** 
  * @brief  
  * @note   
  * @retval None

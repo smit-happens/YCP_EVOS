@@ -10,9 +10,6 @@
 #ifndef UNIT_TEST
 
 #include <Arduino.h>
-
-//#include "Controller/Controller.hpp"
-// #include "Controller/Controller.hpp"
 #include "Manager/Manager.hpp"
 
 
@@ -39,9 +36,9 @@ int main(void)
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWriteFast(LED_BUILTIN, 1);
 
-    //creating the singletons
-    CanController* canC = Manager::getCanC();
-    UnitekController* unitekC = Manager::getUnitekC();
+    //creating the singletons and copying the location in memory
+    CanController* CanC = Manager::getCanC();
+    UnitekController* UnitekC = Manager::getUnitekC();
 
 
     //---------------------------------------------------------------

@@ -15,7 +15,7 @@ class BaseController
 {
 public:
     BaseController();
-    virtual ~BaseController() = 0;  //to prevent memory leaks
+    virtual ~BaseController();  //to prevent memory leaks
 
     virtual void init() = 0;
     virtual void poll() = 0;

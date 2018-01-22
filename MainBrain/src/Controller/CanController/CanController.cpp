@@ -17,6 +17,51 @@ CanController::CanController(void)
 
 }
 
+
+/** 
+ * @brief  CanController destructor
+ * @note   Delete any instantiated varibles/objects
+ * @retval None
+ */
+CanController::~CanController(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void CanController::init(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void CanController::display(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void CanController::poll(void)
+{
+
+}
+
+
 /** 
  * @brief  
  * @note   TODO: implement this the correct way

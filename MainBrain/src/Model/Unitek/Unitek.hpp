@@ -17,10 +17,11 @@
 class Unitek
 {
 public:
+    const int MAX_VALUE = 32767;  //0x7FFF
+
     Unitek(void);
 
     int getRpmLimit(void);
-    int getMaxValue(void);
 
     int getSpeedValue(void);
     void setSpeedValue(int userSpeedVal);
@@ -47,10 +48,8 @@ public:
     void pollingStart(void);
     void pollingStop(void);
 
-
 private:
-    const int RPM_LIMIT = 7000; //0xC8
-    const int MAX_VALUE = 32767;  //0x7FFF
+    int rpmLimit;
 
 };
 
