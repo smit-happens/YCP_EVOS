@@ -11,9 +11,13 @@
 
 #include <Arduino.h>
 
+
 class BaseController
 {
 public:
+    //include manager as a member field in basecontroller
+    // Manager;
+
     BaseController();
     virtual ~BaseController();  //to prevent memory leaks
 

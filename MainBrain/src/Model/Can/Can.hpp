@@ -15,7 +15,7 @@
 const int UNITEKREADID = 0x181;
 const int UNITEKSENDID = 0x201;
 
-// const int ORIONREADID = 0x181;   //not decided yet
+// const int ORIONREADID = 0x840;   //Micaiah - "i think it's the same"
 const int ORIONSENDID = 0x840;
 
 class Can : public CANListener

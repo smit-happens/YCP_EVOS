@@ -7,6 +7,7 @@
  */
 
 #include "CanController.hpp"
+#include "../../Manager/Manager.hpp"
 
 
 /** 

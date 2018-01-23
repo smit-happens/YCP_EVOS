@@ -29,16 +29,16 @@ int main(void)
 {
     Serial.begin(9600);
 
-    workflowStage ExcecutingStep = BOOTUP;
+    //creating the singletons and copying the location in memory
+    CanController* canC = Manager::getCanC();
+    UnitekController* unitekC = Manager::getUnitekC();
 
+    //The first step when running is bootup
+    workflowStage ExcecutingStep = BOOTUP;
 
     // using the builtin LED as a status light
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWriteFast(LED_BUILTIN, 1);
-
-    //creating the singletons and copying the location in memory
-    CanController* CanC = Manager::getCanC();
-    UnitekController* UnitekC = Manager::getUnitekC();
 
 
     //---------------------------------------------------------------
@@ -53,8 +53,9 @@ int main(void)
         {
             case BOOTUP:
             {
-                //SD card initialize
-
+                //SD card init function
+                canC->init();
+                unitekC->init();
 
                 if(/* Condition is met */ 1 )
                     ExcecutingStep = SELF_TEST;
@@ -105,6 +106,9 @@ int main(void)
                 break;
             }
         }   //end of switch
+
+        
+
     }
 
     return 0;
