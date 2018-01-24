@@ -53,9 +53,10 @@ private:
     int rpmLimit;
     
     //correlates to REG_ERROR
-    struct ErrorWarningReg
+    typedef union
     {
         //section of the error/warning register that stores errors
+        uint32_t raw;
         struct ErrorBits
         {
             uint8_t badParam        : 1;
@@ -92,7 +93,7 @@ private:
             uint8_t blankFields2    : 2;
             uint8_t ballast         : 1;
         };
-    };
+    } ErrorWarningReg;
 
     //correlates to REG_DPORT for the states of the digital port
     struct ModeReg

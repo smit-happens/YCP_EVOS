@@ -18,23 +18,6 @@ Can::Can(void)
 }
 
 
-// void Can::printFrame(CAN_message_t &frame, int mailbox)
-// {
-//     Serial.print("This just in!\n");
-//     Serial.print("ID: 0x");
-//     Serial.print(frame.id, HEX);
-
-//     //Print regID from buf[0] (only for unitek)
-//     Serial.print(" RegID: 0x");
-//     Serial.print(frame.buf[0], HEX);
-
-//     //Print value from register in reverse byte order
-//     Serial.print(" Data: 0x");
-//     Serial.print(frame.buf[2], HEX);
-//     Serial.print(frame.buf[1], HEX);
-// }
-
-
 /** 
  * @brief  Called whenever a new CAN frame is received
  * @note   All CAN messages will be sent received from mailbox 1 (CAN port 1) 
