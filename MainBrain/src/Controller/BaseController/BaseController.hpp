@@ -21,8 +21,13 @@ public:
     BaseController();
     virtual ~BaseController();  //to prevent memory leaks
 
+    //Due to the simgleton manager, constructors shouldn't be doing anything complicated
+    //so this requires a function for initialization for every controller
     virtual void init() = 0;
-    virtual void poll() = 0;
+    
+    //complex controllers will implement a polling function
+    //Ex: UnitekC, CanC, OrionC
+    virtual void poll();
 
     virtual void display();
     virtual void shutdown();

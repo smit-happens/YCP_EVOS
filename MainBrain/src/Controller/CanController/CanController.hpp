@@ -22,13 +22,14 @@ public:
 
     void init(void);
     void poll(void);
-    void display(void);     //TODO: implement
 
     //TODO: figure out the input/return parameters
     int messageSetup(uint8_t regID, uint8_t buf1, uint8_t buf2);
     int messageParse(void);
     int messageSend(void);
 
+private:
+    Can* canModel;
 };
 
 

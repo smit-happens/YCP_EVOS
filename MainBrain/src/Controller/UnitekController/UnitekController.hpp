@@ -22,14 +22,13 @@ public:
 
     void init(void);
     void poll(void);
-    void display(void);     //TODO: implement
     void shutdown(void);    //TODO: implement
 
     int calculateSpeedValue(float rpm);
     float calculateRpm(int speedValue);
 
 private:
-    Unitek* unitek;
+    Unitek* unitekModel;
 };
 
 

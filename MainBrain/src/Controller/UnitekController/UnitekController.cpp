@@ -15,7 +15,7 @@
  */
 UnitekController::UnitekController(void)
 {
-    unitek = new Unitek;
+    unitekModel = new Unitek;
 }
 
 
@@ -26,7 +26,7 @@ UnitekController::UnitekController(void)
  */
 UnitekController::~UnitekController(void)
 {
-    delete unitek;
+    delete unitekModel;
 }
 
 
@@ -57,17 +57,6 @@ void UnitekController::poll(void)
  * @note   
  * @retval None
  */
-void UnitekController::display(void)
-{
-
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval None
- */
 void UnitekController::shutdown(void)
 {
     
@@ -83,8 +72,8 @@ void UnitekController::shutdown(void)
  */
 int UnitekController::calculateSpeedValue(float rpm)
 {
-    float percentage = rpm / unitek->getRpmLimit();
-    return percentage * unitek->MAX_VALUE;
+    float percentage = rpm / unitekModel->getRpmLimit();
+    return percentage * unitekModel->MAX_VALUE;
 }
 
 
@@ -96,6 +85,6 @@ int UnitekController::calculateSpeedValue(float rpm)
  */
 float UnitekController::calculateRpm(int speedValue)
 {
-    float percentage = (float)speedValue / unitek->MAX_VALUE;
-    return percentage * unitek->getRpmLimit();
+    float percentage = (float)speedValue / unitekModel->MAX_VALUE;
+    return percentage * unitekModel->getRpmLimit();
 }

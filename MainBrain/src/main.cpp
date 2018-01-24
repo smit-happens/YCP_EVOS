@@ -12,12 +12,15 @@
 #include <Arduino.h>
 #include "Manager/Manager.hpp"
 
+//global variable that all the ISRs will flag for their respective event to run
+uint16_t globalEventFlags = 0;
 
 enum workflowStage
 {
     BOOTUP,
     SELF_TEST,
     SUBSYSTEM_TEST,
+    STANDBY,
     DRIVE,
     SHUTDOWN
 };
@@ -28,6 +31,9 @@ enum workflowStage
 int main(void)
 {
     Serial.begin(9600);
+
+    //initialize the local event 
+    uint32_t localEventFlags = 0;
 
     //creating the singletons and copying the location in memory
     CanController* canC = Manager::getCanC();
@@ -40,52 +46,44 @@ int main(void)
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWriteFast(LED_BUILTIN, 1);
 
+    //BOOTUP function
+        //SD card init function
+        canC->init();
+        unitekC->init();
+
+    //SELF_TEST function
+        //Teensy SelfTest
+
+    //SUBSYSTEM_TEST function
+        //subsystem checks (log status of each)
+
+        //Dashboard
+        //LCD (boot logo)
+        //TS master switch through BMS/BSPD
+        //Orion
+        //Unitek
+        //Cooling system
+            //Warning: Turn cooling on
+
+        //Notification: All systens go. Ready to Precharge
+            //wait for precharge button
+
 
     //---------------------------------------------------------------
-    // Begin main program loop
+    // Begin main program Super Loop
     while(1)
     {
         noInterrupts();
-        // localEventFlags
+        // localEventFlags = globalEventFlags;
         interrupts();
 
         switch(ExcecutingStep)
         {
-            case BOOTUP:
+            case STANDBY:
             {
-                //SD card init function
-                canC->init();
-                unitekC->init();
-
-                if(/* Condition is met */ 1 )
-                    ExcecutingStep = SELF_TEST;
-
-                break;
-            }
-
-
-            case SELF_TEST:
-            {
-                //Teensy SelfTest
-
-                break;
-            }
-
-
-            case SUBSYSTEM_TEST:
-            {
-                //subsystem checks (log status of each)
-
-                //Dashboard
-                //LCD (boot logo)
-                //TS master switch through BMS/BSPD
-                //Orion
-                //Unitek
-                //Cooling system
-                    //Alert: Turn cooling on
-
-                //Notification: All systens go. Ready to Precharge
-                    //wait for precharge button
+                //standby stuff
+                //should perform polling of subsystems 
+                //to see if we're still okay for transition to drive
 
                 break;
             }
@@ -97,19 +95,11 @@ int main(void)
 
                 break;
             }
-
-
-            case SHUTDOWN:
-            {
-                //Shutdown stuff
-
-                break;
-            }
         }   //end of switch
 
-        
+    }   //end of super loop ------------------------------------------------------
 
-    }
+    //SHUTDOWN function
 
     return 0;
 }

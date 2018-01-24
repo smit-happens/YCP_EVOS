@@ -17,7 +17,7 @@ const int REG_READ      = 0x3D;  //Read a register (followed by reg to rd from)
 const int REG_HALTPOLL  = 0xFF;  //Stop the MC sending values constantly
 
 //Status oriented registers
-const int REG_ERROR     = 0x8F;  //[0:31] Erro r bits; [16:31] Warning bits
+const int REG_ERROR     = 0x8F;  //[0:31] Error bits; [16:31] Warning bits
 const int REG_STATE     = 0x40;  //[0:28] Various internal states of the MC
 const int REG_DPORT     = 0xD8;  //[0:15] State of all ports on the dig conn. on MC
 const int REG_RUN       = 0xE8;  //[0:1]  Digital run pin enabled (FRG)

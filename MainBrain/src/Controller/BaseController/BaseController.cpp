@@ -30,6 +30,17 @@ BaseController::~BaseController(void)
 
 
 /** 
+ * @brief  basic polling function
+ * @note   
+ * @retval None
+ */
+void BaseController::poll(void)
+{
+    Serial.print("Default display function");
+}
+
+
+/** 
  * @brief  
  * @note   
  * @retval None

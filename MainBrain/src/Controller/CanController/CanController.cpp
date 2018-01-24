@@ -15,7 +15,7 @@
  */
 CanController::CanController(void)
 {
-
+    canModel = new Can;
 }
 
 
@@ -26,7 +26,7 @@ CanController::CanController(void)
  */
 CanController::~CanController(void)
 {
-
+    delete canModel;
 }
 
 
@@ -37,18 +37,7 @@ CanController::~CanController(void)
  */
 void CanController::init(void)
 {
-
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval None
- */
-void CanController::display(void)
-{
-
+    //open CAN port on mailbox 2
 }
 
 
