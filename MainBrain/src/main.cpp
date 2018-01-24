@@ -10,7 +10,7 @@
 #ifndef UNIT_TEST
 
 #include <Arduino.h>
-#include "Manager/Manager.hpp"
+#include "Controller/ControllerManager/ControllerManager.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
 uint16_t globalEventFlags = 0;
@@ -36,8 +36,8 @@ int main(void)
     uint32_t localEventFlags = 0;
 
     //creating the singletons and copying the location in memory
-    CanController* canC = Manager::getCanC();
-    UnitekController* unitekC = Manager::getUnitekC();
+    CanController* canC = ControllerManager::getCanC();
+    UnitekController* unitekC = ControllerManager::getUnitekC();
 
     //The first step when running is bootup
     workflowStage ExcecutingStep = BOOTUP;

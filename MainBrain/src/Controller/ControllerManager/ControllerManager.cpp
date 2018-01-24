@@ -1,18 +1,18 @@
-/**  Handles all the pointers of the singletons
+/**  Handles all the pointers of the controller singletons
  *
- * Manager.cpp
+ * ControllerManager.cpp
  * Created 1-21-18 By: Smitty
  *
  * A longer description.
  */
 
-#include "Manager.hpp"
+#include "ControllerManager.hpp"
 
 //Calling the constructor of each controller
 //NOTE: Do NOT perform complex functions or anything harder than
 //      memory allocation in constructor
-UnitekController* Manager::unitekC = new UnitekController();
-CanController* Manager::canC = new CanController();
+UnitekController* ControllerManager::unitekC = new UnitekController();
+CanController* ControllerManager::canC = new CanController();
 
 /** 
  * TODO: Initialize the pointers for the other controllers 
@@ -27,7 +27,7 @@ CanController* Manager::canC = new CanController();
  * @note   
  * @retval Pointer to the CanController
  */
-CanController* Manager::getCanC(void)
+CanController* ControllerManager::getCanC(void)
 {
     return canC;
 }
@@ -38,7 +38,7 @@ CanController* Manager::getCanC(void)
  * @note   
  * @retval Pointer to the UnitekController
  */
-UnitekController* Manager::getUnitekC(void)
+UnitekController* ControllerManager::getUnitekC(void)
 {
     return unitekC;
 }
