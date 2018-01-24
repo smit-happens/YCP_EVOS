@@ -12,28 +12,28 @@
 #include <Arduino.h>
 #include <FlexCAN.h>
 
-const int UNITEKREADID = 0x181;
-const int UNITEKSENDID = 0x201;
 
-// const int ORIONREADID = 0x840;   //Micaiah - "i think it's the same"
-const int ORIONSENDID = 0x840;
 
 class Can : public CANListener
 {
 public:
-    Can();
+    const int UNITEKREADID = 0x181;
+    const int UNITEKSENDID = 0x201;
 
-    void printFrame(CAN_message_t &frame, int mailbox);
+    // const int ORIONREADID = 0x840;   //Micaiah - "i think it's the same"
+    const int ORIONSENDID = 0x840;
+
+    Can();
 
     //overrides the parent version
     void gotFrame(CAN_message_t &frame, int mailbox);
 
-    // Unitek/Orion functions should later be combined but for right now this is easier (I hope)
-    void sendUnitek(void);
-    void readUnitek(CAN_message_t &frame);
+    //Send the CAN message on the Wire
+    void send(CAN_message_t message);
 
-    void sendOrion(void);
-    void readOrion(CAN_message_t &frame);
+private:
+    //CAN port the Teensy will be using
+    const int canMailbox = 1;
 };
 
 

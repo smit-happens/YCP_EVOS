@@ -77,25 +77,20 @@ int main(void)
         // localEventFlags = globalEventFlags;
         interrupts();
 
-        switch(ExcecutingStep)
+        if(ExcecutingStep == STANDBY)
         {
-            case STANDBY:
-            {
-                //standby stuff
-                //should perform polling of subsystems 
-                //to see if we're still okay for transition to drive
+            //standby stuff
+            //should perform polling of subsystems 
+            //to see if we're still okay for transition to drive
 
-                break;
-            }
+        }
 
 
-            case DRIVE:
-            {
-                //Driving stuff
+        if(ExcecutingStep == DRIVE)
+        {
+            //Driving stuff
 
-                break;
-            }
-        }   //end of switch
+        }
 
     }   //end of super loop ------------------------------------------------------
 

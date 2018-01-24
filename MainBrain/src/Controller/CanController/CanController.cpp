@@ -15,7 +15,7 @@
  */
 CanController::CanController(void)
 {
-    canModel = new Can;
+    
 }
 
 
@@ -26,18 +26,24 @@ CanController::CanController(void)
  */
 CanController::~CanController(void)
 {
-    delete canModel;
+    //This causes a warning: deleting object of polymorphic class type 'Can' 
+    //which has non-virtual destructor might cause undefined behaviour
+    //delete canModel;
 }
 
 
 /** 
- * @brief  
+ * @brief  All the complex configuration setup goes here
  * @note   
  * @retval None
  */
 void CanController::init(void)
 {
-    //open CAN port on mailbox 2
+    //creating the local CAN model
+    canModel = new Can;
+
+    Can1.attachObj(canModel);
+    canModel->attachGeneralHandler();
 }
 
 
@@ -48,55 +54,46 @@ void CanController::init(void)
  */
 void CanController::poll(void)
 {
-
+    //TODO: implement this
 }
 
 
 /** 
- * @brief  
- * @note   TODO: implement this the correct way
- * @param  regID: 
- * @param  buf1: 
- * @param  buf2: 
- * @retval 
+ * @brief  Formats and sends a Unitek CAN message to read the value of a register
+ * @note   Add polling if we care about that later
+ * @param  regId:    Register ID that you want the value of
+ * @param  pollTime: Time for polling interval (or REG_HALTPOLL)
+ * @retval None
  */
-int CanController::messageSetup(uint8_t regID, uint8_t buf1, uint8_t buf2)
+void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
 {
-    uint8_t extendedCan = 0;
-    uint16_t idCan = 0x201;
-    uint8_t lengthCan = 3;
+    //initializing and constructing the CAN message for the Unitek
+    CAN_message_t unitekMessage;
 
-    uint8_t buffer[3];
+    unitekMessage.id = canModel->ORIONSENDID;
+    unitekMessage.len = 3;
+    unitekMessage.buf[0] = REG_READ;
+    unitekMessage.buf[1] = regId;
+    unitekMessage.buf[2] = pollTime;
 
-    if(regID == 0)
-    {
-        //performing a read operation set buf[0] to READ command
-        buffer[0] = 0;
-        buffer[1] = buf1;
+    //FIXME: polling is not implemented yet
+    if(pollTime != 0)
+        canModel->send(unitekMessage);
 
-        //default is 0 but can represent time (in ms) for polling
-        buffer[2] = buf2;
-    }
-    else
-    {
-        //performing write opration
-        buffer[0] = regID;
-
-        //storing the value in byte flipped order
-        buffer[2] = buf1;
-        buffer[1] = buf2;
-    }
-
-    return 0;
+    //Debug print statements
+    Serial.print(unitekMessage.id);
+    Serial.print(unitekMessage.buf[0]);
+    Serial.print(unitekMessage.buf[1]);
+    Serial.print(unitekMessage.buf[2]);
 }
 
 
-/** 
- * @brief  
- * @note   TODO: Have this work for Unitek and Orion
- * @retval 
- */
-int CanController::messageParse(void)
-{
-    return 0;
-}
+// /** 
+//  * @brief  
+//  * @note   TODO: Have this work for Unitek and Orion
+//  * @retval 
+//  */
+// int CanController::messageParse(void)
+// {
+//     return 0;
+// }
