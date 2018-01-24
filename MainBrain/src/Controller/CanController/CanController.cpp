@@ -93,7 +93,7 @@ void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
 //  * @note   TODO: Have this work for Unitek and Orion
 //  * @retval 
 //  */
-// int CanController::messageParse(void)
+// int CanController::parse(void)
 // {
 //     return 0;
 // }

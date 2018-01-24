@@ -29,6 +29,8 @@ public:
 
     void sendOrion(void);    //TODO: implement this based on testing done with Micaiah
 
+    void parse(void);
+
 private:
     Can* canModel;
     
