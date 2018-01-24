@@ -45,7 +45,7 @@ Can::Can(void)
 void Can::gotFrame(CAN_message_t &frame, int mailbox)
 {
     //TODO: message just came in, check ID and send data to Unitek or Orion
-    
+    //check id, store in orion or unitek queue, (maybe) set queueHasDataFlag
 }
 
 
