@@ -40,7 +40,7 @@ CanController::~CanController(void)
 void CanController::init(void)
 {
     //creating the local CAN model
-    canModel = new Can;
+    canModel = new Can();
 
     Can1.attachObj(canModel);
     canModel->attachGeneralHandler();
