@@ -13,7 +13,7 @@
 #include "Controller/ControllerManager/ControllerManager.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
-uint16_t globalEventFlags = 0;
+uint32_t globalEventFlags = 0;
 
 enum workflowStage
 {
@@ -30,6 +30,7 @@ enum workflowStage
 // Begin main function
 int main(void)
 {
+    delay(5000);    //delay 5 seconds
     Serial.begin(9600);
 
     //initialize the local event 
@@ -74,7 +75,8 @@ int main(void)
     while(1)
     {
         noInterrupts();
-        // localEventFlags = globalEventFlags;
+        //Volatile operation for transferring flags from ISRs to local main
+        localEventFlags = globalEventFlags;
         interrupts();
 
         if(ExcecutingStep == STANDBY)

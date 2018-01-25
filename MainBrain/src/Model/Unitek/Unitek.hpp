@@ -14,6 +14,64 @@
 
 
 
+struct ErrorBits
+{
+    uint8_t badParam        : 1;
+    uint8_t powerFault      : 1;
+    uint8_t rfeFault        : 1;
+    uint8_t busTimeout      : 1;
+    uint8_t feedback        : 1;
+    uint8_t powerVoltage    : 1;
+    uint8_t motorTemp       : 1;
+    uint8_t deviceTemp      : 1;
+    uint8_t overVoltage     : 1;
+    uint8_t iPeak           : 1;
+    uint8_t raceAway        : 1;
+    uint8_t user            : 1;
+    uint8_t i2R             : 1;
+    uint8_t reserve         : 1;
+    uint8_t hwFail          : 1;
+    uint8_t ballast         : 1;
+};
+
+//section of the error/warning register that stores warnings
+struct WarningBits
+{
+    uint8_t warning0        : 1;
+    uint8_t illegalStatus   : 1;
+    uint8_t warning2        : 1;
+    uint8_t blankFields     : 2;
+    uint8_t powerVoltage    : 1;
+    uint8_t motorTemp       : 1;
+    uint8_t deviceTemp      : 1;
+    uint8_t overVoltage     : 1;
+    uint8_t iPeak           : 1;
+    uint8_t blankFields1    : 2;
+    uint8_t i2R             : 1;
+    uint8_t blankFields2    : 2;
+    uint8_t ballast         : 1;
+};
+
+
+//correlates to REG_ERROR
+typedef union
+{
+    //section of the error/warning register that stores errors
+    uint16_t raw;
+    struct ErrorBits errorBits;
+
+} ErrorReg;
+
+
+typedef union
+{
+    //section of the error/warning register that stores errors
+    uint16_t raw;
+    struct WarningBits warningBits;
+    
+} WarningReg;
+
+
 class Unitek
 {
 public:
@@ -31,8 +89,11 @@ public:
     float getTemperatureOutputStage(void);
     float getTemperatureInterior(void);
 
-    uint16_t getWarnings(void);
-    uint16_t getErrors(void);
+    WarningReg getWarnings(void);
+    //void setWarnings(uint16_t input);
+
+    ErrorReg getErrors(void);
+    void setErrors(uint16_t input);
 
     //FIXME: any get...() method that returns void, needs to have work done on its return type
     void getDigitalPort(void);  //TODO: create struct for the connections in the digital port
@@ -52,48 +113,9 @@ private:
     //this could be changed through CAN but for now it's just set here
     int rpmLimit;
     
-    //correlates to REG_ERROR
-    typedef union
-    {
-        //section of the error/warning register that stores errors
-        uint32_t raw;
-        struct ErrorBits
-        {
-            uint8_t badParam        : 1;
-            uint8_t powerFault      : 1;
-            uint8_t rfeFault        : 1;
-            uint8_t busTimeout      : 1;
-            uint8_t feedback        : 1;
-            uint8_t powerVoltage    : 1;
-            uint8_t motorTemp       : 1;
-            uint8_t deviceTemp      : 1;
-            uint8_t overVoltage     : 1;
-            uint8_t iPeak           : 1;
-            uint8_t raceAway        : 1;
-            uint8_t user            : 1;
-            uint8_t i2R             : 1;
-            uint8_t reserve         : 1;
-            uint8_t hwFail          : 1;
-            uint8_t ballast         : 1;
-        };
-        //section of the error/warning register that stores warnings
-        struct WarningBits
-        {
-            uint8_t warning0        : 1;
-            uint8_t illegalStatus   : 1;
-            uint8_t warning2        : 1;
-            uint8_t blankFields     : 2;
-            uint8_t powerVoltage    : 1;
-            uint8_t motorTemp       : 1;
-            uint8_t deviceTemp      : 1;
-            uint8_t overVoltage     : 1;
-            uint8_t iPeak           : 1;
-            uint8_t blankFields1    : 2;
-            uint8_t i2R             : 1;
-            uint8_t blankFields2    : 2;
-            uint8_t ballast         : 1;
-        };
-    } ErrorWarningReg;
+    ErrorReg errorReg;
+    WarningReg warningReg;
+
 
     //correlates to REG_DPORT for the states of the digital port
     struct ModeReg

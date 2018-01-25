@@ -15,7 +15,7 @@
  */
 UnitekController::UnitekController(void)
 {
-    unitekModel = new Unitek;
+    unitekModel = new Unitek();
 }
 
 
@@ -37,7 +37,12 @@ UnitekController::~UnitekController(void)
  */
 void UnitekController::init(void)
 {
-    
+    //FIXME: TESTING CODE
+    uint16_t temp = 0b1101'0000'0000'0000;
+    unitekModel->setErrors(temp);
+    Serial.print("Error / Warning bits: ");
+    Serial.print(unitekModel->getErrors().errorBits.badParam);
+    //FIXME: TESTING CODE
 }
 
 

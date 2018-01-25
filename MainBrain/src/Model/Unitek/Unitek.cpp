@@ -102,20 +102,31 @@ float Unitek::getTemperatureInterior(void)
  * @note   TODO: Call the same register as the getErrors() function but store different bits
  * @retval Warning bits
  */
-uint16_t Unitek::getWarnings(void)
+WarningReg Unitek::getWarnings(void)
 {
-    return 0;
+    return warningReg;
 }
 
 
 /** 
- * @brief  Retrieves the Error bits in the combined error/warning register
- * @note   TODO: Call the same register as the getErrors() function but store different bits
+ * @brief  Retrieves the stored Error bits in the combined error/warning register
+ * @note   
  * @retval Error bits
  */
-uint16_t Unitek::getErrors(void)
+ErrorReg Unitek::getErrors(void)
 {
-    return 0;
+    return errorReg;
+}
+
+
+/** 
+ * @brief  Stores the given Error bits in the error section of the error/warning register
+ * @note   
+ * @retval None
+ */
+void Unitek::setErrors(uint16_t input)
+{
+    errorReg.raw = input;
 }
 
 
