@@ -41,9 +41,9 @@ void UnitekController::init(void)
     uint16_t temp = 0b11111111000000000;
     unitekModel->setErrors(temp);
     Serial.print("badParam bit: ");
-    Serial.print(unitekModel->getErrors().errorBits.badParam);
+    Serial.print(unitekModel->getErrors().errorBits.BadParam);
     Serial.print("\nballast bit: ");
-    Serial.print(unitekModel->getErrors().errorBits.ballast);
+    Serial.print(unitekModel->getErrors().errorBits.Ballast);
     //FIXME: TESTING CODE
 }
 
