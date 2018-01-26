@@ -31,6 +31,17 @@ public:
     //Send the CAN message on the Wire
     void send(CAN_message_t message);
 
+    //TODO: implement getMail function that will return a list (of some data type) for the
+    //controller to sort through
+    //(determine return type) getMail(void)
+
+    //setter functions that will handle the storage of the data for each of the CAN devices
+    //setMailUnitek()
+    //setMailOrion()
+
+    //function that UnitekC will call in order to see if there exists any new mail for it
+    //bool checkMailUnitek()
+
 private:
     //CAN port the Teensy will be using
     const int canMailbox = 1;
