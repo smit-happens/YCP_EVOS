@@ -38,10 +38,12 @@ UnitekController::~UnitekController(void)
 void UnitekController::init(void)
 {
     //FIXME: TESTING CODE
-    uint16_t temp = 0b1101000000000000;
+    uint16_t temp = 0b11111111000000000;
     unitekModel->setErrors(temp);
-    Serial.print("Error bits: ");
+    Serial.print("badParam bit: ");
     Serial.print(unitekModel->getErrors().errorBits.badParam);
+    Serial.print("\nballast bit: ");
+    Serial.print(unitekModel->getErrors().errorBits.ballast);
     //FIXME: TESTING CODE
 }
 

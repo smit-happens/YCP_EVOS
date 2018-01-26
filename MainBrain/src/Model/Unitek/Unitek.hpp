@@ -16,7 +16,7 @@
 
 struct ErrorBits
 {
-    uint8_t badParam        : 1;
+    uint8_t badParam        : 1;    //bit 0
     uint8_t powerFault      : 1;
     uint8_t rfeFault        : 1;
     uint8_t busTimeout      : 1;
@@ -31,13 +31,13 @@ struct ErrorBits
     uint8_t i2R             : 1;
     uint8_t reserve         : 1;
     uint8_t hwFail          : 1;
-    uint8_t ballast         : 1;
+    uint8_t ballast         : 1;    //bit 15
 };
 
 //section of the error/warning register that stores warnings
 struct WarningBits
 {
-    uint8_t warning0        : 1;
+    uint8_t warning0        : 1;    //bit 0
     uint8_t illegalStatus   : 1;
     uint8_t warning2        : 1;
     uint8_t blankFields     : 2;
@@ -49,7 +49,7 @@ struct WarningBits
     uint8_t blankFields1    : 2;
     uint8_t i2R             : 1;
     uint8_t blankFields2    : 2;
-    uint8_t ballast         : 1;
+    uint8_t ballast         : 1;    //bit 15
 };
 
 

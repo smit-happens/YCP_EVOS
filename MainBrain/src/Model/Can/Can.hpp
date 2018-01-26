@@ -11,7 +11,7 @@
 
 #include <Arduino.h>
 #include <FlexCAN.h>
-
+// #include <queue.h>
 
 
 class Can : public CANListener
@@ -45,6 +45,9 @@ public:
 private:
     //CAN port the Teensy will be using
     const int canMailbox = 1;
+
+    //queue variables that will be used for the Unitek and Orion devices
+    // queue<int> inbox;
 };
 
 

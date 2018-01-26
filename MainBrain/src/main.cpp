@@ -37,7 +37,7 @@ int main(void)
     uint32_t localEventFlags = 0;
 
     //creating the singletons and copying the location in memory
-    CanController* canC = ControllerManager::getCanC();
+    // CanController* canC = ControllerManager::getCanC();
     UnitekController* unitekC = ControllerManager::getUnitekC();
 
     //The first step when running is bootup
@@ -49,7 +49,7 @@ int main(void)
 
     //BOOTUP function
         //SD card init function
-        canC->init();
+        // canC->init();
         unitekC->init();
 
     //SELF_TEST function
