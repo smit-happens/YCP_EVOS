@@ -100,7 +100,7 @@ float Unitek::getTemperatureInterior(void)
 /** 
  * @brief  Retrieves the stored Error bits in the combined error/warning register
  * @note   
- * @retval Error bits
+ * @retval ErrorReg_0x8F
  */
 ErrorReg_0x8F Unitek::getErrorReg_0x8F(void)
 {
@@ -123,7 +123,7 @@ void Unitek::setErrorReg_0x8F(uint16_t input)
 /** 
  * @brief  Retrieves the Warning bits in the combined error/warning register
  * @note   
- * @retval Warning bits
+ * @retval WarningReg_0x8F
  */
 WarningReg_0x8F Unitek::getWarningReg_0x8F(void)
 {
@@ -143,7 +143,6 @@ void Unitek::setWarningReg_0x8F(uint16_t input)
 }
 
 
-
 /** 
  * @brief  
  * @note   
@@ -155,7 +154,39 @@ StateReg_0x40 Unitek::getStateReg_0x40(void)
 }
 
 
+/** 
+ * @brief  
+ * @note   
+ * @param  input: 32bit value representing the State bits
+ * @retval None
+ */
+void Unitek::setStateReg_0x40(uint32_t input)
+{
+    stateReg_0x40.raw = input;
+}
 
+
+/** 
+ * @brief  
+ * @note   
+ * @retval ModeReg_0xD8
+ */
+ModeReg_0xD8 Unitek::getModeReg_0xD8(void)
+{
+    return modeReg_0xD8;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  input:  16bit value representing bits in the Mode register
+ * @retval None
+ */
+void Unitek::setModeReg_0xD8(uint16_t input)
+{
+    modeReg_0xD8.raw = input;
+}
 
 
 /** 
