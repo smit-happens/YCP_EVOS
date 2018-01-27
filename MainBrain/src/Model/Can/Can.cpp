@@ -15,6 +15,24 @@ Can::Can(void)
 {
     //initializing the CAN port at 500k baud
     Can1.begin(500000);
+
+    //queue used for the main receiver of new CAN messages to be sorted later
+    mailbox = new Queue(sizeof(CAN_message_t), 20, FIFO);
+    
+    //internal inboxes for the Unitek and Orion devices
+    inboxUnitek = new Queue(sizeof(uint8_t)*4, 20, FIFO);
+    inboxOrion = new Queue(sizeof(CAN_message_t), 20, FIFO);
+}
+
+
+/** 
+ * @brief  Can destructor
+ */
+Can::~Can(void)
+{
+    delete mailbox;
+    delete inboxUnitek;
+    delete inboxOrion;
 }
 
 
@@ -29,6 +47,8 @@ void Can::gotFrame(CAN_message_t &frame, int mailbox)
 {
     //TODO: message just came in, check ID and send data to Unitek or Orion
     //check id, store in orion or unitek queue, (maybe) set queueHasDataFlag
+    //globalEventFlags = 0;
+    
 }
 
 
@@ -40,4 +60,37 @@ void Can::gotFrame(CAN_message_t &frame, int mailbox)
 void Can::send(CAN_message_t message)
 {
     Can1.write(message);
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+// uint8_t* Can::getMail(void)
+// {
+
+// }
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+// uint8_t* Can::getInboxUnitek(void)
+// {
+//     return inboxUnitek;
+// }
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval true/false based on if there's anything 
+ */
+bool Can::checkInboxUnitek(void)
+{
+    return !inboxUnitek->isEmpty();
 }

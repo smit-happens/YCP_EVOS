@@ -26,9 +26,8 @@ CanController::CanController(void)
  */
 CanController::~CanController(void)
 {
-    //This causes a warning: deleting object of polymorphic class type 'Can' 
-    //which has non-virtual destructor might cause undefined behaviour
-    //delete canModel;
+    canModel->detachGeneralHandler();
+    Can1.detachObj(canModel);
 }
 
 

@@ -9,9 +9,9 @@
 #ifndef CAN_HPP
 #define CAN_HPP
 
-#include <Arduino.h>
 #include <FlexCAN.h>
-// #include <queue.h>
+#include <cppQueue.h>
+#include "../Constants/EventMasks.hpp"
 
 
 class Can : public CANListener
@@ -23,7 +23,8 @@ public:
     // const int ORIONREADID = 0x840;   //Micaiah - "i think it's the same"
     const int ORIONSENDID = 0x840;
 
-    Can();
+    Can(void);
+    ~Can(void);
 
     //overrides the parent version
     void gotFrame(CAN_message_t &frame, int mailbox);
@@ -33,21 +34,31 @@ public:
 
     //TODO: implement getMail function that will return a list (of some data type) for the
     //controller to sort through
-    //(determine return type) getMail(void)
+    uint8_t* getMail(void);
 
-    //setter functions that will handle the storage of the data for each of the CAN devices
-    //setMailUnitek()
-    //setMailOrion()
+    //get/set functions that will handle the storage of the data for each of the CAN devices
+    uint8_t* getInboxUnitek(void);
+    void setInboxUnitek(uint8_t* canData[]);
 
-    //function that UnitekC will call in order to see if there exists any new mail for it
-    //bool checkMailUnitek()
+    //getInboxOrion();
+    //setInboxOrion();
+
+
+    //function that UnitekC/OrionC will call in order to see if there exists any new messages for it
+    bool checkInboxUnitek(void);
+    bool checkInboxOrion(void);
 
 private:
     //CAN port the Teensy will be using
     const int canMailbox = 1;
 
+    //count for the amount of times EF0 triggered
+    uint16_t CAN_MESSAGE_EF0_CNT = 0;
+
     //queue variables that will be used for the Unitek and Orion devices
-    // queue<int> inbox;
+    Queue* mailbox;
+    Queue* inboxUnitek;
+    Queue* inboxOrion;
 };
 
 
