@@ -30,8 +30,10 @@ enum workflowStage
 // Begin main function
 int main(void)
 {
-    delay(5000);    //delay 5 seconds
     Serial.begin(9600);
+    while (!Serial) {
+        ; // wait for serial port to connect
+    }
 
     //initialize the local event 
     uint32_t localEventFlags = 0;
