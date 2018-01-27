@@ -205,14 +205,14 @@ private:
 
 
     //Internal variables to store the data locally from the Unitek
-    bool     runStatusReg;         //Lazy
-    uint8_t  goStatusReg;          //Lazy
-    uint16_t hvBusVoltageReg;      //Active
-    uint16_t speedValReg;          //Active
-    uint16_t speedValRnReg;        //Active
-    uint16_t tempMotorReg;         //Active
-    uint16_t tempOutputStageMCReg; //Active
-    uint16_t tempInteriorMCReg;    //Active
+    bool     I_RunReg_0xE8;                 //Lazy
+    uint8_t  goStatusReg_0xE3;              //Lazy
+    uint16_t hvBusVoltageReg_0xEB;          //Active
+    uint16_t speedCmdValBeforeRampReg_0x31; //Active
+    uint16_t speedValRnReg_0x30;            //Active
+    uint16_t tempMotorReg_0x49;             //Active
+    uint16_t tempOutputStageMCReg_0x4A;     //Active
+    uint16_t tempInteriorMCReg_0x4B;        //Active
 
 };
 
