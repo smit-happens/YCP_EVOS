@@ -14,8 +14,7 @@
 #include "Model/Constants/EventMasks.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
-//extern uint32_t globalEventFlags = 0;
-uint32_t globalEventFlags = 0;
+static volatile uint32_t globalEventFlags = 0;
 
 enum workflowStage
 {
