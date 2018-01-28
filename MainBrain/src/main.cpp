@@ -16,7 +16,7 @@
 //global variable that all the ISRs will flag for their respective event to run
 static volatile uint32_t globalEventFlags = 0;
 
-enum workflowStage
+enum WorkflowStage
 {
     BOOTUP,
     SELF_TEST,
@@ -36,68 +36,76 @@ int main(void)
         ; // wait for serial port to connect
     }
 
-    //initialize the local event 
+    //initialize the local event flag variable
     uint32_t localEventFlags = 0;
 
     //creating the singletons and copying the location in memory
-    // CanController* canC = ControllerManager::getCanC();
+    CanController* canC = ControllerManager::getCanC();
     UnitekController* unitekC = ControllerManager::getUnitekC();
 
     //The first step when running is bootup
-    workflowStage ExcecutingStep = BOOTUP;
+    WorkflowStage excecutingStep = BOOTUP;
 
     // using the builtin LED as a status light
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWriteFast(LED_BUILTIN, 1);
 
     //BOOTUP function
+    if(excecutingStep == BOOTUP)
+    {
         //SD card init function
-        // canC->init();
+        canC->init();
         unitekC->init();
+    }
 
-    //SELF_TEST function
-        //Teensy SelfTest
 
-    //SUBSYSTEM_TEST function
-        //subsystem checks (log status of each)
-
-        //Dashboard
-        //LCD (boot logo)
-        //TS master switch through BMS/BSPD
-        //Orion
-        //Unitek
-        //Cooling system
-            //Warning: Turn cooling on
-
-        //Notification: All systens go. Ready to Precharge
-            //wait for precharge button
-
+    if(excecutingStep == SELF_TEST)
+    {
+        //SELF_TEST function
+            //Teensy SelfTest
+    }
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
-    while(1)
+    while(excecutingStep != SHUTDOWN)
     {
-        noInterrupts();
-        //Volatile operation for transferring flags from ISRs to local main
-        localEventFlags = globalEventFlags;
-        interrupts();
-
-        if(ExcecutingStep == STANDBY)
+        while(excecutingStep == STANDBY)
         {
+            noInterrupts();
+            //Volatile operation for transferring flags from ISRs to local main
+            localEventFlags = globalEventFlags;
+            interrupts();
+
             //standby stuff
+                //subsystem checks (log status of each)
+
+                //Dashboard
+                //LCD (boot logo)
+                //TS master switch through BMS/BSPD
+                //Orion
+                //Unitek
+                //Cooling system
+                    //Warning: Turn cooling on
+
+                //Notification: All systens go. Ready to Precharge
+                    //wait for precharge button
+
             //should perform polling of subsystems 
             //to see if we're still okay for transition to drive
-
         }
 
-
-        if(ExcecutingStep == DRIVE)
+        while(excecutingStep == DRIVE)
         {
+            noInterrupts();
+            //Volatile operation for transferring flags from ISRs to local main
+            localEventFlags = globalEventFlags;
+            interrupts();
+            
             //Driving stuff
 
-        }
 
-    }   //end of super loop ------------------------------------------------------
+        }   //end of super loop ------------------------------------------------------
+    }
 
     //SHUTDOWN function
 
