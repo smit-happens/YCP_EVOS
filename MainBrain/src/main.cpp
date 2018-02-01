@@ -22,6 +22,7 @@ enum WorkflowStage
     SELF_TEST,
     SUBSYSTEM_TEST,
     STANDBY,
+    PRECHARGE,
     DRIVE,
     SHUTDOWN
 };
@@ -53,16 +54,50 @@ int main(void)
     //BOOTUP function
     if(excecutingStep == BOOTUP)
     {
-        //SD card init function
+        //Calling init functions for each controller
         canC->init();
         unitekC->init();
+
+        //Configure registers
+        //Brownout configuration
+        //timer configuration
+            //DO NOT START TIMERS HERE
+
+
+        if(/* check for ShutdownEF*/ 1 )
+        {
+            excecutingStep = SELF_TEST;
+        }
     }
 
 
     if(excecutingStep == SELF_TEST)
     {
-        //SELF_TEST function
-            //Teensy SelfTest
+        //Teensy SelfTest (internal functions)
+        //SdCard check (read data, check if good)
+        //Dash test (turn on all LEDS, user confirmation w/ encoder)
+
+
+        if(/* check for ShutdownEF*/ 1 )
+        {
+            excecutingStep = SUBSYSTEM_TEST;
+        }
+    }
+
+    if(excecutingStep == SUBSYSTEM_TEST)
+    {
+        
+        //Unitek check if okay
+        //Orion check if okay
+        //Cooling check if working
+        //GLV battery level check
+        
+
+
+        if(/* check for ShutdownEF*/ 1 )
+        {
+            excecutingStep = STANDBY;
+        }
     }
 
     //---------------------------------------------------------------
@@ -76,22 +111,21 @@ int main(void)
             localEventFlags = globalEventFlags;
             interrupts();
 
-            //standby stuff
-                //subsystem checks (log status of each)
+            //Start timers
 
-                //Dashboard
+            //Polling of subsystems (log status of each)
+                //See if we're still good for transition to drive
+
+            //Dashboard
                 //LCD (boot logo)
-                //TS master switch through BMS/BSPD
-                //Orion
-                //Unitek
-                //Cooling system
-                    //Warning: Turn cooling on
+            //TS master switch through BMS
+            //Orion
+            //Unitek
+            //Cooling system
+                //Warning: Turn cooling on
 
-                //Notification: All systens go. Ready to Precharge
-                    //wait for precharge button
-
-            //should perform polling of subsystems 
-            //to see if we're still okay for transition to drive
+            //Notification: All systens go. Ready to Precharge
+                //check for PrechargeEF
         }
 
         while(excecutingStep == DRIVE)
@@ -104,10 +138,15 @@ int main(void)
             //Driving stuff
 
 
+
         }   //end of super loop ------------------------------------------------------
     }
 
     //SHUTDOWN function
+        //EXTREMELY CRITICAL FUNCTIONS, no looping here
+        //close out SdCard logs
+        //SCADA_OK signal to false
+
 
     return 0;
 }

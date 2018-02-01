@@ -38,15 +38,15 @@ UnitekController::~UnitekController(void)
 void UnitekController::init(void)
 {
     //FIXME: TESTING CODE
-    uint16_t temp = 0b1111111100000000;
-    unitekModel->setWarningReg_0x8F(temp);
-    Serial.print("Warning0 bit: ");
-    Serial.println(unitekModel->getWarningReg_0x8F().warningBits.Warning0);
-    Serial.print("Ballast bit: ");
-    Serial.println(unitekModel->getWarningReg_0x8F().warningBits.Ballast);
+    // uint16_t temp = 0b1111111100000000;
+    // unitekModel->setWarningReg_0x8F(temp);
+    // Serial.print("Warning0 bit: ");
+    // Serial.println(unitekModel->getWarningReg_0x8F().warningBits.Warning0);
+    // Serial.print("Ballast bit: ");
+    // Serial.println(unitekModel->getWarningReg_0x8F().warningBits.Ballast);
 
-    Serial.println("Entire Warning section: ");
-    Serial.print(unitekModel->getWarningReg_0x8F().raw, BIN);
+    // Serial.println("Entire Warning section: ");
+    // Serial.print(unitekModel->getWarningReg_0x8F().raw, BIN);
     //FIXME: TESTING CODE
 }
 
