@@ -10,17 +10,19 @@
 #ifndef UNIT_TEST
 
 #include <Arduino.h>
-#include "Manager/Manager.hpp"
+#include "Controller/ControllerManager/ControllerManager.hpp"
+#include "Model/Constants/EventMasks.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
-uint16_t globalEventFlags = 0;
+static volatile uint32_t globalEventFlags = 0;
 
-enum workflowStage
+enum WorkflowStage
 {
     BOOTUP,
     SELF_TEST,
     SUBSYSTEM_TEST,
     STANDBY,
+    PRECHARGE,
     DRIVE,
     SHUTDOWN
 };
@@ -31,70 +33,120 @@ enum workflowStage
 int main(void)
 {
     Serial.begin(9600);
+    while (!Serial) {
+        ; // wait for serial port to connect
+    }
 
-    //initialize the local event 
+    //initialize the local event flag variable
     uint32_t localEventFlags = 0;
 
     //creating the singletons and copying the location in memory
-    CanController* canC = Manager::getCanC();
-    UnitekController* unitekC = Manager::getUnitekC();
+    CanController* canC = ControllerManager::getCanC();
+    UnitekController* unitekC = ControllerManager::getUnitekC();
 
     //The first step when running is bootup
-    workflowStage ExcecutingStep = BOOTUP;
+    WorkflowStage excecutingStep = BOOTUP;
 
     // using the builtin LED as a status light
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWriteFast(LED_BUILTIN, 1);
 
     //BOOTUP function
-        //SD card init function
+    if(excecutingStep == BOOTUP)
+    {
+        //Calling init functions for each controller
         canC->init();
         unitekC->init();
 
-    //SELF_TEST function
-        //Teensy SelfTest
+        //Configure registers
+        //Brownout configuration
+        //timer configuration
+            //DO NOT START TIMERS HERE
 
-    //SUBSYSTEM_TEST function
-        //subsystem checks (log status of each)
 
-        //Dashboard
-        //LCD (boot logo)
-        //TS master switch through BMS/BSPD
-        //Orion
-        //Unitek
-        //Cooling system
-            //Warning: Turn cooling on
+        if(/* check for ShutdownEF*/ 1 )
+        {
+            excecutingStep = SELF_TEST;
+        }
+    }
 
-        //Notification: All systens go. Ready to Precharge
-            //wait for precharge button
 
+    if(excecutingStep == SELF_TEST)
+    {
+        //Teensy SelfTest (internal functions)
+        //SdCard check (read data, check if good)
+        //Dash test (turn on all LEDS, user confirmation w/ encoder)
+
+
+        if(/* check for ShutdownEF*/ 1 )
+        {
+            excecutingStep = SUBSYSTEM_TEST;
+        }
+    }
+
+    if(excecutingStep == SUBSYSTEM_TEST)
+    {
+        
+        //Unitek check if okay
+        //Orion check if okay
+        //Cooling check if working
+        //GLV battery level check
+        
+
+
+        if(/* check for ShutdownEF*/ 1 )
+        {
+            excecutingStep = STANDBY;
+        }
+    }
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
-    while(1)
+    while(excecutingStep != SHUTDOWN)
     {
-        noInterrupts();
-        // localEventFlags = globalEventFlags;
-        interrupts();
-
-        if(ExcecutingStep == STANDBY)
+        while(excecutingStep == STANDBY)
         {
-            //standby stuff
-            //should perform polling of subsystems 
-            //to see if we're still okay for transition to drive
+            noInterrupts();
+            //Volatile operation for transferring flags from ISRs to local main
+            localEventFlags = globalEventFlags;
+            interrupts();
 
+            //Start timers
+
+            //Polling of subsystems (log status of each)
+                //See if we're still good for transition to drive
+
+            //Dashboard
+                //LCD (boot logo)
+            //TS master switch through BMS
+            //Orion
+            //Unitek
+            //Cooling system
+                //Warning: Turn cooling on
+
+            //Notification: All systens go. Ready to Precharge
+                //check for PrechargeEF
         }
 
-
-        if(ExcecutingStep == DRIVE)
+        while(excecutingStep == DRIVE)
         {
+            noInterrupts();
+            //Volatile operation for transferring flags from ISRs to local main
+            localEventFlags = globalEventFlags;
+            interrupts();
+            
             //Driving stuff
 
-        }
 
-    }   //end of super loop ------------------------------------------------------
+
+        }   //end of super loop ------------------------------------------------------
+    }
 
     //SHUTDOWN function
+        //EXTREMELY CRITICAL FUNCTIONS, no looping here
+        //close out SdCard logs
+        //SCADA_OK signal to false
+
 
     return 0;
 }

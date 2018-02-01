@@ -23,6 +23,11 @@ public:
     void init(void);
     void poll(void);
 
+    // void display(void);
+
+    //TODO: implement the process mail function for sorting and striping the CAN id out of messages
+    //void processMail();
+
     //Format and pass the CAN message to the CAN model to put out on the wire
     void sendUnitekRead(uint8_t regId, uint8_t pollTime);   //send a register read message
     void sendUnitekWrite(uint8_t regID, uint8_t buf1, uint8_t buf2);    //send a register write message

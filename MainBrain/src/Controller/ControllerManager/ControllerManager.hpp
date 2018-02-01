@@ -1,17 +1,17 @@
-/**  Handles all the pointers of the singletons
+/**  Handles all the pointers of the controller singletons
  *
- * #include "Manager.hpp"
+ * #include "ControllerManager.hpp"
  * Created 1-21-18  By: Smitty
  *
  * A longer description.
  */
 
-#ifndef MANAGER_HPP
-#define MANAGER_HPP
+#ifndef CONTROLLERMANAGER_HPP
+#define CONTROLLERMANAGER_HPP
 
-#include "../Controller/Controller.hpp"
+#include "../Controller.hpp"
 
-class Manager
+class ControllerManager
 {
 public:
     //Getters for the controller pointers
@@ -38,4 +38,4 @@ private:
      */
 };
 
-#endif  //MANAGER_HPP
+#endif  //CONTROLLERMANAGER_HPP

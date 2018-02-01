@@ -15,24 +15,25 @@ Can::Can(void)
 {
     //initializing the CAN port at 500k baud
     Can1.begin(500000);
+
+    //queue used for the main receiver of new CAN messages to be sorted later
+    mailbox = new Queue(sizeof(CAN_message_t), 20, FIFO);
+    
+    //internal inboxes for the Unitek and Orion devices
+    inboxUnitek = new Queue(sizeof(uint8_t)*4, 20, FIFO);
+    inboxOrion = new Queue(sizeof(CAN_message_t), 20, FIFO);
 }
 
 
-// void Can::printFrame(CAN_message_t &frame, int mailbox)
-// {
-//     Serial.print("This just in!\n");
-//     Serial.print("ID: 0x");
-//     Serial.print(frame.id, HEX);
-
-//     //Print regID from buf[0] (only for unitek)
-//     Serial.print(" RegID: 0x");
-//     Serial.print(frame.buf[0], HEX);
-
-//     //Print value from register in reverse byte order
-//     Serial.print(" Data: 0x");
-//     Serial.print(frame.buf[2], HEX);
-//     Serial.print(frame.buf[1], HEX);
-// }
+/** 
+ * @brief  Can destructor
+ */
+Can::~Can(void)
+{
+    delete mailbox;
+    delete inboxUnitek;
+    delete inboxOrion;
+}
 
 
 /** 
@@ -46,6 +47,14 @@ void Can::gotFrame(CAN_message_t &frame, int mailbox)
 {
     //TODO: message just came in, check ID and send data to Unitek or Orion
     //check id, store in orion or unitek queue, (maybe) set queueHasDataFlag
+    //globalEventFlags = 0;
+    //FIXME: TESTING CODE
+    // Serial.println("Entered CAN interrupt");
+    // Serial.println(frame.buf[0]);
+    // Serial.println(frame.buf[1]);
+    // Serial.println(frame.buf[2]);
+    // Serial.println(frame.buf[3]);
+    //FIXME: TESTING CODE
 }
 
 
@@ -57,4 +66,37 @@ void Can::gotFrame(CAN_message_t &frame, int mailbox)
 void Can::send(CAN_message_t message)
 {
     Can1.write(message);
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+// uint8_t* Can::getMail(void)
+// {
+
+// }
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+// uint8_t* Can::getInboxUnitek(void)
+// {
+//     return inboxUnitek;
+// }
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval true/false based on if there's anything 
+ */
+bool Can::checkInboxUnitek(void)
+{
+    return !inboxUnitek->isEmpty();
 }

@@ -7,7 +7,7 @@
  */
 
 #include "CanController.hpp"
-#include "../../Manager/Manager.hpp"
+#include "../ControllerManager/ControllerManager.hpp"
 
 
 /** 
@@ -26,9 +26,8 @@ CanController::CanController(void)
  */
 CanController::~CanController(void)
 {
-    //This causes a warning: deleting object of polymorphic class type 'Can' 
-    //which has non-virtual destructor might cause undefined behaviour
-    //delete canModel;
+    canModel->detachGeneralHandler();
+    Can1.detachObj(canModel);
 }
 
 
@@ -40,7 +39,7 @@ CanController::~CanController(void)
 void CanController::init(void)
 {
     //creating the local CAN model
-    canModel = new Can;
+    canModel = new Can();
 
     Can1.attachObj(canModel);
     canModel->attachGeneralHandler();
