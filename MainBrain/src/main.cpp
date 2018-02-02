@@ -10,11 +10,13 @@
 #ifndef UNIT_TEST
 
 #include <Arduino.h>
+#include <IntervalTimer.h>
 #include "Controller/ControllerManager/ControllerManager.hpp"
 #include "Model/Constants/EventMasks.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
-static volatile uint32_t globalEventFlags = 0;
+volatile uint32_t globalEventFlags = 0;
+
 
 enum WorkflowStage
 {
@@ -27,22 +29,30 @@ enum WorkflowStage
     SHUTDOWN
 };
 
+//FIXME: TESTING CODE
+void canISR() {
+    globalEventFlags |= CAN_MESSAGE_EF0;
+    // CAN_MESSAGE_EF0_CNT++;   //not worrying about counting right now
+}
+//FIXME: TESTING CODE
+
+
 
 //---------------------------------------------------------------
 // Begin main function
 int main(void)
 {
     Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect
-    }
+    // while (!Serial) {
+    //     ; // wait for serial port to connect
+    // }
 
     //initialize the local event flag variable
     uint32_t localEventFlags = 0;
 
     //creating the singletons and copying the location in memory
-    CanController* canC = ControllerManager::getCanC();
-    UnitekController* unitekC = ControllerManager::getUnitekC();
+    // CanController* canC = ControllerManager::getCanC();
+    // UnitekController* unitekC = ControllerManager::getUnitekC();
 
     //The first step when running is bootup
     WorkflowStage excecutingStep = BOOTUP;
@@ -51,24 +61,29 @@ int main(void)
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWriteFast(LED_BUILTIN, 1);
 
-    //BOOTUP function
-    if(excecutingStep == BOOTUP)
-    {
+
+    //BOOTUP functions
         //Calling init functions for each controller
-        canC->init();
-        unitekC->init();
+        // canC->init();
+        // unitekC->init();
 
         //Configure registers
         //Brownout configuration
+
         //timer configuration
             //DO NOT START TIMERS HERE
+        IntervalTimer myTimer;
+        
 
-
-        if(/* check for ShutdownEF*/ 1 )
-        {
-            excecutingStep = SELF_TEST;
-        }
+    if(/* check for ShutdownEF*/ 1 )
+    {
+        excecutingStep = SELF_TEST;
     }
+    else
+    {
+        excecutingStep = SHUTDOWN;
+    }
+
 
 
     if(excecutingStep == SELF_TEST)
@@ -82,7 +97,12 @@ int main(void)
         {
             excecutingStep = SUBSYSTEM_TEST;
         }
+        else
+        {
+            excecutingStep = SHUTDOWN;
+        }
     }
+
 
     if(excecutingStep == SUBSYSTEM_TEST)
     {
@@ -98,7 +118,16 @@ int main(void)
         {
             excecutingStep = STANDBY;
         }
+        else
+        {
+            excecutingStep = SHUTDOWN;
+        }
     }
+
+
+    //Start timers
+    myTimer.begin(canISR, 300000);
+
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
@@ -108,10 +137,23 @@ int main(void)
         {
             noInterrupts();
             //Volatile operation for transferring flags from ISRs to local main
-            localEventFlags = globalEventFlags;
+            localEventFlags |= globalEventFlags;
+            globalEventFlags = 0;
             interrupts();
 
-            //Start timers
+            
+            //FIXME: TESTING CODE
+            if(localEventFlags && CAN_MESSAGE_EF0)
+            {
+                if (Serial)
+                {
+                    Serial.println("sent CAN");
+                }
+                localEventFlags &= !CAN_MESSAGE_EF0;
+            }
+
+            //FIXME: TESTING CODE
+
 
             //Polling of subsystems (log status of each)
                 //See if we're still good for transition to drive
@@ -132,7 +174,8 @@ int main(void)
         {
             noInterrupts();
             //Volatile operation for transferring flags from ISRs to local main
-            localEventFlags = globalEventFlags;
+            localEventFlags |= globalEventFlags;
+            globalEventFlags = 0;
             interrupts();
             
             //Driving stuff

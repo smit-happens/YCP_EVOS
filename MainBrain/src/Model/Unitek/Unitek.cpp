@@ -8,7 +8,6 @@
 
 #include "Unitek.hpp"
 
-//TODO: separate this into the Unitek model and Unitek controller classes
 
 /** 
  * @brief  Unitek constructor
