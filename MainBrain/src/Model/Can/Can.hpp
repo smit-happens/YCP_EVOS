@@ -11,7 +11,6 @@
 
 #include <FlexCAN.h>
 #include <cppQueue.h>
-#include "../Constants/EventMasks.hpp"
 
 
 class Can : public CANListener

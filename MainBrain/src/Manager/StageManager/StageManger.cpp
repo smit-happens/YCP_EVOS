@@ -1,19 +1,19 @@
 /**  Manages the event handling functions in the superloop
  *
- * Stage.cpp
+ * StageManager.cpp
  * Created 1-28-18 By: Smitty
  *
  * A longer description.
  */
 
-#include "Stage.hpp"
+#include "StageManager.hpp"
 
 
 
 /** 
- * @brief  Glcd constructor
+ * @brief  StageManager constructor
  */
-Stage::Stage(void)
+StageManager::StageManager(void)
 {
 
     

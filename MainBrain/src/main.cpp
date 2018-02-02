@@ -11,28 +11,18 @@
 
 #include <Arduino.h>
 #include <IntervalTimer.h>
-#include "Controller/ControllerManager/ControllerManager.hpp"
-#include "Model/Constants/EventMasks.hpp"
+
+#include "Manager/StageManager/StageManager.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
 volatile uint32_t globalEventFlags = 0;
 
 
-enum WorkflowStage
-{
-    BOOTUP,
-    SELF_TEST,
-    SUBSYSTEM_TEST,
-    STANDBY,
-    PRECHARGE,
-    DRIVE,
-    SHUTDOWN
-};
+
 
 //FIXME: TESTING CODE
 void canISR() {
     globalEventFlags |= CAN_MESSAGE_EF0;
-    // CAN_MESSAGE_EF0_CNT++;   //not worrying about counting right now
 }
 //FIXME: TESTING CODE
 
@@ -54,8 +44,10 @@ int main(void)
     // CanController* canC = ControllerManager::getCanC();
     // UnitekController* unitekC = ControllerManager::getUnitekC();
 
+    StageManager localStage = StageManager();
+
     //The first step when running is bootup
-    WorkflowStage excecutingStep = BOOTUP;
+    StageManager::WorkflowStage excecutingStep = StageManager::BOOTUP;
 
     // using the builtin LED as a status light
     pinMode(LED_BUILTIN, OUTPUT);
@@ -77,16 +69,16 @@ int main(void)
 
     if(/* check for ShutdownEF*/ 1 )
     {
-        excecutingStep = SELF_TEST;
+        excecutingStep = StageManager::SELF_TEST;
     }
     else
     {
-        excecutingStep = SHUTDOWN;
+        excecutingStep = StageManager::SHUTDOWN;
     }
 
 
 
-    if(excecutingStep == SELF_TEST)
+    if(excecutingStep == StageManager::SELF_TEST)
     {
         //Teensy SelfTest (internal functions)
         //SdCard check (read data, check if good)
@@ -95,16 +87,16 @@ int main(void)
 
         if(/* check for ShutdownEF*/ 1 )
         {
-            excecutingStep = SUBSYSTEM_TEST;
+            excecutingStep = StageManager::SUBSYSTEM_TEST;
         }
         else
         {
-            excecutingStep = SHUTDOWN;
+            excecutingStep = StageManager::SHUTDOWN;
         }
     }
 
 
-    if(excecutingStep == SUBSYSTEM_TEST)
+    if(excecutingStep == StageManager::SUBSYSTEM_TEST)
     {
         
         //Unitek check if okay
@@ -116,11 +108,11 @@ int main(void)
 
         if(/* check for ShutdownEF*/ 1 )
         {
-            excecutingStep = STANDBY;
+            excecutingStep = StageManager::STANDBY;
         }
         else
         {
-            excecutingStep = SHUTDOWN;
+            excecutingStep = StageManager::SHUTDOWN;
         }
     }
 
@@ -131,9 +123,9 @@ int main(void)
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
-    while(excecutingStep != SHUTDOWN)
+    while(excecutingStep != StageManager::SHUTDOWN)
     {
-        while(excecutingStep == STANDBY)
+        while(excecutingStep == StageManager::STANDBY)
         {
             noInterrupts();
             //Volatile operation for transferring flags from ISRs to local main
@@ -170,7 +162,7 @@ int main(void)
                 //check for PrechargeEF
         }
 
-        while(excecutingStep == DRIVE)
+        while(excecutingStep == StageManager::DRIVE)
         {
             noInterrupts();
             //Volatile operation for transferring flags from ISRs to local main

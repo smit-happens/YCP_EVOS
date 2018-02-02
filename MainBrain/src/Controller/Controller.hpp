@@ -12,14 +12,14 @@
 #define CONTROLLER_HPP
 
 
-#include "PedalController/PedalController.hpp"
 #include "CanController/CanController.hpp"
 #include "CoolingController/CoolingController.hpp"
+#include "DashController/DashController.hpp"
 #include "GlcdController/GlcdController.hpp"
 #include "ImdController/ImdController.hpp"
-// #include "OrionController/OrionController.hpp"       //TODO: create this
+#include "PedalController/PedalController.hpp"
+#include "OrionController/OrionController.hpp"       //TODO: create this
 #include "SdCardController/SdCardController.hpp"
 #include "UnitekController/UnitekController.hpp"
-#include "Dashboard/Dashboard.hpp"
 
 #endif  //CONTROLLER_HPP
