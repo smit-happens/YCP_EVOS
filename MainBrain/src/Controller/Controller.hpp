@@ -18,7 +18,7 @@
 #include "GlcdController/GlcdController.hpp"
 #include "ImdController/ImdController.hpp"
 #include "PedalController/PedalController.hpp"
-#include "OrionController/OrionController.hpp"       //TODO: create this
+#include "OrionController/OrionController.hpp"
 #include "SdCardController/SdCardController.hpp"
 #include "UnitekController/UnitekController.hpp"
 

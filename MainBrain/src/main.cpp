@@ -9,7 +9,6 @@
 // Unit Testing gaurd
 #ifndef UNIT_TEST
 
-#include <Arduino.h>
 #include <IntervalTimer.h>
 
 #include "Manager/StageManager/StageManager.hpp"
@@ -21,8 +20,8 @@ volatile uint32_t globalEventFlags = 0;
 
 
 //FIXME: TESTING CODE
-void canISR() {
-    globalEventFlags |= CAN_MESSAGE_EF0;
+void timerISR() {
+    globalEventFlags |= TIMER_EF0;
 }
 //FIXME: TESTING CODE
 
@@ -65,7 +64,22 @@ int main(void)
         //timer configuration
             //DO NOT START TIMERS HERE
         IntervalTimer myTimer;
+        int timerCAN = 0;
+        int timerCooling = 0;
+        int timerDash = 0;
+        int timerGLCD = 0;
         
+    //FIXME: TESTING CODE START
+    pinMode(23, OUTPUT);
+    pinMode(22, OUTPUT);
+    pinMode(21, OUTPUT);
+    pinMode(20, OUTPUT);
+
+    bool LEDstate1 = false;
+    bool LEDstate2 = false;
+    bool LEDstate3 = false;
+    bool LEDstate4 = false;
+    //FIXME: TESTING CODE END
 
     if(/* check for ShutdownEF*/ 1 )
     {
@@ -117,8 +131,8 @@ int main(void)
     }
 
 
-    //Start timers
-    myTimer.begin(canISR, 300000);
+    //Start timers (1000 usec)
+    myTimer.begin(timerISR, 1000);
 
 
     //---------------------------------------------------------------
@@ -134,17 +148,81 @@ int main(void)
             interrupts();
 
             
-            //FIXME: TESTING CODE
-            if(localEventFlags && CAN_MESSAGE_EF0)
+            //FIXME: TESTING CODE START
+            if(localEventFlags && TIMER_EF0)
             {
-                if (Serial)
+                timerCAN++;
+                timerCooling++;
+                timerDash++;
+                timerGLCD++;
+
+                if(timerCAN >= LED_1_POLL)
                 {
-                    Serial.println("sent CAN");
+                    localEventFlags |= CAN_EF1;
+                    timerCAN = 0;
+
                 }
-                localEventFlags &= !CAN_MESSAGE_EF0;
+                if(timerCooling >= LED_2_POLL)
+                {
+                    localEventFlags |= COOLING_EF2;
+                    timerCooling = 0;
+                }
+                if(timerDash >= LED_3_POLL)
+                {
+                    localEventFlags |= DASH_EF3;
+                    timerDash = 0;
+                }
+                if(timerGLCD >= LED_4_POLL)
+                {
+                    localEventFlags |= GLCD_EF4;
+                    timerGLCD = 0;
+                }
+                
+
+                localEventFlags &= ~TIMER_EF0;
             }
 
-            //FIXME: TESTING CODE
+            if(localEventFlags && CAN_EF1)
+            {
+                
+                digitalWriteFast(23, LEDstate1);
+
+                LEDstate1 = !LEDstate1;
+
+                localEventFlags &= ~CAN_EF1;
+            }
+
+            if(localEventFlags && COOLING_EF2)
+            {
+                
+                digitalWriteFast(22, LEDstate2);
+
+                LEDstate2 = !LEDstate2;
+
+                localEventFlags &= ~COOLING_EF2;
+            }
+
+            if(localEventFlags && DASH_EF3)
+            {
+                
+                digitalWriteFast(21, LEDstate3);
+
+                LEDstate3 = !LEDstate3;
+
+                localEventFlags &= ~DASH_EF3;
+            }
+
+            if(localEventFlags && GLCD_EF4)
+            {
+                
+                digitalWriteFast(20, LEDstate4);
+
+                LEDstate4 = !LEDstate4;
+
+                localEventFlags &= ~GLCD_EF4;
+            }
+
+            //FIXME: TESTING CODE END
 
 
             //Polling of subsystems (log status of each)
