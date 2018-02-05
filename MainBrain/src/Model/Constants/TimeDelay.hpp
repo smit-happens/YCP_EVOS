@@ -12,10 +12,12 @@
 #include <Arduino.h>
 
 
-const int LED_1_POLL       = 100;
-const int LED_2_POLL       = 200;
-const int LED_3_POLL       = 250;
-const int LED_4_POLL       = 500;
+const int TIMER_NUM     = 4;    //number of timers in use
+
+const int LED_1_POLL    = 100;
+const int LED_2_POLL    = 200;
+const int LED_3_POLL    = 250;
+const int LED_4_POLL    = 500;
 
 
 

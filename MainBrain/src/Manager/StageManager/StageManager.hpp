@@ -18,7 +18,7 @@ class StageManager
 {
 public:
 
-    enum WorkflowStage
+    enum Stage
     {
         BOOTUP,
         SELF_TEST,
@@ -26,10 +26,23 @@ public:
         STANDBY,
         PRECHARGE,
         DRIVE,
+        LAUNCH,
         SHUTDOWN
     };
 
     StageManager();
+
+    //handles the various timers we'll be using and setting Task Flags (TFs) based on them
+    uint32_t processTimers(void);
+
+private:
+    struct Timer {
+        int count;
+        int limit;
+        uint32_t TFmask;
+    };
+    
+    Timer* timerList;
 
 };
 

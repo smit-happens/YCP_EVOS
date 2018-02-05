@@ -10,7 +10,6 @@
 #ifndef UNIT_TEST
 
 #include <IntervalTimer.h>
-
 #include "Manager/StageManager/StageManager.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
@@ -18,10 +17,9 @@ volatile uint32_t globalEventFlags = 0;
 
 
 
-
 //FIXME: TESTING CODE
 void timerISR() {
-    globalEventFlags |= TIMER_EF0;
+    globalEventFlags |= EF0_TIMER;
 }
 //FIXME: TESTING CODE
 
@@ -32,9 +30,9 @@ void timerISR() {
 int main(void)
 {
     Serial.begin(9600);
-    // while (!Serial) {
-    //     ; // wait for serial port to connect
-    // }
+    while (!Serial) {
+        ; // wait for serial port to connect
+    }
 
     //initialize the local event flag variable
     uint32_t localEventFlags = 0;
@@ -46,7 +44,7 @@ int main(void)
     StageManager localStage = StageManager();
 
     //The first step when running is bootup
-    StageManager::WorkflowStage excecutingStep = StageManager::BOOTUP;
+    StageManager::Stage excecutingStage = StageManager::BOOTUP;
 
     // using the builtin LED as a status light
     pinMode(LED_BUILTIN, OUTPUT);
@@ -64,35 +62,27 @@ int main(void)
         //timer configuration
             //DO NOT START TIMERS HERE
         IntervalTimer myTimer;
-        int timerCAN = 0;
-        int timerCooling = 0;
-        int timerDash = 0;
-        int timerGLCD = 0;
+
         
     //FIXME: TESTING CODE START
     pinMode(23, OUTPUT);
     pinMode(22, OUTPUT);
     pinMode(21, OUTPUT);
     pinMode(20, OUTPUT);
-
-    bool LEDstate1 = false;
-    bool LEDstate2 = false;
-    bool LEDstate3 = false;
-    bool LEDstate4 = false;
     //FIXME: TESTING CODE END
 
     if(/* check for ShutdownEF*/ 1 )
     {
-        excecutingStep = StageManager::SELF_TEST;
+        excecutingStage = StageManager::SELF_TEST;
     }
     else
     {
-        excecutingStep = StageManager::SHUTDOWN;
+        excecutingStage = StageManager::SHUTDOWN;
     }
 
 
 
-    if(excecutingStep == StageManager::SELF_TEST)
+    if(excecutingStage == StageManager::SELF_TEST)
     {
         //Teensy SelfTest (internal functions)
         //SdCard check (read data, check if good)
@@ -101,16 +91,16 @@ int main(void)
 
         if(/* check for ShutdownEF*/ 1 )
         {
-            excecutingStep = StageManager::SUBSYSTEM_TEST;
+            excecutingStage = StageManager::SUBSYSTEM_TEST;
         }
         else
         {
-            excecutingStep = StageManager::SHUTDOWN;
+            excecutingStage = StageManager::SHUTDOWN;
         }
     }
 
 
-    if(excecutingStep == StageManager::SUBSYSTEM_TEST)
+    if(excecutingStage == StageManager::SUBSYSTEM_TEST)
     {
         
         //Unitek check if okay
@@ -122,11 +112,11 @@ int main(void)
 
         if(/* check for ShutdownEF*/ 1 )
         {
-            excecutingStep = StageManager::STANDBY;
+            excecutingStage = StageManager::STANDBY;
         }
         else
         {
-            excecutingStep = StageManager::SHUTDOWN;
+            excecutingStage = StageManager::SHUTDOWN;
         }
     }
 
@@ -137,9 +127,9 @@ int main(void)
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
-    while(excecutingStep != StageManager::SHUTDOWN)
+    while(excecutingStage != StageManager::SHUTDOWN)
     {
-        while(excecutingStep == StageManager::STANDBY)
+        if(excecutingStage == StageManager::STANDBY)
         {
             noInterrupts();
             //Volatile operation for transferring flags from ISRs to local main
@@ -147,83 +137,11 @@ int main(void)
             globalEventFlags = 0;
             interrupts();
 
-            
-            //FIXME: TESTING CODE START
-            if(localEventFlags && TIMER_EF0)
+            //Timer EF check
+            if(localEventFlags && EF0_TIMER)
             {
-                timerCAN++;
-                timerCooling++;
-                timerDash++;
-                timerGLCD++;
-
-                if(timerCAN >= LED_1_POLL)
-                {
-                    localEventFlags |= CAN_EF1;
-                    timerCAN = 0;
-
-                }
-                if(timerCooling >= LED_2_POLL)
-                {
-                    localEventFlags |= COOLING_EF2;
-                    timerCooling = 0;
-                }
-                if(timerDash >= LED_3_POLL)
-                {
-                    localEventFlags |= DASH_EF3;
-                    timerDash = 0;
-                }
-                if(timerGLCD >= LED_4_POLL)
-                {
-                    localEventFlags |= GLCD_EF4;
-                    timerGLCD = 0;
-                }
-                
-
-                localEventFlags &= ~TIMER_EF0;
+                localStage.processTimers();
             }
-
-            if(localEventFlags && CAN_EF1)
-            {
-                
-                digitalWriteFast(23, LEDstate1);
-
-                LEDstate1 = !LEDstate1;
-
-                localEventFlags &= ~CAN_EF1;
-            }
-
-            if(localEventFlags && COOLING_EF2)
-            {
-                
-                digitalWriteFast(22, LEDstate2);
-
-                LEDstate2 = !LEDstate2;
-
-                localEventFlags &= ~COOLING_EF2;
-            }
-
-            if(localEventFlags && DASH_EF3)
-            {
-                
-                digitalWriteFast(21, LEDstate3);
-
-                LEDstate3 = !LEDstate3;
-
-                localEventFlags &= ~DASH_EF3;
-            }
-
-            if(localEventFlags && GLCD_EF4)
-            {
-                
-                digitalWriteFast(20, LEDstate4);
-
-                LEDstate4 = !LEDstate4;
-
-                localEventFlags &= ~GLCD_EF4;
-            }
-
-            //FIXME: TESTING CODE END
-
 
             //Polling of subsystems (log status of each)
                 //See if we're still good for transition to drive
@@ -240,7 +158,7 @@ int main(void)
                 //check for PrechargeEF
         }
 
-        while(excecutingStep == StageManager::DRIVE)
+        if(excecutingStage == StageManager::DRIVE)
         {
             noInterrupts();
             //Volatile operation for transferring flags from ISRs to local main
