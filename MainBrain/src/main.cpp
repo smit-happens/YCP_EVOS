@@ -16,12 +16,11 @@
 volatile uint16_t globalEventFlags = 0;
 
 
+//Start of ISR declarations
 
-//FIXME: TESTING CODE
 void timerISR() {
     globalEventFlags |= EF0_TIMER;
 }
-//FIXME: TESTING CODE
 
 
 
@@ -142,6 +141,9 @@ int main(void)
             {
                 //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
                 localEventFlags |= localStage.processTimers() << 16;
+
+                // Serial.print("localEventFlags: ");
+                // Serial.println(localEventFlags, BIN);
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF0_TIMER;

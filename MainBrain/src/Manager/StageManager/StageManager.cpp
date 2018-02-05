@@ -24,6 +24,7 @@ StageManager::StageManager(void)
     for(int i = 0; i < TIMER_NUM; i++) 
     {
         timerList[i].TFmask = 1 << i;
+        timerList[i].count = 0;
     }
 }
 
@@ -34,11 +35,7 @@ StageManager::StageManager(void)
  */
 uint16_t StageManager::processTimers(void)
 {
-    //FIXME: maybe move this into the private portion of the class
-    uint16_t timerTF = 0;
-
-    //TODO: verify on hardware
-
+    //Goes through the array of timers to increment their count and store which ones popped
     for (int i = 0; i < TIMER_NUM; i++)
     {
         timerList[i].count++;
@@ -46,7 +43,7 @@ uint16_t StageManager::processTimers(void)
         {
             //store which timer popped
             timerTF |= timerList[i].TFmask;
-            
+
             //resetting the count of the timer that just popped
             timerList[i].count = 0;
         }
@@ -55,6 +52,7 @@ uint16_t StageManager::processTimers(void)
 
     return timerTF;
 }
+
 
 //FIXME: TESTING CODE START
 

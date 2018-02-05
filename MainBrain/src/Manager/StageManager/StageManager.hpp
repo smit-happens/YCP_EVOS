@@ -51,6 +51,7 @@ private:
     };
     
     Timer* timerList;
+    uint16_t timerTF = 0;
 
     //FIXME: TESTING CODE START
     bool LEDstate1 = false;
