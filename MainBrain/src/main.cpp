@@ -13,7 +13,7 @@
 #include "Manager/StageManager/StageManager.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
-volatile uint32_t globalEventFlags = 0;
+volatile uint16_t globalEventFlags = 0;
 
 
 
@@ -30,9 +30,9 @@ void timerISR() {
 int main(void)
 {
     Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect
-    }
+    // while (!Serial) {
+    //     ; // wait for serial port to connect
+    // }
 
     //initialize the local event flag variable
     uint32_t localEventFlags = 0;
@@ -140,8 +140,47 @@ int main(void)
             //Timer EF check
             if(localEventFlags && EF0_TIMER)
             {
-                localStage.processTimers();
+                //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
+                localEventFlags |= localStage.processTimers() << 16;
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF0_TIMER;
             }
+
+
+            //FIXME: TESTING CODE START
+
+            //checking the upper bits of th LocalEF var
+            if(localEventFlags && (0x0001 << 16))
+            {
+                localStage.testLed1();
+                localEventFlags &= ~(0x0001 << 16);
+            }
+
+            if(localEventFlags && (0x0002 << 16))
+            {
+                localStage.testLed2();
+                localEventFlags &= ~(0x0002 << 16);
+                
+            }
+
+            if(localEventFlags && (0x0004 << 16))
+            {
+                localStage.testLed3();
+                localEventFlags &= ~(0x0004 << 16);
+                
+            }
+
+            if(localEventFlags && (0x0008 << 16))
+            {
+                localStage.testLed4();
+                localEventFlags &= ~(0x0008 << 16);
+                
+            }
+
+
+            //FIXME: TESTING CODE END
+
 
             //Polling of subsystems (log status of each)
                 //See if we're still good for transition to drive

@@ -24,105 +24,62 @@ StageManager::StageManager(void)
     for(int i = 0; i < TIMER_NUM; i++) 
     {
         timerList[i].TFmask = 1 << i;
-        Serial.print("timerList item ");
-        Serial.print(i);
-        Serial.print(": ");
-        Serial.println(timerList[i].TFmask);
     }
 }
 
 /** 
  * @brief  Handles the multiple timers running off of a single 1ms timer from main
  * @note   
- * @retval uint32_t representing the TaskFlags for various timers that went off
+ * @retval uint16_t with each bit coresponding to which timers went off
  */
-uint32_t StageManager::processTimers(void)
+uint16_t StageManager::processTimers(void)
 {
-    uint32_t timerTF = 0;
+    //FIXME: maybe move this into the private portion of the class
+    uint16_t timerTF = 0;
 
-    //TODO: finish this
+    //TODO: verify on hardware
 
     for (int i = 0; i < TIMER_NUM; i++)
     {
         timerList[i].count++;
         if(timerList[i].count >= timerList[i].limit)
         {
+            //store which timer popped
             timerTF |= timerList[i].TFmask;
+            
+            //resetting the count of the timer that just popped
+            timerList[i].count = 0;
         }
 
     }
+
     return timerTF;
 }
 
-/*
-    bool LEDstate1 = false;
-    bool LEDstate2 = false;
-    bool LEDstate3 = false;
-    bool LEDstate4 = false;
+//FIXME: TESTING CODE START
 
-                if(timerCAN >= LED_1_POLL)
-                {
-                    localEventFlags |= CAN_EF1;
-                    timerCAN = 0;
+void StageManager::testLed1(void)
+{
+    digitalWriteFast(23, LEDstate1);
+    LEDstate1 = !LEDstate1;
+}
 
-                }
-                if(timerCooling >= LED_2_POLL)
-                {
-                    localEventFlags |= COOLING_EF2;
-                    timerCooling = 0;
-                }
-                if(timerDash >= LED_3_POLL)
-                {
-                    localEventFlags |= DASH_EF3;
-                    timerDash = 0;
-                }
-                if(timerGLCD >= LED_4_POLL)
-                {
-                    localEventFlags |= GLCD_EF4;
-                    timerGLCD = 0;
-                }
-                
+void StageManager::testLed2(void)
+{
+    digitalWriteFast(22, LEDstate2);
+    LEDstate2 = !LEDstate2;
+}
 
-                localEventFlags &= ~TIMER_EF0;
-            }
+void StageManager::testLed3(void)
+{
+    digitalWriteFast(21, LEDstate3);
+    LEDstate3 = !LEDstate3;
+}
 
-            if(localEventFlags && CAN_EF1)
-            {
-                
-                digitalWriteFast(23, LEDstate1);
+void StageManager::testLed4(void)
+{
+    digitalWriteFast(20, LEDstate4);
+    LEDstate4 = !LEDstate4;
+}
 
-                LEDstate1 = !LEDstate1;
-
-                localEventFlags &= ~CAN_EF1;
-            }
-
-            if(localEventFlags && COOLING_EF2)
-            {
-                
-                digitalWriteFast(22, LEDstate2);
-
-                LEDstate2 = !LEDstate2;
-
-                localEventFlags &= ~COOLING_EF2;
-            }
-
-            if(localEventFlags && DASH_EF3)
-            {
-                
-                digitalWriteFast(21, LEDstate3);
-
-                LEDstate3 = !LEDstate3;
-
-                localEventFlags &= ~DASH_EF3;
-            }
-
-            if(localEventFlags && GLCD_EF4)
-            {
-                
-                digitalWriteFast(20, LEDstate4);
-
-                LEDstate4 = !LEDstate4;
-
-                localEventFlags &= ~GLCD_EF4;
-            }
-            */
+//FIXME: TESTING CODE END

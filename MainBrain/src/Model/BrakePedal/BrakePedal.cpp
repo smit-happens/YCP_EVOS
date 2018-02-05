@@ -20,7 +20,7 @@ BrakePedal::BrakePedal(void)
 
 /** 
  * @brief  Retrieves the evaluated Brake percentage
- * @note   This will need to evaluate the two pedal potentiometers (Linear and Logarithmic)
+ * @note   Evaluate linear pedal potentiometer
  * @retval BrakePedal percentage
  */
 float BrakePedal::getPercentage(void)
