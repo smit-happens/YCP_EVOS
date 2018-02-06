@@ -35,12 +35,24 @@ public:
     //handles the various timers we'll be using and setting Task Flags (TFs) based on them
     uint16_t processTimers(void);
 
-    //FIXME: TESTING CODE START
-    void testLed1();
-    void testLed2();
-    void testLed3();
-    void testLed4();
-    //FIXME: TESTING CODE END
+    //the following functions might eventually take a TF as an input param
+    uint16_t processCan(void);
+    uint16_t processCooling(void);
+    uint16_t processDash(void);
+    uint16_t processGlcd(void);
+    uint16_t processImd(void);
+    uint16_t processOrion(void);
+    uint16_t processPedal(void);
+    uint16_t processSdCard(void);
+    uint16_t processUnitek(void);
+    uint16_t processBatlog(void);
+    uint16_t processStandby(void);
+    uint16_t processPrecharge(void);
+    uint16_t processReadyToDrive(void);
+    uint16_t processLaunch(void);
+    uint16_t processShutdown(void);
+
+
 
 private:
     struct Timer {
@@ -53,12 +65,7 @@ private:
     Timer* timerList;
     uint16_t timerTF = 0;
 
-    //FIXME: TESTING CODE START
-    bool LEDstate1 = false;
-    bool LEDstate2 = false;
-    bool LEDstate3 = false;
-    bool LEDstate4 = false;
-    //FIXME: TESTING CODE END
+
 
 };
 

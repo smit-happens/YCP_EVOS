@@ -21,8 +21,10 @@ StageManager::StageManager(void)
     timerList[2].limit = LED_3_POLL;
     timerList[3].limit = LED_4_POLL;
 
+    //initializing the variables in the Timer array
     for(int i = 0; i < TIMER_NUM; i++) 
     {
+        //creating the individual mask for each timer
         timerList[i].TFmask = 1 << i;
         timerList[i].count = 0;
     }
@@ -54,30 +56,50 @@ uint16_t StageManager::processTimers(void)
 }
 
 
-//FIXME: TESTING CODE START
-
-void StageManager::testLed1(void)
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processCan(void)
 {
-    digitalWriteFast(23, LEDstate1);
-    LEDstate1 = !LEDstate1;
+    //do CAN stuff
+    return 0;
 }
 
-void StageManager::testLed2(void)
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processCooling(void)
 {
-    digitalWriteFast(22, LEDstate2);
-    LEDstate2 = !LEDstate2;
+    //do Cooling stuff
+    return 0;
 }
 
-void StageManager::testLed3(void)
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processDash(void)
 {
-    digitalWriteFast(21, LEDstate3);
-    LEDstate3 = !LEDstate3;
+    //do Dash processing
+    return 0;
 }
 
-void StageManager::testLed4(void)
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processGlcd(void)
 {
-    digitalWriteFast(20, LEDstate4);
-    LEDstate4 = !LEDstate4;
+    //glcd view display updating
+    return 0;
 }
 
-//FIXME: TESTING CODE END
+

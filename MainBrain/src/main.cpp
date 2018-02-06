@@ -62,13 +62,6 @@ int main(void)
             //DO NOT START TIMERS HERE
         IntervalTimer myTimer;
 
-        
-    //FIXME: TESTING CODE START
-    pinMode(23, OUTPUT);
-    pinMode(22, OUTPUT);
-    pinMode(21, OUTPUT);
-    pinMode(20, OUTPUT);
-    //FIXME: TESTING CODE END
 
     if(/* check for ShutdownEF*/ 1 )
     {
@@ -136,49 +129,83 @@ int main(void)
             globalEventFlags = 0;
             interrupts();
 
+
             //Timer EF check
             if(localEventFlags && EF0_TIMER)
             {
                 //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
                 localEventFlags |= localStage.processTimers() << 16;
-
-                // Serial.print("localEventFlags: ");
-                // Serial.println(localEventFlags, BIN);
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF0_TIMER;
             }
 
 
+            if(localEventFlags && EF1_CAN)
+            {
+                localStage.processCan();   
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF1_CAN;
+            }
+
+
+            if(localEventFlags && EF2_COOLING)
+            {
+                localStage.processCooling();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF2_COOLING;
+            }
+
+
+            if(localEventFlags && EF3_DASH)
+            {
+                localStage.processDash();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF3_DASH;
+            }
+
+
+            if(localEventFlags && EF4_GLCD)
+            {
+                localStage.processGlcd();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF4_GLCD;
+            }
+
+
             //FIXME: TESTING CODE START
 
             //checking the upper bits of th LocalEF var
-            if(localEventFlags && (0x0001 << 16))
-            {
-                localStage.testLed1();
-                localEventFlags &= ~(0x0001 << 16);
-            }
+            // if(localEventFlags && (0x0001 << 16))
+            // {
+            //     localStage.testLed1();
+            //     localEventFlags &= ~(0x0001 << 16);
+            // }
 
-            if(localEventFlags && (0x0002 << 16))
-            {
-                localStage.testLed2();
-                localEventFlags &= ~(0x0002 << 16);
+            // if(localEventFlags && (0x0002 << 16))
+            // {
+            //     localStage.testLed2();
+            //     localEventFlags &= ~(0x0002 << 16);
                 
-            }
+            // }
 
-            if(localEventFlags && (0x0004 << 16))
-            {
-                localStage.testLed3();
-                localEventFlags &= ~(0x0004 << 16);
+            // if(localEventFlags && (0x0004 << 16))
+            // {
+            //     localStage.testLed3();
+            //     localEventFlags &= ~(0x0004 << 16);
                 
-            }
+            // }
 
-            if(localEventFlags && (0x0008 << 16))
-            {
-                localStage.testLed4();
-                localEventFlags &= ~(0x0008 << 16);
+            // if(localEventFlags && (0x0008 << 16))
+            // {
+            //     localStage.testLed4();
+            //     localEventFlags &= ~(0x0008 << 16);
                 
-            }
+            // }
 
 
             //FIXME: TESTING CODE END
