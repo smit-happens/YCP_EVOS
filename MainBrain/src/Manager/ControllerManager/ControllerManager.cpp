@@ -11,6 +11,7 @@
 //Calling the constructor of each controller
 //NOTE: Do NOT perform complex functions or anything harder than
 //      memory allocation in constructor
+BatlogController* ControllerManager::batlogC = new BatlogController();
 CanController* ControllerManager::canC = new CanController();
 CoolingController* ControllerManager::coolingC = new CoolingController();
 DashController* ControllerManager::dashC = new DashController();
@@ -20,6 +21,17 @@ OrionController* ControllerManager::orionC = new OrionController();
 PedalController* ControllerManager::pedalC = new PedalController();
 SdCardController* ControllerManager::sdCardC = new SdCardController();
 UnitekController* ControllerManager::unitekC = new UnitekController();
+
+
+/** 
+ * @brief  This is for singletons
+ * @note   
+ * @retval Pointer to the UnitekController
+ */
+BatlogController* ControllerManager::getBatlogC(void)
+{
+    return batlogC;
+}
 
 
 /** 

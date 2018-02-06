@@ -12,6 +12,7 @@
 #define CONTROLLER_HPP
 
 
+#include "BatlogController/BatlogController.hpp"
 #include "CanController/CanController.hpp"
 #include "CoolingController/CoolingController.hpp"
 #include "DashController/DashController.hpp"

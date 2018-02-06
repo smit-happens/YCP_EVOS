@@ -46,7 +46,7 @@ int main(void)
     GlcdController* glcdC = ControllerManager::getGlcdC();
     PedalController* pedalC = ControllerManager::getPedalC();
     SdCardController* sdCardC = ControllerManager::getSdCardC();
-    //BatlogController* batlogC = ControllerManager::getBatlogC();
+    BatlogController* batlogC = ControllerManager::getBatlogC();
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
@@ -70,7 +70,7 @@ int main(void)
         imdC->init();
         glcdC->init();
         sdCardC->init();
-        //batlogC->init();
+        batlogC->init();
 
 
 

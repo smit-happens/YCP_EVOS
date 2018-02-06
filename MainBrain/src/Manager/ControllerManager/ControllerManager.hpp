@@ -15,6 +15,7 @@ class ControllerManager
 {
 public:
     //Getters for the controller pointers
+    static BatlogController*    getBatlogC(void);
     static CanController*       getCanC(void);
     static CoolingController*   getCoolingC(void);
     static DashController*      getDashC(void);
@@ -28,6 +29,7 @@ public:
 
 private:
     // Controller Pointer declarations for singletons
+    static BatlogController*       batlogC;
     static CanController*       canC;
     static CoolingController*   coolingC;
     static DashController*      dashC;
