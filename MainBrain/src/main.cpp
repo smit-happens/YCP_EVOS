@@ -9,23 +9,19 @@
 // Unit Testing gaurd
 #ifndef UNIT_TEST
 
-#include <Arduino.h>
-#include "Controller/ControllerManager/ControllerManager.hpp"
-#include "Model/Constants/EventMasks.hpp"
+#include <IntervalTimer.h>
+#include "Manager/StageManager/StageManager.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
-static volatile uint32_t globalEventFlags = 0;
+volatile uint16_t globalEventFlags = 0;
 
-enum WorkflowStage
-{
-    BOOTUP,
-    SELF_TEST,
-    SUBSYSTEM_TEST,
-    STANDBY,
-    PRECHARGE,
-    DRIVE,
-    SHUTDOWN
-};
+
+//Start of ISR declarations
+
+void timerISR() {
+    globalEventFlags |= EF_TIMER;
+}
+
 
 
 //---------------------------------------------------------------
@@ -33,9 +29,9 @@ enum WorkflowStage
 int main(void)
 {
     Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect
-    }
+    // while (!Serial) {
+    //     ; // wait for serial port to connect
+    // }
 
     //initialize the local event flag variable
     uint32_t localEventFlags = 0;
@@ -43,96 +39,242 @@ int main(void)
     //creating the singletons and copying the location in memory
     CanController* canC = ControllerManager::getCanC();
     UnitekController* unitekC = ControllerManager::getUnitekC();
+    OrionController* orionC = ControllerManager::getOrionC();
+    CoolingController* coolingC = ControllerManager::getCoolingC();
+    DashController* dashC = ControllerManager::getDashC();
+    ImdController* imdC = ControllerManager::getImdC();
+    GlcdController* glcdC = ControllerManager::getGlcdC();
+    PedalController* pedalC = ControllerManager::getPedalC();
+    SdCardController* sdCardC = ControllerManager::getSdCardC();
+    BatlogController* batlogC = ControllerManager::getBatlogC();
+
+    //local instance of the Stage manager class
+    StageManager localStage = StageManager();
 
     //The first step when running is bootup
-    WorkflowStage excecutingStep = BOOTUP;
+    StageManager::Stage excecutingStage = StageManager::BOOTUP;
 
     // using the builtin LED as a status light
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWriteFast(LED_BUILTIN, 1);
 
-    //BOOTUP function
-    if(excecutingStep == BOOTUP)
-    {
+
+    //Bootup stage functions (anything var declared in an if/else falls out of scope afterward)
         //Calling init functions for each controller
         canC->init();
         unitekC->init();
+        orionC->init();
+        coolingC->init();
+        dashC->init();
+        pedalC->init();
+        imdC->init();
+        glcdC->init();
+        sdCardC->init();
+        batlogC->init();
+
+
 
         //Configure registers
-        //Brownout configuration
+            //Brownout configuration
+
         //timer configuration
             //DO NOT START TIMERS HERE
+        IntervalTimer myTimer;
 
+        //Dashboard
+            //LCD (boot logo)
 
         if(/* check for ShutdownEF*/ 1 )
         {
-            excecutingStep = SELF_TEST;
+            excecutingStage = StageManager::SELF_TEST;
         }
-    }
+        else
+        {
+            excecutingStage = StageManager::SHUTDOWN;
+        }
 
 
-    if(excecutingStep == SELF_TEST)
+    if(excecutingStage == StageManager::SELF_TEST)
     {
         //Teensy SelfTest (internal functions)
         //SdCard check (read data, check if good)
         //Dash test (turn on all LEDS, user confirmation w/ encoder)
+        
 
 
         if(/* check for ShutdownEF*/ 1 )
         {
-            excecutingStep = SUBSYSTEM_TEST;
+            excecutingStage = StageManager::SUBSYSTEM_TEST;
+        }
+        else
+        {
+            excecutingStage = StageManager::SHUTDOWN;
         }
     }
 
-    if(excecutingStep == SUBSYSTEM_TEST)
+
+    if(excecutingStage == StageManager::SUBSYSTEM_TEST)
     {
         
         //Unitek check if okay
         //Orion check if okay
         //Cooling check if working
-        //GLV battery level check
+        //GLV batlog level check
         
-
+        //assuming everything is okay
+            //Notification: All systens go. Ready to Precharge
 
         if(/* check for ShutdownEF*/ 1 )
         {
-            excecutingStep = STANDBY;
+            excecutingStage = StageManager::STANDBY;
+        }
+        else
+        {
+            excecutingStage = StageManager::SHUTDOWN;
         }
     }
 
+
+    //Start 1ms timer (1000 usec)
+    myTimer.begin(timerISR, 1000);
+
+
     //---------------------------------------------------------------
     // Begin main program Super Loop
-    while(excecutingStep != SHUTDOWN)
+    while(excecutingStage != StageManager::SHUTDOWN)
     {
-        while(excecutingStep == STANDBY)
+        if(excecutingStage == StageManager::STANDBY)
         {
             noInterrupts();
             //Volatile operation for transferring flags from ISRs to local main
-            localEventFlags = globalEventFlags;
+            localEventFlags |= globalEventFlags;
+            globalEventFlags = 0;
             interrupts();
 
-            //Start timers
+            
+            //FIXME: Implement helper functions to avoid all these if()s 
+            //       Such as: checkHighPriorityStandby(), checkNormalPriorityStandby(), etc
+            //       HINT: implement priority event flag registers
 
-            //Polling of subsystems (log status of each)
-                //See if we're still good for transition to drive
 
-            //Dashboard
-                //LCD (boot logo)
-            //TS master switch through BMS
-            //Orion
-            //Unitek
-            //Cooling system
-                //Warning: Turn cooling on
+            if(localEventFlags && EF_SHUTDOWN)
+            {
+                localStage.processShutdown();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_SHUTDOWN;
+            }
 
-            //Notification: All systens go. Ready to Precharge
-                //check for PrechargeEF
-        }
 
-        while(excecutingStep == DRIVE)
+            if(localEventFlags && EF_IMD)
+            {
+                localStage.processImd();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_IMD;
+            }
+
+
+            //Timer EF check
+            if(localEventFlags && EF_TIMER)
+            {
+                //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
+                localEventFlags |= localStage.processTimers() << 16;
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_TIMER;
+            }
+
+
+            if(localEventFlags && EF_CAN)
+            {
+                localStage.processCan();   
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_CAN;
+            }
+
+
+            if(localEventFlags && EF_UNITEK)
+            {
+                localStage.processUnitek();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_UNITEK;
+            }
+
+
+            if(localEventFlags && EF_ORION)
+            {
+                localStage.processOrion();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_ORION;
+            }
+
+
+            if(localEventFlags && EF_COOLING)
+            {
+                localStage.processCooling();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_COOLING;
+            }
+
+
+            if(localEventFlags && EF_BATLOG)
+            {
+                localStage.processBatlog();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_BATLOG;
+            }
+
+
+            if(localEventFlags && EF_DASH)
+            {
+                localStage.processDash();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_DASH;
+            }
+
+
+            if(localEventFlags && EF_GLCD)
+            {
+                localStage.processGlcd();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_GLCD;
+            }
+
+
+            if(localEventFlags && EF_SDCARD)
+            {
+                localStage.processSdCard();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_SDCARD;
+            }
+
+
+            //check for PrechargeEF
+            if(localEventFlags && EF_PRECHARGE)
+            {
+                localStage.processPrecharge();
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_PRECHARGE;
+            }
+
+        }   //End of Standby if()
+
+        if(excecutingStage == StageManager::DRIVE)
         {
             noInterrupts();
             //Volatile operation for transferring flags from ISRs to local main
-            localEventFlags = globalEventFlags;
+            localEventFlags |= globalEventFlags;
+            globalEventFlags = 0;
             interrupts();
             
             //Driving stuff

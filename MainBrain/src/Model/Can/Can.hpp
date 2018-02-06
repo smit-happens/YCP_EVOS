@@ -11,7 +11,6 @@
 
 #include <FlexCAN.h>
 #include <cppQueue.h>
-#include "../Constants/EventMasks.hpp"
 
 
 class Can : public CANListener
@@ -51,9 +50,6 @@ public:
 private:
     //CAN port the Teensy will be using
     const int canMailbox = 1;
-
-    //count for the amount of times EF0 triggered
-    uint16_t CAN_MESSAGE_EF0_CNT = 0;
 
     //queue variables that will be used for the Unitek and Orion devices
     Queue* mailbox;

@@ -7,7 +7,7 @@
  */
 
 #include "CanController.hpp"
-#include "../ControllerManager/ControllerManager.hpp"
+#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
 /** 
@@ -69,7 +69,7 @@ void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
     //initializing and constructing the CAN message for the Unitek
     CAN_message_t unitekMessage;
 
-    unitekMessage.id = canModel->ORIONSENDID;
+    unitekMessage.id = canModel->UNITEKSENDID;
     unitekMessage.len = 3;
     unitekMessage.buf[0] = REG_READ;
     unitekMessage.buf[1] = regId;

@@ -7,6 +7,7 @@
  */
 
 #include "SdCardController.hpp"
+#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
 /**
@@ -14,5 +15,49 @@
  */
 SdCardController::SdCardController(void)
 {
+    sdCardModel = new SdCard();
+}
 
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+SdCardController::~SdCardController(void)
+{
+    delete sdCardModel;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+void SdCardController::init(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void SdCardController::poll(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void SdCardController::shutdown(void)
+{
+    
 }
