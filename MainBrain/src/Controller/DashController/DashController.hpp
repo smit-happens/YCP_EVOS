@@ -17,14 +17,22 @@ class DashController
 {
 public:
     DashController();
+    ~DashController(void);
+
+    void init(void);
+    void poll(void);
+    void shutdown(void);    //TODO: implement
 
     /**  
      * Drafting up possible functions
      * 
      * 
      */
-
-
+private:
+/*
+    //all the buttons need to be implemented
+    Button* shutdownBtn;
+*/
 };
 
 

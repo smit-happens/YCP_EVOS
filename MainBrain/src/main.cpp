@@ -39,6 +39,10 @@ int main(void)
     //creating the singletons and copying the location in memory
     CanController* canC = ControllerManager::getCanC();
     UnitekController* unitekC = ControllerManager::getUnitekC();
+    OrionController* orionC = ControllerManager::getOrionC();
+    CoolingController* coolingC = ControllerManager::getCoolingC();
+    DashController* dashC = ControllerManager::getDashC();
+    //ImdController* imdC = ControllerManager::getImdC();
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
@@ -51,11 +55,15 @@ int main(void)
     digitalWriteFast(LED_BUILTIN, 1);
 
 
-    //BOOTUP functions
+    //Bootup stage functions (anything var declared in an if/else falls out of scope afterward)
         //Calling init functions for each controller
         canC->init();
         unitekC->init();
-        
+        orionC->init();
+        coolingC->init();
+        dashC->init();
+        //imdC->init();
+
 
         //Configure registers
             //Brownout configuration
@@ -67,16 +75,14 @@ int main(void)
         //Dashboard
             //LCD (boot logo)
 
-
-    if(/* check for ShutdownEF*/ 1 )
-    {
-        excecutingStage = StageManager::SELF_TEST;
-    }
-    else
-    {
-        excecutingStage = StageManager::SHUTDOWN;
-    }
-
+        if(/* check for ShutdownEF*/ 1 )
+        {
+            excecutingStage = StageManager::SELF_TEST;
+        }
+        else
+        {
+            excecutingStage = StageManager::SHUTDOWN;
+        }
 
 
     if(excecutingStage == StageManager::SELF_TEST)

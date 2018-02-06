@@ -18,3 +18,47 @@ DashController::DashController(void)
 {
     
 }
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+DashController::~DashController(void)
+{
+    // delete buttons
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+void DashController::init(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void DashController::poll(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void DashController::shutdown(void)
+{
+    
+}
