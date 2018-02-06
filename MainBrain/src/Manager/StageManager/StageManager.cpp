@@ -32,7 +32,7 @@ StageManager::StageManager(void)
 
 /** 
  * @brief  Handles the multiple timers running off of a single 1ms timer from main
- * @note   
+ * @note   Might have to be fleshed out more
  * @retval uint16_t with each bit coresponding to which timers went off
  */
 uint16_t StageManager::processTimers(void)
@@ -103,3 +103,108 @@ uint16_t StageManager::processGlcd(void)
 }
 
 
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processImd(void)
+{    
+    return 0;
+}
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processOrion(void)
+{
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processPedal(void)
+{
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processSdCard(void)
+{
+    return 0;
+}
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processUnitek(void)
+{
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processBatlog(void)
+{
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processPrecharge(void)
+{
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processReadyToDrive(void)
+{
+    return 0;
+}
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processLaunch(void)
+{
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint16_t StageManager::processShutdown(void)
+{
+    return 0;
+}
