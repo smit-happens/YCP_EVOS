@@ -9,6 +9,7 @@
 #ifndef IMDCONTROLLER_HPP
 #define IMDCONTROLLER_HPP
 
+#include "../BaseController/BaseController.hpp"
 #include "../../Model/Imd/Imd.hpp"
 
 
@@ -17,13 +18,19 @@ class ImdController
 {
 public:
     ImdController();
+    ~ImdController(void);
+
+    void init(void);
+    void poll(void);
+    void shutdown(void);    //TODO: implement
 
     /**  
      * Drafting up possible functions
      * 
      * 
      */
-
+private:
+    Imd* imdModel;
 
 };
 

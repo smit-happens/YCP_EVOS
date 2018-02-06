@@ -9,6 +9,7 @@
 #ifndef SDCARDCONTROLLER_HPP
 #define SDCARDCONTROLLER_HPP
 
+#include "../BaseController/BaseController.hpp"
 #include "../../Model/SdCard/SdCard.hpp"
 
 /**  
@@ -30,8 +31,12 @@ class SdCardController
 {
 public:
     SdCardController();
+    ~SdCardController(void);
 
-    //public SdCardController functions
+    void init(void);
+    void poll(void);
+    void shutdown(void);    //TODO: implement
+    
 
     /** 
      * Drafting up possible functions
@@ -45,7 +50,7 @@ public:
 
 
 private:
-    //private SdCardController functions/ variables
+    SdCard* sdCardModel;
 
 };
 

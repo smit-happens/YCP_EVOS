@@ -9,6 +9,7 @@
 #ifndef PEDALCONTROLLER_HPP
 #define PEDALCONTROLLER_HPP
 
+#include "../BaseController/BaseController.hpp"
 #include "../../Model/BrakePedal/BrakePedal.hpp"
 #include "../../Model/GasPedal/GasPedal.hpp"
 
@@ -17,13 +18,20 @@ class PedalController
 {
 public:
     PedalController();
+    ~PedalController(void);
+
+    void init(void);
+    void poll(void);
+    void shutdown(void);    //TODO: implement
 
     /**  
      * Drafting up possible functions
      * 
      * 
      */
-
+private:
+    BrakePedal* brakeModel;
+    GasPedal* gasModel;
 
 };
 

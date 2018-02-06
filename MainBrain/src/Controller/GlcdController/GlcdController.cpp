@@ -16,5 +16,49 @@
  */
 GlcdController::GlcdController(void)
 {
+    glcdModel = new Glcd();
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+GlcdController::~GlcdController(void)
+{
+    delete glcdModel;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+void GlcdController::init(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void GlcdController::poll(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void GlcdController::shutdown(void)
+{
     
 }

@@ -42,7 +42,11 @@ int main(void)
     OrionController* orionC = ControllerManager::getOrionC();
     CoolingController* coolingC = ControllerManager::getCoolingC();
     DashController* dashC = ControllerManager::getDashC();
-    //ImdController* imdC = ControllerManager::getImdC();
+    ImdController* imdC = ControllerManager::getImdC();
+    GlcdController* glcdC = ControllerManager::getGlcdC();
+    PedalController* pedalC = ControllerManager::getPedalC();
+    SdCardController* sdCardC = ControllerManager::getSdCardC();
+    //BatlogController* batlogC = ControllerManager::getBatlogC();
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
@@ -62,7 +66,12 @@ int main(void)
         orionC->init();
         coolingC->init();
         dashC->init();
-        //imdC->init();
+        pedalC->init();
+        imdC->init();
+        glcdC->init();
+        sdCardC->init();
+        //batlogC->init();
+
 
 
         //Configure registers
@@ -126,7 +135,7 @@ int main(void)
     }
 
 
-    //Start timers (1000 usec)
+    //Start 1ms timer (1000 usec)
     myTimer.begin(timerISR, 1000);
 
 
