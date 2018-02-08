@@ -1,142 +1,500 @@
-/**  A one line description of the class.
+/**  Used in the verification process of the IMD circuit
  *
  * main.cpp
  * Created 2-07-18 By: Smitty
  *
- * A longer description.
+ * NOTE: I know I know! global variables are bad, you could've made functions for that, yada yada
+ *       This was made at 2am for testing a circuit so I don't wanna hear it
  */
 
 #include <Arduino.h>
 #include "SdFat.h"
+#include "ST7565.h"
 
-// Interval between data records in milliseconds.
-// The interval must be greater than the maximum SD write latency plus the
-// time to acquire and write data to the SD to avoid overrun errors.
-// Run the bench example to check the quality of your SD card.
-const uint32_t SAMPLE_INTERVAL_MS = 100;
 
-// Log file base name.  Must be six characters or less.
-#define FILE_BASE_NAME "pedalTest"
-//------------------------------------------------------------------------------
+// Log file base name
+#define FILE_BASE_NAME "IMDTest"
+
+//for readability sake
+#define PASS true
+#define FAIL false
+
 // File system object.
 SdFatSdioEX sd;
 
 // Log file.
 SdFile file;
 
-// Time in micros for next data record.
-uint32_t logTime;
+//JustBarelyLogo
+const uint8_t JustBarelyLogo [] = {
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80,
+0xE0, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00, 0xC0, 0xF0, 0xFC, 0xFF, 0xFF, 0x1E, 0x38,
+0x70, 0xE0, 0xC0, 0xC0, 0xC0, 0xC0, 0xE0, 0x60, 0x60, 0x20, 0x30, 0x30, 0x10, 0x18, 0x08, 0x08,
+0x0C, 0x04, 0x04, 0x02, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE0, 0xF8, 0xEE, 0xFF,
+0xFF, 0xFF, 0xF8, 0xF0, 0xE0, 0xC0, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0xC0, 0xC0, 0xC0,
+0xE0, 0xE0, 0xE0, 0xE0, 0xF0, 0xF0, 0xF0, 0xF8, 0xF8, 0xF8, 0xFC, 0xFC, 0xFC, 0xFE, 0xFE, 0xFE,
+0x7E, 0x5F, 0x3F, 0x3F, 0x2F, 0x5F, 0xDF, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F, 0xFF, 0xFF, 0xFF, 0xFF,
+0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+0x5F, 0x5F, 0x3F, 0x3F, 0x1F, 0x1F, 0x0F, 0x0F, 0x05, 0x07, 0x03, 0x03, 0x01, 0x01, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03, 0x07, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03, 0x03,
+0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x03, 0x03, 0x01, 0x01, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00, 0x00,
+0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+0x80, 0x80, 0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
+0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00, 0x00,
+0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80,
+0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x01, 0x01, 0xFF, 0xFF, 0x01, 0x01,
+0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x86, 0x86,
+0x19, 0x19, 0x19, 0x19, 0x19, 0x19, 0xE0, 0xE0, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0xFF, 0xFF,
+0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x19, 0x19, 0x19, 0x19,
+0x19, 0x19, 0xE6, 0xE6, 0x00, 0x00, 0xFE, 0xFE, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0xFE, 0xFE,
+0x00, 0x00, 0xFF, 0xFF, 0x19, 0x19, 0x19, 0x19, 0x19, 0x19, 0xE6, 0xE6, 0x00, 0x00, 0xFF, 0xFF,
+0x19, 0x19, 0x19, 0x19, 0x19, 0x19, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x07, 0x07, 0x18, 0x18, 0xE0, 0xE0, 0x18, 0x18, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x06, 0x06, 0x06, 0x06, 0x01, 0x01, 0x00, 0x00,
+0x00, 0x00, 0x01, 0x01, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x01, 0x01, 0x00, 0x00, 0x01, 0x01,
+0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x06, 0x06, 0x06, 0x06,
+0x06, 0x06, 0x01, 0x01, 0x00, 0x00, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07,
+0x00, 0x00, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x00, 0x00, 0x07, 0x07,
+0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x00, 0x00, 0x07, 0x07, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
 
-//==============================================================================
-// User functions.  Edit writeHeader() and logData() for your requirements.
+////////////////////////////////////////////////////////////////////////////
+//Pin declarations
+//Start/Stop Button
+const uint8_t BTN         = 23;
 
-const uint8_t ANALOG_PIN = 32;
+//TODO: figure out what these actually are
+const uint8_t IMD_POWER         = 0;
+const uint8_t IMD_ERROR_INPUT   = 0;
+const uint8_t IMD_ERROR_OUTPUT  = 0;
+
+//GLCD + RGB Backlight
+const uint8_t SID               = 33;
+const uint8_t SCLK              = 34;
+const uint8_t RS                = 35;
+const uint8_t _RST              = 36;
+const uint8_t _CS               = 37;
+const uint8_t RLED              = 30;
+const uint8_t GLED              = 29;
+const uint8_t BLED              = 10;
+//END Pin declarations
+////////////////////////////////////////////////////////////////////////////
+
+volatile bool buttonPress = false;
+
+enum TestStage
+{
+    BOOT_ERROR_OFF,
+    STANDBY_ERROR_ON,
+    STANDBY_ERROR_OFF,
+    //SHUTDOWN,
+    BOOT_ERROR_ON,
+    LATCH_ERROR_OFF
+};
+
+//used for determining which stage we're in & resetting
+TestStage currentStage;
+
+//ST7565 display(SID, SCLK, RS, _RST, _CS); //example input params
+ST7565 glcd(SID, SCLK, RS, _RST, _CS);
+
+//counter for current test
+uint32_t testCount = 1;
+
+//time since testing start
+double testStart = millis();
+
+
+/** 
+ * @brief  Gets the time for the current test run
+ * @note   
+ * @retval Milliseconds since start of test
+ */
+double getTime(void)
+{
+    return millis() - testStart;
+}
+
+
+//------------------------------------------------------------------------------
+// ISR for the button press
+void buttonISR(void)
+{
+    //ugly but it works
+    buttonPress = true;
+}
+
+
 //------------------------------------------------------------------------------
 // Write data header.
-void writeHeader() {
-    file.println(F("Milliseconds,Pedal_value"));
+void restartTest(void)
+{
+    digitalWriteFast(IMD_POWER, LOW);
+    digitalWriteFast(IMD_ERROR_INPUT, LOW);
+
+    //wait a second for it to "settle"
+    delay(1000);
+
+    //increment for next test
+    testCount++;
+
+    //setting the test stage to the first one
+    currentStage = BOOT_ERROR_OFF;
 }
+
+
+//------------------------------------------------------------------------------
+// Write data header.
+void writeHeader() 
+{
+    //Time, Pass/Fail, Description
+    file.println(F("Milliseconds,Test_Number,Test_Step,Test_Result,Description"));
+}
+
+
 //------------------------------------------------------------------------------
 // Log a data record.
-void logData() {
-    uint16_t data;
-
-    // Read all channels to avoid SD write latency between readings.
-    data = analogRead(ANALOG_PIN);
-    // Write data to file.  Start with log time in micros.
-    file.print(logTime/1000);
-
-    // Write ADC data to CSV record.
+void logRecord(int testCount, int testStep, bool result, String description) 
+{
+    // Write to file
+    file.print(getTime());            //time in msec
     file.write(',');
-    file.println(data);
-
-    Serial.println(data);
+    file.print(testCount);         //test number
+    file.write(',');
+    file.print(testStep);           //stage of the current test
+    file.write(',');
+    file.print(result);             //1 = pass; 0 = fail
+    file.write(',');
+    file.println(description);      //short description
 }
+
+
 //==============================================================================
 // Error messages stored in flash.
 #define error(msg) sd.errorHalt(F(msg))
 //------------------------------------------------------------------------------
-int main(void) {
-    const uint8_t BASE_NAME_SIZE = sizeof(FILE_BASE_NAME) - 1;
-    char fileName[20] = FILE_BASE_NAME "00.csv";
+int main(void) 
+{
+    //configuring the Pins connected to the IMD
+    pinMode(IMD_POWER, OUTPUT);
+    pinMode(IMD_ERROR_INPUT, OUTPUT);
+    pinMode(IMD_ERROR_OUTPUT, INPUT);
 
-    Serial.begin(9600);
-    
-    // Wait for USB Serial 
-    while (!Serial) {
-        SysCall::yield();
-    }
+    //initialize the GLCD
+    glcd.begin(0x18);
+    glcd.clear();
+
+    // draw the bitmap
+    glcd.drawbitmap(0, 0, JustBarelyLogo, 128, 64, BLACK);
+    glcd.display();
+
+    //savor the logo
     delay(1000);
 
-    Serial.println(F("Type any character to start"));
-    while (!Serial.available()) {
-        SysCall::yield();
-    }
-    
-    // Initialize at the highest speed supported by the board that is
-    // not over 50 MHz. Try a lower speed if SPI errors occur.
-    if (!sd.begin()) {
+
+    // Initialize sdcard
+    if (!sd.begin()) 
+    {
         sd.initErrorHalt();
     }
 
+    //creating filename
+    const uint8_t BASE_NAME_SIZE = sizeof(FILE_BASE_NAME) - 1;
+    char fileName[20] = FILE_BASE_NAME "00.csv";
+
     // Find an unused file name.
-    while (sd.exists(fileName)) {
-        if (fileName[BASE_NAME_SIZE + 1] != '9') {
-        fileName[BASE_NAME_SIZE + 1]++;
-        } else if (fileName[BASE_NAME_SIZE] != '9') {
-        fileName[BASE_NAME_SIZE + 1] = '0';
-        fileName[BASE_NAME_SIZE]++;
-        } else {
-        error("Can't create file name");
+    while (sd.exists(fileName)) 
+    {
+        if (fileName[BASE_NAME_SIZE + 1] != '9') 
+        {
+            fileName[BASE_NAME_SIZE + 1]++;
+        }
+        else if (fileName[BASE_NAME_SIZE] != '9') 
+        {
+            fileName[BASE_NAME_SIZE + 1] = '0';
+            fileName[BASE_NAME_SIZE]++;
+        }
+        else
+        {
+            error("Can't create file name");
         }
     }
-    if (!file.open(fileName, O_CREAT | O_WRITE | O_EXCL)) {
+
+    //creating the new log file
+    if (!file.open(fileName, O_CREAT | O_WRITE | O_EXCL)) 
+    {
         error("file.open");
     }
-    // Read any Serial data.
-    do {
-        delay(10);
-    } while (Serial.available() && Serial.read() >= 0);
 
-    Serial.print(F("Logging to: "));
-    Serial.println(fileName);
-    Serial.println(F("Type any character to stop"));
+
+    //attaching the interrupt to the button when it changes b/t high & low
+    attachInterrupt(BTN, buttonISR, RISING);
+
+    //start logging prompt
+    glcd.clear();
+    glcd.drawstring(0, 0, "Press the button to start");
+    glcd.display();
+
+    //wait for button press and reset button state
+    buttonPress = false;
+    while (!buttonPress) 
+    {
+        SysCall::yield();
+    }
+    buttonPress = false;
+
+    //stop logging prompt
+    glcd.clear();
+    glcd.drawstring(0,0,"Logging to: ");
+    glcd.drawstring(0,1, fileName);
+    glcd.drawstring(0,2,"Press the button to stop");
+    glcd.display();
+
 
     // Write data header.
     writeHeader();
 
-    // Start on a multiple of the sample interval.
-    logTime = micros()/(1000UL*SAMPLE_INTERVAL_MS) + 1;
-    logTime *= 1000UL*SAMPLE_INTERVAL_MS;
+    //clock for the current test cycle
+    testStart = millis();
+
+    //used for timing certain test conditions
+    double stopWatch = 0;
+
+    //a check for if the test failed or not
+    bool isFailed = true;
+
+    currentStage = BOOT_ERROR_OFF;
 
     //------------------------------------------------------------------------------
-    while(1) {
-    // Time for next record.
-    logTime += 1000UL*SAMPLE_INTERVAL_MS;
+    while(1) 
+    {
 
-    // Wait for log time.
-    int32_t diff;
-    do {
-        diff = micros() - logTime;
-    } while (diff < 0);
+        switch(currentStage)
+        {
+            case BOOT_ERROR_OFF:
+                //test step 1 boot w/ no error
+                digitalWriteFast(IMD_POWER, HIGH);
+                digitalWriteFast(IMD_ERROR_INPUT, LOW);
+                delay(100);
 
-    // Check for data rate too high.
-    if (diff > 10) {
-        error("Missed data record");
+                if(!digitalReadFast(IMD_ERROR_OUTPUT)) 
+                {
+                    //log false activation
+                    logRecord(testCount, BOOT_ERROR_OFF, FAIL, "False activation on startup");
+                    //restart tests
+                    restartTest();
+                }
+                else 
+                {
+                    //log pass on Bootup w/ no error
+                    logRecord(testCount, BOOT_ERROR_OFF, PASS, "No error detected on startup");
+                    
+                    //proceed to next test
+                    currentStage = STANDBY_ERROR_ON;
+                }
+                //END test step 1 boot w/ no error
+            break;
+
+
+            case STANDBY_ERROR_ON:
+                //test step 2 trigger error condition
+                digitalWriteFast(IMD_ERROR_INPUT, HIGH);
+
+                //setting a "stopWatch" for a 100ms interval
+                stopWatch = getTime() + 100;
+
+                //expect the test to fail
+                isFailed = true;
+                while(stopWatch >= getTime()) 
+                {
+                    if(!digitalReadFast(IMD_ERROR_OUTPUT))
+                    {
+                        //log successful test portion
+                        logRecord(testCount, STANDBY_ERROR_ON, PASS, "Relay opened within 100ms of error state");
+                        isFailed = false;
+
+                        //proceed to next test
+                        currentStage = STANDBY_ERROR_OFF;
+                    }
+                }
+
+                //check if the test failed or not
+                if(isFailed)
+                {
+                    //log failure
+                    logRecord(testCount, STANDBY_ERROR_ON, FAIL, "Relay failed to open within 100ms of low to high error state");
+                    //restart tests
+                    restartTest();
+                }
+                //END test step 2 trigger error condition
+            break;
+
+
+            case STANDBY_ERROR_OFF:
+                //test step 3 standby error off
+                digitalWriteFast(IMD_ERROR_INPUT, LOW);
+
+                //setting a "stopWatch" for a 3000ms interval
+                stopWatch = getTime() + 3000;
+
+                //expect the test to fail
+                isFailed = true;
+                while(stopWatch >= getTime()) 
+                {
+                    if(!digitalReadFast(IMD_ERROR_OUTPUT)) 
+                    {
+                        //log successful test portion
+                        logRecord(testCount, STANDBY_ERROR_OFF, PASS, "Error state latch passed for 3 seconds");
+                        isFailed = false;
+
+                        //proceed to next test
+                        currentStage = BOOT_ERROR_ON;
+                    }
+                }
+
+                //check if the test failed or not
+                if(isFailed)
+                {
+                    //log failure
+                    logRecord(testCount, STANDBY_ERROR_OFF, FAIL, "Relay Failed to latch error state");
+                    //restart tests
+                    restartTest();
+                }
+                //END test step 3 standby error off
+            break;
+
+
+            case BOOT_ERROR_ON:
+                //Power down IMD
+                digitalWriteFast(IMD_POWER, LOW);
+
+                //wait a second for it to "settle"
+                delay(1000);
+                //END power down IMD
+
+                //test step 4 Boot w/ error state
+                digitalWriteFast(IMD_POWER, HIGH);
+                digitalWriteFast(IMD_ERROR_INPUT, HIGH);
+                delay(100);
+
+                //setting a "stopWatch" for a 3000ms interval
+                stopWatch = getTime() + 3000;
+
+                //expect the test to fail
+                isFailed = true;
+                while(stopWatch >= getTime()) 
+                {
+                    if(!digitalReadFast(IMD_ERROR_OUTPUT)) 
+                    {
+                        //log successful test portion
+                        logRecord(testCount, BOOT_ERROR_ON, PASS, "Boot with error state passed for 3 seconds");
+                        isFailed = false;
+
+                        //proceed to next test
+                        currentStage = LATCH_ERROR_OFF;
+                    }
+                }
+
+                //check if the test failed or not
+                if(isFailed)
+                {
+                    //log failure
+                    logRecord(testCount, BOOT_ERROR_ON, FAIL, "Failed to respond to IMD error on boot");
+                    //restart tests
+                    restartTest();
+                }
+                //END test step 4 Boot w/ error state
+            break;
+
+
+            case LATCH_ERROR_OFF:
+                //test step 5 latch from boot error
+                digitalWriteFast(IMD_ERROR_INPUT, LOW);
+
+                //setting a "stopWatch" for a 3000ms interval
+                stopWatch = getTime() + 3000;
+
+                //expect the test to fail
+                isFailed = true;
+                while(stopWatch >= getTime()) 
+                {
+                    if(!digitalReadFast(IMD_ERROR_OUTPUT)) 
+                    {
+                        //log successful test portion
+                        logRecord(testCount, BOOT_ERROR_ON, PASS, "Boot with error state passed for 3 seconds");
+                        isFailed = false;
+
+                        //proceed to next test (restart tests)
+                        restartTest();
+                    }
+                }
+
+                //check if the test failed or not
+                if(isFailed)
+                {
+                    //log failure
+                    logRecord(testCount, BOOT_ERROR_ON, FAIL, "Failed to respond to IMD error on boot");
+                    //restart tests
+                    restartTest();
+                }
+                //END test step 5 latch with boot error
+            break;
+        } //END GIANT SWITCH
+
+
+        // Force data to SD and update the directory entry to avoid data loss.
+        if (!file.sync() || file.getWriteError()) {
+            error("write error");
+        }
+
+        //stops logging and halts Teensy
+        if (!buttonPress) 
+        {
+            // Close file and stop.
+            file.close();
+            glcd.clear();
+            glcd.drawstring(0,0,"Done Testing");
+            glcd.display();
+            SysCall::halt();
+        }
+        ///////////////////////////////////
+
     }
 
-    logData();
-
-    // Force data to SD and update the directory entry to avoid data loss.
-    if (!file.sync() || file.getWriteError()) {
-        error("write error");
-    }
-
-    if (Serial.available()) {
-        // Close file and stop.
-        file.close();
-        Serial.println(F("Done"));
-        SysCall::halt();
-    }
-    }
+    return 0;
 }
