@@ -100,8 +100,8 @@ const uint8_t BTN         = 23;
 
 //TODO: figure out what these actually are
 const uint8_t IMD_POWER         = 0;
-const uint8_t IMD_ERROR_INPUT   = 0;
-const uint8_t IMD_ERROR_OUTPUT  = 0;
+const uint8_t IMD_ERROR_INPUT   = 1;
+const uint8_t IMD_ERROR_OUTPUT  = 2;
 
 //GLCD + RGB Backlight
 const uint8_t SID               = 33;
@@ -134,7 +134,7 @@ TestStage currentStage;
 ST7565 glcd(SID, SCLK, RS, _RST, _CS);
 
 //counter for current test
-uint32_t testCount = 1;
+uint32_t testCount = 0;
 
 //time since testing start
 double testStart = millis();
@@ -161,7 +161,7 @@ void buttonISR(void)
 
 
 //------------------------------------------------------------------------------
-// Write data header.
+// Restart the test to a "happy start"
 void restartTest(void)
 {
     digitalWriteFast(IMD_POWER, LOW);
@@ -175,6 +175,20 @@ void restartTest(void)
 
     //setting the test stage to the first one
     currentStage = BOOT_ERROR_OFF;
+
+    //converting from int to char
+    char temp[20];
+    String str = String(testCount);
+    str.toCharArray(temp, 20);
+
+    //user feedback
+    glcd.clear();
+    glcd.drawstring(0, 0, "Current test count:");
+    glcd.drawstring(0, 1, temp);
+    glcd.drawstring(0, 2, "Press the button");
+    glcd.drawstring(0, 3, "to stop");
+    glcd.display();
+
 }
 
 
@@ -224,7 +238,25 @@ int main(void)
     glcd.display();
 
     //savor the logo
-    delay(1000);
+    delay(2000);
+
+
+    //start logging prompt
+    glcd.clear();
+    glcd.drawstring(0, 0, "Press the button");
+    glcd.drawstring(0, 1, "to start");
+    glcd.display();
+
+    //attaching the interrupt to the button when it changes b/t high & low
+    attachInterrupt(BTN, buttonISR, RISING);
+
+    //wait for button press and reset button state
+    buttonPress = false;
+    while (!buttonPress) 
+    {
+        SysCall::yield();
+    }
+    buttonPress = false;
 
 
     // Initialize sdcard
@@ -262,27 +294,12 @@ int main(void)
     }
 
 
-    //attaching the interrupt to the button when it changes b/t high & low
-    attachInterrupt(BTN, buttonISR, RISING);
-
-    //start logging prompt
-    glcd.clear();
-    glcd.drawstring(0, 0, "Press the button to start");
-    glcd.display();
-
-    //wait for button press and reset button state
-    buttonPress = false;
-    while (!buttonPress) 
-    {
-        SysCall::yield();
-    }
-    buttonPress = false;
-
     //stop logging prompt
     glcd.clear();
-    glcd.drawstring(0,0,"Logging to: ");
-    glcd.drawstring(0,1, fileName);
-    glcd.drawstring(0,2,"Press the button to stop");
+    glcd.drawstring(0, 0, "Logging to: ");
+    glcd.drawstring(0, 1, fileName);
+    glcd.drawstring(0, 2, "Press the button");
+    glcd.drawstring(0, 3, "to stop");
     glcd.display();
 
 
@@ -298,12 +315,23 @@ int main(void)
     //a check for if the test failed or not
     bool isFailed = true;
 
+    //setting the current stage to the first one
     currentStage = BOOT_ERROR_OFF;
+
+    //converting from int to char
+    char temp[20];
+    String str = String(testCount);
+    str.toCharArray(temp, 20);
+
+    //user feedback
+    glcd.clear();
+    glcd.drawstring(0, 4, "Current test count:");
+    glcd.drawstring(0, 5, temp);
+    glcd.display();
 
     //------------------------------------------------------------------------------
     while(1) 
     {
-
         switch(currentStage)
         {
             case BOOT_ERROR_OFF:
@@ -483,7 +511,7 @@ int main(void)
         }
 
         //stops logging and halts Teensy
-        if (!buttonPress) 
+        if (buttonPress) 
         {
             // Close file and stop.
             file.close();
