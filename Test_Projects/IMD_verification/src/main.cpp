@@ -109,9 +109,9 @@ const uint8_t SCLK              = 34;
 const uint8_t RS                = 35;
 const uint8_t _RST              = 36;
 const uint8_t _CS               = 37;
-const uint8_t RLED              = 30;
-const uint8_t GLED              = 29;
-const uint8_t BLED              = 10;
+// const uint8_t RLED              = 30;    //not used
+// const uint8_t GLED              = 29;    //not used
+// const uint8_t BLED              = 10;    //not used
 //END Pin declarations
 ////////////////////////////////////////////////////////////////////////////
 
@@ -177,16 +177,23 @@ void restartTest(void)
     currentStage = BOOT_ERROR_OFF;
 
     //converting from int to char
-    char temp[20];
+    char testCountChar[20];
+    char testStageChar[20];
+    //testCount to char array
     String str = String(testCount);
-    str.toCharArray(temp, 20);
+    str.toCharArray(testCountChar, 20);
+    //testStage to char array
+    str = String(currentStage);
+    str.toCharArray(testStageChar, 20);
 
     //user feedback
     glcd.clear();
     glcd.drawstring(0, 0, "Current test count:");
-    glcd.drawstring(0, 1, temp);
-    glcd.drawstring(0, 2, "Press the button");
-    glcd.drawstring(0, 3, "to stop");
+    glcd.drawstring(0, 1, testCountChar);
+    glcd.drawstring(0, 2, "Test stage:");
+    glcd.drawstring(0, 3, testStageChar);
+    glcd.drawstring(0, 4, "Press the button");
+    glcd.drawstring(0, 5, "to stop");
     glcd.display();
 
 }
@@ -203,14 +210,14 @@ void writeHeader()
 
 //------------------------------------------------------------------------------
 // Log a data record.
-void logRecord(int testCount, int testStep, bool result, String description) 
+void logRecord(int testCount, int testStage, bool result, String description) 
 {
     // Write to file
-    file.print(getTime());            //time in msec
+    file.print(getTime());          //time in msec
     file.write(',');
-    file.print(testCount);         //test number
+    file.print(testCount);          //test number
     file.write(',');
-    file.print(testStep);           //stage of the current test
+    file.print(testStage);          //stage of the current test
     file.write(',');
     file.print(result);             //1 = pass; 0 = fail
     file.write(',');
@@ -256,6 +263,8 @@ int main(void)
     {
         SysCall::yield();
     }
+    //"debouncing" delay
+    delay(10);
     buttonPress = false;
 
 
@@ -293,16 +302,6 @@ int main(void)
         error("file.open");
     }
 
-
-    //stop logging prompt
-    glcd.clear();
-    glcd.drawstring(0, 0, "Logging to: ");
-    glcd.drawstring(0, 1, fileName);
-    glcd.drawstring(0, 2, "Press the button");
-    glcd.drawstring(0, 3, "to stop");
-    glcd.display();
-
-
     // Write data header.
     writeHeader();
 
@@ -319,15 +318,25 @@ int main(void)
     currentStage = BOOT_ERROR_OFF;
 
     //converting from int to char
-    char temp[20];
+    char testCountChar[20];
+    char testStageChar[20];
+    //testCount to char array
     String str = String(testCount);
-    str.toCharArray(temp, 20);
+    str.toCharArray(testCountChar, 20);
+    //testStage to char array
+    str = String(currentStage);
+    str.toCharArray(testStageChar, 20);
 
-    //user feedback
+    //stop logging prompt
     glcd.clear();
-    glcd.drawstring(0, 4, "Current test count:");
-    glcd.drawstring(0, 5, temp);
+    glcd.drawstring(0, 0, "Current test count:");
+    glcd.drawstring(0, 1, testCountChar);
+    glcd.drawstring(0, 2, "Test stage:");
+    glcd.drawstring(0, 3, testStageChar);
+    glcd.drawstring(0, 4, "Press the button");
+    glcd.drawstring(0, 5, "to stop");
     glcd.display();
+
 
     //------------------------------------------------------------------------------
     while(1) 
@@ -504,6 +513,12 @@ int main(void)
             break;
         } //END GIANT SWITCH
 
+        //testStage to char array
+        str = String(currentStage);
+        str.toCharArray(testStageChar, 20);
+
+        //update current test stage on display
+        glcd.drawstring(0, 3, testStageChar);
 
         // Force data to SD and update the directory entry to avoid data loss.
         if (!file.sync() || file.getWriteError()) {
