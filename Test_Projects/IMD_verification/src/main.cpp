@@ -99,9 +99,9 @@ const uint8_t JustBarelyLogo [] = {
 const uint8_t BTN         = 23;
 
 //TODO: figure out what these actually are
-const uint8_t IMD_POWER         = 0;
-const uint8_t IMD_ERROR_INPUT   = 1;
-const uint8_t IMD_ERROR_OUTPUT  = 2;
+const uint8_t IMD_POWER             = 38;
+const uint8_t IMD_ERROR             = 14;
+const uint8_t SAFETY_CIRCUIT_RESULT = 15;
 
 //GLCD + RGB Backlight
 const uint8_t SID               = 33;
@@ -135,6 +135,8 @@ ST7565 glcd(SID, SCLK, RS, _RST, _CS);
 
 //counter for current test
 uint32_t testCount = 0;
+uint32_t passCount = 0;
+uint32_t failCount = 0;
 
 //time since testing start
 double testStart = millis();
@@ -148,6 +150,11 @@ double testStart = millis();
 double getTime(void)
 {
     return millis() - testStart;
+}
+
+void relayOpenDelay(void)
+{
+    delay(20);  // delay for relay to open - usually takes ~6ms
 }
 
 
@@ -165,10 +172,10 @@ void buttonISR(void)
 void restartTest(void)
 {
     digitalWriteFast(IMD_POWER, LOW);
-    digitalWriteFast(IMD_ERROR_INPUT, LOW);
+    digitalWriteFast(IMD_ERROR, LOW);
 
     //wait a second for it to "settle"
-    delay(1000);
+    delay(100);
 
     //increment for next test
     testCount++;
@@ -204,14 +211,21 @@ void restartTest(void)
 void writeHeader() 
 {
     //Time, Pass/Fail, Description
-    file.println(F("Milliseconds,Test_Number,Test_Step,Test_Result,Description"));
+    file.println(F("Milliseconds,Test_Number,Test_Stage,Test_Result,Description"));
 }
 
 
 //------------------------------------------------------------------------------
 // Log a data record.
-void logRecord(int testCount, int testStage, bool result, String description) 
+void logRecord(int testStage, bool result, String description) 
 {
+    if(result && currentStage == LATCH_ERROR_OFF){
+        passCount++;
+    }
+    else if(!result) {
+        failCount++;
+    }
+
     // Write to file
     file.print(getTime());          //time in msec
     file.write(',');
@@ -233,8 +247,8 @@ int main(void)
 {
     //configuring the Pins connected to the IMD
     pinMode(IMD_POWER, OUTPUT);
-    pinMode(IMD_ERROR_INPUT, OUTPUT);
-    pinMode(IMD_ERROR_OUTPUT, INPUT);
+    pinMode(IMD_ERROR, OUTPUT);
+    pinMode(SAFETY_CIRCUIT_RESULT, INPUT);
 
     //initialize the GLCD
     glcd.begin(0x18);
@@ -320,21 +334,32 @@ int main(void)
     //converting from int to char
     char testCountChar[20];
     char testStageChar[20];
+    char testPassCountChar[20];
+    char testFailCountChar[20];
     //testCount to char array
     String str = String(testCount);
     str.toCharArray(testCountChar, 20);
     //testStage to char array
     str = String(currentStage);
     str.toCharArray(testStageChar, 20);
+    // passCount to char array
+    str = String(passCount);
+    str.toCharArray(testPassCountChar, 20);
+    // passCount to char array
+    str = String(failCount);
+    str.toCharArray(testFailCountChar, 20);
 
     //stop logging prompt
     glcd.clear();
-    glcd.drawstring(0, 0, "Current test count:");
+    glcd.drawstring(0, 0, "Test count:");
     glcd.drawstring(0, 1, testCountChar);
-    glcd.drawstring(0, 2, "Test stage:");
-    glcd.drawstring(0, 3, testStageChar);
-    glcd.drawstring(0, 4, "Press the button");
-    glcd.drawstring(0, 5, "to stop");
+    glcd.drawstring(0, 2, "Pass count:");
+    glcd.drawstring(0, 3, testPassCountChar);
+    glcd.drawstring(0, 4, "Fail count:");
+    glcd.drawstring(0, 5, testFailCountChar);
+    glcd.drawstring(0, 6, "Test stage:");
+    glcd.drawstring(0, 7, testStageChar);
+    glcd.drawstring(0, 8, "Press btn to stop");
     glcd.display();
 
 
@@ -346,20 +371,20 @@ int main(void)
             case BOOT_ERROR_OFF:
                 //test step 1 boot w/ no error
                 digitalWriteFast(IMD_POWER, HIGH);
-                digitalWriteFast(IMD_ERROR_INPUT, LOW);
-                delay(100);
+                digitalWriteFast(IMD_ERROR, LOW);
+                delay(50);
 
-                if(!digitalReadFast(IMD_ERROR_OUTPUT)) 
+                if(!digitalReadFast(SAFETY_CIRCUIT_RESULT)) 
                 {
                     //log false activation
-                    logRecord(testCount, BOOT_ERROR_OFF, FAIL, "False activation on startup");
+                    logRecord(BOOT_ERROR_OFF, FAIL, "False activation on startup");
                     //restart tests
                     restartTest();
                 }
                 else 
                 {
                     //log pass on Bootup w/ no error
-                    logRecord(testCount, BOOT_ERROR_OFF, PASS, "No error detected on startup");
+                    logRecord(BOOT_ERROR_OFF, PASS, "No error detected on startup");
                     
                     //proceed to next test
                     currentStage = STANDBY_ERROR_ON;
@@ -370,23 +395,20 @@ int main(void)
 
             case STANDBY_ERROR_ON:
                 //test step 2 trigger error condition
-                digitalWriteFast(IMD_ERROR_INPUT, HIGH);
+                digitalWriteFast(IMD_ERROR, HIGH);
+                
+                relayOpenDelay();
 
                 //setting a "stopWatch" for a 100ms interval
                 stopWatch = getTime() + 100;
 
-                //expect the test to fail
-                isFailed = true;
+                //yes/no check for test
+                isFailed = false;
                 while(stopWatch >= getTime()) 
                 {
-                    if(!digitalReadFast(IMD_ERROR_OUTPUT))
+                    if(digitalReadFast(SAFETY_CIRCUIT_RESULT))
                     {
-                        //log successful test portion
-                        logRecord(testCount, STANDBY_ERROR_ON, PASS, "Relay opened within 100ms of error state");
-                        isFailed = false;
-
-                        //proceed to next test
-                        currentStage = STANDBY_ERROR_OFF;
+                        isFailed = true;
                     }
                 }
 
@@ -394,33 +416,36 @@ int main(void)
                 if(isFailed)
                 {
                     //log failure
-                    logRecord(testCount, STANDBY_ERROR_ON, FAIL, "Relay failed to open within 100ms of low to high error state");
+                    logRecord(STANDBY_ERROR_ON, FAIL, "Relay failed to open within 100ms of low to high error state");
                     //restart tests
                     restartTest();
+                }
+                else
+                {
+                    //log successful test portion
+                    logRecord(STANDBY_ERROR_ON, PASS, "Relay opened within 100ms of error state");
+
+                    //proceed to next test
+                    currentStage = STANDBY_ERROR_OFF;
                 }
                 //END test step 2 trigger error condition
             break;
 
 
             case STANDBY_ERROR_OFF:
-                //test step 3 standby error off
-                digitalWriteFast(IMD_ERROR_INPUT, LOW);
+                //test step 3 standby error off (IMD shutdown circuit is latched)
+                digitalWriteFast(IMD_ERROR, LOW);
 
                 //setting a "stopWatch" for a 3000ms interval
                 stopWatch = getTime() + 3000;
 
-                //expect the test to fail
-                isFailed = true;
+                //yes/no check for test
+                isFailed = false;
                 while(stopWatch >= getTime()) 
                 {
-                    if(!digitalReadFast(IMD_ERROR_OUTPUT)) 
+                    if(digitalReadFast(SAFETY_CIRCUIT_RESULT))
                     {
-                        //log successful test portion
-                        logRecord(testCount, STANDBY_ERROR_OFF, PASS, "Error state latch passed for 3 seconds");
-                        isFailed = false;
-
-                        //proceed to next test
-                        currentStage = BOOT_ERROR_ON;
+                        isFailed = true;
                     }
                 }
 
@@ -428,9 +453,17 @@ int main(void)
                 if(isFailed)
                 {
                     //log failure
-                    logRecord(testCount, STANDBY_ERROR_OFF, FAIL, "Relay Failed to latch error state");
+                    logRecord(STANDBY_ERROR_OFF, FAIL, "Relay Failed to latch error state");
                     //restart tests
                     restartTest();
+                }
+                else
+                {
+                    //log successful test portion
+                    logRecord(STANDBY_ERROR_OFF, PASS, "Error state latch passed for 3 seconds");
+
+                    //proceed to next test
+                    currentStage = BOOT_ERROR_ON;
                 }
                 //END test step 3 standby error off
             break;
@@ -441,39 +474,39 @@ int main(void)
                 digitalWriteFast(IMD_POWER, LOW);
 
                 //wait a second for it to "settle"
-                delay(1000);
+                delay(500);
                 //END power down IMD
 
                 //test step 4 Boot w/ error state
+                digitalWriteFast(IMD_ERROR, HIGH);
                 digitalWriteFast(IMD_POWER, HIGH);
-                digitalWriteFast(IMD_ERROR_INPUT, HIGH);
-                delay(100);
 
                 //setting a "stopWatch" for a 3000ms interval
-                stopWatch = getTime() + 3000;
+                //stopWatch = getTime() + 3000;
 
-                //expect the test to fail
-                isFailed = true;
-                while(stopWatch >= getTime()) 
+                //yes/no check for test
+                isFailed = false;
+                delay(3000);    // response time of the circuit timer
+                if(digitalReadFast(SAFETY_CIRCUIT_RESULT)) 
                 {
-                    if(!digitalReadFast(IMD_ERROR_OUTPUT)) 
-                    {
-                        //log successful test portion
-                        logRecord(testCount, BOOT_ERROR_ON, PASS, "Boot with error state passed for 3 seconds");
-                        isFailed = false;
-
-                        //proceed to next test
-                        currentStage = LATCH_ERROR_OFF;
-                    }
+                    isFailed = true;
                 }
 
                 //check if the test failed or not
                 if(isFailed)
                 {
                     //log failure
-                    logRecord(testCount, BOOT_ERROR_ON, FAIL, "Failed to respond to IMD error on boot");
+                    logRecord(BOOT_ERROR_ON, FAIL, "Failed to respond to IMD error on boot");
                     //restart tests
                     restartTest();
+                }
+                else
+                {
+                    //log successful test portion
+                    logRecord(BOOT_ERROR_ON, PASS, "Boot with error state passed for 3 seconds");
+
+                    //proceed to next test
+                    currentStage = LATCH_ERROR_OFF;
                 }
                 //END test step 4 Boot w/ error state
             break;
@@ -481,23 +514,18 @@ int main(void)
 
             case LATCH_ERROR_OFF:
                 //test step 5 latch from boot error
-                digitalWriteFast(IMD_ERROR_INPUT, LOW);
+                digitalWriteFast(IMD_ERROR, LOW);
 
-                //setting a "stopWatch" for a 3000ms interval
-                stopWatch = getTime() + 3000;
+                //setting a "stopWatch" for a 1000ms interval
+                stopWatch = getTime() + 1000;
 
-                //expect the test to fail
-                isFailed = true;
+                //yes/no check for test
+                isFailed = false;
                 while(stopWatch >= getTime()) 
                 {
-                    if(!digitalReadFast(IMD_ERROR_OUTPUT)) 
+                    if(digitalReadFast(SAFETY_CIRCUIT_RESULT)) 
                     {
-                        //log successful test portion
-                        logRecord(testCount, BOOT_ERROR_ON, PASS, "Boot with error state passed for 3 seconds");
-                        isFailed = false;
-
-                        //proceed to next test (restart tests)
-                        restartTest();
+                        isFailed = true;
                     }
                 }
 
@@ -505,20 +533,49 @@ int main(void)
                 if(isFailed)
                 {
                     //log failure
-                    logRecord(testCount, BOOT_ERROR_ON, FAIL, "Failed to respond to IMD error on boot");
+                    logRecord(LATCH_ERROR_OFF, FAIL, "IMD Shutdown circuit failed to latch");
                     //restart tests
+                    restartTest();
+                }
+                else
+                {
+                    //log successful test portion
+                    logRecord(LATCH_ERROR_OFF, PASS, "IMD Shutdown circuit latched successfully");
+
+                    //proceed to next test (restart tests)
                     restartTest();
                 }
                 //END test step 5 latch with boot error
             break;
         } //END GIANT SWITCH
 
+
+           //testCount to char array
+        String str = String(testCount);
+        str.toCharArray(testCountChar, 20);
         //testStage to char array
         str = String(currentStage);
         str.toCharArray(testStageChar, 20);
+        // passCount to char array
+        str = String(passCount);
+        str.toCharArray(testPassCountChar, 20);
+        // passCount to char array
+        str = String(failCount);
+        str.toCharArray(testFailCountChar, 20);
 
-        //update current test stage on display
-        glcd.drawstring(0, 3, testStageChar);
+        //stop logging prompt
+        glcd.clear();
+        glcd.drawstring(0, 0, "Test count:");
+        glcd.drawstring(0, 1, testCountChar);
+        glcd.drawstring(0, 2, "Pass count:");
+        glcd.drawstring(0, 3, testPassCountChar);
+        glcd.drawstring(0, 4, "Fail count:");
+        glcd.drawstring(0, 5, testFailCountChar);
+        glcd.drawstring(0, 6, "Test stage:");
+        glcd.drawstring(0, 7, testStageChar);
+        glcd.drawstring(0, 8, "Press btn to stop");
+        glcd.display();
+
 
         // Force data to SD and update the directory entry to avoid data loss.
         if (!file.sync() || file.getWriteError()) {
