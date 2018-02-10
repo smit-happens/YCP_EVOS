@@ -183,28 +183,41 @@ void restartTest(void)
     //setting the test stage to the first one
     currentStage = BOOT_ERROR_OFF;
 
+
+
+}
+
+void displayStuff(void){
     //converting from int to char
     char testCountChar[20];
     char testStageChar[20];
+    char testPassCountChar[20];
+    char testFailCountChar[20];
     //testCount to char array
     String str = String(testCount);
     str.toCharArray(testCountChar, 20);
     //testStage to char array
     str = String(currentStage);
     str.toCharArray(testStageChar, 20);
+    // passCount to char array
+    str = String(passCount);
+    str.toCharArray(testPassCountChar, 20);
+    // passCount to char array
+    str = String(failCount);
+    str.toCharArray(testFailCountChar, 20);
 
-    //user feedback
+    //stop logging prompt
     glcd.clear();
-    glcd.drawstring(0, 0, "Current test count:");
+    glcd.drawstring(0, 0, "Test count:");
     glcd.drawstring(0, 1, testCountChar);
-    glcd.drawstring(0, 2, "Test stage:");
-    glcd.drawstring(0, 3, testStageChar);
-    glcd.drawstring(0, 4, "Press the button");
-    glcd.drawstring(0, 5, "to stop");
+    glcd.drawstring(0, 2, "Pass count:");
+    glcd.drawstring(0, 3, testPassCountChar);
+    glcd.drawstring(0, 4, "Fail count:");
+    glcd.drawstring(0, 5, testFailCountChar);
+    glcd.drawstring(0, 6, "Test stage:");
+    glcd.drawstring(0, 7, testStageChar);
     glcd.display();
-
 }
-
 
 //------------------------------------------------------------------------------
 // Write data header.
@@ -268,17 +281,17 @@ int main(void)
     glcd.drawstring(0, 1, "to start");
     glcd.display();
 
-    //attaching the interrupt to the button when it changes b/t high & low
-    attachInterrupt(BTN, buttonISR, RISING);
+    // //attaching the interrupt to the button when it changes b/t high & low
+    // attachInterrupt(BTN, buttonISR, RISING);
 
-    //wait for button press and reset button state
-    buttonPress = false;
-    while (!buttonPress) 
-    {
-        SysCall::yield();
-    }
-    //"debouncing" delay
-    delay(10);
+    // //wait for button press and reset button state
+    // buttonPress = false;
+    // while (!buttonPress) 
+    // {
+    //     SysCall::yield();
+    // }
+    // //"debouncing" delay
+    // delay(10);
     buttonPress = false;
 
 
@@ -331,48 +344,25 @@ int main(void)
     //setting the current stage to the first one
     currentStage = BOOT_ERROR_OFF;
 
-    //converting from int to char
-    char testCountChar[20];
-    char testStageChar[20];
-    char testPassCountChar[20];
-    char testFailCountChar[20];
-    //testCount to char array
-    String str = String(testCount);
-    str.toCharArray(testCountChar, 20);
-    //testStage to char array
-    str = String(currentStage);
-    str.toCharArray(testStageChar, 20);
-    // passCount to char array
-    str = String(passCount);
-    str.toCharArray(testPassCountChar, 20);
-    // passCount to char array
-    str = String(failCount);
-    str.toCharArray(testFailCountChar, 20);
-
-    //stop logging prompt
-    glcd.clear();
-    glcd.drawstring(0, 0, "Test count:");
-    glcd.drawstring(0, 1, testCountChar);
-    glcd.drawstring(0, 2, "Pass count:");
-    glcd.drawstring(0, 3, testPassCountChar);
-    glcd.drawstring(0, 4, "Fail count:");
-    glcd.drawstring(0, 5, testFailCountChar);
-    glcd.drawstring(0, 6, "Test stage:");
-    glcd.drawstring(0, 7, testStageChar);
-    glcd.drawstring(0, 8, "Press btn to stop");
-    glcd.display();
 
 
+    Serial.begin(9600);
+    while(!Serial){
+        ;
+    }
     //------------------------------------------------------------------------------
     while(1) 
     {
+        displayStuff();
+        Serial.println("top of the while");
+        Serial.println(currentStage);
         switch(currentStage)
         {
             case BOOT_ERROR_OFF:
                 //test step 1 boot w/ no error
                 digitalWriteFast(IMD_POWER, HIGH);
                 digitalWriteFast(IMD_ERROR, LOW);
-                delay(50);
+                delay(100);
 
                 if(!digitalReadFast(SAFETY_CIRCUIT_RESULT)) 
                 {
@@ -391,9 +381,10 @@ int main(void)
                 }
                 //END test step 1 boot w/ no error
             break;
-
+            // displayStuff();
 
             case STANDBY_ERROR_ON:
+                Serial.println("Made it to stage 2");
                 //test step 2 trigger error condition
                 digitalWriteFast(IMD_ERROR, HIGH);
                 
@@ -404,35 +395,45 @@ int main(void)
 
                 //yes/no check for test
                 isFailed = false;
+                Serial.println("2nd stage before the while");
                 while(stopWatch >= getTime()) 
                 {
+                    //Serial.println("While AF");
                     if(digitalReadFast(SAFETY_CIRCUIT_RESULT))
                     {
+                        Serial.println("Failure detected in while loop");
                         isFailed = true;
+                        break;
                     }
                 }
-
+                Serial.println("2nd stage , made it out of the while hole!");
                 //check if the test failed or not
                 if(isFailed)
                 {
                     //log failure
+                    Serial.println("About to log failure to SD card");
                     logRecord(STANDBY_ERROR_ON, FAIL, "Relay failed to open within 100ms of low to high error state");
                     //restart tests
+                    Serial.println("About to restart test");
                     restartTest();
                 }
                 else
                 {
+                    Serial.println("Shit might be dank");
                     //log successful test portion
-                    logRecord(STANDBY_ERROR_ON, PASS, "Relay opened within 100ms of error state");
+                    //logRecord(STANDBY_ERROR_ON, PASS, "Relay opened within 100ms of error state");
 
                     //proceed to next test
                     currentStage = STANDBY_ERROR_OFF;
+                    Serial.println(currentStage);
                 }
                 //END test step 2 trigger error condition
+                Serial.println("exited the else statement");
             break;
 
 
             case STANDBY_ERROR_OFF:
+                Serial.println("In stage 3");
                 //test step 3 standby error off (IMD shutdown circuit is latched)
                 digitalWriteFast(IMD_ERROR, LOW);
 
@@ -549,42 +550,19 @@ int main(void)
             break;
         } //END GIANT SWITCH
 
-
-           //testCount to char array
-        String str = String(testCount);
-        str.toCharArray(testCountChar, 20);
-        //testStage to char array
-        str = String(currentStage);
-        str.toCharArray(testStageChar, 20);
-        // passCount to char array
-        str = String(passCount);
-        str.toCharArray(testPassCountChar, 20);
-        // passCount to char array
-        str = String(failCount);
-        str.toCharArray(testFailCountChar, 20);
-
-        //stop logging prompt
-        glcd.clear();
-        glcd.drawstring(0, 0, "Test count:");
-        glcd.drawstring(0, 1, testCountChar);
-        glcd.drawstring(0, 2, "Pass count:");
-        glcd.drawstring(0, 3, testPassCountChar);
-        glcd.drawstring(0, 4, "Fail count:");
-        glcd.drawstring(0, 5, testFailCountChar);
-        glcd.drawstring(0, 6, "Test stage:");
-        glcd.drawstring(0, 7, testStageChar);
-        glcd.drawstring(0, 8, "Press btn to stop");
-        glcd.display();
+        Serial.println("out of the switch statement");
 
 
+        Serial.println("about to do force sd stuff");
         // Force data to SD and update the directory entry to avoid data loss.
         if (!file.sync() || file.getWriteError()) {
             error("write error");
         }
-
+        Serial.println("made it past SD stuff");
         //stops logging and halts Teensy
         if (buttonPress) 
         {
+            Serial.println("Button Press, Will close file");
             // Close file and stop.
             file.close();
             glcd.clear();
@@ -592,8 +570,8 @@ int main(void)
             glcd.display();
             SysCall::halt();
         }
-        ///////////////////////////////////
-
+                ///////////////////////////////////
+        delay(1000);
     }
 
     return 0;
