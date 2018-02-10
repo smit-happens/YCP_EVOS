@@ -183,8 +183,6 @@ void restartTest(void)
     //setting the test stage to the first one
     currentStage = BOOT_ERROR_OFF;
 
-
-
 }
 
 void displayStuff(void){
@@ -230,6 +228,7 @@ void writeHeader()
 
 //------------------------------------------------------------------------------
 // Log a data record.
+
 void logRecord(int testStage, bool result, String description) 
 {
     if(result && currentStage == LATCH_ERROR_OFF){
@@ -281,17 +280,17 @@ int main(void)
     glcd.drawstring(0, 1, "to start");
     glcd.display();
 
-    // //attaching the interrupt to the button when it changes b/t high & low
-    // attachInterrupt(BTN, buttonISR, RISING);
+    //attaching the interrupt to the button when it changes b/t high & low
+    attachInterrupt(BTN, buttonISR, RISING);
 
-    // //wait for button press and reset button state
-    // buttonPress = false;
-    // while (!buttonPress) 
-    // {
-    //     SysCall::yield();
-    // }
-    // //"debouncing" delay
-    // delay(10);
+    //wait for button press and reset button state
+    buttonPress = false;
+    while (!buttonPress) 
+    {
+        SysCall::yield();
+    }
+    //"debouncing" delay
+    delay(10);
     buttonPress = false;
 
 
@@ -346,16 +345,12 @@ int main(void)
 
 
 
-    Serial.begin(9600);
-    while(!Serial){
-        ;
-    }
+
     //------------------------------------------------------------------------------
     while(1) 
     {
         displayStuff();
-        Serial.println("top of the while");
-        Serial.println(currentStage);
+
         switch(currentStage)
         {
             case BOOT_ERROR_OFF:
@@ -381,10 +376,9 @@ int main(void)
                 }
                 //END test step 1 boot w/ no error
             break;
-            // displayStuff();
+            displayStuff();
 
             case STANDBY_ERROR_ON:
-                Serial.println("Made it to stage 2");
                 //test step 2 trigger error condition
                 digitalWriteFast(IMD_ERROR, HIGH);
                 
@@ -395,45 +389,35 @@ int main(void)
 
                 //yes/no check for test
                 isFailed = false;
-                Serial.println("2nd stage before the while");
                 while(stopWatch >= getTime()) 
                 {
-                    //Serial.println("While AF");
                     if(digitalReadFast(SAFETY_CIRCUIT_RESULT))
                     {
-                        Serial.println("Failure detected in while loop");
                         isFailed = true;
                         break;
                     }
                 }
-                Serial.println("2nd stage , made it out of the while hole!");
                 //check if the test failed or not
                 if(isFailed)
                 {
                     //log failure
-                    Serial.println("About to log failure to SD card");
                     logRecord(STANDBY_ERROR_ON, FAIL, "Relay failed to open within 100ms of low to high error state");
                     //restart tests
-                    Serial.println("About to restart test");
                     restartTest();
                 }
                 else
                 {
-                    Serial.println("Shit might be dank");
                     //log successful test portion
-                    //logRecord(STANDBY_ERROR_ON, PASS, "Relay opened within 100ms of error state");
+                    logRecord(STANDBY_ERROR_ON, PASS, "Relay opened within 100ms of error state");
 
                     //proceed to next test
                     currentStage = STANDBY_ERROR_OFF;
-                    Serial.println(currentStage);
                 }
                 //END test step 2 trigger error condition
-                Serial.println("exited the else statement");
             break;
-
+            displayStuff();
 
             case STANDBY_ERROR_OFF:
-                Serial.println("In stage 3");
                 //test step 3 standby error off (IMD shutdown circuit is latched)
                 digitalWriteFast(IMD_ERROR, LOW);
 
@@ -469,7 +453,7 @@ int main(void)
                 //END test step 3 standby error off
             break;
 
-
+            displayStuff();
             case BOOT_ERROR_ON:
                 //Power down IMD
                 digitalWriteFast(IMD_POWER, LOW);
@@ -512,7 +496,7 @@ int main(void)
                 //END test step 4 Boot w/ error state
             break;
 
-
+            displayStuff();
             case LATCH_ERROR_OFF:
                 //test step 5 latch from boot error
                 digitalWriteFast(IMD_ERROR, LOW);
@@ -550,19 +534,15 @@ int main(void)
             break;
         } //END GIANT SWITCH
 
-        Serial.println("out of the switch statement");
 
-
-        Serial.println("about to do force sd stuff");
         // Force data to SD and update the directory entry to avoid data loss.
         if (!file.sync() || file.getWriteError()) {
             error("write error");
         }
-        Serial.println("made it past SD stuff");
+
         //stops logging and halts Teensy
         if (buttonPress) 
         {
-            Serial.println("Button Press, Will close file");
             // Close file and stop.
             file.close();
             glcd.clear();
@@ -571,7 +551,7 @@ int main(void)
             SysCall::halt();
         }
                 ///////////////////////////////////
-        delay(1000);
+        //delay(1000);
     }
 
     return 0;
