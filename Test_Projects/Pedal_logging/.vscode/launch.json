@@ -6,7 +6,7 @@
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "name": "PlatformIO Debugger",
-            "target": "C:/Users/Smitty/Documents/GitHub/YCP_EVOS/Test_Projects/Pedal_logging.pioenvs/teensy36/firmware.elf",
+            "target": "c:/Users/Smitty/Documents/GitHub/YCP_EVOS/Test_Projects/Pedal_logging/.pioenvs/teensy36/firmware.elf",
             "gdbpath": "C:/Users/Smitty/.platformio/penv/Scripts/piodebuggdb",
             "autorun": [ "source .pioinit" ],
             "preLaunchTask": "PlatformIO: Pre-Debug"
