@@ -101,7 +101,7 @@ float Orion::getTemperature(void)
  * @note   TODO: Is this possible?
  * @retval Cell number with the min voltage
  */
-int Orion::getCellVoltageMin(void)
+int Orion::getVoltageMinCell(void)
 {
     return 0;
 }
@@ -112,7 +112,7 @@ int Orion::getCellVoltageMin(void)
  * @note   TODO: Is this possible?
  * @retval Cell number with the max voltage
  */
-int Orion::getCellVoltageMax(void)
+int Orion::getVoltageMaxCell(void)
 {
     return 0;
 }
