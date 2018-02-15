@@ -35,4 +35,7 @@ const uint16_t EF_READYTODRIVE     = 0b10000000000000;  //Shutdown EF mask
 const uint16_t EF_LAUNCH           = 0b100000000000000;  //Shutdown EF mask
 const uint16_t EF_SHUTDOWN         = 0b1000000000000000;  //Shutdown EF mask
 
+
+//TODO: insert enumerations & lookup structs here
+
 #endif  //EVENTMASKS_HPP
