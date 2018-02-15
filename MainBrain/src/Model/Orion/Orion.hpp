@@ -25,8 +25,8 @@ public:
     
     float getAmperageTotal(void);
 
-    int getCellVoltageMin(void);
-    int getCellVoltageMax(void);
+    int getVoltageMinCell(void);
+    int getVoltageMaxCell(void);
 
     float getTemperature(void);
 };
