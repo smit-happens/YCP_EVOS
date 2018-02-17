@@ -24,16 +24,16 @@ class EventTask
     //as of right now, we have 4 levels of priority
     //CRITICAL will be reserved for situations where the car had a critical error and needs to shut down
     //HIGH, MEDIUM, LOW will be the various levels of importance of the various tasks, with safety having highest priority
-    const enum Priority
+    enum Priority
     {
-        CRITICAL,
-        HIGH,
-        MEDIUM,
-        LOW;
-    }
+        PRIORITY_CRITICAL,
+        PRIORITY_HIGH,
+        PRIORITY_MEDIUM,
+        PRIORITY_LOW
+    };
 
     //this enum is used as an index in the 
-    const enum DeviceName
+    enum DeviceName
     {
         TIMER,
         CAN,
@@ -50,8 +50,8 @@ class EventTask
         PRECHARGE,
         READYTODRIVE,
         LAUNCH,
-        SHUTDOWN;
-    }
+        SHUTDOWN
+    };
 
     //this will contain the event flag, a pointer to a task array for the specific device, and an event priority
     struct DeviceStatus
@@ -61,12 +61,12 @@ class EventTask
         //int* taskArray;
         //priority of the device event being handled
         Priority devicePriority;
-    }
+    };
 
     DeviceStatus getDeviceStatus(DeviceName dev);
     void incrementDeviceEventFlag(DeviceName dev);
     void decrementDeviceEventFlag(DeviceName dev);
-    void setDeviceEventPriority(DeviceName dev, priority newPriority);
+    void setDeviceEventPriority(DeviceName dev, Priority newPriority);
 
 
 
@@ -77,7 +77,7 @@ class EventTask
          */
     private:
 
-    static DeviceStatus [] deviceLookupTable
+    static DeviceStatus deviceLookupTable[] =
     {
         {1, HIGH}, //device TIMER
         {1, HIGH}, //device CAN
@@ -94,10 +94,10 @@ class EventTask
         {1, HIGH}, //stage PRECHARGE
         {1, HIGH}, //stage READYTODRIVE
         {1, HIGH}, //stage LAUNCH
-        {1, HIGH}, //stage SHUTDOWN
+        {1, HIGH} //stage SHUTDOWN
     }
         
-};
+}
 
 
 #endif  //EVENTTASK_HPP

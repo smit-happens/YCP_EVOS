@@ -6,7 +6,7 @@
  * 
  */
 
-#include "EventFlagTaskLookup.hpp"
+#include "EventTask.hpp"
 
 /** 
  * @brief  
@@ -37,7 +37,7 @@ DeviceStatus EventTask::getDeviceStatus(DeviceName device)
  * @param  newEventFlag: 
  * @retval None
  */
-void EventTask::incrementDeviceEventFlag(deviceName device)
+void EventTask::incrementDeviceEventFlag(DeviceName device)
 {
     deviceLookupTable[device].eventFlag++;
 }
@@ -56,7 +56,7 @@ void EventTask::decrementDeviceEventFlag(DeviceName device)
  * @param  newPriority: 
  * @retval None
  */
-void EventTask::setDeviceEventPriority(deviceName device, priority newPriority)
+void EventTask::setDeviceEventPriority(DeviceName device, Priority newPriority)
 {
     deviceLookupTable[device].devicePriority = newPriority;
 }
