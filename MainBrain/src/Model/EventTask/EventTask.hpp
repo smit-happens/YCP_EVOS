@@ -10,11 +10,6 @@
 
 #include <Arduino.h>
 
-//TODO: account for EFs of differing levels of severity by organizing them into
-//      categories like EF_Servere, EF_Normal, EF_Low
-//FIXME: in order to handle more events going off, might have to do the priority partitioning soon
-
-
 //as of right now, we have 4 levels of priority
 //CRITICAL will be reserved for situations where the car had a critical error and needs to shut down
 //HIGH, MEDIUM, LOW will be the various levels of importance of the various tasks, with safety having highest priority
@@ -30,15 +25,15 @@ enum Priority
 //this will contain the event flag, a pointer to a task array for the specific device, and an event priority
 struct DeviceStatus
 {
-    int eventFlag;
-    //this is a pointer to a task array and will be specific to the device
+    int eventFlagCount;
+    //TODO: this is a pointer to a task array and will be specific to the device
     //int* taskArray;
     //priority of the device event being handled
     Priority devicePriority;
 };
 
 
-//this enum is used as an index in the 
+//this enum is used as an index in the lookup table and specifies each device for the car
 enum DeviceName
 {
     TIMER,
@@ -68,19 +63,13 @@ public:
     ~EventTask(void);
 
     DeviceStatus getDeviceStatus(DeviceName device);
-    void incrementDeviceEventFlag(DeviceName device);
-    void decrementDeviceEventFlag(DeviceName device);
+    void incrementDeviceEventFlagCount(DeviceName device);
+    void decrementDeviceEventFlagCount(DeviceName device);
     void setDeviceEventPriority(DeviceName device, Priority newPriority);
 
-
-
-    /**  
-     * 
-     * 
-     * 
-     */
 private: 
-static DeviceStatus* deviceLookupTable[NUM_DEVICES];     
+static DeviceStatus deviceLookupTable[NUM_DEVICES];
+
 };
 
 #endif  //EVENTTASK_HPP
