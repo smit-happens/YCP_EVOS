@@ -38,8 +38,6 @@ struct DeviceStatus
 };
 
 
-
-
 //this enum is used as an index in the 
 enum DeviceName
 {
@@ -58,27 +56,10 @@ enum DeviceName
     PRECHARGE,
     READYTODRIVE,
     LAUNCH,
-    SHUTDOWN
+    SHUTDOWN,
+    NUM_DEVICES //The number of devices, MAINTAIN AT END OF ENUM
 };
-static DeviceStatus deviceLookupTable[] =
-{
-    {1, PRIORITY_HIGH}, //device TIMER
-    {1, PRIORITY_HIGH}, //device CAN
-    {1, PRIORITY_HIGH}, //device COOLING
-    {1, PRIORITY_HIGH}, //device DASH
-    {1, PRIORITY_HIGH}, //device GLCD
-    {1, PRIORITY_HIGH}, //device IMD
-    {1, PRIORITY_HIGH}, //device ORION
-    {1, PRIORITY_HIGH}, //device PEDAL
-    {1, PRIORITY_HIGH}, //device SDCARD
-    {1, PRIORITY_HIGH}, //device UNITEK
-    {1, PRIORITY_HIGH}, //device BATLOG
-    {1, PRIORITY_HIGH}, //stage STANDBY
-    {1, PRIORITY_HIGH}, //stage PRECHARGE
-    {1, PRIORITY_HIGH}, //stage READYTODRIVE
-    {1, PRIORITY_HIGH}, //stage LAUNCH
-    {1, PRIORITY_HIGH} //stage SHUTDOWN
-};
+
 
 class EventTask
 {
@@ -98,9 +79,8 @@ public:
      * 
      * 
      */
-private:      
+private: 
+static DeviceStatus* deviceLookupTable[NUM_DEVICES];     
 };
-
-
 
 #endif  //EVENTTASK_HPP
