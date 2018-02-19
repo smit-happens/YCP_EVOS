@@ -26,7 +26,7 @@ EventTask::EventTask()
  */
 DeviceStatus EventTask::getDeviceStatus(DeviceName device)
 {
-    return deviceLookupTable[device];
+    return deviceLookupTable[(int)device];
 }
 
 
