@@ -17,11 +17,11 @@ Can::Can(void)
     Can1.begin(500000);
 
     //queue used for the main receiver of new CAN messages to be sorted later
-    mailbox = new Queue(sizeof(CAN_message_t), 20, FIFO);
+    // mailbox = new Queue(sizeof(CAN_message_t), 20, FIFO);
     
-    //internal inboxes for the Unitek and Orion devices
-    inboxUnitek = new Queue(sizeof(uint8_t)*4, 20, FIFO);
-    inboxOrion = new Queue(sizeof(CAN_message_t), 20, FIFO);
+    // //internal inboxes for the Unitek and Orion devices
+    // inboxUnitek = new Queue(sizeof(uint8_t)*4, 20, FIFO);
+    // inboxOrion = new Queue(sizeof(CAN_message_t), 20, FIFO);
 }
 
 
@@ -30,9 +30,9 @@ Can::Can(void)
  */
 Can::~Can(void)
 {
-    delete mailbox;
-    delete inboxUnitek;
-    delete inboxOrion;
+    // delete mailbox;
+    // delete inboxUnitek;
+    // delete inboxOrion;
 }
 
 
@@ -98,5 +98,5 @@ void Can::send(CAN_message_t message)
  */
 bool Can::checkInboxUnitek(void)
 {
-    return !inboxUnitek->isEmpty();
+    return false;//!inboxUnitek->isEmpty();
 }

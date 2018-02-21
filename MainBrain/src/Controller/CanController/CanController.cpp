@@ -34,6 +34,7 @@ CanController* CanController::getInstance()
  */
 CanController::~CanController(void)
 {
+    //TODO: remove this
     canModel->detachGeneralHandler();
     Can1.detachObj(canModel);
 }

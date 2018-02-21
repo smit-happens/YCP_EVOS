@@ -45,7 +45,12 @@ DashController::~DashController(void)
  */
 void DashController::init(void)
 {
-
+    pinMode(RTD_LED, OUTPUT);
+    pinMode(BMS_LED, OUTPUT);
+    pinMode(PEDAL_LED, OUTPUT);
+    pinMode(IMD_LED, OUTPUT);
+    pinMode(REVERSE_LED, OUTPUT);
+    pinMode(WAYNE_LED, OUTPUT);
 }
 
 

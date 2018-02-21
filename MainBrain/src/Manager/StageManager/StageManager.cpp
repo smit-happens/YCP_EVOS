@@ -35,7 +35,7 @@ StageManager::StageManager(void)
  * @note   Might have to be fleshed out more
  * @retval uint16_t with each bit coresponding to which timers went off
  */
-void StageManager::processTimers(EventTask *device)
+uint16_t StageManager::processTimers(void)
 {
     //Goes through the array of timers to increment their count and store which ones popped
     for (int i = 0; i < TIMER_NUM; i++)
@@ -44,15 +44,15 @@ void StageManager::processTimers(EventTask *device)
         if(timerList[i].count >= timerList[i].limit)
         {
             //store which timer popped
-            //FIXME: fix this to work with taskevents
-            // timerTF |= timerList[i].TFmask;
-            //setting the tasks of a given device
+            timerTF |= timerList[i].TFmask;
 
             //resetting the count of the timer that just popped
             timerList[i].count = 0;
         }
 
     }
+
+    return timerTF;
 }
 
 
@@ -87,7 +87,39 @@ uint16_t StageManager::processCooling(void)
 uint16_t StageManager::processDash(void)
 {
     //do Dash processing
-    
+    bool loop = true;
+
+
+    while(loop)
+    {
+        digitalWriteFast(RTD_LED, 1);
+        delay(100);
+        digitalWriteFast(BMS_LED, 1);
+        delay(100);
+        digitalWriteFast(PEDAL_LED, 1);
+        delay(100);
+        digitalWriteFast(IMD_LED, 1);
+        delay(100);
+        digitalWriteFast(REVERSE_LED, 1);
+        delay(100);
+        digitalWriteFast(WAYNE_LED, 1);
+        delay(100);
+
+        digitalWriteFast(RTD_LED, 0);
+        delay(100);
+        digitalWriteFast(BMS_LED, 0);
+        delay(100);
+        digitalWriteFast(PEDAL_LED, 0);
+        delay(100);
+        digitalWriteFast(IMD_LED, 0);
+        delay(100);
+        digitalWriteFast(REVERSE_LED, 0);
+        delay(100);
+        digitalWriteFast(WAYNE_LED, 0);
+        delay(100);
+
+    }
+
     return 0;
 }
 
