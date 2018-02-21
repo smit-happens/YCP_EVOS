@@ -1,24 +1,24 @@
-/**  Speaker used for playing the startup sound of the car
+/**  Siren used for playing the startup sound of the car
  *
- * #include "Speaker.hpp"
+ * #include "Siren.hpp"
  * Created 12-20-17  By: Smitty
  * 
  * A longer description.
  */
 
-#ifndef SPEAKER_HPP
-#define SPEAKER_HPP
+#ifndef SIREN_HPP
+#define SIREN_HPP
 
 //Might add methods to play addition sounds (NOT NEEDED)
 //Honestly won't have a whole lot going on for this model (I hope)
 
-class Speaker
+class Siren
 {
 public:
-  Speaker(void);
+  Siren(void);
 
   void playStartupSound(void);
 };
 
 
-#endif  //SPEAKER_HPP
+#endif  //SIREN_HPP

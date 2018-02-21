@@ -28,7 +28,7 @@
 #include "Orion/Orion.hpp"
 #include "Rtc/Rtc.hpp"
 #include "SdCard/SdCard.hpp"
-#include "Speaker/Speaker.hpp"
+#include "Siren/Siren.hpp"
 #include "Unitek/Unitek.hpp"
 
 

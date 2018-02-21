@@ -28,22 +28,22 @@ EventTask::EventTask()
     //Event flags will be set by the interrupts so they will all be initially 0
     //TODO: change the priorities for each device to be what we want it to be
     //TODO: add a task array pointer to the DeviceStatus struct that will contain the other various specific tasks that a device will have
-    deviceLookupTable[TIMER] = {0, PRIORITY_LOW};
-    deviceLookupTable[CAN] = {0, PRIORITY_LOW};
-    deviceLookupTable[COOLING] = {0, PRIORITY_LOW};
-    deviceLookupTable[DASH] = {0, PRIORITY_LOW};
-    deviceLookupTable[GLCD] = {0, PRIORITY_LOW};
-    deviceLookupTable[IMD] = {0, PRIORITY_LOW};
-    deviceLookupTable[ORION] = {0, PRIORITY_LOW};
-    deviceLookupTable[PEDAL] = {0, PRIORITY_LOW};
-    deviceLookupTable[SDCARD] = {0, PRIORITY_LOW};
-    deviceLookupTable[UNITEK] = {0, PRIORITY_LOW};
-    deviceLookupTable[BATLOG] = {0, PRIORITY_LOW};
-    deviceLookupTable[STANDBY] = {0, PRIORITY_LOW};
-    deviceLookupTable[PRECHARGE] = {0, PRIORITY_LOW};
+    deviceLookupTable[TIMER]        = {0, PRIORITY_LOW};
+    deviceLookupTable[CAN]          = {0, PRIORITY_LOW};
+    deviceLookupTable[COOLING]      = {0, PRIORITY_LOW};
+    deviceLookupTable[DASH]         = {0, PRIORITY_LOW};
+    deviceLookupTable[GLCD]         = {0, PRIORITY_LOW};
+    deviceLookupTable[IMD]          = {0, PRIORITY_LOW};
+    deviceLookupTable[ORION]        = {0, PRIORITY_LOW};
+    deviceLookupTable[PEDAL]        = {0, PRIORITY_LOW};
+    deviceLookupTable[SDCARD]       = {0, PRIORITY_LOW};
+    deviceLookupTable[UNITEK]       = {0, PRIORITY_LOW};
+    deviceLookupTable[BATLOG]       = {0, PRIORITY_LOW};
+    deviceLookupTable[STANDBY]      = {0, PRIORITY_LOW};
+    deviceLookupTable[PRECHARGE]    = {0, PRIORITY_LOW};
     deviceLookupTable[READYTODRIVE] = {0, PRIORITY_LOW};
-    deviceLookupTable[LAUNCH] = {0, PRIORITY_LOW};
-    deviceLookupTable[SHUTDOWN] = {0, PRIORITY_CRITICAL};
+    deviceLookupTable[LAUNCH]       = {0, PRIORITY_LOW};
+    deviceLookupTable[SHUTDOWN]     = {0, PRIORITY_CRITICAL};
 }
 
 

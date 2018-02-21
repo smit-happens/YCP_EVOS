@@ -8,19 +8,36 @@
 
 #include "ControllerManager.hpp"
 
-//Calling the constructor of each controller
-//NOTE: Do NOT perform complex functions or anything harder than
-//      memory allocation in constructor
-BatlogController* ControllerManager::batlogC = new BatlogController();
-CanController* ControllerManager::canC = new CanController();
-CoolingController* ControllerManager::coolingC = new CoolingController();
-DashController* ControllerManager::dashC = new DashController();
-GlcdController* ControllerManager::glcdC = new GlcdController();
-ImdController* ControllerManager::imdC = new ImdController();
-OrionController* ControllerManager::orionC = new OrionController();
-PedalController* ControllerManager::pedalC = new PedalController();
-SdCardController* ControllerManager::sdCardC = new SdCardController();
-UnitekController* ControllerManager::unitekC = new UnitekController();
+// Global static pointer used to ensure a single instance of this class
+ControllerManager* ControllerManager::_pInstance = NULL; 
+
+
+ControllerManager* ControllerManager::getInstance()
+{
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new ControllerManager();
+
+    return _pInstance;
+}
+
+
+void ControllerManager::initControllers(void)
+{
+    //Calling the constructor of each controller
+    //NOTE: Do NOT perform complex functions or anything harder than
+    //      memory allocation in constructor
+    batlogC = new BatlogController();
+    canC = new CanController();
+    coolingC = new CoolingController();
+    dashC = new DashController();
+    glcdC = new GlcdController();
+    imdC = new ImdController();
+    orionC = new OrionController();
+    pedalC = new PedalController();
+    sdCardC = new SdCardController();
+    unitekC = new UnitekController();
+}
 
 
 /** 
