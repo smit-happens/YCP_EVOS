@@ -34,12 +34,12 @@ void loop()
     Serial.println("Polling the BMS");
 
     CAN_message_t maxCellPoll;
-    maxCellPoll.ext=0;        // 
+    maxCellPoll.ext=0;        
     maxCellPoll.id=0x7E3;    // this is the ID of the max cell count register
     maxCellPoll.len=0x04;        // the register is 1 byte long
     maxCellPoll.buf[0]=0x22;  //sets the mode for the CAN message
-    maxCellPoll.buf[1]=0xF0;
-    maxCellPoll.buf[2]=0x06;
+    maxCellPoll.buf[1]=0xF0; //this is the first half of the PID for the max cell count register
+    maxCellPoll.buf[2]=0x06; //this is the second half of the PID for the max cell count register
 
     Can0.write(maxCellPoll);
     delay(1000);
