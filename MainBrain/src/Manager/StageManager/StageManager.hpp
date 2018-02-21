@@ -10,7 +10,7 @@
 #define STAGEMANAGER_HPP
 
 #include "../../Controller/Controller.hpp"
-#include "EventMasks.hpp"
+#include "../../Model/EventTask/EventTask.hpp"
 #include "../../Model/Constants/TimeDelay.hpp"
 
 
@@ -33,7 +33,8 @@ public:
     StageManager();
 
     //handles the various timers we'll be using and setting Task Flags (TFs) based on them
-    uint16_t processTimers(void);
+    // uint16_t processTimers(void);
+    void processTimers(EventTask *device);
 
     //the following functions might eventually take a TF as an input param
     uint16_t processCan(void);

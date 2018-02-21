@@ -35,7 +35,7 @@ StageManager::StageManager(void)
  * @note   Might have to be fleshed out more
  * @retval uint16_t with each bit coresponding to which timers went off
  */
-uint16_t StageManager::processTimers(void)
+void StageManager::processTimers(EventTask *device)
 {
     //Goes through the array of timers to increment their count and store which ones popped
     for (int i = 0; i < TIMER_NUM; i++)
@@ -44,15 +44,15 @@ uint16_t StageManager::processTimers(void)
         if(timerList[i].count >= timerList[i].limit)
         {
             //store which timer popped
-            timerTF |= timerList[i].TFmask;
+            //FIXME: fix this to work with taskevents
+            // timerTF |= timerList[i].TFmask;
+            //setting the tasks of a given device
 
             //resetting the count of the timer that just popped
             timerList[i].count = 0;
         }
 
     }
-
-    return timerTF;
 }
 
 
@@ -87,6 +87,7 @@ uint16_t StageManager::processCooling(void)
 uint16_t StageManager::processDash(void)
 {
     //do Dash processing
+    
     return 0;
 }
 

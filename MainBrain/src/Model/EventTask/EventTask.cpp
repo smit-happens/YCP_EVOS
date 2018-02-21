@@ -48,6 +48,17 @@ EventTask::EventTask()
 
 
 /** 
+ * @brief  destructor
+ * @note   
+ * @retval 
+ */
+EventTask::~EventTask()
+{
+
+}
+
+
+/** 
  * @brief  returns the device status struct
  * @note   returns the device status struct based on the specific device that is passed in
  * @param  Device device - the specific device that is having its DeviceStatus being returned
@@ -60,15 +71,78 @@ DeviceStatus EventTask::getDeviceStatus(DeviceName device)
 
 
 /** 
+ * @brief  
+ * @note   
+ * @param  device: 
+ * @retval true/false whether the device's event has been "flagged"
+ */
+bool EventTask::getDeviceEventFlag(DeviceName device)
+{
+    return deviceLookupTable[device].eventFlag;
+}
+
+
+/** 
+ * @brief  sets the device to a "flagged" state
+ * @note   
+ * @param  device: 
+ * @retval None
+ */
+void EventTask::assertDeviceEventFlag(DeviceName device)
+{
+    deviceLookupTable[device].eventFlag = true;
+}
+
+
+void EventTask::clearDeviceEventFlag(DeviceName device)
+{
+    deviceLookupTable[device].eventFlag = false;
+}
+
+
+void EventTask::clearAllDeviceEventFlag(void)
+{
+    //setting all the device event flags to false
+    for(int i = TIMER; i < NUM_DEVICES; i++)
+    {
+        deviceLookupTable[i].eventFlag = false;
+    }
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval Array of bools representing flags that went off
+ */
+bool *EventTask::getAllDeviceEventFlag(void)
+{
+    bool *flags = new bool[NUM_DEVICES];
+
+    for(int i = TIMER; i < NUM_DEVICES; i++)
+        flags[NUM_DEVICES] = deviceLookupTable[i].eventFlag;
+
+    return flags;
+}
+
+
+void EventTask::setAllDeviceEventFlag(bool *flags)
+{
+    for(int i = TIMER; i < NUM_DEVICES; i++)
+        deviceLookupTable[i].eventFlag = flags[NUM_DEVICES];
+}
+
+
+/** 
  * @brief  Increment the event flag
  * @note   Increment the event flag for the specified device
  * @param  device: The specific device that is having its event flag incremented
  * @retval None
  */
-void EventTask::incrementDeviceEventFlagCount(DeviceName device)
-{
-    deviceLookupTable[device].eventFlagCount++;
-}
+// void EventTask::incrementDeviceEventFlagCount(DeviceName device)
+// {
+//     deviceLookupTable[device].eventFlagCount++;
+// }
 
 /** 
  * @brief  Decrement the event flag
@@ -76,10 +150,10 @@ void EventTask::incrementDeviceEventFlagCount(DeviceName device)
  * @param  device: the specific device that is having its event flag decremented
  * @retval None
  */
-void EventTask::decrementDeviceEventFlagCount(DeviceName device)
-{
-    deviceLookupTable[device].eventFlagCount--;
-}
+// void EventTask::decrementDeviceEventFlagCount(DeviceName device)
+// {
+//     deviceLookupTable[device].eventFlagCount--;
+// }
 
 
 /** 

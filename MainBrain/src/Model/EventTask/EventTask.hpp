@@ -25,9 +25,13 @@ enum Priority
 //this will contain the event flag, a pointer to a task array for the specific device, and an event priority
 struct DeviceStatus
 {
-    int eventFlagCount;
+    bool eventFlag;
+    
+    // int eventFlagCount;
+
     //TODO: this is a pointer to a task array and will be specific to the device
     //int* taskArray;
+
     //priority of the device event being handled
     Priority devicePriority;
 };
@@ -63,12 +67,20 @@ public:
     ~EventTask(void);
 
     DeviceStatus getDeviceStatus(DeviceName device);
-    void incrementDeviceEventFlagCount(DeviceName device);
-    void decrementDeviceEventFlagCount(DeviceName device);
+
+    bool getDeviceEventFlag(DeviceName device);
+    bool* getAllDeviceEventFlag(void);
+    void setAllDeviceEventFlag(bool* flags);
+    void assertDeviceEventFlag(DeviceName device);
+    void clearDeviceEventFlag(DeviceName device);
+    void clearAllDeviceEventFlag(void);
+
+    // void incrementDeviceEventFlagCount(DeviceName device);
+    // void decrementDeviceEventFlagCount(DeviceName device);
     void setDeviceEventPriority(DeviceName device, Priority newPriority);
 
 private: 
-static DeviceStatus deviceLookupTable[NUM_DEVICES];
+    DeviceStatus deviceLookupTable[NUM_DEVICES];
 
 };
 

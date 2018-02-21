@@ -11,15 +11,16 @@
 
 #include <IntervalTimer.h>
 #include "Manager/StageManager/StageManager.hpp"
-#include "Model/Constants/Port.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
-volatile uint16_t globalEventFlags = 0;
+// volatile uint16_t globalEventFlags = 0;
+EventTask globalDevices = EventTask();
 
 
 //Start of ISR declarations
 void timerISR() {
-    globalEventFlags |= EF_TIMER;
+    // globalEventFlags |= EF_TIMER;
+    globalDevices.assertDeviceEventFlag(TIMER);
 }
 
 
@@ -28,26 +29,27 @@ void timerISR() {
 // Begin main function
 int main(void)
 {
-    // Serial.begin(9600);
-    // while (!Serial) {
-    //     ; // wait for serial port to connect
-    // }
+    Serial.begin(9600);
+    while (!Serial) {
+        ; // wait for serial port to connect
+    }
 
     //initialize the local event flag variable
-    uint32_t localEventFlags = 0;
+    // uint32_t localEventFlags = 0;
+    EventTask localDevices = EventTask();
 
     //Creating the controller singletons
     //Copying each controller location in memory
-    CanController* canC = CanController::getInstance();
-    UnitekController* unitekC = UnitekController::getInstance();
-    OrionController* orionC = OrionController::getInstance();
+    CanController* canC         = CanController::getInstance();
+    UnitekController* unitekC   = UnitekController::getInstance();
+    OrionController* orionC     = OrionController::getInstance();
     CoolingController* coolingC = CoolingController::getInstance();
-    DashController* dashC = DashController::getInstance();
-    ImdController* imdC = ImdController::getInstance();
-    GlcdController* glcdC = GlcdController::getInstance();
-    PedalController* pedalC = PedalController::getInstance();
-    SdCardController* sdCardC = SdCardController::getInstance();
-    BatlogController* batlogC = BatlogController::getInstance();
+    DashController* dashC       = DashController::getInstance();
+    ImdController* imdC         = ImdController::getInstance();
+    GlcdController* glcdC       = GlcdController::getInstance();
+    PedalController* pedalC     = PedalController::getInstance();
+    SdCardController* sdCardC   = SdCardController::getInstance();
+    BatlogController* batlogC   = BatlogController::getInstance();
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
@@ -56,8 +58,8 @@ int main(void)
     StageManager::Stage excecutingStage = StageManager::BOOTUP;
 
     // using the builtin LED as a status light (for now)
-    pinMode(WAYNE_LED, OUTPUT);
-    digitalWriteFast(WAYNE_LED, 1);
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWriteFast(LED_BUILTIN, 1);
 
 
     //Bootup stage functions (anything var declared in an if/else falls out of scope afterward)
@@ -146,8 +148,10 @@ int main(void)
         {
             noInterrupts();
             //Volatile operation for transferring flags from ISRs to local main
-            localEventFlags |= globalEventFlags;
-            globalEventFlags = 0;
+            // localEventFlags |= globalEventFlags;
+            // globalEventFlags = 0;
+            localDevices.setAllDeviceEventFlag(globalDevices.getAllDeviceEventFlag());
+            globalDevices.clearAllDeviceEventFlag();
             interrupts();
 
             
@@ -156,115 +160,128 @@ int main(void)
             //       HINT: implement priority event flag registers
 
 
-            if(localEventFlags && EF_SHUTDOWN)
-            {
-                localStage.processShutdown();
+            // if(localEventFlags && EF_SHUTDOWN)
+            // {
+            //     localStage.processShutdown();
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SHUTDOWN;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_SHUTDOWN;
+            // }
 
 
-            if(localEventFlags && EF_IMD)
-            {
-                localStage.processImd();
+            // if(localEventFlags && EF_IMD)
+            // {
+            //     localStage.processImd();
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_IMD;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_IMD;
+            // }
+
+
+            // //Timer EF check
+            // if(localEventFlags && EF_TIMER)
+            // {
+            //     //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
+            //     localEventFlags |= localStage.processTimers() << 16;
+                
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_TIMER;
+            // }
 
 
             //Timer EF check
-            if(localEventFlags && EF_TIMER)
+            if(localDevices.getDeviceEventFlag(TIMER))
             {
                 //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
-                localEventFlags |= localStage.processTimers() << 16;
+                // localEventFlags |= localStage.processTimers() << 16;
+                localStage.processTimers(&localDevices.getDeviceStatus());
+
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_TIMER;
+                localDevices.clearDeviceEventFlag(TIMER);
             }
 
 
-            if(localEventFlags && EF_CAN)
-            {
-                localStage.processCan();   
+            // if(localEventFlags && EF_CAN)
+            // {
+            //     localStage.processCan();   
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_CAN;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_CAN;
+            // }
 
 
-            if(localEventFlags && EF_UNITEK)
-            {
-                localStage.processUnitek();
+            // if(localEventFlags && EF_UNITEK)
+            // {
+            //     localStage.processUnitek();
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_UNITEK;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_UNITEK;
+            // }
 
 
-            if(localEventFlags && EF_ORION)
-            {
-                localStage.processOrion();
+            // if(localEventFlags && EF_ORION)
+            // {
+            //     localStage.processOrion();
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_ORION;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_ORION;
+            // }
 
 
-            if(localEventFlags && EF_COOLING)
-            {
-                localStage.processCooling();
+            // if(localEventFlags && EF_COOLING)
+            // {
+            //     localStage.processCooling();
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_COOLING;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_COOLING;
+            // }
 
 
-            if(localEventFlags && EF_BATLOG)
-            {
-                localStage.processBatlog();
+            // if(localEventFlags && EF_BATLOG)
+            // {
+            //     localStage.processBatlog();
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_BATLOG;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_BATLOG;
+            // }
 
 
-            if(localEventFlags && EF_DASH)
-            {
-                localStage.processDash();
+            // if(localEventFlags && EF_DASH)
+            // {
+            //     localStage.processDash();
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_DASH;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_DASH;
+            // }
 
 
-            if(localEventFlags && EF_GLCD)
-            {
-                localStage.processGlcd();
+            // if(localEventFlags && EF_GLCD)
+            // {
+            //     localStage.processGlcd();
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_GLCD;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_GLCD;
+            // }
 
 
-            if(localEventFlags && EF_SDCARD)
-            {
-                localStage.processSdCard();
+            // if(localEventFlags && EF_SDCARD)
+            // {
+            //     localStage.processSdCard();
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SDCARD;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_SDCARD;
+            // }
 
 
-            //check for PrechargeEF
-            if(localEventFlags && EF_PRECHARGE)
-            {
-                localStage.processPrecharge();
+            // //check for PrechargeEF
+            // if(localEventFlags && EF_PRECHARGE)
+            // {
+            //     localStage.processPrecharge();
                 
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_PRECHARGE;
-            }
+            //     //clearing the EF so we don't trigger this again
+            //     localEventFlags &= ~EF_PRECHARGE;
+            // }
 
         }   //End of Standby if()
 
@@ -272,8 +289,8 @@ int main(void)
         {
             noInterrupts();
             //Volatile operation for transferring flags from ISRs to local main
-            localEventFlags |= globalEventFlags;
-            globalEventFlags = 0;
+            // localEventFlags |= globalEventFlags;
+            // globalEventFlags = 0;
             interrupts();
             
             //Driving stuff
