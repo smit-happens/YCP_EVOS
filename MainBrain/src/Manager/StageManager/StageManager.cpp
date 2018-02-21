@@ -87,8 +87,9 @@ uint16_t StageManager::processCooling(void)
 uint16_t StageManager::processDash(void)
 {
     //do Dash processing
-    bool loop = true;
 
+    //FIXME: TESTING CODE
+    bool loop = true;
 
     while(loop)
     {
@@ -104,6 +105,10 @@ uint16_t StageManager::processDash(void)
         delay(100);
         digitalWriteFast(WAYNE_LED, 1);
         delay(100);
+        digitalWriteFast(BRAKE_LIGHT, 1);
+        delay(100);
+        digitalWriteFast(SCADA_OK, 1);
+        delay(100);
 
         digitalWriteFast(RTD_LED, 0);
         delay(100);
@@ -117,8 +122,13 @@ uint16_t StageManager::processDash(void)
         delay(100);
         digitalWriteFast(WAYNE_LED, 0);
         delay(100);
+        digitalWriteFast(BRAKE_LIGHT, 0);
+        delay(100);
+        digitalWriteFast(SCADA_OK, 0);
+        delay(100);
 
     }
+    //FIXME: TESTING CODE
 
     return 0;
 }

@@ -27,12 +27,12 @@ void timerISR() {
 // Begin main function
 int main(void)
 {
-    Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect
-    }
+    // Serial.begin(9600);
+    // while (!Serial) {
+    //     ; // wait for serial port to connect
+    // }
 
-    Serial.print("program started");
+    // Serial.print("program started");
 
     //initialize the local event flag variable
     uint32_t localEventFlags = 0;

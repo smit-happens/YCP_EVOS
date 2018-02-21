@@ -45,6 +45,8 @@ DashController::~DashController(void)
  */
 void DashController::init(void)
 {
+    pinMode(BRAKE_LIGHT, OUTPUT);
+    pinMode(SCADA_OK, OUTPUT);
     pinMode(RTD_LED, OUTPUT);
     pinMode(BMS_LED, OUTPUT);
     pinMode(PEDAL_LED, OUTPUT);
