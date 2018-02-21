@@ -11,34 +11,64 @@
 
 #include "../../Controller/Controller.hpp"
 
+// //Calling the constructor of each controller
+// //NOTE: Do NOT perform complex functions or anything harder than
+// //      memory allocation in constructor
+// BatlogController* ControllerManager::batlogC = new BatlogController();
+// CanController* ControllerManager::canC = new CanController();
+// CoolingController* ControllerManager::coolingC = new CoolingController();
+// DashController* ControllerManager::dashC = new DashController();
+// GlcdController* ControllerManager::glcdC = new GlcdController();
+// ImdController* ControllerManager::imdC = new ImdController();
+// OrionController* ControllerManager::orionC = new OrionController();
+// PedalController* ControllerManager::pedalC = new PedalController();
+// SdCardController* ControllerManager::sdCardC = new SdCardController();
+// UnitekController* ControllerManager::unitekC = new UnitekController();
+
 class ControllerManager
 {
 public:
+    //ONLY CALL THIS FROM MAIN, NOWHERE ELSE EVER
+    void initControllers(void);
+
+    static ControllerManager*   getInstance();
+
     //Getters for the controller pointers
-    static BatlogController*    getBatlogC(void);
-    static CanController*       getCanC(void);
-    static CoolingController*   getCoolingC(void);
-    static DashController*      getDashC(void);
-    static GlcdController*      getGlcdC(void);
-    static ImdController*       getImdC(void);
-    static OrionController*     getOrionC(void);
-    static PedalController*     getPedalC(void);
-    static SdCardController*    getSdCardC(void);
-    static UnitekController*    getUnitekC(void);
+    BatlogController*    getBatlogC(void);
+    CanController*       getCanC(void);
+    CoolingController*   getCoolingC(void);
+    DashController*      getDashC(void);
+    GlcdController*      getGlcdC(void);
+    ImdController*       getImdC(void);
+    OrionController*     getOrionC(void);
+    PedalController*     getPedalC(void);
+    SdCardController*    getSdCardC(void);
+    UnitekController*    getUnitekC(void);
 
 
 private:
     // Controller Pointer declarations for singletons
-    static BatlogController*       batlogC;
-    static CanController*       canC;
-    static CoolingController*   coolingC;
-    static DashController*      dashC;
-    static GlcdController*      glcdC;
-    static ImdController*       imdC;
-    static OrionController*     orionC;
-    static PedalController*     pedalC;
-    static SdCardController*    sdCardC;
-    static UnitekController*    unitekC;
+    BatlogController*    batlogC;
+    CanController*       canC;
+    CoolingController*   coolingC;
+    DashController*      dashC;
+    GlcdController*      glcdC;
+    ImdController*       imdC;
+    OrionController*     orionC;
+    PedalController*     pedalC;
+    SdCardController*    sdCardC;
+    UnitekController*    unitekC;
+
+    //Private contstructor so that it can't be called
+    ControllerManager() {};
+
+    //copy constructor is private
+    ControllerManager(ControllerManager const&) {};
+    //assignment operator is private
+    ControllerManager& operator=(ControllerManager const&) {};
+    //static instance pointer
+    static ControllerManager* _pInstance;
+
 };
 
 #endif  //CONTROLLERMANAGER_HPP
