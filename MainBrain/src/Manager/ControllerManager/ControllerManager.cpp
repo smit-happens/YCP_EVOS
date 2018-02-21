@@ -28,15 +28,15 @@ void ControllerManager::initControllers(void)
     //NOTE: Do NOT perform complex functions or anything harder than
     //      memory allocation in constructor
     batlogC = new BatlogController();
-    canC = new CanController();
+    // canC = new CanController();
     coolingC = new CoolingController();
-    dashC = new DashController();
-    glcdC = new GlcdController();
-    imdC = new ImdController();
-    orionC = new OrionController();
-    pedalC = new PedalController();
-    sdCardC = new SdCardController();
-    unitekC = new UnitekController();
+    // dashC = new DashController();
+    // glcdC = new GlcdController();
+    // imdC = new ImdController();
+    // orionC = new OrionController();
+    // pedalC = new PedalController();
+    // sdCardC = new SdCardController();
+    // unitekC = new UnitekController();
 }
 
 

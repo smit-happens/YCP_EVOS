@@ -11,19 +11,6 @@
 
 #include "../../Controller/Controller.hpp"
 
-// //Calling the constructor of each controller
-// //NOTE: Do NOT perform complex functions or anything harder than
-// //      memory allocation in constructor
-// BatlogController* ControllerManager::batlogC = new BatlogController();
-// CanController* ControllerManager::canC = new CanController();
-// CoolingController* ControllerManager::coolingC = new CoolingController();
-// DashController* ControllerManager::dashC = new DashController();
-// GlcdController* ControllerManager::glcdC = new GlcdController();
-// ImdController* ControllerManager::imdC = new ImdController();
-// OrionController* ControllerManager::orionC = new OrionController();
-// PedalController* ControllerManager::pedalC = new PedalController();
-// SdCardController* ControllerManager::sdCardC = new SdCardController();
-// UnitekController* ControllerManager::unitekC = new UnitekController();
 
 class ControllerManager
 {
@@ -64,8 +51,8 @@ private:
 
     //copy constructor is private
     ControllerManager(ControllerManager const&) {};
-    //assignment operator is private
-    ControllerManager& operator=(ControllerManager const&) {};
+    //assignment operator (should be) private
+    // ControllerManager& operator=(ControllerManager const&) {};
     //static instance pointer
     static ControllerManager* _pInstance;
 

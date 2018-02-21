@@ -10,7 +10,7 @@
 #ifndef UNIT_TEST
 
 #include <IntervalTimer.h>
-#include "Manager/ControllerManager/ControllerManager.hpp"
+// #include "Manager/ControllerManager/ControllerManager.hpp"
 #include "Manager/StageManager/StageManager.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
@@ -44,13 +44,13 @@ int main(void)
     // CanController* canC = ControllerManager::getInstance()->getCanC();
     // UnitekController* unitekC = ControllerManager::getInstance()->getUnitekC();
     // OrionController* orionC = ControllerManager::getInstance()->getOrionC();
-    // CoolingController* coolingC = ControllerManager::getInstance()->getCoolingC();
+    CoolingController* coolingC = ControllerManager::getInstance()->getCoolingC();
     // DashController* dashC = ControllerManager::getInstance()->getDashC();
     // ImdController* imdC = ControllerManager::getInstance()->getImdC();
     // GlcdController* glcdC = ControllerManager::getInstance()->getGlcdC();
     // PedalController* pedalC = ControllerManager::getInstance()->getPedalC();
     // SdCardController* sdCardC = ControllerManager::getInstance()->getSdCardC();
-    // BatlogController* batlogC = ControllerManager::getInstance()->getBatlogC();
+    BatlogController* batlogC = ControllerManager::getInstance()->getBatlogC();
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
@@ -68,13 +68,13 @@ int main(void)
         // canC->init();
         // unitekC->init();
         // orionC->init();
-        // coolingC->init();
+        coolingC->init();
         // dashC->init();
         // pedalC->init();
         // imdC->init();
         // glcdC->init();
         // sdCardC->init();
-        // batlogC->init();
+        batlogC->init();
 
         //Configure registers
             //Brownout configuration

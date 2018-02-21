@@ -7,12 +7,12 @@
  */
 
 #include "BatlogController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
+// #include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
 
 /** 
- * @brief  Orion constructor
+ * @brief  Batlog constructor
  */
 BatlogController::BatlogController(void)
 {
