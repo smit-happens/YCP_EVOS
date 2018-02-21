@@ -7,6 +7,7 @@
  */
 
 #include "EventTask.hpp"
+#include "Task.hpp"
 
 /** 
  * @brief Initialize the lookup table for the devices
