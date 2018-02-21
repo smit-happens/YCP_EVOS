@@ -27,9 +27,9 @@ void ControllerManager::initControllers(void)
     //Calling the constructor of each controller
     //NOTE: Do NOT perform complex functions or anything harder than
     //      memory allocation in constructor
-    batlogC = new BatlogController();
+    // batlogC = new BatlogController();
     // canC = new CanController();
-    coolingC = new CoolingController();
+    // coolingC = new CoolingController();
     // dashC = new DashController();
     // glcdC = new GlcdController();
     // imdC = new ImdController();

@@ -1,6 +1,6 @@
 /**  Register constants for the Motor Controller
  *
- * #include UnitekRegisters.hpp
+ * #include RegistersUnitek.hpp
  * Created XX-XX-17 By: Smitty
  *
  * NOTE: All registers are Read Only (RO) unless otherwise stated
@@ -9,8 +9,8 @@
  * NOTE: MC == Unitek Bamocar-D3 Motor Contoller
  */
 
-#ifndef UNITEKREGISTERS_HPP
-#define UNITEKREGISTERS_HPP
+#ifndef REGISTERSUNITEK_HPP
+#define REGISTERSUNITEK_HPP
 
 //Command values/Registers
 const int REG_READ      = 0x3D;  //Read a register (followed by reg to rd from)
@@ -57,4 +57,4 @@ const int REG_CORE      = 0x5A;  //(RW) [0:31] Core option bits for Motor/MC set
 
 //TODO: add register data structs defines in here
 
-#endif  //UNITEKREGISTERS_HPP
+#endif  //REGISTERSUNITEK_HPP

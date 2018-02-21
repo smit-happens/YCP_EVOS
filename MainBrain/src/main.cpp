@@ -10,15 +10,14 @@
 #ifndef UNIT_TEST
 
 #include <IntervalTimer.h>
-// #include "Manager/ControllerManager/ControllerManager.hpp"
 #include "Manager/StageManager/StageManager.hpp"
+#include "Model/Constants/Port.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
 volatile uint16_t globalEventFlags = 0;
 
 
 //Start of ISR declarations
-
 void timerISR() {
     globalEventFlags |= EF_TIMER;
 }
@@ -38,19 +37,17 @@ int main(void)
     uint32_t localEventFlags = 0;
 
     //Creating the controller singletons
-    ControllerManager::getInstance()->initControllers();
-
     //Copying each controller location in memory
-    // CanController* canC = ControllerManager::getInstance()->getCanC();
-    // UnitekController* unitekC = ControllerManager::getInstance()->getUnitekC();
-    // OrionController* orionC = ControllerManager::getInstance()->getOrionC();
-    CoolingController* coolingC = ControllerManager::getInstance()->getCoolingC();
-    // DashController* dashC = ControllerManager::getInstance()->getDashC();
-    // ImdController* imdC = ControllerManager::getInstance()->getImdC();
-    // GlcdController* glcdC = ControllerManager::getInstance()->getGlcdC();
-    // PedalController* pedalC = ControllerManager::getInstance()->getPedalC();
-    // SdCardController* sdCardC = ControllerManager::getInstance()->getSdCardC();
-    BatlogController* batlogC = ControllerManager::getInstance()->getBatlogC();
+    CanController* canC = CanController::getInstance();
+    UnitekController* unitekC = UnitekController::getInstance();
+    OrionController* orionC = OrionController::getInstance();
+    CoolingController* coolingC = CoolingController::getInstance();
+    DashController* dashC = DashController::getInstance();
+    ImdController* imdC = ImdController::getInstance();
+    GlcdController* glcdC = GlcdController::getInstance();
+    PedalController* pedalC = PedalController::getInstance();
+    SdCardController* sdCardC = SdCardController::getInstance();
+    BatlogController* batlogC = BatlogController::getInstance();
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
@@ -59,21 +56,21 @@ int main(void)
     StageManager::Stage excecutingStage = StageManager::BOOTUP;
 
     // using the builtin LED as a status light (for now)
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWriteFast(LED_BUILTIN, 1);
+    pinMode(WAYNE_LED, OUTPUT);
+    digitalWriteFast(WAYNE_LED, 1);
 
 
     //Bootup stage functions (anything var declared in an if/else falls out of scope afterward)
         //Calling init functions for each controller
-        // canC->init();
-        // unitekC->init();
-        // orionC->init();
+        canC->init();
+        unitekC->init();
+        orionC->init();
         coolingC->init();
-        // dashC->init();
-        // pedalC->init();
-        // imdC->init();
-        // glcdC->init();
-        // sdCardC->init();
+        dashC->init();
+        pedalC->init();
+        imdC->init();
+        glcdC->init();
+        sdCardC->init();
         batlogC->init();
 
         //Configure registers

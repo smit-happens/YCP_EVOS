@@ -10,7 +10,7 @@
 #define ORION_HPP
 
 #include <Arduino.h>
-#include "OrionRegisters.hpp"
+#include "../Constants/RegistersOrion.hpp"
 
 class Orion
 {

@@ -9,7 +9,7 @@
 #ifndef STAGEMANAGER_HPP
 #define STAGEMANAGER_HPP
 
-#include "../ControllerManager/ControllerManager.hpp"
+#include "../../Controller/Controller.hpp"
 #include "EventMasks.hpp"
 #include "../../Model/Constants/TimeDelay.hpp"
 

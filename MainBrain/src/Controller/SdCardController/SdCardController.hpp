@@ -27,11 +27,12 @@
  * ╚════════════════════════════╩══════════════╩═══════════════╩═════════════════════════════════════════════════════════╩═════╝
  */
 
-class SdCardController
+class SdCardController  : public BaseController
 {
 public:
-    SdCardController();
     ~SdCardController(void);
+
+    static SdCardController*   getInstance();
 
     void init(void);
     void poll(void);
@@ -50,6 +51,15 @@ public:
 
 
 private:
+    //Private contstructor so that it can't be called
+    SdCardController() {};
+    //copy constructor is private
+    SdCardController(SdCardController const&) {};
+
+    //static instance pointer
+    static SdCardController* _pInstance;
+
+    //private instance of model
     SdCard* sdCardModel;
 
 };

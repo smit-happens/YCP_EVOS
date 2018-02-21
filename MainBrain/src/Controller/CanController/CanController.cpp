@@ -7,16 +7,23 @@
  */
 
 #include "CanController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
+
+//to see if the instance of the class has been initialized yet
+CanController* CanController::_pInstance = NULL; 
 
 /** 
- * @brief  CanController constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-CanController::CanController(void)
+CanController* CanController::getInstance()
 {
-    //creating the local CAN model
-    canModel = new Can();
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new CanController();
+
+    return _pInstance;
 }
 
 
@@ -39,6 +46,9 @@ CanController::~CanController(void)
  */
 void CanController::init(void)
 {
+    //creating the local CAN model
+    canModel = new Can();
+
     Can1.attachObj(canModel);
     canModel->attachGeneralHandler();
 }

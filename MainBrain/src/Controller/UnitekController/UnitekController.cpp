@@ -7,15 +7,23 @@
  */
 
 #include "UnitekController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
+
+//to see if the instance of the class has been initialized yet
+UnitekController* UnitekController::_pInstance = NULL; 
 
 /** 
- * @brief  UnitekController constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-UnitekController::UnitekController(void)
+UnitekController* UnitekController::getInstance()
 {
-    unitekModel = new Unitek();
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new UnitekController();
+
+    return _pInstance;
 }
 
 
@@ -37,7 +45,7 @@ UnitekController::~UnitekController(void)
  */
 void UnitekController::init(void)
 {
-
+    unitekModel = new Unitek();
 }
 
 
