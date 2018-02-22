@@ -21,10 +21,22 @@ void resetInit(){
 // POR and LVD are disabled in low power modes
 
 //Disable all power modes other than "Normal Run"
-SMC_PMPROT = (SMC_PMPROT & !SMC_PMPROT_ALLS & !SMC_PMPROT_AHSRUN & !SMC_PMPROT_AVLLS & SMC_PMPROT_AVLP);
+SMC_PMPROT &=  ~(SMC_PMPROT_ALLS & SMC_PMPROT_AHSRUN & SMC_PMPROT_AVLLS & SMC_PMPROT_AVLP);
 
 
-// Enable LVD to trigger a reset
+// Enable LVD to trigger a reset when voltage is lower than the set threshold
+//TODO: Figure out which LVD threshold we want
+PMC_LVDSC1 |= PMC_LVDSC1_LVDRE;
+
+
+/*LVW Flag (LVWF) may be 1 after power-on reset, therefore to use LVW interrupt function, 
+ before enabling LVW Interrupt Enable (LVWIE), LVWF must be cleared by 
+ writing LVW Acknowledge (LVWACK) first*/
+PMC_LVDSC2 |= PMC_LVDSC2_LVWACK; 
+
+// TODO: Figure out which LVW trip point we want
+// Configure Low Voltage Warning (LVW) to trigger a hardware interrupt.
+PMC_LVDSC2 |= PMC_LVDSC2_LVWIE;
 
 
 }
@@ -33,9 +45,27 @@ SMC_PMPROT = (SMC_PMPROT & !SMC_PMPROT_ALLS & !SMC_PMPROT_AHSRUN & !SMC_PMPROT_A
 int main(void){
 
     resetInit();
-    Serial.begin(9600);
 
+    Serial.begin(9600);
+    while (!Serial.available()){
+
+    }
+
+    
+
+    Serial.print("SMC_PMPROT: ");
+    Serial.print(SMC_PMPROT, BIN);
+
+    Serial.print("\nPMC_LVDS1: ");
+    Serial.print(PMC_LVDSC1, BIN);
+
+    Serial.print("\nPMC_LVDS2: ");
+    Serial.print(PMC_LVDSC2, BIN);
+
+
+    
 
 }
 
 
+ 
