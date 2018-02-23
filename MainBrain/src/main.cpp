@@ -231,7 +231,7 @@ int main(void)
             }
 
 
-            if(/*localEventFlags && EF_DASH*/1)
+            if(localEventFlags && EF_DASH)
             {
                 localStage.processDash();
                 

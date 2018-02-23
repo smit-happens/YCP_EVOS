@@ -4,12 +4,10 @@
  * Created 12-19-17 By: Smitty
  * 
  * The port names correlate to the names given to them in the
- * original schematic document
+ * original Main Brain schematic document
  * 
- * NOTE: Due to the format of variable names in C++, the following
- *       conversion is made between the schematic and C++ code
- *       _RST == /RST
- *       _CS  == /CS
+ * NOTE: The prefix "MB_" stands for "Main Brain" so there's no conflicts
+ *       with any libraries using the same nomenclature for pin definitions
  */
 
 #ifndef PORT_HPP
@@ -26,8 +24,8 @@
  |____/ \__,_|_|  \___|\__|\__, |  |___/\__,_|_.__/|___/\__, |___/\__\___|_| |_| |_|___/
                            |___/                        |___/
 */
-const uint8_t IMD_STATUS    = 28;   //[0,1] Digital Input
-const uint8_t BMS_STATUS    = 29;   //[0,1] Digital Input
+const uint8_t MB_IMD_STATUS    = 28;   //[0,1] Digital Input
+const uint8_t MB_BMS_STATUS    = 29;   //[0,1] Digital Input
 
 
 /*
@@ -38,8 +36,8 @@ const uint8_t BMS_STATUS    = 29;   //[0,1] Digital Input
  |___|_____|\____|
 
 */
-const uint8_t I2C_SCL           = 57;  //To be determined
-const uint8_t I2C_SDA           = 56;  //To be determined
+const uint8_t MB_I2C_SCL           = 57;  //Expansion port
+const uint8_t MB_I2C_SDA           = 56;  //maybe Traction control
 
 
 /*
@@ -50,11 +48,11 @@ const uint8_t I2C_SDA           = 56;  //To be determined
  |____/|_|  |___|
                  
 */
-const uint8_t SPI_CS1           = 43;  //To be determined
-const uint8_t SPI_CS0           = 54;  //To be determined
-const uint8_t SPI_SCK           = 53;  //
-const uint8_t SPI_MOSI          = 52;  //
-const uint8_t SPI_MISO          = 51;  //
+const uint8_t MB_SPI_CS1           = 43;  //To be determined
+const uint8_t MB_SPI_CS0           = 54;  //To be determined
+const uint8_t MB_SPI_SCK           = 53;  //
+const uint8_t MB_SPI_MOSI          = 52;  //
+const uint8_t MB_SPI_MISO          = 51;  //
 
 
 /*
@@ -66,15 +64,15 @@ const uint8_t SPI_MISO          = 51;  //
 
 */
 //Brake overtravel switch
-const uint8_t BRAKE_OVERTRAVEL  = 13;  //[0,1] Digital Input
+const uint8_t MB_BRAKE_OVERTRAVEL  = 13;  //[0,1] Digital Input
 
 //Brake light
-const uint8_t BRAKE_LIGHT       = 37;  //[0,1] Digital Output
+const uint8_t MB_BRAKE_LIGHT       = 37;  //[0,1] Digital Output
 
 //Potentiometers
-const uint8_t BRAKE             = 16;  //[0-8195] 13-bit Analog Input
-const uint8_t GAS_LIN           = 15;  //[0-8195] 13-bit Analog Input
-const uint8_t GAS_LOG           = 14;  //[0-8195] 13-bit Analog Input
+const uint8_t MB_BRAKE             = 16;  //[0-8195] 13-bit Analog Input
+const uint8_t MB_GAS_LIN           = 15;  //[0-8195] 13-bit Analog Input
+const uint8_t MB_GAS_LOG           = 14;  //[0-8195] 13-bit Analog Input
 
 
 /*
@@ -86,13 +84,13 @@ const uint8_t GAS_LOG           = 14;  //[0-8195] 13-bit Analog Input
 
 */
 //Unitek logic board
-const uint8_t SCADA_OK          = 23;  //[0,1] Digital Output
-const uint8_t DRIVE_EN          = 22;  //[0,1] Digital Output
-const uint8_t START_PRE         = 21;  //[0,1] Digital Output
-const uint8_t DONE_PRE          = 20;  //[0,1] Digital Input
-const uint8_t DOUT2             = 19;  //[0,1] Digital Input
-const uint8_t BTB               = 18;  //[0,1] Digital Input
-const uint8_t SPARE             = 17;  //[0,1] Digital Input
+const uint8_t MB_SCADA_OK          = 23;  //[0,1] Digital Output
+const uint8_t MB_DRIVE_EN          = 22;  //[0,1] Digital Output
+const uint8_t MB_START_PRE         = 21;  //[0,1] Digital Output
+const uint8_t MB_DONE_PRE          = 20;  //[0,1] Digital Input
+const uint8_t MB_DOUT2             = 19;  //[0,1] Digital Input
+const uint8_t MB_BTB               = 18;  //[0,1] Digital Input
+const uint8_t MB_SPARE             = 17;  //[0,1] Digital Input
 
 
 /*
@@ -109,16 +107,16 @@ const uint8_t SPARE             = 17;  //[0,1] Digital Input
 // RS/A0:   Data/Command select
 // _RST:    LCD reset
 // _CS:     LCD chip select
-const uint8_t SID               = 8;  //ST7565 display Output
-const uint8_t SCLK              = 9;  //ST7565 display Output
-const uint8_t RS                = 10;  //ST7565 display Output
-const uint8_t _RST              = 11;  //ST7565 display Output
-const uint8_t _CS               = 12;  //ST7565 display Output
+const uint8_t MB_SID               = 8;   //ST7565 display Output
+const uint8_t MB_SCLK              = 9;   //ST7565 display Output
+const uint8_t MB_A0                = 10;  //ST7565 display Output
+const uint8_t MB_RST               = 11;  //ST7565 display Output
+const uint8_t MB_CS                = 12;  //ST7565 display Output
 
 //RGB backlight
-const uint8_t R                 = 7;  //[0,1] PWM Output
-const uint8_t G                 = 6;  //[0,1] PWM Output
-const uint8_t B                 = 5;  //[0,1] PWM Output
+const uint8_t MB_R                 = 7;   //[0,1] PWM Output
+const uint8_t MB_G                 = 6;   //[0,1] PWM Output
+const uint8_t MB_B                 = 5;   //[0,1] PWM Output
 
 
 /*
@@ -130,32 +128,32 @@ const uint8_t B                 = 5;  //[0,1] PWM Output
 
 */
 //Buttons
-const uint8_t PRE_BTN           = 47;  //[0,1] Digital Input
-const uint8_t RTD_BTN           = 45;  //[0,1] Digital Input
-const uint8_t ENC_BTN           = 27;  //[0,1] Digital Input
-const uint8_t WAYNE_BTN         = 32;  //[0,1] Digital Input
-const uint8_t SHUTDOWN_BTN      = 44;  //[0,1] Digital Input
-const uint8_t STANDBY_BTN       = 46;  //[0,1] Digital Input
+const uint8_t MB_PRE_BTN           = 47;  //[0,1] Digital Input
+const uint8_t MB_RTD_BTN           = 45;  //[0,1] Digital Input
+const uint8_t MB_ENC_BTN           = 27;  //[0,1] Digital Input
+const uint8_t MB_WAYNE_BTN         = 32;  //[0,1] Digital Input
+const uint8_t MB_SHUTDOWN_BTN      = 44;  //[0,1] Digital Input
+const uint8_t MB_STANDBY_BTN       = 46;  //[0,1] Digital Input
 
 //Switches
-const uint8_t REVERSE_SW        = 41;  //[0,1] Digital Input
+const uint8_t MB_REVERSE_SW        = 41;  //[0,1] Digital Input
 
 //Encoder
-const uint8_t ENC_PINA          = 25;  //[0,1] Digital Input
-const uint8_t ENC_PINB          = 26;  //[0,1] Digital Input
+const uint8_t MB_ENC_PINA          = 25;  //[0,1] Digital Input
+const uint8_t MB_ENC_PINB          = 26;  //[0,1] Digital Input
 
 //Status LEDs (0 = Bad; 1 = Good TODO: see if this is still true)
-const uint8_t RTD_LED           = 0;   //[0,1] Digital Output
-const uint8_t BMS_LED           = 1;   //[0,1] Digital Output
-const uint8_t PEDAL_LED         = 2;   //[0,1] Digital Output
-const uint8_t IMD_LED           = 3;   //[0,1] Digital Output
-const uint8_t REVERSE_LED       = 4;   //[0,1] Digital Output
-const uint8_t WAYNE_LED         = 24;  //[0,1] Digital Output
+const uint8_t MB_RTD_LED           = 0;   //[0,1] Digital Output
+const uint8_t MB_BMS_LED           = 1;   //[0,1] Digital Output
+const uint8_t MB_PEDAL_LED         = 2;   //[0,1] Digital Output
+const uint8_t MB_IMD_LED           = 3;   //[0,1] Digital Output
+const uint8_t MB_REVERSE_LED       = 4;   //[0,1] Digital Output
+const uint8_t MB_WAYNE_LED         = 24;  //[0,1] Digital Output
 //Indicator LED for the energized state
-const uint8_t ENERGIZE_LED      = 31;  //[0,1] Digital Output
+const uint8_t MB_ENERGIZE_LED      = 31;  //[0,1] Digital Output
 
 //Siren
-const uint8_t SIREN             = 30;   //[0,1] Digital Output
+const uint8_t MB_SIREN             = 30;   //[0,1] Digital Output
 
 
 /*
@@ -167,8 +165,8 @@ const uint8_t SIREN             = 30;   //[0,1] Digital Output
 
 */
 //connection to the CAN chip (MCP2562)
-const uint8_t CAN_TX            = 33;  //FlexCAN library Output
-const uint8_t CAN_RX            = 34;  //FlexCAN library Input
+const uint8_t MB_CAN_TX            = 33;  //FlexCAN library Output
+const uint8_t MB_CAN_RX            = 34;  //FlexCAN library Input
 
 
 /*
@@ -180,10 +178,10 @@ const uint8_t CAN_RX            = 34;  //FlexCAN library Input
                              |___/          |___/
 */
 //Pump control
-const uint8_t PUMP_CTRL         = 48;  //[0,1] Digital Output
+const uint8_t MB_PUMP_CTRL         = 48;  //[0,1] Digital Output
 //Temperature sensing
-const uint8_t RAD_OUTLET_TEMP   = A17; //[0-8195] 13-bit Analog Input
-const uint8_t RAD_INLET_TEMP    = A16; //[0-8195] 13-bit Analog Input
+const uint8_t MB_RAD_OUTLET_TEMP   = A17; //[0-8195] 13-bit Analog Input
+const uint8_t MB_RAD_INLET_TEMP    = A16; //[0-8195] 13-bit Analog Input
 
 
 /*
@@ -195,7 +193,7 @@ const uint8_t RAD_INLET_TEMP    = A16; //[0-8195] 13-bit Analog Input
                           |___/
 */
 //GLV Battery logistics (Batlog)
-const uint8_t BAT_MEASURE       = A24; //[0-8195] 13-bit Analog Input
+const uint8_t MB_BAT_MEASURE       = A24; //[0-8195] 13-bit Analog Input
 
 
 #endif  //PORTCONSTANTS_HPP

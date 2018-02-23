@@ -45,14 +45,15 @@ DashController::~DashController(void)
  */
 void DashController::init(void)
 {
-    pinMode(BRAKE_LIGHT, OUTPUT);
-    pinMode(SCADA_OK, OUTPUT);
-    pinMode(RTD_LED, OUTPUT);
-    pinMode(BMS_LED, OUTPUT);
-    pinMode(PEDAL_LED, OUTPUT);
-    pinMode(IMD_LED, OUTPUT);
-    pinMode(REVERSE_LED, OUTPUT);
-    pinMode(WAYNE_LED, OUTPUT);
+    //initializing the dash Pins
+    pinMode(MB_BRAKE_LIGHT, OUTPUT);
+    pinMode(MB_SCADA_OK, OUTPUT);
+    pinMode(MB_RTD_LED, OUTPUT);
+    pinMode(MB_BMS_LED, OUTPUT);
+    pinMode(MB_PEDAL_LED, OUTPUT);
+    pinMode(MB_IMD_LED, OUTPUT);
+    pinMode(MB_REVERSE_LED, OUTPUT);
+    pinMode(MB_WAYNE_LED, OUTPUT);
 }
 
 

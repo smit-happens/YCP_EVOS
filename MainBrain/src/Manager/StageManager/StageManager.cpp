@@ -88,48 +88,6 @@ uint16_t StageManager::processDash(void)
 {
     //do Dash processing
 
-    //FIXME: TESTING CODE
-    bool loop = true;
-
-    while(loop)
-    {
-        digitalWriteFast(RTD_LED, 1);
-        delay(100);
-        digitalWriteFast(BMS_LED, 1);
-        delay(100);
-        digitalWriteFast(PEDAL_LED, 1);
-        delay(100);
-        digitalWriteFast(IMD_LED, 1);
-        delay(100);
-        digitalWriteFast(REVERSE_LED, 1);
-        delay(100);
-        digitalWriteFast(WAYNE_LED, 1);
-        delay(100);
-        digitalWriteFast(BRAKE_LIGHT, 1);
-        delay(100);
-        digitalWriteFast(SCADA_OK, 1);
-        delay(100);
-
-        digitalWriteFast(RTD_LED, 0);
-        delay(100);
-        digitalWriteFast(BMS_LED, 0);
-        delay(100);
-        digitalWriteFast(PEDAL_LED, 0);
-        delay(100);
-        digitalWriteFast(IMD_LED, 0);
-        delay(100);
-        digitalWriteFast(REVERSE_LED, 0);
-        delay(100);
-        digitalWriteFast(WAYNE_LED, 0);
-        delay(100);
-        digitalWriteFast(BRAKE_LIGHT, 0);
-        delay(100);
-        digitalWriteFast(SCADA_OK, 0);
-        delay(100);
-
-    }
-    //FIXME: TESTING CODE
-
     return 0;
 }
 
