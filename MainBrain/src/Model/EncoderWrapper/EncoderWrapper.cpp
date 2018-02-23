@@ -9,7 +9,7 @@
 #include "EncoderWrapper.hpp"
 
 
-Encoder dial(ENC_PINA, ENC_PINB);
+Encoder dial(MB_ENC_PINA, MB_ENC_PINB);
 
 /** 
  * @brief  Encoder constructor
