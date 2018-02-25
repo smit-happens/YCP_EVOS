@@ -11,9 +11,6 @@
 #include <Arduino.h>
 
 
-//TODO: account for EFs of differing levels of severity by organizing them into
-//      categories like EF_Servere, EF_Normal, EF_Low
-
 const uint32_t EF_TIMER            = 0b1;   //The first event flag (EF) mask
 const uint32_t EF_CAN              = 0b10;  //CAN EF mask
 const uint32_t EF_COOLING          = 0b100;  //cooling EF mask
@@ -35,13 +32,13 @@ const uint32_t EF_SHUTDOWN         = 0b1000000000000000;  //Shutdown EF mask
 //as of right now, we have 4 levels of priority
 //CRITICAL will be reserved for situations where the car had a critical error and needs to shut down
 //HIGH, MEDIUM, LOW will be the various levels of importance of the various tasks, with safety having highest priority
-// enum Priority
-// {
-//     PRIORITY_CRITICAL,
-//     PRIORITY_HIGH,
-//     PRIORITY_MEDIUM,
-//     PRIORITY_LOW
-// };
+enum Priority
+{
+    PRIORITY_CRITICAL,
+    PRIORITY_HIGH,
+    PRIORITY_MEDIUM,
+    PRIORITY_LOW
+};
 
 
 //this enum is used as an index in the lookup table and specifies each device for the car
@@ -67,22 +64,6 @@ enum DeviceName
 };
 
 
-//this will contain the event flag, a pointer to a task array for the specific device, and an event priority
-// struct Task
-// {
-//     //whether the device needs to get processed or not
-//     // bool eventFlag;
-    
-//     // int eventFlagCount;
-
-//     //stores the various tasks specific to a device
-//     uint8_t taskFlags;
-
-//     //priority of the device event being handled
-//     Priority priority;
-// };
-
-
 class EventTask
 {
 public:
@@ -100,7 +81,6 @@ public:
 
     // void incrementDeviceEventFlagCount(DeviceName device);
     // void decrementDeviceEventFlagCount(DeviceName device);
-    // void setDevicePriority(DeviceName name, Priority newPriority);
 
 private: 
     uint8_t taskTable[NUM_DEVICES];

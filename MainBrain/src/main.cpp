@@ -53,7 +53,7 @@ int main(void)
     StageManager localStage = StageManager();
 
     //The first step when running is bootup
-    StageManager::Stage excecutingStage = StageManager::BOOTUP;
+    StageManager::Stage excecutingStage = StageManager::STAGE_BOOTUP;
 
     //EventTask instance
     EventTask deviceTasks = EventTask();
@@ -93,34 +93,34 @@ int main(void)
 
         if(/* check for ShutdownEF*/ 1 )
         {
-            excecutingStage = StageManager::SELF_TEST;
+            excecutingStage = StageManager::STAGE_SELF_TEST;
         }
         else
         {
-            excecutingStage = StageManager::SHUTDOWN;
+            excecutingStage = StageManager::STAGE_SHUTDOWN;
         }
 
 
-    if(excecutingStage == StageManager::SELF_TEST)
+    //excecuting all the self test oriented functions
+    if(excecutingStage == StageManager::STAGE_SELF_TEST)
     {
         //Teensy SelfTest (internal functions)
         //SdCard check (read data, check if good)
         //Dash test (turn on all LEDS, user confirmation w/ encoder)
-        
-
 
         if(/* check for ShutdownEF*/ 1 )
         {
-            excecutingStage = StageManager::SUBSYSTEM_TEST;
+            excecutingStage = StageManager::STAGE_SUBSYSTEM_TEST;
         }
         else
         {
-            excecutingStage = StageManager::SHUTDOWN;
+            excecutingStage = StageManager::STAGE_SHUTDOWN;
         }
     }
 
 
-    if(excecutingStage == StageManager::SUBSYSTEM_TEST)
+    //Executing all the subsystem test oriented functions
+    if(excecutingStage == StageManager::STAGE_SUBSYSTEM_TEST)
     {
         
         //Unitek check if okay
@@ -133,167 +133,120 @@ int main(void)
 
         if(/* check for ShutdownEF*/ 1 )
         {
-            excecutingStage = StageManager::STANDBY;
+            excecutingStage = StageManager::STAGE_STANDBY;
         }
         else
         {
-            excecutingStage = StageManager::SHUTDOWN;
+            excecutingStage = StageManager::STAGE_SHUTDOWN;
         }
     }
 
 
     //Start 1ms timer (1000 usec)
-    // myTimer.begin(timerISR, 1000);
+    myTimer.begin(timerISR, 1000);
 
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
-    while(excecutingStage != StageManager::SHUTDOWN)
+    while(excecutingStage != StageManager::STAGE_SHUTDOWN)
     {
-        if(excecutingStage == StageManager::STANDBY)
+        noInterrupts();
+        //Volatile operation for transferring flags from ISRs to local main
+        localEventFlags |= globalEventFlags;
+        globalEventFlags = 0;
+
+        //Transfer global tasks to local tasks
+        deviceTasks.setAllTaskFlags(globalTaskFlags);
+        interrupts();
+
+        switch(excecutingStage)
         {
-            noInterrupts();
-            //Volatile operation for transferring flags from ISRs to local main
-            localEventFlags |= globalEventFlags;
-            globalEventFlags = 0;
+            case StageManager::STAGE_STANDBY:
 
-            //Transfer global tasks to local tasks
-            deviceTasks.setAllTaskFlags(globalTaskFlags);
-            interrupts();
+                //looping through the events of varying priorities
+                for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
+                {
+                    excecutingStage = localStage.processStandbyEvents(localEventFlags, (Priority)priorityIterator);
 
-            
-            //FIXME: Implement helper functions to avoid all these if()s 
-            //       Such as: checkHighPriorityStandby(), checkNormalPriorityStandby(), etc
-            //       HINT: implement priority event flag registers
+                    //checking if we need to update the timers
+                    if(localEventFlags && EF_TIMER)
+                    {
+                        //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
+                        timerEventFlags |= localStage.processTimers(excecutingStage);
+                        
+                        //clearing the EF so we don't trigger this again
+                        localEventFlags &= ~EF_TIMER;
+                    }
+                }
 
-
-            if(localEventFlags && EF_SHUTDOWN)
-            {
-                localStage.processShutdown();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SHUTDOWN;
-            }
+            break;
 
 
-            if(localEventFlags && EF_IMD)
-            {
-                localStage.processImd();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_IMD;
-            }
+            case StageManager::STAGE_PRECHARGE:
+
+                for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
+                {
+                    localStage.processPrechargeEvents(localEventFlags, (Priority)priorityIterator);
+
+                    //checking if we need to update the timers
+                    if(localEventFlags && EF_TIMER)
+                    {
+                        //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
+                        timerEventFlags |= localStage.processTimers(excecutingStage);
+                        
+                        //clearing the EF so we don't trigger this again
+                        localEventFlags &= ~EF_TIMER;
+                    }
+                }
+
+            break;
 
 
-            //Timer EF check
-            if(localEventFlags && EF_TIMER)
-            {
-                //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
-                timerEventFlags |= localStage.processTimers();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_TIMER;
-            }
+            case StageManager::STAGE_ENERGIZED:
+
+                for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
+                {
+                    localStage.processDrivingEvents(localEventFlags, (Priority)priorityIterator);
+
+                    //checking if we need to update the timers
+                    if(localEventFlags && EF_TIMER)
+                    {
+                        //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
+                        timerEventFlags |= localStage.processTimers(excecutingStage);
+                        
+                        //clearing the EF so we don't trigger this again
+                        localEventFlags &= ~EF_TIMER;
+                    }
+                }
+
+            break;
 
 
-            if(localEventFlags && EF_CAN)
-            {
-                localStage.processCan();   
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_CAN;
-            }
+            case StageManager::STAGE_DRIVING:
+
+                for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
+                {
+                    localStage.processDrivingEvents(localEventFlags, (Priority)priorityIterator);
+
+                    //checking if we need to update the timers
+                    if(localEventFlags && EF_TIMER)
+                    {
+                        //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
+                        timerEventFlags |= localStage.processTimers(excecutingStage);
+                        
+                        //clearing the EF so we don't trigger this again
+                        localEventFlags &= ~EF_TIMER;
+                    }
+                }
+
+            break;
 
 
-            if(localEventFlags && EF_UNITEK)
-            {
-                localStage.processUnitek();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_UNITEK;
-            }
+            default:
 
+                //shouldn't get here
 
-            if(localEventFlags && EF_ORION)
-            {
-                localStage.processOrion();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_ORION;
-            }
-
-
-            if(localEventFlags && EF_COOLING)
-            {
-                localStage.processCooling();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_COOLING;
-            }
-
-
-            if(localEventFlags && EF_BATLOG)
-            {
-                localStage.processBatlog();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_BATLOG;
-            }
-
-
-            if(localEventFlags && EF_DASH)
-            {
-                localStage.processDash();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_DASH;
-            }
-
-
-            if(localEventFlags && EF_GLCD)
-            {
-                localStage.processGlcd();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_GLCD;
-            }
-
-
-            if(localEventFlags && EF_SDCARD)
-            {
-                localStage.processSdCard();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SDCARD;
-            }
-
-
-            //check for PrechargeEF
-            if(localEventFlags && EF_PRECHARGE)
-            {
-                localStage.processPrecharge();
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_PRECHARGE;
-            }
-
-        }   //End of Standby if()
-
-        if(excecutingStage == StageManager::DRIVE)
-        {
-            noInterrupts();
-            //Volatile operation for transferring flags from ISRs to local main
-            localEventFlags |= globalEventFlags;
-            globalEventFlags = 0;
-            
-            //Transfer global tasks to local tasks
-            deviceTasks.setAllTaskFlags(globalTaskFlags);
-            interrupts();
-            
-            //Driving stuff
-
-
-
+            break;
         }   //end of super loop ------------------------------------------------------
     }
 
