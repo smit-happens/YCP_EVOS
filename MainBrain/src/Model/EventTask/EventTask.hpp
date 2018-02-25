@@ -15,18 +15,16 @@ const uint32_t EF_TIMER            = 0b1;   //The first event flag (EF) mask
 const uint32_t EF_CAN              = 0b10;  //CAN EF mask
 const uint32_t EF_COOLING          = 0b100;  //cooling EF mask
 const uint32_t EF_DASH             = 0b1000;  //dash EF mask
-const uint32_t EF_GLCD             = 0b10000;  //Glcd EF mask
-const uint32_t EF_IMD              = 0b100000;  //Imd EF mask
-const uint32_t EF_ORION            = 0b1000000;  //Orion EF mask
-const uint32_t EF_PEDAL            = 0b10000000;  //Pedal EF mask
-const uint32_t EF_SDCARD           = 0b100000000;  //SdCard EF mask
-const uint32_t EF_UNITEK           = 0b1000000000;  //Unitek EF mask
-const uint32_t EF_BATLOG           = 0b10000000000;  //BatLog EF mask
-const uint32_t EF_STANDBY          = 0b100000000000;  //Shutdown EF mask
-const uint32_t EF_PRECHARGE        = 0b1000000000000;  //Shutdown EF mask
-const uint32_t EF_READYTODRIVE     = 0b10000000000000;  //Shutdown EF mask
-const uint32_t EF_LAUNCH           = 0b100000000000000;  //Shutdown EF mask
-const uint32_t EF_SHUTDOWN         = 0b1000000000000000;  //Shutdown EF mask
+const uint32_t EF_IMD              = 0b10000;  //Imd EF mask
+const uint32_t EF_ORION            = 0b100000;  //Orion EF mask
+const uint32_t EF_UNITEK           = 0b1000000;  //Unitek EF mask
+const uint32_t EF_BATLOG           = 0b10000000;  //BatLog EF mask
+
+
+//Timer event flags
+const uint32_t EF_GLCD             = 0b1;  //Glcd EF mask
+const uint32_t EF_PEDAL            = 0b10;  //Pedal EF mask
+const uint32_t EF_SDCARD           = 0b100;  //SdCard EF mask
 
 
 //as of right now, we have 4 levels of priority

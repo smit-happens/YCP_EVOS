@@ -18,8 +18,8 @@ StageManager::StageManager(void)
     timerList = new Timer[TIMER_NUM];
     timerList[0].limit = LED_1_POLL;
     timerList[1].limit = LED_2_POLL;
-    timerList[2].limit = LED_3_POLL;
-    timerList[3].limit = LED_4_POLL;
+    // timerList[2].limit = LED_3_POLL;
+    // timerList[3].limit = LED_4_POLL;
 
     //initializing the variables in the Timer array
     for(int i = 0; i < TIMER_NUM; i++) 
@@ -101,6 +101,7 @@ uint32_t StageManager::processDash(Stage currentStage)
 uint32_t StageManager::processGlcd(Stage currentStage)
 {
     //glcd view display updating
+
     return 0;
 }
 
@@ -227,7 +228,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
     switch(urgencyLevel)
     {
         case PRIORITY_CRITICAL:
-            //code here
+
             if(localEventFlags && EF_SHUTDOWN)
             {
                 processShutdown(currentStage);
@@ -249,7 +250,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
         
         case PRIORITY_HIGH:
-            //code here
+        
             if(localEventFlags && EF_CAN)
             {
                 processCan(currentStage);   
@@ -280,7 +281,6 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
 
         case PRIORITY_MEDIUM:
-            //code here
 
              if(localEventFlags && EF_COOLING)
             {
@@ -312,7 +312,6 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
 
         case PRIORITY_LOW:
-            //code here
 
             if(localEventFlags && EF_GLCD)
             {
