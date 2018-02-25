@@ -36,10 +36,11 @@ public:
     //handles the various timers we'll be using and setting Task Flags (TFs) based on them
     uint32_t processTimers(Stage currentStage);
 
-    Stage processStandbyEvents(uint32_t &localEventFlags, Priority urgencyLevel);
-    Stage processPrechargeEvents(uint32_t &localEventFlags, Priority urgencyLevel);
-    Stage processEnergizedEvents(uint32_t &localEventFlags, Priority urgencyLevel);
-    Stage processDrivingEvents(uint32_t &localEventFlags, Priority urgencyLevel);
+    //handles the excecution of the 
+    Stage processEventsStandby(uint32_t &localEventFlags, Priority urgencyLevel);
+    Stage processEventsPrecharge(uint32_t &localEventFlags, Priority urgencyLevel);
+    Stage processEventsEnergized(uint32_t &localEventFlags, Priority urgencyLevel);
+    Stage processEventsDriving(uint32_t &localEventFlags, Priority urgencyLevel);
 
 
 

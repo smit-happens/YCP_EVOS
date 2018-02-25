@@ -159,6 +159,8 @@ int main(void)
         deviceTasks.setAllTaskFlags(globalTaskFlags);
         interrupts();
 
+        //for every stage, we check what events need to be handled with varying priority levels
+        //FIXME: handle Priorities better, right now we loop through them, later we want to handle CRITICAL prioritis first
         switch(excecutingStage)
         {
             case StageManager::STAGE_STANDBY:
@@ -166,7 +168,7 @@ int main(void)
                 //looping through the events of varying priorities
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
-                    excecutingStage = localStage.processStandbyEvents(localEventFlags, (Priority)priorityIterator);
+                    excecutingStage = localStage.processEventsStandby(localEventFlags, (Priority)priorityIterator);
 
                     //checking if we need to update the timers
                     if(localEventFlags && EF_TIMER)
@@ -178,6 +180,9 @@ int main(void)
                         localEventFlags &= ~EF_TIMER;
                     }
                 }
+
+                //All low priority events are handled by the timer event flags
+                localStage.processEventsStandby(timerEventFlags, Priority::PRIORITY_LOW);
 
             break;
 
@@ -186,7 +191,7 @@ int main(void)
 
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
-                    localStage.processPrechargeEvents(localEventFlags, (Priority)priorityIterator);
+                    localStage.processEventsPrecharge(localEventFlags, (Priority)priorityIterator);
 
                     //checking if we need to update the timers
                     if(localEventFlags && EF_TIMER)
@@ -198,6 +203,8 @@ int main(void)
                         localEventFlags &= ~EF_TIMER;
                     }
                 }
+
+                localStage.processEventsPrecharge(timerEventFlags, Priority::PRIORITY_LOW);
 
             break;
 
@@ -206,7 +213,7 @@ int main(void)
 
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
-                    localStage.processDrivingEvents(localEventFlags, (Priority)priorityIterator);
+                    localStage.processEventsEnergized(localEventFlags, (Priority)priorityIterator);
 
                     //checking if we need to update the timers
                     if(localEventFlags && EF_TIMER)
@@ -218,6 +225,8 @@ int main(void)
                         localEventFlags &= ~EF_TIMER;
                     }
                 }
+                
+                localStage.processEventsEnergized(timerEventFlags, Priority::PRIORITY_LOW);
 
             break;
 
@@ -226,7 +235,7 @@ int main(void)
 
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
-                    localStage.processDrivingEvents(localEventFlags, (Priority)priorityIterator);
+                    localStage.processEventsDriving(localEventFlags, (Priority)priorityIterator);
 
                     //checking if we need to update the timers
                     if(localEventFlags && EF_TIMER)
@@ -238,6 +247,8 @@ int main(void)
                         localEventFlags &= ~EF_TIMER;
                     }
                 }
+                
+                localStage.processEventsDriving(timerEventFlags, Priority::PRIORITY_LOW);
 
             break;
 
@@ -247,6 +258,7 @@ int main(void)
                 //shouldn't get here
 
             break;
+
         }   //end of super loop ------------------------------------------------------
     }
 

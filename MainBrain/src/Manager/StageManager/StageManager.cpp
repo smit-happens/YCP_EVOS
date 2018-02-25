@@ -214,12 +214,13 @@ uint32_t StageManager::processShutdown(Stage currentStage)
 
 /** 
  * @brief  
- * @note   
+ * @note   Entry condition: EVOS finishes subsystem testing
+ *         Exit condition:  Driver requests Precharging
  * @param  &localEventFlags: 
  * @param  urgencyLevel: 
- * @retval None
+ * @retval 
  */
-StageManager::Stage StageManager::processStandbyEvents(uint32_t &localEventFlags, Priority urgencyLevel)
+StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags, Priority urgencyLevel)
 {
     Stage currentStage = Stage::STAGE_STANDBY;
 
@@ -243,6 +244,7 @@ StageManager::Stage StageManager::processStandbyEvents(uint32_t &localEventFlags
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_IMD;
             }
+
         break;
 
         
@@ -306,6 +308,11 @@ StageManager::Stage StageManager::processStandbyEvents(uint32_t &localEventFlags
                 localEventFlags &= ~EF_DASH;
             }
 
+        break;
+
+
+        case PRIORITY_LOW:
+            //code here
 
             if(localEventFlags && EF_GLCD)
             {
@@ -315,11 +322,7 @@ StageManager::Stage StageManager::processStandbyEvents(uint32_t &localEventFlags
                 localEventFlags &= ~EF_GLCD;
             }
 
-        break;
 
-
-        case PRIORITY_LOW:
-            //code here
             if(localEventFlags && EF_SDCARD)
             {
                 processSdCard(currentStage);
@@ -328,15 +331,23 @@ StageManager::Stage StageManager::processStandbyEvents(uint32_t &localEventFlags
                 localEventFlags &= ~EF_SDCARD;
             }
 
-
         break;
+
     } //End switch
 
     return currentStage;
 }
 
 
-StageManager::Stage StageManager::processPrechargeEvents(uint32_t &localEventFlags, Priority urgencyLevel)
+/** 
+ * @brief  
+ * @note   Entry condition: Driver requests Precharging
+ *         Exit condition:  Precharge done signal recieved from Unitek
+ * @param  &localEventFlags: 
+ * @param  urgencyLevel: 
+ * @retval 
+ */
+StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFlags, Priority urgencyLevel)
 {
     Stage currentStage = Stage::STAGE_PRECHARGE;
 
@@ -360,6 +371,7 @@ StageManager::Stage StageManager::processPrechargeEvents(uint32_t &localEventFla
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_IMD;
             }
+
         break;
 
         
@@ -423,15 +435,6 @@ StageManager::Stage StageManager::processPrechargeEvents(uint32_t &localEventFla
                 localEventFlags &= ~EF_DASH;
             }
 
-
-            if(localEventFlags && EF_GLCD)
-            {
-                processGlcd(currentStage);
-                
-                //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_GLCD;
-            }
-
         break;
 
 
@@ -446,14 +449,31 @@ StageManager::Stage StageManager::processPrechargeEvents(uint32_t &localEventFla
             }
 
 
+            if(localEventFlags && EF_GLCD)
+            {
+                processGlcd(currentStage);
+                
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_GLCD;
+            }
+
         break;
+
     } //End switch
 
     return currentStage;
 }
 
 
-StageManager::Stage StageManager::processEnergizedEvents(uint32_t &localEventFlags, Priority urgencyLevel)
+/** 
+ * @brief  
+ * @note   Entry condition: Precharge done signal recieved from Unitek
+ *         Exit condition:  Driver requests ready to drive
+ * @param  &localEventFlags: 
+ * @param  urgencyLevel: 
+ * @retval 
+ */
+StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFlags, Priority urgencyLevel)
 {
     Stage currentStage = Stage::STAGE_ENERGIZED;
 
@@ -477,6 +497,7 @@ StageManager::Stage StageManager::processEnergizedEvents(uint32_t &localEventFla
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_IMD;
             }
+
         break;
 
         
@@ -540,7 +561,11 @@ StageManager::Stage StageManager::processEnergizedEvents(uint32_t &localEventFla
                 localEventFlags &= ~EF_DASH;
             }
 
+        break;
 
+
+        case PRIORITY_LOW:
+            //code here
             if(localEventFlags && EF_GLCD)
             {
                 processGlcd(currentStage);
@@ -549,11 +574,7 @@ StageManager::Stage StageManager::processEnergizedEvents(uint32_t &localEventFla
                 localEventFlags &= ~EF_GLCD;
             }
 
-        break;
 
-
-        case PRIORITY_LOW:
-            //code here
             if(localEventFlags && EF_SDCARD)
             {
                 processSdCard(currentStage);
@@ -562,15 +583,23 @@ StageManager::Stage StageManager::processEnergizedEvents(uint32_t &localEventFla
                 localEventFlags &= ~EF_SDCARD;
             }
 
-
         break;
+
     } //End switch
 
     return currentStage;
 }
 
 
-StageManager::Stage StageManager::processDrivingEvents(uint32_t &localEventFlags, Priority urgencyLevel)
+/** 
+ * @brief  
+ * @note   Entry condition: Driver requests ready to drive
+ *         Exit condition:  Driver requests standby
+ * @param  &localEventFlags: 
+ * @param  urgencyLevel: 
+ * @retval 
+ */
+StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags, Priority urgencyLevel)
 {
     Stage currentStage = Stage::STAGE_STANDBY;
 
@@ -594,6 +623,7 @@ StageManager::Stage StageManager::processDrivingEvents(uint32_t &localEventFlags
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_IMD;
             }
+
         break;
 
         
@@ -657,7 +687,11 @@ StageManager::Stage StageManager::processDrivingEvents(uint32_t &localEventFlags
                 localEventFlags &= ~EF_DASH;
             }
 
+        break;
 
+
+        case PRIORITY_LOW:
+            //code here
             if(localEventFlags && EF_GLCD)
             {
                 processGlcd(currentStage);
@@ -666,11 +700,7 @@ StageManager::Stage StageManager::processDrivingEvents(uint32_t &localEventFlags
                 localEventFlags &= ~EF_GLCD;
             }
 
-        break;
 
-
-        case PRIORITY_LOW:
-            //code here
             if(localEventFlags && EF_SDCARD)
             {
                 processSdCard(currentStage);
@@ -679,8 +709,8 @@ StageManager::Stage StageManager::processDrivingEvents(uint32_t &localEventFlags
                 localEventFlags &= ~EF_SDCARD;
             }
 
-
         break;
+
     } //End switch
 
     return currentStage;
