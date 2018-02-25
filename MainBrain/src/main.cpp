@@ -13,7 +13,8 @@
 #include "Manager/StageManager/StageManager.hpp"
 
 //global variable that all the ISRs will flag for their respective event to run
-volatile uint16_t globalEventFlags = 0;
+volatile uint32_t globalEventFlags = 0;
+volatile uint8_t  globalTaskFlags[NUM_DEVICES];
 
 
 //Start of ISR declarations
@@ -34,8 +35,6 @@ int main(void)
 
     // Serial.print("program started");
 
-    //initialize the local event flag variable
-    uint32_t localEventFlags = 0;
 
     //Creating the controller singletons
     //Copying each controller location in memory
@@ -55,6 +54,14 @@ int main(void)
 
     //The first step when running is bootup
     StageManager::Stage excecutingStage = StageManager::BOOTUP;
+
+    //EventTask instance
+    EventTask deviceTasks = EventTask();
+
+
+    //initialize the local and timer event flag variables
+    uint32_t localEventFlags = 0;
+    uint32_t timerEventFlags = 0;
 
     // using the builtin LED as a status light (for now)
     pinMode(LED_BUILTIN, OUTPUT);
@@ -149,6 +156,9 @@ int main(void)
             //Volatile operation for transferring flags from ISRs to local main
             localEventFlags |= globalEventFlags;
             globalEventFlags = 0;
+
+            //Transfer global tasks to local tasks
+            deviceTasks.setAllTaskFlags(globalTaskFlags);
             interrupts();
 
             
@@ -179,7 +189,7 @@ int main(void)
             if(localEventFlags && EF_TIMER)
             {
                 //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
-                localEventFlags |= localStage.processTimers() << 16;
+                timerEventFlags |= localStage.processTimers();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_TIMER;
@@ -275,6 +285,9 @@ int main(void)
             //Volatile operation for transferring flags from ISRs to local main
             localEventFlags |= globalEventFlags;
             globalEventFlags = 0;
+            
+            //Transfer global tasks to local tasks
+            deviceTasks.setAllTaskFlags(globalTaskFlags);
             interrupts();
             
             //Driving stuff

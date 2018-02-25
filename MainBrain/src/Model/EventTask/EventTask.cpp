@@ -7,7 +7,6 @@
  */
 
 #include "EventTask.hpp"
-#include "Task.hpp"
 
 /** 
  * @brief Initialize the lookup table for the devices
@@ -20,30 +19,8 @@ EventTask::EventTask()
     //in this example, each row of the table is being set to 0 for the event flag and high priority
     // for(int i = TIMER; i < NUM_DEVICES; i++)
     // {
-    //     deviceLookupTable[i] = {0, PRIORITY_HIGH};
+    //     taskTable[i] = {0, PRIORITY_HIGH};
     // }
-
-
-    //all device event flags will initially be set to 0 and all priorities are set to LOW except for SHUTDOWN
-    //Event flags will be set by the interrupts so they will all be initially 0
-    //TODO: change the priorities for each device to be what we want it to be
-    //TODO: add a task array pointer to the DeviceStatus struct that will contain the other various specific tasks that a device will have
-    deviceLookupTable[TIMER]        = {0, PRIORITY_LOW};
-    deviceLookupTable[CAN]          = {0, PRIORITY_LOW};
-    deviceLookupTable[COOLING]      = {0, PRIORITY_LOW};
-    deviceLookupTable[DASH]         = {0, PRIORITY_LOW};
-    deviceLookupTable[GLCD]         = {0, PRIORITY_LOW};
-    deviceLookupTable[IMD]          = {0, PRIORITY_LOW};
-    deviceLookupTable[ORION]        = {0, PRIORITY_LOW};
-    deviceLookupTable[PEDAL]        = {0, PRIORITY_LOW};
-    deviceLookupTable[SDCARD]       = {0, PRIORITY_LOW};
-    deviceLookupTable[UNITEK]       = {0, PRIORITY_LOW};
-    deviceLookupTable[BATLOG]       = {0, PRIORITY_LOW};
-    deviceLookupTable[STANDBY]      = {0, PRIORITY_LOW};
-    deviceLookupTable[PRECHARGE]    = {0, PRIORITY_LOW};
-    deviceLookupTable[READYTODRIVE] = {0, PRIORITY_LOW};
-    deviceLookupTable[LAUNCH]       = {0, PRIORITY_LOW};
-    deviceLookupTable[SHUTDOWN]     = {0, PRIORITY_CRITICAL};
 }
 
 
@@ -64,48 +41,27 @@ EventTask::~EventTask()
  * @param  Device device - the specific device that is having its DeviceStatus being returned
  * @retval DeviceStatus of the specified device
  */
-DeviceStatus EventTask::getDeviceStatus(DeviceName device)
+uint8_t EventTask::getTaskFlags(DeviceName name)
 {
-    return deviceLookupTable[device];
+    return taskTable[name];
 }
 
 
 /** 
  * @brief  
  * @note   
- * @param  device: 
- * @retval true/false whether the device's event has been "flagged"
- */
-bool EventTask::getDeviceEventFlag(DeviceName device)
-{
-    return deviceLookupTable[device].eventFlag;
-}
-
-
-/** 
- * @brief  sets the device to a "flagged" state
- * @note   
- * @param  device: 
+ * @param  
  * @retval None
  */
-void EventTask::assertDeviceEventFlag(DeviceName device)
+void EventTask::setAllTaskFlags(uint8_t taskList[])
 {
-    deviceLookupTable[device].eventFlag = true;
-}
-
-
-void EventTask::clearDeviceEventFlag(DeviceName device)
-{
-    deviceLookupTable[device].eventFlag = false;
-}
-
-
-void EventTask::clearAllDeviceEventFlag(void)
-{
-    //setting all the device event flags to false
+    //iterating through the possible event flags
     for(int i = TIMER; i < NUM_DEVICES; i++)
     {
-        deviceLookupTable[i].eventFlag = false;
+        if(taskList[i])
+        {
+            taskTable[i] |= taskList[i];
+        }
     }
 }
 
@@ -113,24 +69,41 @@ void EventTask::clearAllDeviceEventFlag(void)
 /** 
  * @brief  
  * @note   
- * @retval Array of bools representing flags that went off
+ * @param  taskList[]: 
+ * @retval None
  */
-bool *EventTask::getAllDeviceEventFlag(void)
+void EventTask::setAllTaskFlags(volatile uint8_t taskList[])
 {
-    bool *flags = new bool[NUM_DEVICES];
-
+    //iterating through the possible event flags
     for(int i = TIMER; i < NUM_DEVICES; i++)
-        flags[NUM_DEVICES] = deviceLookupTable[i].eventFlag;
-
-    return flags;
+    {
+        if(taskList[i])
+        {
+            taskTable[i] |= taskList[i];
+        }
+    }
 }
 
 
-void EventTask::setAllDeviceEventFlag(bool *flags)
+/** 
+ * @brief  Used to clear a specific task
+ * @note   
+ * @param  name: 
+ * @param  task: 
+ * @retval None
+ */
+void EventTask::clearTaskFlag(DeviceName name, uint8_t task)
 {
-    for(int i = TIMER; i < NUM_DEVICES; i++)
-        deviceLookupTable[i].eventFlag = flags[NUM_DEVICES];
+    taskTable[name] &= ~task;
+
 }
+
+
+void EventTask::clearAllTaskFlags(DeviceName name)
+{
+    taskTable[name] = 0;
+}
+
 
 
 /** 
@@ -141,7 +114,7 @@ void EventTask::setAllDeviceEventFlag(bool *flags)
  */
 // void EventTask::incrementDeviceEventFlagCount(DeviceName device)
 // {
-//     deviceLookupTable[device].eventFlagCount++;
+//     taskTable[device].eventFlagCount++;
 // }
 
 /** 
@@ -152,7 +125,7 @@ void EventTask::setAllDeviceEventFlag(bool *flags)
  */
 // void EventTask::decrementDeviceEventFlagCount(DeviceName device)
 // {
-//     deviceLookupTable[device].eventFlagCount--;
+//     taskTable[device].eventFlagCount--;
 // }
 
 
@@ -163,7 +136,7 @@ void EventTask::setAllDeviceEventFlag(bool *flags)
  * @param  newPriority: the new priority for the device
  * @retval None
  */
-void EventTask::setDeviceEventPriority(DeviceName device, Priority newPriority)
-{
-    deviceLookupTable[device].devicePriority = newPriority;
-}
+// void EventTask::setDevicePriority(DeviceName name, Priority newPriority)
+// {
+//     taskTable[name].priority = newPriority;
+// }

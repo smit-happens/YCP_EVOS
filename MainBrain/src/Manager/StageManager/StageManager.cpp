@@ -30,12 +30,13 @@ StageManager::StageManager(void)
     }
 }
 
+
 /** 
  * @brief  Handles the multiple timers running off of a single 1ms timer from main
  * @note   Might have to be fleshed out more
- * @retval uint16_t with each bit coresponding to which timers went off
+ * @retval uint32_t with each bit coresponding to which timers went off
  */
-uint16_t StageManager::processTimers(void)
+uint32_t StageManager::processTimers(void)
 {
     //Goes through the array of timers to increment their count and store which ones popped
     for (int i = 0; i < TIMER_NUM; i++)
@@ -61,7 +62,7 @@ uint16_t StageManager::processTimers(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processCan(void)
+uint32_t StageManager::processCan(void)
 {
     //do CAN stuff
     return 0;
@@ -73,7 +74,7 @@ uint16_t StageManager::processCan(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processCooling(void)
+uint32_t StageManager::processCooling(void)
 {
     //do Cooling stuff
     return 0;
@@ -84,7 +85,7 @@ uint16_t StageManager::processCooling(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processDash(void)
+uint32_t StageManager::processDash(void)
 {
     //do Dash processing
 
@@ -97,7 +98,7 @@ uint16_t StageManager::processDash(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processGlcd(void)
+uint32_t StageManager::processGlcd(void)
 {
     //glcd view display updating
     return 0;
@@ -109,7 +110,7 @@ uint16_t StageManager::processGlcd(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processImd(void)
+uint32_t StageManager::processImd(void)
 {    
     return 0;
 }
@@ -119,7 +120,7 @@ uint16_t StageManager::processImd(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processOrion(void)
+uint32_t StageManager::processOrion(void)
 {
     return 0;
 }
@@ -130,7 +131,7 @@ uint16_t StageManager::processOrion(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processPedal(void)
+uint32_t StageManager::processPedal(void)
 {
     return 0;
 }
@@ -141,7 +142,7 @@ uint16_t StageManager::processPedal(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processSdCard(void)
+uint32_t StageManager::processSdCard(void)
 {
     return 0;
 }
@@ -151,18 +152,7 @@ uint16_t StageManager::processSdCard(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processUnitek(void)
-{
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint16_t StageManager::processBatlog(void)
+uint32_t StageManager::processUnitek(void)
 {
     return 0;
 }
@@ -173,7 +163,7 @@ uint16_t StageManager::processBatlog(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processPrecharge(void)
+uint32_t StageManager::processBatlog(void)
 {
     return 0;
 }
@@ -184,17 +174,7 @@ uint16_t StageManager::processPrecharge(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processReadyToDrive(void)
-{
-    return 0;
-}
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint16_t StageManager::processLaunch(void)
+uint32_t StageManager::processPrecharge(void)
 {
     return 0;
 }
@@ -205,7 +185,28 @@ uint16_t StageManager::processLaunch(void)
  * @note   
  * @retval 
  */
-uint16_t StageManager::processShutdown(void)
+uint32_t StageManager::processReadyToDrive(void)
+{
+    return 0;
+}
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processLaunch(void)
+{
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processShutdown(void)
 {
     return 0;
 }

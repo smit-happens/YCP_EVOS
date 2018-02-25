@@ -11,7 +11,7 @@
 
 #include "../../Controller/Controller.hpp"
 #include "../../Model/Constants/TimeDelay.hpp"
-#include "EventMasks.hpp"
+#include "../../Model/EventTask/EventTask.hpp"
 
 
 class StageManager
@@ -33,25 +33,25 @@ public:
     StageManager();
 
     //handles the various timers we'll be using and setting Task Flags (TFs) based on them
-    // uint16_t processTimers(void);
-    uint16_t processTimers(void);
+    // uint32_t processTimers(void);
+    uint32_t processTimers(void);
 
     //the following functions might eventually take a TF as an input param
-    uint16_t processCan(void);
-    uint16_t processCooling(void);
-    uint16_t processDash(void);
-    uint16_t processGlcd(void);
-    uint16_t processImd(void);
-    uint16_t processOrion(void);
-    uint16_t processPedal(void);
-    uint16_t processSdCard(void);
-    uint16_t processUnitek(void);
-    uint16_t processBatlog(void);
-    uint16_t processStandby(void);
-    uint16_t processPrecharge(void);
-    uint16_t processReadyToDrive(void);
-    uint16_t processLaunch(void);
-    uint16_t processShutdown(void);
+    uint32_t processCan(void);
+    uint32_t processCooling(void);
+    uint32_t processDash(void);
+    uint32_t processGlcd(void);
+    uint32_t processImd(void);
+    uint32_t processOrion(void);
+    uint32_t processPedal(void);
+    uint32_t processSdCard(void);
+    uint32_t processUnitek(void);
+    uint32_t processBatlog(void);
+    uint32_t processStandby(void);
+    uint32_t processPrecharge(void);
+    uint32_t processReadyToDrive(void);
+    uint32_t processLaunch(void);
+    uint32_t processShutdown(void);
 
 
 
@@ -64,8 +64,7 @@ private:
     };
     
     Timer* timerList;
-    uint16_t timerTF = 0;
-
+    uint32_t timerTF = 0;
 
 
 };
