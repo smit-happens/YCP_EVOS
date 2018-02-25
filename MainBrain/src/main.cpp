@@ -43,6 +43,7 @@ int main(void)
     OrionController* orionC     = OrionController::getInstance();
     CoolingController* coolingC = CoolingController::getInstance();
     DashController* dashC       = DashController::getInstance();
+    LightController* lightC     = LightController::getInstance();
     ImdController* imdC         = ImdController::getInstance();
     GlcdController* glcdC       = GlcdController::getInstance();
     PedalController* pedalC     = PedalController::getInstance();
@@ -75,9 +76,10 @@ int main(void)
         orionC->init();
         coolingC->init();
         dashC->init();
-        pedalC->init();
+        lightC->init();
         imdC->init();
         glcdC->init();
+        pedalC->init();
         sdCardC->init();
         batlogC->init();
 

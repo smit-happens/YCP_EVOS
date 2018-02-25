@@ -19,6 +19,7 @@ const uint32_t EF_IMD              = 0b10000;  //Imd EF mask
 const uint32_t EF_ORION            = 0b100000;  //Orion EF mask
 const uint32_t EF_UNITEK           = 0b1000000;  //Unitek EF mask
 const uint32_t EF_BATLOG           = 0b10000000;  //BatLog EF mask
+const uint32_t EF_SHUTDOWN           = 0b100000000;  //Shutdown EF mask
 
 
 //Timer event flags
