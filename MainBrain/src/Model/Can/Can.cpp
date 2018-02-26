@@ -8,39 +8,31 @@
 
 #include "Can.hpp"
 
-
 /** 
  * @brief  Can constructor
  */
 Can::Can(void)
 {
+    //initializing the CAN port at 500k baud
+    Can1.begin(500000);
 
+    //queue used for the main receiver of new CAN messages to be sorted later
+    // mailbox = new Queue(sizeof(CAN_message_t), 20, FIFO);
+    
+    // //internal inboxes for the Unitek and Orion devices
+    // inboxUnitek = new Queue(sizeof(uint8_t)*4, 20, FIFO);
+    // inboxOrion = new Queue(sizeof(CAN_message_t), 20, FIFO);
 }
 
 
 /** 
- * @brief  Prints out a given MC CAN frame
- * @note   TODO: generalize this for MC and Orion (use CAN id)
- * @param  &frame:  CAN_message_t reference
- * @param  mailbox: Port to listen to
- * @retval None
+ * @brief  Can destructor
  */
-void Can::printFrame(CAN_message_t &frame, int mailbox)
+Can::~Can(void)
 {
-  Serial.print("This just in!\n");
-  Serial.print("ID: 0x");
-  Serial.print(frame.id, HEX);
-
-  //Print regID from buf[0]
-  Serial.print(" RegID: 0x");
-  Serial.print(frame.buf[0], HEX);
-
-  //Print value from register in reverse byte order
-  Serial.print(" Data: 0x");
-  Serial.print(frame.buf[2], HEX);
-  Serial.print(frame.buf[1], HEX);
-
-  Serial.write('\n');
+    // delete mailbox;
+    // delete inboxUnitek;
+    // delete inboxOrion;
 }
 
 
@@ -48,58 +40,63 @@ void Can::printFrame(CAN_message_t &frame, int mailbox)
  * @brief  Called whenever a new CAN frame is received
  * @note   All CAN messages will be sent received from mailbox 1 (CAN port 1) 
  * @param  &frame:  CAN_message_t reference
- * @param  mailbox: Port to listen on
+ * @param  mailbox: Port message came on
  * @retval None
  */
 void Can::gotFrame(CAN_message_t &frame, int mailbox)
 {
-  printFrame(frame, mailbox);
+    //TODO: message just came in, check ID and send data to Unitek or Orion
+    //check id, store in orion or unitek queue, (maybe) set queueHasDataFlag
+    //globalEventFlags = 0;
+    //FIXME: TESTING CODE
+    // Serial.println("Entered CAN interrupt");
+    // Serial.println(frame.buf[0]);
+    // Serial.println(frame.buf[1]);
+    // Serial.println(frame.buf[2]);
+    // Serial.println(frame.buf[3]);
+    //FIXME: TESTING CODE
+}
+
+
+/** 
+ * @brief  Sends a CAN message out on the wire
+ * @note   
+ * @retval None
+ */
+void Can::send(CAN_message_t message)
+{
+    Can1.write(message);
 }
 
 
 /** 
  * @brief  
  * @note   
- * @retval None
+ * @retval 
  */
-void sendUnitek(void)
-{
-    //Can1.write(CAN_message_t stuff);
-}
+// uint8_t* Can::getMail(void)
+// {
+
+// }
 
 
 /** 
  * @brief  
  * @note   
- * @param  &frame: 
- * @param  mailbox: 
- * @retval None
+ * @retval 
  */
-void readUnitek(CAN_message_t &frame)
-{
-
-}
+// uint8_t* Can::getInboxUnitek(void)
+// {
+//     return inboxUnitek;
+// }
 
 
 /** 
  * @brief  
  * @note   
- * @retval None
+ * @retval true/false based on if there's anything 
  */
-void sendOrion(void)
+bool Can::checkInboxUnitek(void)
 {
-
-}
-
-
-/** 
- * @brief  
- * @note   
- * @param  &frame: 
- * @param  mailbox: 
- * @retval None
- */
-void readOrion(CAN_message_t &frame)
-{
-
+    return false;//!inboxUnitek->isEmpty();
 }

@@ -9,7 +9,7 @@
 #include "Glcd.hpp"
 
 
-ST7565 display(SID, SCLK, RS, _RST, _CS);
+ST7565 display(MB_SID, MB_SCLK, MB_A0, MB_RST, MB_CS);
 
 
 /** 

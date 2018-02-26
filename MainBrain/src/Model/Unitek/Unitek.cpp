@@ -8,14 +8,13 @@
 
 #include "Unitek.hpp"
 
-//TODO: separate this into the Unitek model and Unitek controller classes
 
 /** 
  * @brief  Unitek constructor
  */
 Unitek::Unitek(void)
 {
-
+    rpmLimit = 7000; //0xC8
 }
 
 
@@ -26,18 +25,7 @@ Unitek::Unitek(void)
  */
 int Unitek::getRpmLimit(void)
 {
-    return RPM_LIMIT;
-}
-
-
-/** 
- * @brief  Max value is used in reference to speed % converting
- * @note   This might get shoved into the constants file since it won't change
- * @retval The maximum value in the Unitek (32,767)
- */
-int Unitek::getMaxValue(void)
-{
-    return MAX_VALUE;
+    return rpmLimit;
 }
 
 
@@ -109,24 +97,94 @@ float Unitek::getTemperatureInterior(void)
 
 
 /** 
- * @brief  Retrieves the Warning bits in the combined error/warning register
- * @note   TODO: Call the same register as the getErrors() function but store different bits
- * @retval Warning bits
+ * @brief  Retrieves the stored Error bits in the combined error/warning register
+ * @note   
+ * @retval ErrorReg_0x8F
  */
-uint16_t Unitek::getWarnings(void)
+ErrorReg_0x8F Unitek::getErrorReg_0x8F(void)
 {
-    return 0;
+    return errorReg_0x8F;
 }
 
 
 /** 
- * @brief  Retrieves the Error bits in the combined error/warning register
- * @note   TODO: Call the same register as the getErrors() function but store different bits
- * @retval Error bits
+ * @brief  Stores the given Error bits in the error section of the error/warning register
+ * @note   
+ * @param  input: uint16_t containing the error bits
+ * @retval None
  */
-uint16_t Unitek::getErrors(void)
+void Unitek::setErrorReg_0x8F(uint16_t input)
 {
-    return 0;
+    errorReg_0x8F.raw = input;
+}
+
+
+/** 
+ * @brief  Retrieves the Warning bits in the combined error/warning register
+ * @note   
+ * @retval WarningReg_0x8F
+ */
+WarningReg_0x8F Unitek::getWarningReg_0x8F(void)
+{
+    return warningReg_0x8F;
+}
+
+
+/** 
+ * @brief  Stores the given Warning bits in the warning section of the error/warning register
+ * @note   
+ * @param  input: 
+ * @retval None
+ */
+void Unitek::setWarningReg_0x8F(uint16_t input)
+{
+    warningReg_0x8F.raw = input;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+StateReg_0x40 Unitek::getStateReg_0x40(void)
+{
+    return stateReg_0x40;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  input: 32bit value representing the State bits
+ * @retval None
+ */
+void Unitek::setStateReg_0x40(uint32_t input)
+{
+    stateReg_0x40.raw = input;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval ModeReg_0xD8
+ */
+ModeReg_0xD8 Unitek::getModeReg_0xD8(void)
+{
+    return modeReg_0xD8;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  input:  16bit value representing bits in the Mode register
+ * @retval None
+ */
+void Unitek::setModeReg_0xD8(uint16_t input)
+{
+    modeReg_0xD8.raw = input;
 }
 
 

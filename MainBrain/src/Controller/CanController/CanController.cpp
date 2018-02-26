@@ -9,59 +9,99 @@
 #include "CanController.hpp"
 
 
-/** 
- * @brief  CanController constructor
- */
-CanController::CanController(void)
-{
+//to see if the instance of the class has been initialized yet
+CanController* CanController::_pInstance = NULL; 
 
+/** 
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
+ */
+CanController* CanController::getInstance()
+{
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new CanController();
+
+    return _pInstance;
 }
+
+
+/** 
+ * @brief  CanController destructor
+ * @note   Delete any instantiated varibles/objects
+ * @retval None
+ */
+CanController::~CanController(void)
+{
+    //TODO: remove this
+    canModel->detachGeneralHandler();
+    Can1.detachObj(canModel);
+}
+
+
+/** 
+ * @brief  All the complex configuration setup goes here
+ * @note   
+ * @retval None
+ */
+void CanController::init(void)
+{
+    //creating the local CAN model
+    canModel = new Can();
+
+    Can1.attachObj(canModel);
+    canModel->attachGeneralHandler();
+}
+
 
 /** 
  * @brief  
- * @note   TODO: implement this the correct way
- * @param  regID: 
- * @param  buf1: 
- * @param  buf2: 
- * @retval 
+ * @note   
+ * @retval None
  */
-int CanController::messageSetup(uint8_t regID, uint8_t buf1, uint8_t buf2)
+void CanController::poll(void)
 {
-    uint8_t extendedCan = 0;
-    uint16_t idCan = 0x201;
-    uint8_t lengthCan = 3;
-
-    uint8_t buffer[3];
-
-    if(regID == 0)
-    {
-        //performing a read operation set buf[0] to READ command
-        buffer[0] = 0;
-        buffer[1] = buf1;
-
-        //default is 0 but can represent time (in ms) for polling
-        buffer[2] = buf2;
-    }
-    else
-    {
-        //performing write opration
-        buffer[0] = regID;
-
-        //storing the value in byte flipped order
-        buffer[2] = buf1;
-        buffer[1] = buf2;
-    }
-
-    return 0;
+    //TODO: implement this
 }
 
 
 /** 
- * @brief  
- * @note   TODO: Have this work for Unitek and Orion
- * @retval 
+ * @brief  Formats and sends a Unitek CAN message to read the value of a register
+ * @note   Add polling if we care about that later
+ * @param  regId:    Register ID that you want the value of
+ * @param  pollTime: Time for polling interval (or REG_HALTPOLL)
+ * @retval None
  */
-int CanController::messageParse(void)
+void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
 {
-    return 0;
+    //initializing and constructing the CAN message for the Unitek
+    CAN_message_t unitekMessage;
+
+    unitekMessage.id = canModel->UNITEKSENDID;
+    unitekMessage.len = 3;
+    unitekMessage.buf[0] = REG_READ;
+    unitekMessage.buf[1] = regId;
+    unitekMessage.buf[2] = pollTime;
+
+    //FIXME: polling is not implemented yet
+    if(pollTime != 0)
+        canModel->send(unitekMessage);
+
+    //Debug print statements
+    Serial.print(unitekMessage.id);
+    Serial.print(unitekMessage.buf[0]);
+    Serial.print(unitekMessage.buf[1]);
+    Serial.print(unitekMessage.buf[2]);
 }
+
+
+// /** 
+//  * @brief  
+//  * @note   TODO: Have this work for Unitek and Orion
+//  * @retval 
+//  */
+// int CanController::parse(void)
+// {
+//     return 0;
+// }

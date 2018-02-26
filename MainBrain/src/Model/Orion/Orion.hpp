@@ -10,7 +10,8 @@
 #define ORION_HPP
 
 #include <Arduino.h>
-#include "OrionRegisters.hpp"
+#include "../Constants/Port.hpp"
+#include "../Constants/RegistersOrion.hpp"
 
 class Orion
 {
@@ -25,8 +26,8 @@ public:
     
     float getAmperageTotal(void);
 
-    int getCellVoltageMin(void);
-    int getCellVoltageMax(void);
+    int getVoltageMinCell(void);
+    int getVoltageMaxCell(void);
 
     float getTemperature(void);
 };

@@ -9,21 +9,39 @@
 #ifndef PEDALCONTROLLER_HPP
 #define PEDALCONTROLLER_HPP
 
+#include "../BaseController/BaseController.hpp"
 #include "../../Model/BrakePedal/BrakePedal.hpp"
 #include "../../Model/GasPedal/GasPedal.hpp"
 
 
-class PedalController
+class PedalController : public BaseController
 {
 public:
-    PedalController();
+    ~PedalController(void);
+
+    static PedalController*   getInstance();
+
+    void init(void);
+    void poll(void);
+    void shutdown(void);    //TODO: implement
 
     /**  
      * Drafting up possible functions
      * 
      * 
      */
+private:
+    //Private contstructor so that it can't be called
+    PedalController() {};
+    //copy constructor is private
+    PedalController(PedalController const&) {};
 
+    //static instance pointer
+    static PedalController* _pInstance;
+
+    //private instance of models
+    BrakePedal* brakeModel;
+    GasPedal* gasModel;
 
 };
 

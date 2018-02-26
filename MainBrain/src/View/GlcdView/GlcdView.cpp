@@ -1,7 +1,7 @@
 /**  Display view class
  *
  * GlcdView.cpp
- * Created 1-5-17 By: Smitty
+ * Created 11-5-17 By: Smitty
  *
  * A longer description.
  */

@@ -9,10 +9,63 @@
 #include "UnitekController.hpp"
 
 
+//to see if the instance of the class has been initialized yet
+UnitekController* UnitekController::_pInstance = NULL; 
+
 /** 
- * @brief  UnitekController constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-UnitekController::UnitekController(void)
+UnitekController* UnitekController::getInstance()
+{
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new UnitekController();
+
+    return _pInstance;
+}
+
+
+/** 
+ * @brief  UnitekController destructor
+ * @note   Delete any instantiated varibles/objects
+ * @retval None
+ */
+UnitekController::~UnitekController(void)
+{
+    delete unitekModel;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void UnitekController::init(void)
+{
+    unitekModel = new Unitek();
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void UnitekController::poll(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void UnitekController::shutdown(void)
 {
     
 }
@@ -27,8 +80,8 @@ UnitekController::UnitekController(void)
  */
 int UnitekController::calculateSpeedValue(float rpm)
 {
-    float percentage = rpm / unitek.getRpmLimit();
-    return percentage * unitek.getMaxValue();
+    float percentage = rpm / unitekModel->getRpmLimit();
+    return percentage * unitekModel->MAX_VALUE;
 }
 
 
@@ -40,6 +93,6 @@ int UnitekController::calculateSpeedValue(float rpm)
  */
 float UnitekController::calculateRpm(int speedValue)
 {
-    float percentage = (float)speedValue / unitek.getMaxValue();
-    return percentage * unitek.getRpmLimit();
+    float percentage = (float)speedValue / unitekModel->MAX_VALUE;
+    return percentage * unitekModel->getRpmLimit();
 }

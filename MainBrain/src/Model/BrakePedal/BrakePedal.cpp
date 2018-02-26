@@ -14,13 +14,14 @@
  */
 BrakePedal::BrakePedal(void)
 {
-
+    //FIXME: will have to enable this eventually, commented out to keep pin 13 as a status light
+    // pinMode(MB_BRAKE_OVERTRAVEL, INPUT);
 }
 
 
 /** 
  * @brief  Retrieves the evaluated Brake percentage
- * @note   This will need to evaluate the two pedal potentiometers (Linear and Logarithmic)
+ * @note   Evaluate linear pedal potentiometer
  * @retval BrakePedal percentage
  */
 float BrakePedal::getPercentage(void)

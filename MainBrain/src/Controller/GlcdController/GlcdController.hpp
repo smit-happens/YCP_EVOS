@@ -9,22 +9,34 @@
 #ifndef GLCDCONTROLLER_HPP
 #define GLCDCONTROLLER_HPP
 
+#include "../BaseController/BaseController.hpp"
 #include "../../Model/Glcd/Glcd.hpp"
 
 
 
-class GlcdController
+class GlcdController : public BaseController
 {
 public:
-    GlcdController();
+    ~GlcdController(void);
 
-    /**  
-     * Drafting up possible functions
-     * 
-     * 
-     */
+    static GlcdController*   getInstance();
+
+    void init(void);
+    void poll(void);
+    void shutdown(void);    //TODO: implement
 
 
+private:
+    //Private contstructor so that it can't be called
+    GlcdController() {};
+    //copy constructor is private
+    GlcdController(GlcdController const&) {};
+
+    //static instance pointer
+    static GlcdController* _pInstance;
+
+    //private instance of model
+    Glcd* glcdModel;
 };
 
 

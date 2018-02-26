@@ -9,6 +9,7 @@
 #ifndef SDCARDCONTROLLER_HPP
 #define SDCARDCONTROLLER_HPP
 
+#include "../BaseController/BaseController.hpp"
 #include "../../Model/SdCard/SdCard.hpp"
 
 /**  
@@ -26,12 +27,17 @@
  * ╚════════════════════════════╩══════════════╩═══════════════╩═════════════════════════════════════════════════════════╩═════╝
  */
 
-class SdCardController
+class SdCardController  : public BaseController
 {
 public:
-    SdCardController();
+    ~SdCardController(void);
 
-    //public SdCardController functions
+    static SdCardController*   getInstance();
+
+    void init(void);
+    void poll(void);
+    void shutdown(void);    //TODO: implement
+    
 
     /** 
      * Drafting up possible functions
@@ -45,7 +51,16 @@ public:
 
 
 private:
-    //private SdCardController functions/ variables
+    //Private contstructor so that it can't be called
+    SdCardController() {};
+    //copy constructor is private
+    SdCardController(SdCardController const&) {};
+
+    //static instance pointer
+    static SdCardController* _pInstance;
+
+    //private instance of model
+    SdCard* sdCardModel;
 
 };
 
