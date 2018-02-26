@@ -14,7 +14,8 @@
  */
 BrakePedal::BrakePedal(void)
 {
-    pinMode(MB_BRAKE_OVERTRAVEL, INPUT);
+    //FIXME: will have to enable this eventually, commented out to keep pin 13 as a status light
+    // pinMode(MB_BRAKE_OVERTRAVEL, INPUT);
 }
 
 
