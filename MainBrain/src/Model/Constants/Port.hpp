@@ -116,7 +116,7 @@ const uint8_t MB_CS                = 12;  //ST7565 display Output
 //RGB backlight
 const uint8_t MB_R                 = 7;   //[0,1] PWM Output
 const uint8_t MB_G                 = 6;   //[0,1] PWM Output
-const uint8_t MB_B                 = 5;   //[0,1] PWM Output
+const uint8_t MB_B                 = 4;   //[0,1] PWM Output
 
 
 /*
@@ -147,7 +147,7 @@ const uint8_t MB_RTD_LED           = 0;   //[0,1] Digital Output
 const uint8_t MB_BMS_LED           = 1;   //[0,1] Digital Output
 const uint8_t MB_PEDAL_LED         = 2;   //[0,1] Digital Output
 const uint8_t MB_IMD_LED           = 3;   //[0,1] Digital Output
-const uint8_t MB_REVERSE_LED       = 4;   //[0,1] Digital Output
+const uint8_t MB_REVERSE_LED       = 5;   //[0,1] Digital Output
 const uint8_t MB_WAYNE_LED         = 24;  //[0,1] Digital Output
 //Indicator LED for the energized state
 const uint8_t MB_ENERGIZE_LED      = 31;  //[0,1] Digital Output
