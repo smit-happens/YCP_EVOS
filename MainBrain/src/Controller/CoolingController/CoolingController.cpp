@@ -7,16 +7,23 @@
  */
 
 #include "CoolingController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
+//to see if the instance of the class has been initialized yet
+CoolingController* CoolingController::_pInstance = NULL; 
 
 /** 
- * @brief  CoolingController constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-CoolingController::CoolingController(void)
+CoolingController* CoolingController::getInstance()
 {
-    coolingModel = new CoolingSystem();
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new CoolingController();
+
+    return _pInstance;
 }
 
 
@@ -38,7 +45,7 @@ CoolingController::~CoolingController(void)
  */
 void CoolingController::init(void)
 {
-
+    coolingModel = new CoolingSystem();
 }
 
 

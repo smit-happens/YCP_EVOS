@@ -1,13 +1,13 @@
 /**  Register constants for the Orion
  *
- * #include "OrionRegisters.hpp"
+ * #include "RegistersOrion.hpp"
  * Created 11-09-17 By: Smitty
  * 
  * A longer description.
  */
 
-#ifndef ORIONREGISTERS_HPP
-#define ORIONREGISTERS_HPP
+#ifndef REGISTERSORION_HPP
+#define REGISTERSORION_HPP
 
 //TODO: Need to fill this out more
 
@@ -54,4 +54,4 @@ const int CELL_INTERNAL_RESISTANCE_73_84    = 0xF106;
 const int CELL_INTERNAL_RESISTANCE_85_96    = 0xF107;
 
 
-#endif  //ORIONREGISTERS_HPP
+#endif  //REGISTERSORION_HPP

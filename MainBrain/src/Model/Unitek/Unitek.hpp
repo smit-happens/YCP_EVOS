@@ -10,7 +10,7 @@
 #define UNITEK_HPP
 
 #include <Arduino.h>
-#include "UnitekRegisters.hpp"
+#include "../Constants/RegistersUnitek.hpp"
 
 
 //Bits in the error/warning register that store errors

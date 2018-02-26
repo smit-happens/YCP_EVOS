@@ -1,4 +1,4 @@
-/**  Speaker used for playing the startup sound of the car
+/**  Siren used for playing the startup sound of the car
  *
  * Bspd.cpp
  * Created 12-20-17  By: Smitty
@@ -6,15 +6,15 @@
  * A longer description.
  */
 
-#include "Speaker.hpp"
+#include "Siren.hpp"
 
 
 /** 
- * @brief  Speaker constructor
+ * @brief  Siren constructor
  */
-Speaker::Speaker(void)
+Siren::Siren(void)
 {
-
+    pinMode(MB_SIREN, OUTPUT);
 }
 
 
@@ -23,7 +23,7 @@ Speaker::Speaker(void)
  * @note   Play the sound either through tones or some .wav file
  * @retval None
  */
-void Speaker::playStartupSound(void)
+void Siren::playStartupSound(void)
 {
     //BEEEEEEEEEEEP
 }

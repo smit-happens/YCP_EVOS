@@ -7,16 +7,23 @@
  */
 
 #include "BatlogController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
+//to see if the instance of the class has been initialized yet
+BatlogController* BatlogController::_pInstance = NULL; 
 
 /** 
- * @brief  Orion constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-BatlogController::BatlogController(void)
+BatlogController* BatlogController::getInstance()
 {
-    batlogModel = new Batlog();
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new BatlogController();
+
+    return _pInstance;
 }
 
 
@@ -38,7 +45,7 @@ BatlogController::~BatlogController(void)
  */
 void BatlogController::init(void)
 {
-
+    batlogModel = new Batlog();
 }
 
 

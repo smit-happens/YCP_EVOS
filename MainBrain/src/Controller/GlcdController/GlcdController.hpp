@@ -14,24 +14,29 @@
 
 
 
-class GlcdController
+class GlcdController : public BaseController
 {
 public:
-    GlcdController();
     ~GlcdController(void);
+
+    static GlcdController*   getInstance();
 
     void init(void);
     void poll(void);
     void shutdown(void);    //TODO: implement
-    /**  
-     * Drafting up possible functions
-     * 
-     * 
-     */
+
+
 private:
+    //Private contstructor so that it can't be called
+    GlcdController() {};
+    //copy constructor is private
+    GlcdController(GlcdController const&) {};
+
+    //static instance pointer
+    static GlcdController* _pInstance;
+
+    //private instance of model
     Glcd* glcdModel;
-
-
 };
 
 

@@ -7,17 +7,23 @@
  */
 
 #include "PedalController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
+//to see if the instance of the class has been initialized yet
+PedalController* PedalController::_pInstance = NULL; 
 
 /** 
- * @brief  PedalController constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-PedalController::PedalController(void)
+PedalController* PedalController::getInstance()
 {
-    brakeModel = new BrakePedal();
-    gasModel = new GasPedal();
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new PedalController();
+
+    return _pInstance;
 }
 
 
@@ -40,7 +46,8 @@ PedalController::~PedalController(void)
  */
 void PedalController::init(void)
 {
-
+    brakeModel = new BrakePedal();
+    gasModel = new GasPedal();
 }
 
 

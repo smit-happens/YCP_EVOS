@@ -10,7 +10,9 @@
 #define CAN_HPP
 
 #include <FlexCAN.h>
-#include <cppQueue.h>
+// #include <cppQueue.h>
+
+#include "../Constants/Port.hpp"
 
 
 class Can : public CANListener
@@ -52,9 +54,9 @@ private:
     const int canMailbox = 1;
 
     //queue variables that will be used for the Unitek and Orion devices
-    Queue* mailbox;
-    Queue* inboxUnitek;
-    Queue* inboxOrion;
+    // Queue* mailbox;
+    // Queue* inboxUnitek;
+    // Queue* inboxOrion;
 };
 
 

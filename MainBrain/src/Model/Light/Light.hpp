@@ -10,16 +10,19 @@
 #define LIGHT_HPP
 
 #include <Arduino.h>
+#include "../Constants/Port.hpp"
 
 class Light
 {
 public:
-  Light(void);
+    Light(void);
 
-  String getName(void);
+    String getName(void);
 
-  int getState(void);
-  void setState(bool);
+    int getState(void);
+    void setState(bool);
+
+    void turnOnAll(void);  
 };
 
 

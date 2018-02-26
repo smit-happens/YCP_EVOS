@@ -14,7 +14,8 @@
  */
 CoolingSystem::CoolingSystem(void)
 {
-
+    //Cooling pump control
+    pinMode(MB_PUMP_CTRL, OUTPUT);
 }
 
 
