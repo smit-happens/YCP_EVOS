@@ -14,7 +14,7 @@
  */
 BrakePedal::BrakePedal(void)
 {
-
+    pinMode(MB_BRAKE_OVERTRAVEL, INPUT);
 }
 
 

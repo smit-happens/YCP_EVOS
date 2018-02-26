@@ -10,7 +10,8 @@
 #define IMD_HPP
 
 //Might need additional methods to flesh out all the functionality
-
+#include <Arduino.h>
+#include "../Constants/Port.hpp"
 class Imd
 {
 public:

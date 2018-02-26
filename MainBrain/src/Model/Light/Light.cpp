@@ -15,14 +15,16 @@
 Light::Light(void)
 {
     //initializing the dash lights
-    pinMode(MB_BRAKE_LIGHT, OUTPUT);
-    pinMode(MB_SCADA_OK, OUTPUT);
     pinMode(MB_RTD_LED, OUTPUT);
     pinMode(MB_BMS_LED, OUTPUT);
     pinMode(MB_PEDAL_LED, OUTPUT);
     pinMode(MB_IMD_LED, OUTPUT);
     pinMode(MB_REVERSE_LED, OUTPUT);
     pinMode(MB_WAYNE_LED, OUTPUT);
+    pinMode(MB_ENERGIZE_LED, OUTPUT);
+
+    //brake light
+    pinMode(MB_BRAKE_LIGHT, OUTPUT);
 
 }
 

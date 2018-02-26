@@ -10,6 +10,7 @@
 #define ORION_HPP
 
 #include <Arduino.h>
+#include "../Constants/Port.hpp"
 #include "../Constants/RegistersOrion.hpp"
 
 class Orion

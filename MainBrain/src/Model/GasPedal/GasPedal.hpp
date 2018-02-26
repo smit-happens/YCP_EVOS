@@ -10,6 +10,7 @@
 #define GASPEDAL_HPP
 
 #include <Arduino.h>
+#include "../Constants/Port.hpp"
 
 //Maybe have states the pedal can be in, since it has the chance
 //of causing an error if there's an implausibility or a short in

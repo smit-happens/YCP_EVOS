@@ -15,7 +15,7 @@
  */
 Orion::Orion(void)
 {
-
+    pinMode(MB_BMS_STATUS, INPUT);
 }
 
 

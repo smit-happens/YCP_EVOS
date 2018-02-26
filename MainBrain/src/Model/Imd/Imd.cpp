@@ -14,7 +14,7 @@
  */
 Imd::Imd(void)
 {
-
+    pinMode(MB_IMD_STATUS, INPUT);
 }
 
 

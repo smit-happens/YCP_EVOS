@@ -14,7 +14,7 @@
  */
 Siren::Siren(void)
 {
-
+    pinMode(MB_SIREN, OUTPUT);
 }
 
 

@@ -10,6 +10,8 @@
 #define BATLOG_HPP
 
 #include <Arduino.h>
+#include "../Constants/Port.hpp"
+
 
 class Batlog
 {

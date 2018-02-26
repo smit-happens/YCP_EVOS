@@ -9,7 +9,9 @@
 #ifndef SIREN_HPP
 #define SIREN_HPP
 
-//Might add methods to play addition sounds (NOT NEEDED)
+
+#include "../Constants/Port.hpp"
+
 //Honestly won't have a whole lot going on for this model (I hope)
 
 class Siren

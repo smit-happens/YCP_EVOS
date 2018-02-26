@@ -10,7 +10,7 @@
 #define LIGHT_HPP
 
 #include <Arduino.h>
-#include "../../Model/Constants/Port.hpp"
+#include "../Constants/Port.hpp"
 
 class Light
 {
