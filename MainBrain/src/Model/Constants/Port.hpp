@@ -180,8 +180,8 @@ const uint8_t MB_CAN_RX            = 34;  //FlexCAN library Input
 //Pump control
 const uint8_t MB_PUMP_CTRL         = 48;  //[0,1] Digital Output
 //Temperature sensing
-const uint8_t MB_RAD_OUTLET_TEMP   = A17; //[0-8195] 13-bit Analog Input
 const uint8_t MB_RAD_INLET_TEMP    = A16; //[0-8195] 13-bit Analog Input
+const uint8_t MB_RAD_OUTLET_TEMP   = A17; //[0-8195] 13-bit Analog Input
 
 
 /*

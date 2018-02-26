@@ -1,8 +1,7 @@
-/**  Event flag and task lookup
+/**  Task Flag lookup
  *
  * Created 2-16-18 By: Shawn
  *
-
  * 
  */
 
@@ -126,17 +125,4 @@ void EventTask::clearAllTaskFlags(DeviceName name)
 // void EventTask::decrementDeviceEventFlagCount(DeviceName device)
 // {
 //     taskTable[device].eventFlagCount--;
-// }
-
-
-/** 
- * @brief  set the event priority of the device
- * @note   set the event priority to the newPriority for the specific device
- * @param  device: the device that is having its priority modified
- * @param  newPriority: the new priority for the device
- * @retval None
- */
-// void EventTask::setDevicePriority(DeviceName name, Priority newPriority)
-// {
-//     taskTable[name].priority = newPriority;
 // }

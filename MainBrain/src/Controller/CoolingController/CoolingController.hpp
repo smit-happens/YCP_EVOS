@@ -24,6 +24,9 @@ public:
     void poll(void);
     void shutdown(void);    //TODO: implement
 
+    //TODO: implement these
+    float getRadiatorTempIn(void);
+    float getRadiatorTempOut(void);
     
 private:
     //Private contstructor so that it can't be called

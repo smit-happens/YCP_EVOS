@@ -69,3 +69,25 @@ void CoolingController::shutdown(void)
 {
     
 }
+
+
+/** 
+ * @brief  Radiator coolant input temperature
+ * @note   Figure out the conversion from the raw data to Celcius
+ * @retval Temperature of coolant input in Celsius
+ */
+float CoolingController::getRadiatorTempIn(void)
+{
+    return 0.0;
+}
+
+
+/** 
+ * @brief  Radiator coolant output temperature
+ * @note   Figure out the conversion from the raw data to Celcius
+ * @retval Temperature of coolant output in Celsius
+ */
+float CoolingController::getRadiatorTempOut(void)
+{
+    return 0.0;
+}
