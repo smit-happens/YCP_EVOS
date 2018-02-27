@@ -24,8 +24,8 @@
  |____/ \__,_|_|  \___|\__|\__, |  |___/\__,_|_.__/|___/\__, |___/\__\___|_| |_| |_|___/
                            |___/                        |___/
 */
-const uint8_t MB_IMD_STATUS    = 28;   //[0,1] Digital Input
-const uint8_t MB_BMS_STATUS    = 29;   //[0,1] Digital Input
+const uint8_t MB_IMD_STATUS        = 28;   //[0,1] Digital Input
+const uint8_t MB_BMS_STATUS        = 29;   //[0,1] Digital Input
 
 
 /*

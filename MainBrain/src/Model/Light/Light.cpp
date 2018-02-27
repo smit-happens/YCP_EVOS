@@ -30,6 +30,26 @@ Light::Light(void)
 
 
 /** 
+ * @brief  Light destructor
+ */
+Light::~Light(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void Light::update(void)
+{
+    
+}
+
+
+/** 
  * @brief  Identifying name for the Light
  * @note   This might need to be refactored into using some struct or something
  * @retval Name of the particular Light

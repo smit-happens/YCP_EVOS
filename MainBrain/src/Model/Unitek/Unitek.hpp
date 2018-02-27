@@ -9,7 +9,7 @@
 #ifndef UNITEK_HPP
 #define UNITEK_HPP
 
-#include <Arduino.h>
+#include "../BaseModel/BaseModel.hpp"
 #include "../Constants/RegistersUnitek.hpp"
 
 
@@ -150,12 +150,15 @@ typedef union
 } ModeReg_0xD8;
 
 
-class Unitek
+class Unitek : public BaseModel
 {
 public:
     const int MAX_VALUE = 32767;  //0x7FFF
 
     Unitek(void);
+    ~Unitek(void);
+
+    void update(void);
 
     int getRpmLimit(void);
 
@@ -195,7 +198,7 @@ public:
 
 private:
     //this could be changed through CAN but for now it's just set here
-    int rpmLimit;
+    int rpmLimitReg_C8;
     
     //internal variables that are segmented in order to address the individual bits of their register
     ErrorReg_0x8F   errorReg_0x8F;

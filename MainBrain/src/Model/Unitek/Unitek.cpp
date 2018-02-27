@@ -14,7 +14,27 @@
  */
 Unitek::Unitek(void)
 {
-    rpmLimit = 7000; //0xC8
+    rpmLimitReg_C8 = 6600; //0x19C8
+}
+
+
+/** 
+ * @brief  Unitek destructor
+ */
+Unitek::~Unitek(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   TODO: implement
+ * @retval None
+ */
+void Unitek::update(void)
+{
+    
 }
 
 
@@ -25,7 +45,7 @@ Unitek::Unitek(void)
  */
 int Unitek::getRpmLimit(void)
 {
-    return rpmLimit;
+    return rpmLimitReg_C8;
 }
 
 
