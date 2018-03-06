@@ -22,10 +22,10 @@ const uint32_t EF_BATLOG           = 0b10000000;  //BatLog EF mask
 const uint32_t EF_SHUTDOWN         = 0b100000000;  //Shutdown EF mask
 
 
-//Timer event flags
-const uint32_t EF_GLCD             = 0b1;  //Glcd EF mask
-const uint32_t EF_PEDAL            = 0b10;  //Pedal EF mask
-const uint32_t EF_SDCARD           = 0b100;  //SdCard EF mask
+//Timer flags (the equivalent of an event flag but triggered by a timer)
+const uint32_t TF_GLCD             = 0b1;  //Glcd EF mask
+const uint32_t TF_PEDAL            = 0b10;  //Pedal EF mask
+const uint32_t TF_SDCARD           = 0b100;  //SdCard EF mask
 
 
 //as of right now, we have 4 levels of priority
