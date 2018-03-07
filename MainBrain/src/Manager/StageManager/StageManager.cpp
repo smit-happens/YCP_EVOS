@@ -18,8 +18,7 @@ StageManager::StageManager(void)
     timerList = new Timer[TIMER_NUM];
     timerList[0].limit = LED_1_POLL;
     timerList[1].limit = LED_2_POLL;
-    // timerList[2].limit = LED_3_POLL;
-    // timerList[3].limit = LED_4_POLL;
+    
 
     //initializing the variables in the Timer array
     for(int i = 0; i < TIMER_NUM; i++) 
