@@ -22,9 +22,11 @@ public:
     uint16_t getInletValue(void);
     uint16_t getOutletValue(void);
 
+    //TODO: add functions for operation of pump control
+
 private:
-    uint16_t _inletTempurature;
-    uint16_t _outletTempurature;
+    uint16_t _inletTemperature;
+    uint16_t _outletTemperature;
 };
 
 

@@ -17,9 +17,9 @@ CoolingSystem::CoolingSystem(void)
     //Cooling pump control
     pinMode(MB_PUMP_CTRL, OUTPUT);
 
-    //initializing the tempurature values
-    _inletTempurature  = 0;
-    _outletTempurature = 0;
+    //initializing the temperature values
+    _inletTemperature  = 0;
+    _outletTemperature = 0;
 }
 
 
@@ -33,14 +33,14 @@ CoolingSystem::~CoolingSystem(void)
 
 
 /** 
- * @brief  Retrieves and stores the value of the 2 tempurature sensors
+ * @brief  Retrieves and stores the value of the 2 temperature sensors
  * @note   
  * @retval None
  */
 void CoolingSystem::update(void)
 {
-    _inletTempurature  = analogRead(MB_RAD_INLET_TEMP);
-    _outletTempurature = analogRead(MB_RAD_OUTLET_TEMP);
+    _inletTemperature  = analogRead(MB_RAD_INLET_TEMP);
+    _outletTemperature = analogRead(MB_RAD_OUTLET_TEMP);
 }
 
 
@@ -52,7 +52,7 @@ void CoolingSystem::update(void)
  */
 uint16_t CoolingSystem::getInletValue(void)
 {
-    return _inletTempurature;
+    return _inletTemperature;
 }
 
 
@@ -64,5 +64,5 @@ uint16_t CoolingSystem::getInletValue(void)
  */
 uint16_t CoolingSystem::getOutletValue(void)
 {
-    return _outletTempurature;
+    return _outletTemperature;
 }

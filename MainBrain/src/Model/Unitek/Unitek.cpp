@@ -75,7 +75,7 @@ void Unitek::setSpeedValue(int userSpeedVal)
 /** 
  * @brief  Retrieves temperature limit of the motor and converts to celsius
  * @note   If the temperature of the motor goes above this, it triggers the 
- * @retval Temperature limit register value (in celcius) set in the REG_MTEMPLIM
+ * @retval Temperature limit register value (in celsius) set in the REG_MTEMPLIM
  */
 float Unitek::getTemperatureMotorLimit(void)
 {
@@ -86,7 +86,7 @@ float Unitek::getTemperatureMotorLimit(void)
 /** 
  * @brief  Retrieves temperature of the motor and converts to celsius
  * @note   
- * @retval Temperature (in celcius) of the Emrax motor
+ * @retval Temperature (in celsius) of the Emrax motor
  */
 float Unitek::getTemperatureMotor(void)
 {
@@ -97,7 +97,7 @@ float Unitek::getTemperatureMotor(void)
 /** 
  * @brief  Retrieves temperature of the output water and converts to celsius
  * @note   TODO: Ask Alec if this does what I think it does
- * @retval Temperature (in celcius) of the output water from the internal radiator (I think)
+ * @retval Temperature (in celsius) of the output water from the internal radiator (I think)
  */
 float Unitek::getTemperatureOutputStage(void)
 {
@@ -108,7 +108,7 @@ float Unitek::getTemperatureOutputStage(void)
 /** 
  * @brief  Retrieves temperature of the Unitek internals and converts to celsius
  * @note   
- * @retval Temperature (in celcius) of the internals of the Unitek
+ * @retval Temperature (in celsius) of the internals of the Unitek
  */
 float Unitek::getTemperatureInterior(void)
 {
