@@ -18,8 +18,7 @@ StageManager::StageManager(void)
     timerList = new Timer[TIMER_NUM];
     timerList[0].limit = LED_1_POLL;
     timerList[1].limit = LED_2_POLL;
-    // timerList[2].limit = LED_3_POLL;
-    // timerList[3].limit = LED_4_POLL;
+    
 
     //initializing the variables in the Timer array
     for(int i = 0; i < TIMER_NUM; i++) 
@@ -313,21 +312,21 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
         case PRIORITY_LOW:
 
-            if(localEventFlags && EF_GLCD)
+            if(localEventFlags && TF_GLCD)
             {
                 processGlcd(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_GLCD;
+                localEventFlags &= ~TF_GLCD;
             }
 
 
-            if(localEventFlags && EF_SDCARD)
+            if(localEventFlags && TF_SDCARD)
             {
                 processSdCard(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SDCARD;
+                localEventFlags &= ~TF_SDCARD;
             }
 
         break;
@@ -439,21 +438,21 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
 
         case PRIORITY_LOW:
             //code here
-            if(localEventFlags && EF_SDCARD)
+            if(localEventFlags && TF_SDCARD)
             {
                 processSdCard(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SDCARD;
+                localEventFlags &= ~TF_SDCARD;
             }
 
 
-            if(localEventFlags && EF_GLCD)
+            if(localEventFlags && TF_GLCD)
             {
                 processGlcd(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_GLCD;
+                localEventFlags &= ~TF_GLCD;
             }
 
         break;
@@ -565,21 +564,21 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
 
         case PRIORITY_LOW:
             //code here
-            if(localEventFlags && EF_GLCD)
+            if(localEventFlags && TF_GLCD)
             {
                 processGlcd(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_GLCD;
+                localEventFlags &= ~TF_GLCD;
             }
 
 
-            if(localEventFlags && EF_SDCARD)
+            if(localEventFlags && TF_SDCARD)
             {
                 processSdCard(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SDCARD;
+                localEventFlags &= ~TF_SDCARD;
             }
 
         break;
@@ -691,21 +690,21 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
         case PRIORITY_LOW:
             //code here
-            if(localEventFlags && EF_GLCD)
+            if(localEventFlags && TF_GLCD)
             {
                 processGlcd(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_GLCD;
+                localEventFlags &= ~TF_GLCD;
             }
 
 
-            if(localEventFlags && EF_SDCARD)
+            if(localEventFlags && TF_SDCARD)
             {
                 processSdCard(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SDCARD;
+                localEventFlags &= ~TF_SDCARD;
             }
 
         break;

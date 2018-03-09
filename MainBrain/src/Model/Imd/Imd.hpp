@@ -9,16 +9,19 @@
 #ifndef IMD_HPP
 #define IMD_HPP
 
-//Might need additional methods to flesh out all the functionality
-#include <Arduino.h>
-#include "../Constants/Port.hpp"
-class Imd
+#include "../BaseModel/BaseModel.hpp"
+
+
+class Imd : public BaseModel
 {
 public:
-  Imd(void);
+    Imd(void);
+    ~Imd(void);
 
-  bool isTriggered(void);
-  void trigger(void);
+    void update(void);
+
+    bool isTriggered(void);
+    void trigger(void);
 };
 
 

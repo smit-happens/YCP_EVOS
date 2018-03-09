@@ -22,7 +22,7 @@ const int REG_PACK_HEALTH                   = 0xF013;
 const int REG_PACK_SUMMED_VOLTAGE           = 0xF014;
 const int REG_PACK_CHARGE_CYCLES            = 0xF018;
 
-//Cell tempuratures
+//Cell temperatures
 const int REG_MAX_TEMP                      = 0xF028;  //Celcius
 const int REG_MIN_TEMP                      = 0xF029;  //Celcius
 const int REG_AVG_TEMP                      = 0xF02A;  //Celcius

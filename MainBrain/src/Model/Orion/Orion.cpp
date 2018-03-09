@@ -20,6 +20,26 @@ Orion::Orion(void)
 
 
 /** 
+ * @brief  Orion destructor
+ */
+Orion::~Orion(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   TODO: implement
+ * @retval None
+ */
+void Orion::update(void)
+{
+    
+}
+
+
+/** 
  * @brief  Retrieve total pack voltage from BMS
  * @note   TODO: Figure the range out from Micaiah
  * @retval Voltage value

@@ -9,14 +9,13 @@
 #include "EncoderWrapper.hpp"
 
 
-Encoder dial(MB_ENC_PINA, MB_ENC_PINB);
-
 /** 
  * @brief  Encoder constructor
  */
 EncoderWrapper::EncoderWrapper(void)
 {
-    dial.write(0);
+    dial = new Encoder(MB_ENC_PINA, MB_ENC_PINB);
+    dial->write(0);
 }
 
 
@@ -27,7 +26,7 @@ EncoderWrapper::EncoderWrapper(void)
  */
 int EncoderWrapper::getIndex(void)
 {
-  return dial.read();
+  return dial->read();
 }
 
 
@@ -39,5 +38,5 @@ int EncoderWrapper::getIndex(void)
  */
 void EncoderWrapper::setIndex(int index)
 {
-    dial.write(index);
+    dial->write(index);
 }

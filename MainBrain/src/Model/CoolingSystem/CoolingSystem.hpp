@@ -9,20 +9,24 @@
 #ifndef COOLINGSYSTEM_HPP
 #define COOLINGSYSTEM_HPP
 
-#include <Arduino.h>
-#include "../Constants/Port.hpp"
+#include "../BaseModel/BaseModel.hpp"
 
-class CoolingSystem
+class CoolingSystem : public BaseModel
 {
 public:
     CoolingSystem(void);
+    ~CoolingSystem(void);
 
-    float getRadiatorTempIn(void);
-    float getRadiatorTempOut(void);
+    void update(void);
+
+    uint16_t getInletValue(void);
+    uint16_t getOutletValue(void);
+
+    //TODO: add functions for operation of pump control
 
 private:
-    float getRadiatorTempInVal(void);
-    float getRadiatorTempOutVal(void);
+    uint16_t _inletTemperature;
+    uint16_t _outletTemperature;
 };
 
 
