@@ -35,11 +35,13 @@ cache:
 
 install:
     - pip install -U platformio
+    - platformio update
 
 before_script: cd "MainBrain/"
 
 script:
-    - platformio run
+    # - platformio run
+    - platformio ci --lib="." --board=teensy36
 
 notifications:
     slack: electriccarteam:asuKUGdj8PTljANmYngSspek
