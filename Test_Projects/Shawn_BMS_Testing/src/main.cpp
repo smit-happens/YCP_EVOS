@@ -42,25 +42,32 @@ void loop()
     maxCellPoll.buf[2]=0x06; //this is the second half of the PID for the max cell count register
 
     Can0.write(maxCellPoll);
-    delay(1000);
+    delay(100);
 
     CAN_message_t maxCellResponse; 
-    Can0.read(maxCellResponse);
+    int response = Can0.read(maxCellResponse);
     
-   
-
-    //BMS transmit to request address is 0x7E3
-    //BMS transmit to get response from BMS is 0x7EB
-    Serial.print("ID:");
-    Serial.println(maxCellResponse.id, HEX);
-    Serial.print("len:");
-    Serial.println(maxCellResponse.len, HEX);
-
-    for(int i = 0; i < 8; i++)
+    if(response == 0)
     {
-        Serial.print("buf[");
-        Serial.print(i);
-        Serial.print("]");
-         Serial.println(maxCellResponse.buf[i], HEX);
+        Serial.println("there was no message in the buffer");
     }
+   
+    else
+    {
+        //BMS transmit to request address is 0x7E3
+        //BMS transmit to get response from BMS is 0x7EB
+        Serial.print("ID:");
+        Serial.println(maxCellResponse.id, HEX);
+        Serial.print("len:");
+        Serial.println(maxCellResponse.len, HEX);
+
+        for(int i = 0; i < 8; i++)
+        {
+            Serial.print("buf[");
+            Serial.print(i);
+            Serial.print("]");
+            Serial.println(maxCellResponse.buf[i], HEX);
+        }
+    }
+
 }
