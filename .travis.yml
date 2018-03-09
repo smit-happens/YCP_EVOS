@@ -36,10 +36,12 @@ cache:
 install:
     - pip install -U platformio
 
+before_script: cd "MainBrain/"
+
 script:
     - platformio run
 
- notifications:
+notifications:
     slack: electriccarteam:asuKUGdj8PTljANmYngSspek
 
 
