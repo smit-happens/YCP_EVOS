@@ -33,18 +33,18 @@ cache:
     directories:
         - "~/.platformio"
 
-# env:
-#     - PLATFORMIO_CI_SRC=/MainBrain/src/
+env:
+    - PLATFORMIO_CI_SRC=MainBrain/src/
 
 install:
     - pip install -U platformio
     - platformio update
 
-before_script: cd "MainBrain/"
+# before_script: cd "MainBrain/"
 
 script:
     # - platformio run
-    - platformio ci --board=teensy36 src/
+    - platformio ci --board=teensy36
 
 notifications:
     slack: electriccarteam:asuKUGdj8PTljANmYngSspek
