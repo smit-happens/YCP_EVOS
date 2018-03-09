@@ -40,10 +40,12 @@ install:
     - pip install -U platformio
     - platformio update
 
-# before_script: cd "MainBrain/"
+    # Libraries from PlatformIO Library Registry:
+    #
+    # https://platformio.org/lib/show/322/SdFat
+    - platformio lib -g install 322
 
 script:
-    # - platformio run
     - platformio ci --board=teensy36
 
 notifications:
