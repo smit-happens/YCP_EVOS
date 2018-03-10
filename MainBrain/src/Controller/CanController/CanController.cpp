@@ -103,17 +103,18 @@ void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
  * @param  buf2: upper 8 bits of value
  * @retval None
  */
-void sendUnitekWrite(uint8_t regID, uint8_t buf1, uint8_t buf2){
+void CanController::sendUnitekWrite(uint8_t regID, uint8_t buf1, uint8_t buf2){
     //intializing and constructing the CAN message 
     CAN_message_t canMessage;
 
-    canMessage.id=canModel.UNITEKSENDID;
+    canMessage.id=canModel->UNITEKSENDID;
     canMessage.len=3;
     canMessage.buf[0]=regID;
     canMessage.buf[1]=buf1;
     canMessage.buf[2]=buf2;
 
-    canModel.send(canMessage);
+    // canModel.
+    canModel->send(canMessage);
 
     //Debug print statements
     Serial.print(canMessage.id);
