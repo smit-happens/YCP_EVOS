@@ -110,8 +110,8 @@ void CanController::sendUnitekWrite(uint8_t regID, uint8_t buf1, uint8_t buf2){
     canMessage.id=canModel->UNITEKSENDID;
     canMessage.len=3;
     canMessage.buf[0]=regID;
-    canMessage.buf[1]=buf1;
-    canMessage.buf[2]=buf2;
+    canMessage.buf[1]=buf2;
+    canMessage.buf[2]=buf1;
 
     // canModel.
     canModel->send(canMessage);
