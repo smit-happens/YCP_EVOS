@@ -49,7 +49,11 @@ script:
     - platformio ci --board=teensy36
 
 notifications:
-    slack: electriccarteam:asuKUGdj8PTljANmYngSspek
+    slack: 
+        rooms: 
+            - electriccarteam:asuKUGdj8PTljANmYngSspek#builds
+        on_success: change
+        on_failure: always
 
 
 #
