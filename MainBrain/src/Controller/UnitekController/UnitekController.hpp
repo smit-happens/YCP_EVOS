@@ -27,6 +27,7 @@ public:
 
     int calculateSpeedValue(float rpm);
     float calculateRpm(int speedValue);
+    uint16_t calculateSpeedSetPoint(float percent);
 
 private:
     //Private contstructor so that it can't be called

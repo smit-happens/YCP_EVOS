@@ -96,3 +96,15 @@ float UnitekController::calculateRpm(int speedValue)
     float percentage = (float)speedValue / unitekModel->MAX_VALUE;
     return percentage * unitekModel->getRpmLimit();
 }
+
+/** 
+ * @brief  calculate numeric speed value to send to the MC
+ * @note   percent will be calculate by getPercentageGas() in PedalController
+ * @param  percent: is the gas pedal percentage pressed
+ * @retval 16 bit value that will be sent over CAN to control motor
+ */
+uint16_t UnitekController::calculateSpeedSetPoint(float percent)
+{
+    float rpmSetPoint=(float)32767*percent;
+    return (int)rpmSetPoint;
+}
