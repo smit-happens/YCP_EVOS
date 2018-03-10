@@ -32,7 +32,8 @@ public:
      * 
      * 
      */
-
+private:
+    SdFatSdioEX* storageCard;
 };
 
 

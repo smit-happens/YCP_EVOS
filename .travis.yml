@@ -24,20 +24,32 @@
 # Template #1: General project. Test it using existing `platformio.ini`.
 #
 
-# language: python
-# python:
-#     - "2.7"
-#
-# sudo: false
-# cache:
-#     directories:
-#         - "~/.platformio"
-#
-# install:
-#     - pip install -U platformio
-#
-# script:
-#     - platformio run
+language: python
+python:
+    - "2.7"
+
+sudo: false
+cache:
+    directories:
+        - "~/.platformio"
+
+env:
+    - PLATFORMIO_CI_SRC=MainBrain/src/
+
+install:
+    - pip install -U platformio
+    - platformio update
+
+    # Libraries from PlatformIO Library Registry:
+    #
+    # https://platformio.org/lib/show/322/SdFat
+    - platformio lib -g install 322
+
+script:
+    - platformio ci --board=teensy36
+
+notifications:
+    slack: electriccarteam:asuKUGdj8PTljANmYngSspek
 
 
 #
