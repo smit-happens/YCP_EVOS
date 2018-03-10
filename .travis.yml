@@ -56,7 +56,7 @@ script:
     - platformio remote device list
 
     - echo "Run embedded test on remote Teensy 3.6"
-    - platformio remote test -e teensy36
+    - platformio remote test --project-dir MainBrain/
 
 notifications:
     slack: 
