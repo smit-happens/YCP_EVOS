@@ -80,7 +80,10 @@ void PedalController::shutdown(void)
  */
 float PedalController::getPercentageGas(void)
 {
-    return 0.0;
+    gasModel->update();
+    float potValue=(float)gasModel->getLinValue();
+    float rpmPercent=potValue/(float)1023;
+    return rpmPercent;
 }
 
 
