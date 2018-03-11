@@ -19,7 +19,7 @@ const int LED_2_POLL    = 200;
 const int LED_3_POLL    = 400;
 const int LED_4_POLL    = 800;
 
-
-
+//Ready to drive Siren time
+const int TIME_SIREN    = 2000;
 
 #endif  //TIMEDELAY_HPP

@@ -22,6 +22,9 @@ public:
     int getIndex(void);
     void setIndex(int index);    //can also be used to zero out the index
 
+private:
+    //private instance of the Encoder object
+    Encoder* dial;
 };
 
 #endif  //ENCODERWRAPPER_HPP

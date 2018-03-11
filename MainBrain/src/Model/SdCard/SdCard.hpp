@@ -11,6 +11,7 @@
 #define SDCARD_HPP
 
 #include "SdFat.h"
+#include "../Constants/Port.hpp"
 
 //Might need additional methods to flesh out all the functionality
 
@@ -31,7 +32,8 @@ public:
      * 
      * 
      */
-
+private:
+    SdFatSdioEX* storageCard;
 };
 
 

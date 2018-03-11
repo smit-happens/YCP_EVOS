@@ -9,22 +9,24 @@
 #ifndef BRAKEPEDAL_HPP
 #define BRAKEPEDAL_HPP
 
-#include <Arduino.h>
+#include "../BaseModel/BaseModel.hpp"
 
 //Maybe have states the pedal can be in, since it has the chance
 //of causing an error if there's an implausibility or a short in
 //the wires
 
-class BrakePedal
+class BrakePedal : public BaseModel
 {
 public:
     BrakePedal();
+    ~BrakePedal(void);
 
-    float getPercentage(void);
-    bool isImplausibility(void);
+    void update(void);
+
+    uint16_t getLinValue(void);
 
 private:
-    float getLinValue(void);
+    uint16_t _linValue;
 };
 
 #endif  //BRAKEPEDAL_HPP
