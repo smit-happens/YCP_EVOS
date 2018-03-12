@@ -24,7 +24,7 @@ public:
 
         pedal.setOrigin();
 
-        TEST_ASSERT_INT_WITHIN(50, pedal.getLinOrigin(), linearVal);
-        TEST_ASSERT_INT_WITHIN(50, pedal.getLogOrigin(), logVal);
+        TEST_ASSERT_INT_WITHIN(100, pedal.getLinOrigin(), linearVal);
+        TEST_ASSERT_INT_WITHIN(100, pedal.getLogOrigin(), logVal);
     };
 };
