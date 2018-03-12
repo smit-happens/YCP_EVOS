@@ -32,6 +32,6 @@ void GasPedalTest::setOrigin(void)
 
     pedal.setOrigin();
 
-    TEST_ASSERT_EQUAL(pedal.getLinValue(), linearVal);
-    TEST_ASSERT_EQUAL(pedal.getLogValue(), logVal);
+    TEST_ASSERT_INT_WITHIN(50, pedal.getLinOrigin(), linearVal);
+    TEST_ASSERT_INT_WITHIN(50, pedal.getLogOrigin(), logVal);
 }

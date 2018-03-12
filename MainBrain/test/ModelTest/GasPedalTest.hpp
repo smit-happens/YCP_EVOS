@@ -16,5 +16,5 @@ class GasPedalTest
 public:
     GasPedalTest(void);
     
-    void setOrigin(void);
+    static void setOrigin(void);
 };

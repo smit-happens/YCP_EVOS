@@ -15,14 +15,6 @@
 
 #ifdef UNIT_TEST
 
-void setUp(void) {
-// set stuff up here
-}
-
-void tearDown(void) {
-// clean stuff up here
-}
-
 
 int main() {
     // NOTE!!! Wait for >2 secs
@@ -31,14 +23,13 @@ int main() {
 
     analogReadResolution(13);
 
-    UNITY_BEGIN();    // IMPORTANT LINE!
-
-
     GasPedalTest testGas;
 
+    UNITY_BEGIN();
+    
     RUN_TEST(testGas.setOrigin);
 
-
+    UNITY_END();
 
     return 0;
 }

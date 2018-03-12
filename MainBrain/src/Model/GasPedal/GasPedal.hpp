@@ -25,6 +25,9 @@ public:
     uint16_t getLinValue(void);
     uint16_t getLogValue(void);
 
+    uint16_t getLinOrigin(void);
+    uint16_t getLogOrigin(void);
+
 private:
     uint16_t _linValue;
     uint16_t _logValue;
