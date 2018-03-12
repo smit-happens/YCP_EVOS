@@ -41,6 +41,14 @@ void GasPedal::update(void)
 }
 
 
+
+void GasPedal::setOrigin(void)
+{
+    _linOrigin = analogRead(MB_GAS_LIN);
+    _logOrigin = analogRead(MB_GAS_LOG);
+}
+
+
 /** 
  * @brief  Retrieves the value of the Linear Potentiometer
  * @note   value of 0-8195
@@ -60,4 +68,25 @@ uint16_t GasPedal::getLinValue(void)
 uint16_t GasPedal::getLogValue(void)
 {
     return _logValue;
+}
+
+/** 
+ * @brief  Retrieves the origin of the Linear Potentiometer
+ * @note   value of 0-8195
+ * @retval Analog voltage sensed at origin (zero position)
+ */
+uint16_t GasPedal::getLinOrigin(void)
+{
+    return _linOrigin;
+}
+
+
+/** 
+ * @brief  Retrieves the origin of the Logarithmic Potentiometer
+ * @note   value of 0-8195
+ * @retval Analog voltage sensed at origin (zero position)
+ */
+uint16_t GasPedal::getLogOrigin(void)
+{
+    return _logOrigin;
 }
