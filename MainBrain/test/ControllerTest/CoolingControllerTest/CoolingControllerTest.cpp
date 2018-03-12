@@ -9,67 +9,10 @@
 #include "CoolingControllerTest.hpp"
 
 
-//to see if the instance of the class has been initialized yet
-CoolingControllerTest* CoolingControllerTest::_pInstance = NULL; 
-
-/** 
- * @brief  Used to maintain the singleton format
- * @note   
- * @retval 
- */
-CoolingControllerTest* CoolingControllerTest::getInstance()
-{
-    // Only allow one instance of class to be generated.
-    if (!_pInstance)
-        _pInstance = new CoolingControllerTest();
-
-    return _pInstance;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-CoolingControllerTest::~CoolingControllerTest(void)
-{
-    delete coolingModel;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-void CoolingControllerTest::init(void)
-{
-    coolingModel = new CoolingSystem();
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval None
- */
-void CoolingControllerTest::poll(void)
+CoolingControllerTest::CoolingControllerTest(void)
 {
 
 }
-
-
-/** 
- * @brief  
- * @note   
- * @retval None
- */
-void CoolingControllerTest::shutdown(void)
-{
-    
-}
-
 
 /** 
  * @brief  Radiator coolant input temperature

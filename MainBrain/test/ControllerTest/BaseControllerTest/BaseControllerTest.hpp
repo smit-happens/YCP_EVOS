@@ -6,11 +6,12 @@
  * A longer description.
  */
 
-#ifndef BASECONTROLLER_HPP
-#define BASECONTROLLER_HPP
+#ifndef BASECONTROLLERTEST_HPP
+#define BASECONTROLLERTEST_HPP
 
 #include <Arduino.h>
 #include "../../../src/Controller/Controller.hpp"
+// #include "../../../src/Model/Model.hpp"
 #include <unity.h>
 
 
@@ -21,4 +22,4 @@ public:
 };
 
 
-#endif  //BASECONTROLLER_HPP
+#endif  //BASECONTROLLERTEST_HPP

@@ -6,38 +6,22 @@
  * A longer description.
  */
 
-#ifndef LightController_HPP
-#define LightController_HPP
+#ifndef LIGHTCONTROLLERTEST_HPP
+#define LIGHTCONTROLLERTEST_HPP
 
 #include "../BaseControllerTest/BaseControllerTest.hpp"
-#include "../../Model/Light/Light.hpp"
 
 
 class LightControllerTest : public BaseControllerTest
 {
 public:
-    ~LightControllerTest(void);
-
-    static LightControllerTest*   getInstance();
-
-    void init(void);
-    void poll(void);
-    void shutdown(void) {};
+    LightControllerTest(void);
 
 
 private:
-    //Private contstructor so that it can't be called
-    LightControllerTest() {};
-    //copy constructor is private
-    LightControllerTest(LightControllerTest const&) {};
-
-    //static instance pointer
-    static LightControllerTest* _pInstance;
-
     //private instance of model
-    Light* light;
-
+    // Light* light;
 };
 
 
-#endif  //LightController_HPP
+#endif  //LIGHTCONTROLLERTEST_HPP

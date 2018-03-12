@@ -7,39 +7,24 @@
  */
 
 
-#ifndef UNITEKCONTROLLER_HPP
-#define UNITEKCONTROLLER_HPP
+#ifndef UNITEKCONTROLLERTEST_HPP
+#define UNITEKCONTROLLERTEST_HPP
 
 #include "../BaseControllerTest/BaseControllerTest.hpp"
-#include "../../Model/Unitek/Unitek.hpp"
 
 
 class UnitekControllerTest : public BaseControllerTest
 {
 public:
-    ~UnitekControllerTest(void);
+    UnitekControllerTest(void);
 
-    static UnitekControllerTest*   getInstance();
-
-    void init(void);
-    void poll(void);
-    void shutdown(void);    //TODO: implement
-
-    int calculateSpeedValue(float rpm);
-    float calculateRpm(int speedValue);
+    void calculateSpeedValue(void);
+    void calculateRpm(void);
 
 private:
-    //Private contstructor so that it can't be called
-    UnitekControllerTest() {};
-    //copy constructor is private
-    UnitekControllerTest(UnitekControllerTest const&) {};
-
-    //static instance pointer
-    static UnitekControllerTest* _pInstance;
-
     //private instance of model
-    Unitek* unitekModel;
+    // Unitek* unitekModel;
 };
 
 
-#endif  //UNITEKCONTROLLER_HPP
+#endif  //UNITEKCONTROLLERTEST_HPP

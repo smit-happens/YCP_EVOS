@@ -8,13 +8,12 @@
  * if only for the semester
  */
 
-#include <Arduino.h>
-#include <unity.h>
-
-#include "ModelTest/GasPedalTest/GasPedalTest.hpp"
 
 #ifdef UNIT_TEST
 
+// #include "ModelTest/ModelTest.hpp"
+
+#include "ModelTest/GasPedalTest/GasPedalTest.hpp"
 
 int main() {
     // NOTE!!! Wait for >2 secs
@@ -23,11 +22,11 @@ int main() {
 
     analogReadResolution(13);
 
-    GasPedalTest testGas;
+    GasPedalTest* testGas = new GasPedalTest();
 
     UNITY_BEGIN();
     
-    RUN_TEST(testGas.setOrigin);
+    RUN_TEST(testGas->setOriginTest);
 
     UNITY_END();
 

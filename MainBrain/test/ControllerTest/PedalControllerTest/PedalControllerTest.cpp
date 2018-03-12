@@ -9,65 +9,7 @@
 #include "PedalControllerTest.hpp"
 
 
-//to see if the instance of the class has been initialized yet
-PedalControllerTest* PedalControllerTest::_pInstance = NULL; 
-
-/** 
- * @brief  Used to maintain the singleton format
- * @note   
- * @retval 
- */
-PedalControllerTest* PedalControllerTest::getInstance()
-{
-    // Only allow one instance of class to be generated.
-    if (!_pInstance)
-        _pInstance = new PedalControllerTest();
-
-    return _pInstance;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-PedalControllerTest::~PedalControllerTest(void)
-{
-    delete brakeModel;
-    delete gasModel;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-void PedalControllerTest::init(void)
-{
-    brakeModel = new BrakePedal();
-    gasModel = new GasPedal();
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval None
- */
-void PedalControllerTest::poll(void)
-{
-
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval None
- */
-void PedalControllerTest::shutdown(void)
+PedalControllerTest::PedalControllerTest(void)
 {
     
 }

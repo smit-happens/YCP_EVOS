@@ -16,11 +16,8 @@
 class BaseModelTest
 {
 public:
-    BaseModelTest();
-    // virtual ~BaseModelTest();  //to prevent memory leaks
+    BaseModelTest() {};
 
-    //Every model should have an update function for it's locally stored data
-    // virtual void update();
 };
 
 

@@ -6,11 +6,10 @@
  * A longer description.
  */
 
-#ifndef SDCARDCONTROLLER_HPP
-#define SDCARDCONTROLLER_HPP
+#ifndef SDCARDCONTROLLERTEST_HPP
+#define SDCARDCONTROLLERTEST_HPP
 
 #include "../BaseControllerTest/BaseControllerTest.hpp"
-#include "../../Model/SdCard/SdCard.hpp"
 
 /**  
  * Example of possible log file:
@@ -30,38 +29,12 @@
 class SdCardControllerTest  : public BaseControllerTest
 {
 public:
-    ~SdCardControllerTest(void);
-
-    static SdCardControllerTest*   getInstance();
-
-    void init(void);
-    void poll(void);
-    void shutdown(void);    //TODO: implement
-    
-
-    /** 
-     * Drafting up possible functions
-     * writeHeader()
-     * newColumn()
-     * newRow()
-     * newCell()
-     * 
-     * millisSinceStart()
-     */
-
+    SdCardControllerTest(void);
 
 private:
-    //Private contstructor so that it can't be called
-    SdCardControllerTest() {};
-    //copy constructor is private
-    SdCardControllerTest(SdCardControllerTest const&) {};
-
-    //static instance pointer
-    static SdCardControllerTest* _pInstance;
-
     //private instance of model
-    SdCard* sdCardModel;
+    // SdCard* sdCardModel;
 
 };
 
-#endif  //SDCARDCONTROLLER_HPP
+#endif  //SDCARDCONTROLLERTEST_HPP

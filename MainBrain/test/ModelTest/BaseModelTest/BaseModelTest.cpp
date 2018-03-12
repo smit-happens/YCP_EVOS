@@ -12,18 +12,7 @@
 /** 
  * @brief  BaseModelTest constructor
  */
-BaseModelTest::BaseModelTest(void)
-{
-    
-}
-
-
-// /** 
-//  * @brief  Literally nothing happens
-//  * @note   
-//  * @retval None
-//  */
-// void BaseModelTest::update(void)
+// BaseModelTest::BaseModelTest()
 // {
-//     Serial.println("Default update function");
+    
 // }

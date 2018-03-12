@@ -6,18 +6,25 @@
  */
 
 
-#ifndef GASPEDALTEST_HPP
-#define GASPEDALTEST_HPP
 
 #include "../BaseModelTest/BaseModelTest.hpp"
 
 
-class GasPedalTest
+class GasPedalTest : public BaseModelTest
 {
 public:
-    GasPedalTest(void);
+    GasPedalTest() {};
     
-    static void setOrigin(void);
-};
+    static void setOriginTest(void)
+    {
+        int linearVal = analogRead(MB_GAS_LIN);
+        int logVal = analogRead(MB_GAS_LOG);
 
-#endif //GASPEDALTEST_HPP
+        GasPedal pedal;
+
+        pedal.setOrigin();
+
+        TEST_ASSERT_INT_WITHIN(50, pedal.getLinOrigin(), linearVal);
+        TEST_ASSERT_INT_WITHIN(50, pedal.getLogOrigin(), logVal);
+    };
+};

@@ -12,10 +12,10 @@
 /** 
  * @brief  GasPedal constructor
  */
-GasPedalTest::GasPedalTest(void)
-{
+// GasPedalTest::GasPedalTest()
+// {
 
-}
+// }
 
 
 /** 
@@ -23,15 +23,15 @@ GasPedalTest::GasPedalTest(void)
  * @note   
  * @retval None
  */
-void GasPedalTest::setOrigin(void) 
-{
-    int linearVal = analogRead(MB_GAS_LIN);
-    int logVal = analogRead(MB_GAS_LOG);
+// void GasPedalTest::setOriginTest(void) 
+// {
+//     int linearVal = analogRead(MB_GAS_LIN);
+//     int logVal = analogRead(MB_GAS_LOG);
 
-    GasPedal pedal;
+//     GasPedal pedal;
 
-    pedal.setOrigin();
+//     pedal.setOrigin();
 
-    TEST_ASSERT_INT_WITHIN(50, pedal.getLinOrigin(), linearVal);
-    TEST_ASSERT_INT_WITHIN(50, pedal.getLogOrigin(), logVal);
-}
+//     TEST_ASSERT_INT_WITHIN(50, pedal.getLinOrigin(), linearVal);
+//     TEST_ASSERT_INT_WITHIN(50, pedal.getLogOrigin(), logVal);
+// }

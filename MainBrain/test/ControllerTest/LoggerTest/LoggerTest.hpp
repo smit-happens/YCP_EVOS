@@ -6,10 +6,8 @@
  * A longer description.
  */
 
-#ifndef LOGGER_HPP
-#define LOGGER_HPP
-
-#include "../../Controller/SdCardControllerTest/SdCardControllerTest.hpp"
+#ifndef LOGGERTEST_HPP
+#define LOGGERTEST_HPP
 
 
 class LoggerTest
@@ -17,23 +15,9 @@ class LoggerTest
 public:
     LoggerTest();
 
-    //public logging functions
+    //TODO: test logging functions
 
-    /** 
-     * Drafting up possible functions
-     * 
-     * newDataPoint()
-     * newLogFile()         //name log file based on current date/time
-     * openLogFile()
-     * LogChunk()
-     * 
-     * 
-     */
-
-
-private:
-    //private logging functions/ variables
 
 };
 
-#endif  //LOGGER_HPP
+#endif  //LOGGERTEST_HPP
