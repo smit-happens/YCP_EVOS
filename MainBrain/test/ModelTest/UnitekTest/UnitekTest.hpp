@@ -31,17 +31,17 @@ public:
     float getTemperatureOutputStage(void);
     float getTemperatureInterior(void);
 
-    // ErrorReg_0x8F getErrorReg_0x8F(void);
-    // void setErrorReg_0x8F(uint16_t input);
+    ErrorReg_0x8F getErrorReg_0x8F(void);
+    void setErrorReg_0x8F(uint16_t input);
 
-    // WarningReg_0x8F getWarningReg_0x8F(void);
-    // void setWarningReg_0x8F(uint16_t input);
+    WarningReg_0x8F getWarningReg_0x8F(void);
+    void setWarningReg_0x8F(uint16_t input);
 
-    // StateReg_0x40 getStateReg_0x40(void);
-    // void setStateReg_0x40(uint32_t input);
+    StateReg_0x40 getStateReg_0x40(void);
+    void setStateReg_0x40(uint32_t input);
 
-    // ModeReg_0xD8 getModeReg_0xD8(void);
-    // void setModeReg_0xD8(uint16_t input);
+    ModeReg_0xD8 getModeReg_0xD8(void);
+    void setModeReg_0xD8(uint16_t input);
 
     //FIXME: any get...() method that returns void, needs to have work done on its return type
     void getDigitalPort(void);  //TODO: create struct for the connections in the digital port
@@ -62,10 +62,10 @@ private:
     int rpmLimitReg_C8;
     
     //internal variables that are segmented in order to address the individual bits of their register
-    // ErrorReg_0x8F   errorReg_0x8F;
-    // WarningReg_0x8F warningReg_0x8F;
-    // StateReg_0x40   stateReg_0x40;
-    // ModeReg_0xD8    modeReg_0xD8;
+    ErrorReg_0x8F   errorReg_0x8F;
+    WarningReg_0x8F warningReg_0x8F;
+    StateReg_0x40   stateReg_0x40;
+    ModeReg_0xD8    modeReg_0xD8;
 
 
     //Internal variables to store the data locally from the UnitekTest
