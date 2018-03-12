@@ -10,7 +10,7 @@
 #define ORIONTEST_HPP
 
 #include "../BaseModelTest/BaseModelTest.hpp"
-#include "../Constants/RegistersOrion.hpp"
+#include "../../../src/Model/Constants/RegistersOrion.hpp"
 
 class OrionTest : public BaseModelTest
 {

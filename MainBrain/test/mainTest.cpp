@@ -11,7 +11,7 @@
 #include <Arduino.h>
 #include <unity.h>
 
-#include "ModelTest/GasPedalTest.hpp"
+#include "ModelTest/GasPedalTest/GasPedalTest.hpp"
 
 #ifdef UNIT_TEST
 

@@ -9,9 +9,7 @@
 #ifndef GASPEDALTEST_HPP
 #define GASPEDALTEST_HPP
 
-// #include <Arduino.h>
-// #include "../../../src/Model/Model.hpp"
-// #include <unity.h>
+#include "../BaseModelTest/BaseModelTest.hpp"
 
 
 class GasPedalTest

@@ -18,12 +18,6 @@
 class CanTest : public CANListener, public BaseModelTest
 {
 public:
-    const int UNITEKREADID = 0x181;
-    const int UNITEKSENDID = 0x201;
-
-    // const int ORIONREADID = 0x840;   //Micaiah - "i think it's the same"
-    const int ORIONSENDID = 0x840;
-
     CanTest(void);
     ~CanTest(void);
 
@@ -54,11 +48,6 @@ public:
 private:
     //CAN port the Teensy will be using
     const int canMailbox = 1;
-
-    //queue variables that will be used for the Unitek and Orion devices
-    // Queue* mailbox;
-    // Queue* inboxUnitek;
-    // Queue* inboxOrion;
 };
 
 

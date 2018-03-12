@@ -14,11 +14,11 @@
  */
 GlcdTest::GlcdTest(void)
 {
-    display = new ST7565(MB_SID, MB_SCLK, MB_A0, MB_RST, MB_CS);
+    // display = new ST7565(MB_SID, MB_SCLK, MB_A0, MB_RST, MB_CS);
     
     // initialize the glcd and set the contrast to 0x18
-    display->begin(0x18);
-    display->clear();
+    // display->begin(0x18);
+    // display->clear();
 
     // draw the bitmap
     // glcd.drawbitmap(0, 0, JustBarelyLogo, 128, 64, BLACK);
@@ -31,7 +31,7 @@ GlcdTest::GlcdTest(void)
  */
 GlcdTest::~GlcdTest(void)
 {
-    delete display;
+    // delete display;
 }
 
 
