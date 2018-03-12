@@ -41,6 +41,14 @@ void GasPedal::update(void)
 }
 
 
+
+void GasPedal::setOrigin(void)
+{
+    _linOrigin = analogRead(MB_GAS_LIN);
+    _logOrigin = analogRead(MB_GAS_LOG);
+}
+
+
 /** 
  * @brief  Retrieves the value of the Linear Potentiometer
  * @note   value of 0-8195
