@@ -5,10 +5,13 @@
  *
  */
 
-#include <Arduino.h>
-#include "../../src/Model/Model.hpp"
-#include <unity.h>
 
+#ifndef GASPEDALTEST_HPP
+#define GASPEDALTEST_HPP
+
+// #include <Arduino.h>
+// #include "../../../src/Model/Model.hpp"
+// #include <unity.h>
 
 
 class GasPedalTest
@@ -18,3 +21,5 @@ public:
     
     static void setOrigin(void);
 };
+
+#endif //GASPEDALTEST_HPP
