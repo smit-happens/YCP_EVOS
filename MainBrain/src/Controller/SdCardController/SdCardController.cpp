@@ -7,15 +7,23 @@
  */
 
 #include "SdCardController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
-/**
- * SdCardController constructor
+//to see if the instance of the class has been initialized yet
+SdCardController* SdCardController::_pInstance = NULL; 
+
+/** 
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-SdCardController::SdCardController(void)
+SdCardController* SdCardController::getInstance()
 {
-    sdCardModel = new SdCard();
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new SdCardController();
+
+    return _pInstance;
 }
 
 
@@ -37,7 +45,7 @@ SdCardController::~SdCardController(void)
  */
 void SdCardController::init(void)
 {
-
+    sdCardModel = new SdCard();
 }
 
 

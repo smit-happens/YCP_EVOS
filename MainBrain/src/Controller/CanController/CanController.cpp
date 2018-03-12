@@ -7,15 +7,23 @@
  */
 
 #include "CanController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
+
+//to see if the instance of the class has been initialized yet
+CanController* CanController::_pInstance = NULL; 
 
 /** 
- * @brief  CanController constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-CanController::CanController(void)
+CanController* CanController::getInstance()
 {
-    
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new CanController();
+
+    return _pInstance;
 }
 
 
@@ -26,6 +34,7 @@ CanController::CanController(void)
  */
 CanController::~CanController(void)
 {
+    //TODO: remove this
     canModel->detachGeneralHandler();
     Can1.detachObj(canModel);
 }
@@ -84,6 +93,34 @@ void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
     Serial.print(unitekMessage.buf[0]);
     Serial.print(unitekMessage.buf[1]);
     Serial.print(unitekMessage.buf[2]);
+}
+
+/** 
+ * @brief  formats and sends unitek can message to change the value of a register
+ * @note   
+ * @param  regID: register you want to change the value of
+ * @param  buf1: lower 8 bits of value
+ * @param  buf2: upper 8 bits of value
+ * @retval None
+ */
+void CanController::sendUnitekWrite(uint8_t regID, uint8_t buf1, uint8_t buf2){
+    //intializing and constructing the CAN message 
+    CAN_message_t canMessage;
+
+    canMessage.id=canModel->UNITEKSENDID;
+    canMessage.len=3;
+    canMessage.buf[0]=regID;
+    canMessage.buf[1]=buf2;
+    canMessage.buf[2]=buf1;
+
+    // canModel.
+    canModel->send(canMessage);
+
+    //Debug print statements
+    Serial.print(canMessage.id);
+    Serial.print(canMessage.buf[0]);
+    Serial.print(canMessage.buf[1]);
+    Serial.print(canMessage.buf[2]);
 }
 
 

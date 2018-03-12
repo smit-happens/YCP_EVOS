@@ -15,7 +15,27 @@
  */
 Orion::Orion(void)
 {
+    pinMode(MB_BMS_STATUS, INPUT);
+}
 
+
+/** 
+ * @brief  Orion destructor
+ */
+Orion::~Orion(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   TODO: implement
+ * @retval None
+ */
+void Orion::update(void)
+{
+    
 }
 
 
@@ -101,7 +121,7 @@ float Orion::getTemperature(void)
  * @note   TODO: Is this possible?
  * @retval Cell number with the min voltage
  */
-int Orion::getCellVoltageMin(void)
+int Orion::getVoltageMinCell(void)
 {
     return 0;
 }
@@ -112,7 +132,7 @@ int Orion::getCellVoltageMin(void)
  * @note   TODO: Is this possible?
  * @retval Cell number with the max voltage
  */
-int Orion::getCellVoltageMax(void)
+int Orion::getVoltageMaxCell(void)
 {
     return 0;
 }

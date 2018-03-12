@@ -7,16 +7,23 @@
  */
 
 #include "DashController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
+//to see if the instance of the class has been initialized yet
+DashController* DashController::_pInstance = NULL; 
 
 /** 
- * @brief  Dash constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-DashController::DashController(void)
+DashController* DashController::getInstance()
 {
-    
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new DashController();
+
+    return _pInstance;
 }
 
 

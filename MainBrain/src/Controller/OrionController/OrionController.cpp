@@ -7,16 +7,23 @@
  */
 
 #include "OrionController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
+//to see if the instance of the class has been initialized yet
+OrionController* OrionController::_pInstance = NULL; 
 
 /** 
- * @brief  Orion constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-OrionController::OrionController(void)
+OrionController* OrionController::getInstance()
 {
-    orionModel = new Orion();
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new OrionController();
+
+    return _pInstance;
 }
 
 
@@ -38,7 +45,7 @@ OrionController::~OrionController(void)
  */
 void OrionController::init(void)
 {
-
+    orionModel = new Orion();
 }
 
 

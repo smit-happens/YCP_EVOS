@@ -26,6 +26,6 @@ Rtc::Rtc(void)
  */
 time_t Rtc::getTeensy3Time(void)
 {
-  return Teensy3Clock.get();
+    return Teensy3Clock.get();
 }
 

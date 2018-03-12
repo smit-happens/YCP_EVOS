@@ -7,16 +7,23 @@
  */
 
 #include "ImdController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
+//to see if the instance of the class has been initialized yet
+ImdController* ImdController::_pInstance = NULL; 
 
 /** 
- * @brief  ImdController constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-ImdController::ImdController(void)
+ImdController* ImdController::getInstance()
 {
-    imdModel = new Imd();
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new ImdController();
+
+    return _pInstance;
 }
 
 
@@ -38,7 +45,7 @@ ImdController::~ImdController(void)
  */
 void ImdController::init(void)
 {
-
+    imdModel = new Imd();
 }
 
 

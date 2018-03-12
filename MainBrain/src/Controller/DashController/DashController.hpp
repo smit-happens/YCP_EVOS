@@ -9,30 +9,38 @@
 #ifndef DASHCONTROLLER_HPP
 #define DASHCONTROLLER_HPP
 
+#include "../BaseController/BaseController.hpp"
 #include "../../Model/Light/Light.hpp"
 #include "../../Model/Button/Button.hpp"
+#include "../../Model/Siren/Siren.hpp"
 
 
-class DashController
+class DashController : public BaseController
 {
 public:
-    DashController();
     ~DashController(void);
+
+    static DashController*   getInstance();
 
     void init(void);
     void poll(void);
     void shutdown(void);    //TODO: implement
 
-    /**  
-     * Drafting up possible functions
-     * 
-     * 
-     */
+
 private:
-/*
-    //all the buttons need to be implemented
-    Button* shutdownBtn;
-*/
+    //Private contstructor so that it can't be called
+    DashController() {};
+    //copy constructor is private
+    DashController(DashController const&) {};
+
+    //static instance pointer
+    static DashController* _pInstance;
+
+    //private instance of model
+    /*
+        //all the buttons need to be implemented
+        Button* shutdownBtn;
+    */ 
 };
 
 

@@ -14,7 +14,36 @@
  */
 Button::Button(void)
 {
+    //Dashboard buttons
+    pinMode(MB_PRE_BTN, INPUT);
+    pinMode(MB_RTD_BTN, INPUT);
+    pinMode(MB_ENC_BTN, INPUT);
+    pinMode(MB_WAYNE_BTN, INPUT);
+    pinMode(MB_SHUTDOWN_BTN, INPUT);
+    pinMode(MB_STANDBY_BTN, INPUT);
 
+    //reverse switch
+    pinMode(MB_REVERSE_SW, INPUT);
+}
+
+
+/** 
+ * @brief  Button destructor
+ */
+Button::~Button(void)
+{
+    
+}
+
+
+/** 
+ * @brief  
+ * @note   TODO: fill this out
+ * @retval None
+ */
+void Button::update(void)
+{
+    
 }
 
 

@@ -10,7 +10,7 @@
 #define GLCD_HPP
 
 #include "ST7565.h"
-#include "../Constants/Port.hpp"
+#include "../BaseModel/BaseModel.hpp"
 
 
 // This class should have all the menus structured out,
@@ -95,10 +95,13 @@ const uint8_t JustBarelyLogo [] = {
 
 
 
-class Glcd
+class Glcd : public BaseModel
 {
 public:
-    Glcd();
+    Glcd(void);
+    ~Glcd(void);
+
+    void update(void);
 
     /**  
      * Drafting up possible functions
@@ -121,6 +124,9 @@ private:
     Alert,
     Error
     };
+
+    //private instance of the ST7565 object for our GLCD
+    ST7565* display;
 
 };
 
