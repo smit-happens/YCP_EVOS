@@ -19,6 +19,26 @@ Imd::Imd(void)
 
 
 /** 
+ * @brief  Imd destructor
+ */
+Imd::~Imd(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void Imd::update(void)
+{
+    
+}
+
+
+/** 
  * @brief  Current stored state of the IMD
  * @note   
  * @retval true = bad; false = good

@@ -14,49 +14,79 @@
  */
 GasPedal::GasPedal(void)
 {
-    
+    //initializing the values of the gasPedal
+    _linValue = 0;
+    _logValue = 0;
 }
 
 
 /** 
- * @brief  Retrieves the evaluated Gas percentage
- * @note   
- * @retval GasPedal percentage
+ * @brief  GasPedal destructor
  */
-float GasPedal::getPercentage(void)
+GasPedal::~GasPedal(void)
 {
-    return 0.0;
+
+}
+
+
+/** 
+ * @brief  Retrieves and stores the value of the 2 gas Potentiometers
+ * @note   
+ * @retval None
+ */
+void GasPedal::update(void)
+{
+    _linValue = analogRead(MB_GAS_LIN);
+    _logValue = analogRead(MB_GAS_LOG);
+}
+
+
+
+void GasPedal::setOrigin(void)
+{
+    _linOrigin = analogRead(MB_GAS_LIN);
+    _logOrigin = analogRead(MB_GAS_LOG);
 }
 
 
 /** 
  * @brief  Retrieves the value of the Linear Potentiometer
- * @note   Will have to determine what is the range of return values
+ * @note   value of 0-8195
  * @retval Analog voltage sensed
  */
-float GasPedal::getLinValue(void)
+uint16_t GasPedal::getLinValue(void)
 {
-    return 0.0;
+    return _linValue;
 }
 
 
 /** 
  * @brief  Retrieves the value of the Logarithmic Potentiometer
- * @note   Will have to determine what is the range of return values
+ * @note   value of 0-8195
  * @retval Analog voltage sensed
  */
-float GasPedal::getLogValue(void)
+uint16_t GasPedal::getLogValue(void)
 {
-    return 0.0;
+    return _logValue;
+}
+
+/** 
+ * @brief  Retrieves the origin of the Linear Potentiometer
+ * @note   value of 0-8195
+ * @retval Analog voltage sensed at origin (zero position)
+ */
+uint16_t GasPedal::getLinOrigin(void)
+{
+    return _linOrigin;
 }
 
 
 /** 
- * @brief  Evaluates the two pedal potentiometers (Linear and Logarithmic)
- * @note   Needs to check for shorts in wire and extrainious values
- * @retval True if there's an implausibility found, false if not
+ * @brief  Retrieves the origin of the Logarithmic Potentiometer
+ * @note   value of 0-8195
+ * @retval Analog voltage sensed at origin (zero position)
  */
-bool GasPedal::isImplausibility(void)
+uint16_t GasPedal::getLogOrigin(void)
 {
-    return false;
+    return _logOrigin;
 }

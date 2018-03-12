@@ -37,6 +37,18 @@ Can::~Can(void)
 
 
 /** 
+ * @brief  
+ * @note   TODO: fill this out (if necessary)
+ * @retval None
+ */
+void Can::update(void)
+{
+    
+}
+
+
+
+/** 
  * @brief  Called whenever a new CAN frame is received
  * @note   All CAN messages will be sent received from mailbox 1 (CAN port 1) 
  * @param  &frame:  CAN_message_t reference

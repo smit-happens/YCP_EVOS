@@ -12,10 +12,10 @@
 #include <FlexCAN.h>
 // #include <cppQueue.h>
 
-#include "../Constants/Port.hpp"
+#include "../BaseModel/BaseModel.hpp"
 
 
-class Can : public CANListener
+class Can : public CANListener, public BaseModel
 {
 public:
     const int UNITEKREADID = 0x181;
@@ -26,6 +26,8 @@ public:
 
     Can(void);
     ~Can(void);
+
+    void update(void);
 
     //overrides the parent version
     void gotFrame(CAN_message_t &frame, int mailbox);

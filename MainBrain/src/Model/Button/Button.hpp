@@ -9,18 +9,22 @@
 #ifndef BUTTON_HPP
 #define BUTTON_HPP
 
-#include <Arduino.h>
-#include "../Constants/Port.hpp"
+#include "../BaseModel/BaseModel.hpp"
 
-class Button
+
+class Button : public BaseModel
 {
 public:
-  Button(void);
+    Button(void);
+    ~Button(void);
 
-  String getName(void);
+    void update(void);
 
-  int getState(void);
-  void setState(void);
+
+    String getName(void);
+
+    int getState(void);
+    void setState(void);
 };
 
 

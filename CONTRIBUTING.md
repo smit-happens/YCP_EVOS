@@ -15,6 +15,7 @@
 
 ### Pull Requests
 
+* If commits don't reference at least one issue #, a PR will be denied until comments with issue # are added to the applicable commits
 * Do not include issue numbers in the PR title
 * Include screenshots and animated GIFs in your pull request whenever possible.
 
@@ -22,7 +23,7 @@
 
 ### Git Commit Messages
 
-* Must include an issue reference in the first line
+#### Must include an issue reference in the first line
 * Use the present tense ("Add feature" not "Added feature")
 * Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
 * Limit the first line to 72 characters or less

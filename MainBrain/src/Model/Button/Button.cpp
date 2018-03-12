@@ -28,6 +28,26 @@ Button::Button(void)
 
 
 /** 
+ * @brief  Button destructor
+ */
+Button::~Button(void)
+{
+    
+}
+
+
+/** 
+ * @brief  
+ * @note   TODO: fill this out
+ * @retval None
+ */
+void Button::update(void)
+{
+    
+}
+
+
+/** 
  * @brief  Identifying name for the Button
  * @note   This might need to be refactored into using some struct or something (similar to Light.cpp)
  * @retval Name of the particular Button

@@ -9,13 +9,17 @@
 #ifndef LIGHT_HPP
 #define LIGHT_HPP
 
-#include <Arduino.h>
-#include "../Constants/Port.hpp"
+#include "../BaseModel/BaseModel.hpp"
 
-class Light
+
+class Light : public BaseModel
 {
 public:
     Light(void);
+    ~Light(void);
+
+    void update(void);
+
 
     String getName(void);
 
