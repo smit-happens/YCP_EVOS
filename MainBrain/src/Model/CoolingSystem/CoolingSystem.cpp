@@ -14,41 +14,33 @@
  */
 CoolingSystem::CoolingSystem(void)
 {
+    //Cooling pump control
+    pinMode(MB_PUMP_CTRL, OUTPUT);
+
+    //initializing the temperature values
+    _inletTemperature  = 0;
+    _outletTemperature = 0;
+}
+
+
+/** 
+ * @brief  CoolingSystem destructor
+ */
+CoolingSystem::~CoolingSystem(void)
+{
 
 }
 
 
 /** 
- * @brief  Radiator coolant input temperature
- * @note   Figure out the conversion from the raw data to Celcius
- * @retval Temperature of coolant input in Celsius
+ * @brief  Retrieves and stores the value of the 2 temperature sensors
+ * @note   
+ * @retval None
  */
-float CoolingSystem::getRadiatorTempIn(void)
+void CoolingSystem::update(void)
 {
-    return 0.0;
-}
-
-
-/** 
- * @brief  Radiator coolant output temperature
- * @note   Figure out the conversion from the raw data to Celcius
- * @retval Temperature of coolant output in Celsius
- */
-float CoolingSystem::getRadiatorTempOut(void)
-{
-    return 0.0;
-}
-
-
-/** 
- * @brief  Retrieves raw analog coolant input value from port
- * @note   Might just combine this into the getRadiatorTempIn/Out depending on how
- *         much math is needed or if the raw value is even necessary 
- * @retval Raw sensor value
- */
-float CoolingSystem::getRadiatorTempInVal(void)
-{
-    return 0.0;
+    _inletTemperature  = analogRead(MB_RAD_INLET_TEMP);
+    _outletTemperature = analogRead(MB_RAD_OUTLET_TEMP);
 }
 
 
@@ -58,7 +50,19 @@ float CoolingSystem::getRadiatorTempInVal(void)
  *         much math is needed or if the raw value is even necessary  
  * @retval Raw sensor value
  */
-float CoolingSystem::getRadiatorTempOutVal(void)
+uint16_t CoolingSystem::getInletValue(void)
 {
-    return 0.0;
+    return _inletTemperature;
+}
+
+
+/** 
+ * @brief  Retrieves raw analog coolant input value from port
+ * @note   Might just combine this into the getRadiatorTempIn/Out depending on how
+ *         much math is needed or if the raw value is even necessary 
+ * @retval Raw sensor value
+ */
+uint16_t CoolingSystem::getOutletValue(void)
+{
+    return _outletTemperature;
 }

@@ -12,13 +12,16 @@
 
 #include "../BaseController/BaseController.hpp"
 #include "../../Model/Can/Can.hpp"
+#include "../../Model/Constants/RegistersOrion.hpp"
+#include "../../Model/Constants/RegistersUnitek.hpp"
 
 
 class CanController : public BaseController
 {
 public:
-    CanController(void);
     ~CanController(void);
+
+    static CanController*   getInstance();
 
     void init(void);
     void poll(void);
@@ -37,6 +40,15 @@ public:
     void parse(void);
 
 private:
+    //Private contstructor so that it can't be called
+    CanController() {};
+    //copy constructor is private
+    CanController(CanController const&) {};
+
+    //static instance pointer
+    static CanController* _pInstance;
+
+    //private instance of model
     Can* canModel;
     
 };

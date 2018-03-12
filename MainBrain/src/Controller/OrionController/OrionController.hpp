@@ -13,23 +13,28 @@
 #include "../../Model/Orion/Orion.hpp"
 
 
-class OrionController
+class OrionController : public BaseController
 {
 public:
-    OrionController();
     ~OrionController(void);
+
+    static OrionController*   getInstance();
 
     void init(void);
     void poll(void);
     void shutdown(void);    //TODO: implement
 
 
-    /**  
-     * Drafting up possible functions
-     * 
-     * 
-     */
 private:
+    //Private contstructor so that it can't be called
+    OrionController() {};
+    //copy constructor is private
+    OrionController(OrionController const&) {};
+
+    //static instance pointer
+    static OrionController* _pInstance;
+
+    //private instance of model
     Orion* orionModel;
 
 };

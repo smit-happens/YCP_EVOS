@@ -15,7 +15,7 @@
  */
 SdCard::SdCard(void)
 {
-
+    storageCard = new SdFatSdioEX();
 }
 
 

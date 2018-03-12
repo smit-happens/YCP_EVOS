@@ -9,13 +9,16 @@
 #ifndef ORION_HPP
 #define ORION_HPP
 
-#include <Arduino.h>
-#include "OrionRegisters.hpp"
+#include "../BaseModel/BaseModel.hpp"
+#include "../Constants/RegistersOrion.hpp"
 
-class Orion
+class Orion : public BaseModel
 {
 public:
     Orion(void);
+    ~Orion(void);
+
+    void update(void);
 
     float getVoltageTotal(void);
     float getVoltageAverage(void);

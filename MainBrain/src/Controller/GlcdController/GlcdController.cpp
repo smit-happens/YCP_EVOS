@@ -7,16 +7,23 @@
  */
 
 #include "GlcdController.hpp"
-#include "../../Manager/ControllerManager/ControllerManager.hpp"
 
 
+//to see if the instance of the class has been initialized yet
+GlcdController* GlcdController::_pInstance = NULL; 
 
 /** 
- * @brief  GlcdController constructor
+ * @brief  Used to maintain the singleton format
+ * @note   
+ * @retval 
  */
-GlcdController::GlcdController(void)
+GlcdController* GlcdController::getInstance()
 {
-    glcdModel = new Glcd();
+    // Only allow one instance of class to be generated.
+    if (!_pInstance)
+        _pInstance = new GlcdController();
+
+    return _pInstance;
 }
 
 
@@ -38,7 +45,7 @@ GlcdController::~GlcdController(void)
  */
 void GlcdController::init(void)
 {
-
+    glcdModel = new Glcd();
 }
 
 
