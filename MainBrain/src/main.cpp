@@ -68,6 +68,9 @@ int main(void)
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWriteFast(LED_BUILTIN, 1);
 
+    //Configure registers
+    //Setting the analog read resolution to the maximum of the Teensy 3.6 (13 bit)
+    analogReadResolution(13);
 
     //Bootup stage functions (anything var declared in an if/else falls out of scope afterward)
         //Calling init functions for each controller
@@ -83,9 +86,7 @@ int main(void)
         sdCardC->init();
         batlogC->init();
 
-        //Configure registers
-            //Setting the analog read resolution to the maximum of the Teensy 3.6 (13 bit)
-            analogReadResolution(13);
+
 
         //timer configuration
             //DO NOT START TIMERS HERE
