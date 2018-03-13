@@ -103,6 +103,12 @@ float PedalController::getPercentageGas(void)
  */
 bool PedalController::isImplausibilityGas(void)
 {
+    /* Three implausibility conditions:
+        1. Signal shorted to GND (signal < minValue)
+        2. Signal shorted to Vcc (signal > maxValue)
+        3. Potentiometer disconnected (signal < minValue)
+    */
+    
     return false;   // TODO: Implement
 }
 
