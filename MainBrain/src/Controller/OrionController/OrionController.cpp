@@ -69,3 +69,13 @@ void OrionController::shutdown(void)
 {
     
 }
+
+/** 
+ * @brief  gets total pack voltage for 90% pre-charge setting
+ * @note   need to determine output type of orion
+ * @retval total voltage of all batteries
+ */
+float OrionController::getPackVoltage(void)
+{
+    return 0.0;
+}

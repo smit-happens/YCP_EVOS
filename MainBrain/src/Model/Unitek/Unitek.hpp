@@ -154,6 +154,7 @@ class Unitek : public BaseModel
 {
 public:
     const int MAX_VALUE = 32767;  //0x7FFF
+    const int VOLTAGE_MAX = 800;  // used for 90% charge setting calculation
 
     Unitek(void);
     ~Unitek(void);
