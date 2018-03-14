@@ -50,12 +50,9 @@ void PedalController::init(void)
     brakeModel = new BrakePedal();
     gasModel = new GasPedal();
 
-    // Determine resting position of gas pedal
-    //gasModel->setOrigin;
-    gasModel->setOrigin();
-    gasOrigin = getOriginGas();
-
-
+    // Determine resting position of pedals
+    gasModel->setRawOrigin();
+    brakeModel->setRawOrigin();
 }
 
 
@@ -89,10 +86,12 @@ void PedalController::shutdown(void)
  */
 float PedalController::getPercentageGas(void)
 {
-    uint16_t linValue = gasModel->getLinValue();
-    uint16_t logValue = gasModel->getLogValue();
+    float percentageValue = gasModel->getRawValue();
+    //gasModel->getRawOrigin();
 
-    return 0.0; //TODO: Finish
+    //TODO: calculate pedal position and subtract the origin
+
+    return percentageValue; //TODO: Finish
 }
 
 
@@ -103,6 +102,12 @@ float PedalController::getPercentageGas(void)
  */
 bool PedalController::isImplausibilityGas(void)
 {
+    /* Three implausibility conditions:
+        1. Signal shorted to GND (signal < minValue)
+        2. Signal shorted to Vcc (signal > maxValue)
+        3. Potentiometer disconnected (signal < minValue)
+    */
+    
     return false;   // TODO: Implement
 }
 
@@ -126,19 +131,4 @@ float PedalController::getPercentageBrake(void)
 bool PedalController::isImplausibilityBrake(void)
 {
     return false;   //TODO: Implement
-}
-
-
-/** 
- * @brief  Executed once to calculate the origin of the gas pedal in percent
- * @note   getPercentageGas() calculates the pedal position and subtracts the origin calculated here
- * @retval origin value of the gas pedal in percent
- */
-float PedalController::getOriginGas() {
-    uint16_t gasLinOrigin = gasModel->getLinOrigin();
-    uint16_t gasLogOrigin = gasModel->getLogOrigin();
-
-
-
-    return 0.0; //TODO: Implement
 }

@@ -37,19 +37,13 @@ private:
     //copy constructor is private
     PedalController(PedalController const&) {};
 
-    //Only the Pedal Controller cares about the origin of the pedals
-    float getOriginGas();
-    float gasOrigin;
-    int brakeOrigin;
-
     //static instance pointer
     static PedalController* _pInstance;
+
 
     //private instance of models
     BrakePedal* brakeModel;
     GasPedal* gasModel;
-
-
 
 };
 
