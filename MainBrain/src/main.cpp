@@ -169,6 +169,9 @@ int main(void)
         {
             case StageManager::STAGE_STANDBY:
 
+                //initial one-time configuration for standby stage
+                localStage.configureStandby();
+
                 //looping through the events of varying priorities
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
@@ -193,6 +196,9 @@ int main(void)
 
             case StageManager::STAGE_PRECHARGE:
 
+                //initial one-time configuration for precharge stage
+                localStage.configurePrecharge();
+
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
                     localStage.processEventsPrecharge(localEventFlags, (Priority)priorityIterator);
@@ -215,6 +221,9 @@ int main(void)
 
             case StageManager::STAGE_ENERGIZED:
 
+                //initial one-time configuration for energized stage
+                localStage.configureEnergized();
+
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
                     localStage.processEventsEnergized(localEventFlags, (Priority)priorityIterator);
@@ -236,6 +245,9 @@ int main(void)
 
 
             case StageManager::STAGE_DRIVING:
+
+                //initial one-time configuration for driving stage
+                localStage.configureDriving();
 
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {

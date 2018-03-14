@@ -154,6 +154,45 @@ uint32_t StageManager::processSdCard(Stage currentStage)
  */
 uint32_t StageManager::processUnitek(Stage currentStage)
 {
+    
+    switch(currentStage){
+        case STAGE_BOOTUP:
+
+        break;
+
+        case STAGE_SELF_TEST:
+
+        break;
+
+        case STAGE_SUBSYSTEM_TEST:
+
+        break;
+
+        case STAGE_STANDBY:
+
+        break;
+
+        case STAGE_PRECHARGE:
+            
+        break;
+
+        case STAGE_ENERGIZED:
+
+        break;
+
+        case STAGE_DRIVING:
+
+        break;
+
+        case STAGE_LAUNCH:
+
+        break;
+
+        case STAGE_SHUTDOWN:
+
+        break;
+    }
+
     return 0;
 }
 
@@ -209,6 +248,172 @@ uint32_t StageManager::processLaunch(Stage currentStage)
 uint32_t StageManager::processShutdown(Stage currentStage)
 {
     return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  currentStage: 
+ * @retval None
+ */
+void StageManager::resetAllStagesExcept(Stage currentStage)
+{
+    //initially setting all the stage configurations to false, then "enabling" the current Stage
+    isStandbyConfigured = false;
+    isPrechargeConfigured = false;
+    isEnergizedConfigured = false;
+    isDrivingConfigured = false;
+    isLaunchConfigured = false;
+
+
+    //checking which stage we're currently in (same as which stage is configured correctly)
+    switch(currentStage)
+    {
+        //Standby stage is configured
+        case Stage::STAGE_STANDBY:
+            isStandbyConfigured = true;
+        break;
+
+        
+        //Precharge stage is configured
+        case Stage::STAGE_PRECHARGE:
+            isPrechargeConfigured = true;
+        break;
+
+
+        //Energized stage is configured
+        case Stage::STAGE_ENERGIZED:
+            isEnergizedConfigured = true;
+        break;
+
+
+        //Driving stage is configured
+        case Stage::STAGE_DRIVING:
+            isDrivingConfigured = true;
+        break;
+
+
+        //Launch stage is configured
+        case Stage::STAGE_LAUNCH:
+            isLaunchConfigured = true;
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+}
+
+
+/** 
+ * @brief  Contains the initial configuration steps for the standby stage
+ * @note   
+ * @retval None
+ */
+void StageManager::configureStandby(void)
+{
+
+    //check to make sure this hasn't been ran before for this stage
+    if(isStandbyConfigured == false)
+    {
+        //set variable to "configured"
+        resetAllStagesExcept(Stage::STAGE_STANDBY);
+
+        //TODO: Standby setup code
+
+
+    }
+}
+
+
+/** 
+ * @brief  Contains the initial configuration steps for the precharge stage
+ * @note   
+ * @retval None
+ */
+void StageManager::configurePrecharge(void)
+{
+
+    //check to make sure this hasn't been ran before for this stage
+    if(isPrechargeConfigured == false)
+    {
+        //set variable to "configured"
+        resetAllStagesExcept(Stage::STAGE_PRECHARGE);
+
+        //TODO: Precharge setup code
+        
+        //set 90% charge
+        float batteryVoltage=OrionController::getInstance()->getPackVoltage();
+        uint16_t charge90Numeric=UnitekController::getInstance()->calculate90Charge(batteryVoltage);
+        CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
+        
+
+    }
+}
+
+
+/** 
+ * @brief  Contains the initial configuration steps for the energized stage
+ * @note   
+ * @retval None
+ */
+void StageManager::configureEnergized(void)
+{
+
+    //check to make sure this hasn't been ran before for this stage
+    if(isEnergizedConfigured == false)
+    {
+        //set variable to "configured"
+        resetAllStagesExcept(Stage::STAGE_ENERGIZED);
+
+        //TODO: Energized setup code
+        
+
+    }
+}
+
+
+/** 
+ * @brief  Contains the initial configuration steps for the driving stage
+ * @note   
+ * @retval None
+ */
+void StageManager::configureDriving(void)
+{
+
+    //check to make sure this hasn't been ran before for this stage
+    if(isDrivingConfigured == false)
+    {
+        //set variable to "configured"
+        resetAllStagesExcept(Stage::STAGE_DRIVING);
+
+        //TODO: Driving setup code
+        
+
+    }
+}
+
+
+/** 
+ * @brief  Contains the initial configuration steps for the launch stage
+ * @note   
+ * @retval None
+ */
+void StageManager::configureLaunch(void)
+{
+
+    //check to make sure this hasn't been ran before for this stage
+    if(isLaunchConfigured == false)
+    {
+        //set variable to "configured"
+        resetAllStagesExcept(Stage::STAGE_LAUNCH);
+
+        //TODO: Launch setup code
+        
+
+    }
 }
 
 

@@ -23,6 +23,7 @@ public:
     void init(void);
     void poll(void);
     void shutdown(void);    //TODO: implement
+    float getPackVoltage(void);
 
 
 private:
