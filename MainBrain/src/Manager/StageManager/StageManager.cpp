@@ -154,6 +154,50 @@ uint32_t StageManager::processSdCard(Stage currentStage)
  */
 uint32_t StageManager::processUnitek(Stage currentStage)
 {
+    
+    switch(currentStage){
+        case STAGE_BOOTUP:
+
+        break;
+
+        case STAGE_SELF_TEST:
+
+        break;
+
+        case STAGE_SUBSYSTEM_TEST:
+
+        break;
+
+        case STAGE_STANDBY:
+
+        break;
+
+        case STAGE_PRECHARGE:
+        {
+            //set 90% charge - needs to be moved to one run configure function
+            float batteryVoltage=OrionController::getInstance()->getPackVoltage();
+            uint16_t charge90Numeric=UnitekController::getInstance()->calculate90Charge(batteryVoltage);
+            CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
+        }
+        break;
+
+        case STAGE_ENERGIZED:
+
+        break;
+
+        case STAGE_DRIVING:
+
+        break;
+
+        case STAGE_LAUNCH:
+
+        break;
+
+        case STAGE_SHUTDOWN:
+
+        break;
+    }
+
     return 0;
 }
 

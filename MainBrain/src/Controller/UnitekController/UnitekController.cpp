@@ -97,10 +97,16 @@ float UnitekController::calculateRpm(int speedValue)
     return percentage * unitekModel->getRpmLimit();
 }
 
+/** 
+ * @brief  calculate the numerical 90 charge to send to MC
+ * @note   
+ * @param  batteryVoltage: total battery voltage 
+ * @retval numeric value for 90% charge
+ */
 uint16_t UnitekController::calculate90Charge(float batteryVoltage)
 {
-    float batteryPercent=batteryVoltage/(float)800; //batteryPercent is based off of internal unitek where 32767=2*VMains
-    float batteryVoltageNumeric=batteryPercent*(float)32767;    //batteryVoltageNumeric gives the battery voltage on scale of 0-32767
+    float batteryPercent=batteryVoltage/(float)unitekModel->VOLTAGE_MAX; //batteryPercent is based off of internal unitek where 32767=2*VMains
+    float batteryVoltageNumeric=batteryPercent*(float)unitekModel->MAX_VALUE;    //batteryVoltageNumeric gives the battery voltage on scale of 0-32767
     float percent90Charge=0.9*batteryVoltageNumeric;            //finds 90% of numeric battery voltage
     return (int)percent90Charge;
 }
