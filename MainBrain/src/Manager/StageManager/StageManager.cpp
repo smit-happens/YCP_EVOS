@@ -173,12 +173,7 @@ uint32_t StageManager::processUnitek(Stage currentStage)
         break;
 
         case STAGE_PRECHARGE:
-        {
-            //set 90% charge - needs to be moved to one run configure function
-            float batteryVoltage=OrionController::getInstance()->getPackVoltage();
-            uint16_t charge90Numeric=UnitekController::getInstance()->calculate90Charge(batteryVoltage);
-            CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
-        }
+            
         break;
 
         case STAGE_ENERGIZED:
@@ -348,6 +343,11 @@ void StageManager::configurePrecharge(void)
         resetAllStagesExcept(Stage::STAGE_PRECHARGE);
 
         //TODO: Precharge setup code
+        
+        //set 90% charge
+        float batteryVoltage=OrionController::getInstance()->getPackVoltage();
+        uint16_t charge90Numeric=UnitekController::getInstance()->calculate90Charge(batteryVoltage);
+        CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
         
 
     }
