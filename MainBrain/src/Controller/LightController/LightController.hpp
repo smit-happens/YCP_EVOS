@@ -6,8 +6,8 @@
  * A longer description.
  */
 
-#ifndef LightController_HPP
-#define LightController_HPP
+#ifndef LIGHTCONTROLLER_HPP
+#define LIGHTCONTROLLER_HPP
 
 #include "../BaseController/BaseController.hpp"
 #include "../../Model/Light/Light.hpp"

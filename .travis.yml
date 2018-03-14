@@ -34,7 +34,10 @@ cache:
         - "~/.platformio"
 
 env:
+  global:
     - PLATFORMIO_CI_SRC=MainBrain/src/
+    - secure: PT/yrofGQmhzTc1XmGh3JpaVIyskiW7EIW6M7Sudfzl7Pv/NT5qe4U9IWBT1yynGgRheJeTjUVyft9Fq5dGSPckH+BuihGZcZlKdQWelHxX4jekgkIo5j91XUut9NUOoFI3+CaopbLUx7Kx0Zjv0UlY/vi3C5ucf3WtupYEiCUlJJNAWfoIbrfDHbUsdsCI+weVySb7d9DNBc7q7NvFV/R9/P0MqdG+lkY7Ns76WgPTYNlJCLFEi17u5jbtNOf6ffmZht/RCbp2M+sl7WF3WMGjalNweMlJF3QZ+tPqqsUN/Zh1W3cQv1H1iNqQwuaNUTudTQHiUbfNV5PI+DwkfUs8c2BAU6a60tGviE44MNUaFruuDz60UiETON4XHSUcfUQxrkcMCYombcltfs6tJWkHT3KpsLrcKJCIPtsmaYM4beVIuwTfs6iom9TWJTNsQmRHV7/Lzpf9DVBViOX31/SWS/+CcDFzZMdXLmjpeNP4fPQ9D68PUQyRzcP2xLpz0JQyHDyX9Wq1n/yVccHJ7JmqqWHwBXhR0tBaFk5AdlagNT/Y5j/QQe0M+JJJ1a1diaeol58qgkA/iiGeUD7s6u2WsXs/+BHIkdtE7wD6nR2rgC0jdxayxSZ915fjvyCTbgiwA1pc7Umjm6ZdWmnqKcWuDJliWKSlNSjS8q5sNJtU=
+
 
 install:
     - pip install -U platformio
@@ -46,10 +49,21 @@ install:
     - platformio lib -g install 322
 
 script:
+    - echo "Building project for Teensy 3.6"
     - platformio ci --board=teensy36
 
+    - echo "List remote devices"
+    - platformio remote device list
+
+    - echo "Run embedded test on remote Teensy 3.6"
+    - platformio remote test --project-dir MainBrain/
+
 notifications:
-    slack: electriccarteam:asuKUGdj8PTljANmYngSspek
+    slack: 
+        rooms: 
+            - electriccarteam:asuKUGdj8PTljANmYngSspek#builds
+        on_success: change
+        on_failure: always
 
 
 #

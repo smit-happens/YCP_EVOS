@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.windows": {
+        "PATH": "C:\\Users\\student\\.platformio\\penv\\Scripts;C:\\Users\\student\\.platformio\\penv;C:\\ProgramData\\Oracle\\Java\\javapath;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\ATI Technologies\\ATI.ACE\\Core-Static;C:\\Program Files\\PuTTY\\;C:\\Program Files (x86)\\PuTTY\\;C:\\Program Files\\Git\\cmd;;C:\\Program Files\\Microsoft VS Code\\bin;C:\\ProgramData\\Oracle\\Java\\javapath;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\ATI Technologies\\ATI.ACE\\Core-Static;C:\\Program Files\\PuTTY\\;C:\\Program Files (x86)\\PuTTY\\;C:\\Program Files\\Git\\cmd;;C:\\Program Files\\Microsoft VS Code\\bin",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}
