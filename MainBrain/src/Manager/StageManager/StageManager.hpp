@@ -31,17 +31,33 @@ public:
         STAGE_SHUTDOWN
     };
 
+    //used to determine if a stage needs to be configured or not
+    bool isStandbyConfigured = false;
+    bool isPrechargeConfigured = false;
+    bool isEnergizedConfigured = false;
+    bool isDrivingConfigured = false;
+    bool isLaunchConfigured = false;
+
     StageManager();
 
     //handles the various timers we'll be using and setting Task Flags (TFs) based on them
     uint32_t processTimers(Stage currentStage);
 
-    //handles the excecution of the 
+    //handles the excecution of the various stages
     Stage processEventsStandby(uint32_t &localEventFlags, Priority urgencyLevel);
     Stage processEventsPrecharge(uint32_t &localEventFlags, Priority urgencyLevel);
     Stage processEventsEnergized(uint32_t &localEventFlags, Priority urgencyLevel);
     Stage processEventsDriving(uint32_t &localEventFlags, Priority urgencyLevel);
 
+    //contains code that is executed once at the beginning of a stage
+    void configureStandby(void);
+    void configurePrecharge(void);
+    void configureEnergized(void);
+    void configureDriving(void);
+    void configureLaunch(void);
+
+    //for correctly setting the next stage based off the current one
+    // void transitionStageToFrom(Stage nextStage, Stage currentStage);
 
 
 private:
@@ -67,11 +83,15 @@ private:
     uint32_t processSdCard(Stage currentStage);
     uint32_t processUnitek(Stage currentStage);
     uint32_t processBatlog(Stage currentStage);
+
     uint32_t processStandby(Stage currentStage);
     uint32_t processPrecharge(Stage currentStage);
     uint32_t processReadyToDrive(Stage currentStage);
     uint32_t processLaunch(Stage currentStage);
     uint32_t processShutdown(Stage currentStage);
+
+    //for making sure that all the stages except the currently executing one needs to be reconfigured
+    void resetAllStagesExcept(Stage currentStage);
 
 };
 
