@@ -14,10 +14,7 @@
  */
 BrakePedal::BrakePedal(void)
 {
-    //FIXME: will have to enable this eventually, commented out to keep pin 13 as a status light
-    // pinMode(MB_BRAKE_OVERTRAVEL, INPUT);
-
-    _linValue = 0;
+    pinMode(MB_BRAKE_OVERTRAVEL, INPUT);
 }
 
 
@@ -37,16 +34,16 @@ BrakePedal::~BrakePedal(void)
  */
 void BrakePedal::update(void)
 {
-    _linValue = analogRead(MB_BRAKE);
+    _rawValue = analogRead(MB_BRAKE);
 }
 
 
 /** 
- * @brief  Retrieves the value of the Linear Potentiometer
- * @note   value of 0-8195
- * @retval Analog voltage sensed
+ * @brief  Retrieves and stores the origin of the Linear Potentiometer
+ * @note   
+ * @retval None
  */
-uint16_t BrakePedal::getLinValue(void)
+void BrakePedal::setRawOrigin(void)
 {
-    return _linValue;
+    _rawOrigin = analogRead(MB_BRAKE);
 }
