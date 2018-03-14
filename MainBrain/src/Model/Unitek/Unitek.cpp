@@ -63,12 +63,12 @@ int Unitek::getSpeedValue(void)
 /** 
  * @brief  Sets the speed value register in the Unitek, or throws an exception (due to CAN?)
  * @note   Affected by the GasPedal class
- * @param  userSpeedVal: Requested speed value to set in Unitek
+ * @param  userSpeedVal: Requested speed value to set in Unitek (calculated by calculateSpeedSetPoint in CanController)
  * @retval None
  */
 void Unitek::setSpeedValue(int userSpeedVal)
 {
-    
+    speedCmdValBeforeRampReg_0x31=userSpeedVal;
 }
 
 
