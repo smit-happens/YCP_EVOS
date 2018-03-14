@@ -73,7 +73,7 @@ void CanController::poll(void)
  * @param  pollTime: Time for polling interval (or REG_HALTPOLL)
  * @retval None
  */
-void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
+void CanController::sendUnitekRead(const int regId, uint8_t pollTime)
 {
     //initializing and constructing the CAN message for the Unitek
     CAN_message_t unitekMessage;
@@ -103,13 +103,13 @@ void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
  * @param  buf2: upper 8 bits of value
  * @retval None
  */
-void CanController::sendUnitekWrite(uint8_t regID, uint8_t buf1, uint8_t buf2){
+void CanController::sendUnitekWrite(const int regId, uint8_t buf1, uint8_t buf2){
     //intializing and constructing the CAN message 
     CAN_message_t canMessage;
 
     canMessage.id=canModel->UNITEKSENDID;
     canMessage.len=3;
-    canMessage.buf[0]=regID;
+    canMessage.buf[0]=regId;
     canMessage.buf[1]=buf2;
     canMessage.buf[2]=buf1;
 
