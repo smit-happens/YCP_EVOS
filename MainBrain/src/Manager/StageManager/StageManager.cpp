@@ -16,8 +16,8 @@
 StageManager::StageManager(void)
 {
     timerList = new Timer[TIMER_NUM];
-    timerList[0].limit = LED_1_POLL;
-    timerList[1].limit = LED_2_POLL;
+    timerList[0].limit = ;
+    timerList[1].limit = POLL_TIME_BRAKE;
     
 
     //initializing the variables in the Timer array
@@ -894,7 +894,8 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
 
         case PRIORITY_LOW:
-            //code here
+            
+            //
             if(localEventFlags && TF_PEDAL)
             {
                 processPedal(currentStage);
