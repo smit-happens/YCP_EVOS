@@ -105,8 +105,8 @@ float UnitekController::calculateRpm(int speedValue)
  */
 uint16_t UnitekController::calculateSpeedSetPoint(float percent)
 {
-    float rpmSetPoint=(float)unitekModel->MAX_VALUE*percent;
-    return (int)rpmSetPoint;
+    int rpmSetPoint=unitekModel->MAX_VALUE*percent;
+    return rpmSetPoint;
 }
 
  /** @brief  calculate the numerical 90 charge to send to MC

@@ -22,8 +22,6 @@ public:
 
     void setRawOrigin(void);
 
-    const int MAX_ANALOGREAD = 8191;    //(2^13)-1
-
 };
 
 #endif  //GASPEDAL_HPP
