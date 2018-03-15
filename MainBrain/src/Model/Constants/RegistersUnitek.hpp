@@ -27,7 +27,7 @@ const int REG_HVBUS     = 0xEB;  //[0:15] HV Bus voltage
 
 //Speed related registers
 const int REG_SPEEDVAL  = 0x31;  //(SP) [0:15] Speed (in RPM) from 0-100% (0-7FFF) of RPM limit (0x59)
-const int REG_SPEEDLIM  = 0xC8;  //(RW) [0:15] 100% Speed limit (in RPM) max will be 6000rpm
+const int REG_SPEEDLIM  = 0xC8;  //(RW) [0:15] 100% Speed limit (in RPM) max will be 6600rpm
 const int REG_SPEEDRN   = 0x30;  //[0:15] Current speed value right now (RN)
 
 //Digital input/output states
