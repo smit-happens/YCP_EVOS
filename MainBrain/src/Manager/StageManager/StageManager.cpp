@@ -16,8 +16,9 @@
 StageManager::StageManager(void)
 {
     timerList = new Timer[TIMER_NUM];
-    timerList[0].limit = ;
-    timerList[1].limit = POLL_TIME_BRAKE;
+    timerList[0].limit = POLL_TIME_GLCD;
+    timerList[1].limit = POLL_TIME_SDCARD;
+    timerList[2].limit = POLL_TIME_PEDAL;
     
 
     //initializing the variables in the Timer array
