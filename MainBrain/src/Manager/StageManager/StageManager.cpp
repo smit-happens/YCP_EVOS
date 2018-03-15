@@ -181,7 +181,13 @@ uint32_t StageManager::processUnitek(Stage currentStage)
         break;
 
         case STAGE_DRIVING:
-
+        {
+            //set RPM Setpoint in MC
+            float pedalPercent=PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
+            uint16_t numericSpeedSetPoint=UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
+            //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
+            CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
+        }
         break;
 
         case STAGE_LAUNCH:
