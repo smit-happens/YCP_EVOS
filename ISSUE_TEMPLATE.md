@@ -8,7 +8,7 @@ To Use this Template:
 ## End goal
 
 
-## Relavent Info/Links
+## Relevant Info/Links
 
 
 #### Your Code
