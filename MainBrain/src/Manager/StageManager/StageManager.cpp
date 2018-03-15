@@ -690,11 +690,20 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
         case PRIORITY_LOW:
             //code here
+            if(localEventFlags && TF_PEDAL)
+            {
+                processPedal(currentStage);
+
+                //clearing the Flag so we don't trigger this again
+                localEventFlags &= ~TF_PEDAL;
+            }
+
+
             if(localEventFlags && TF_GLCD)
             {
                 processGlcd(currentStage);
                 
-                //clearing the EF so we don't trigger this again
+                //clearing the Flag so we don't trigger this again
                 localEventFlags &= ~TF_GLCD;
             }
 
@@ -703,7 +712,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
             {
                 processSdCard(currentStage);
                 
-                //clearing the EF so we don't trigger this again
+                //clearing the Flag so we don't trigger this again
                 localEventFlags &= ~TF_SDCARD;
             }
 
