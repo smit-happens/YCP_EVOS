@@ -121,3 +121,14 @@ uint16_t UnitekController::calculate90Charge(float batteryVoltage)
     float percent90Charge=0.9*batteryVoltageNumeric;            //finds 90% of numeric battery voltage
     return (int)percent90Charge;
 }
+
+/** 
+ * @brief  used to store the recieved speed value from CAN
+ * @note   
+ * @param  RpmSpeed: recieved numeric value from MC that is converted to RPMs using calculateRPM
+ * @retval None
+ */
+void  UnitekController::storeRpmSpeedValue(float RpmSpeed)
+{
+    unitekModel->setSpeedValueFromUnitek(RpmSpeed);
+}

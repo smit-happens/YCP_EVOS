@@ -50,13 +50,13 @@ int Unitek::getRpmLimit(void)
 
 
 /** 
- * @brief  Retrieves the current speed value set in the Unitek MC
- * @note   Might get called after setting the speed value as a confirmation step
+ * @brief  Retrieves the current speed value we will set in the MC
+ * @note   Might be used in order to monitor speed setpoint versus actual speed
  * @retval Current speed value set in the Unitek MC
  */
-int Unitek::getSpeedValue(void)
+int Unitek::getSpeedValueForUnitek(void)
 {
-    return 0;
+    return speedCmdValBeforeRampReg_0x31;
 }
 
 
@@ -66,9 +66,30 @@ int Unitek::getSpeedValue(void)
  * @param  userSpeedVal: Requested speed value to set in Unitek (calculated by calculateSpeedSetPoint in CanController)
  * @retval None
  */
-void Unitek::setSpeedValue(int userSpeedVal)
+void Unitek::setSpeedValueForUnitek(int userSpeedVal)
 {
     speedCmdValBeforeRampReg_0x31=userSpeedVal;
+}
+
+/** 
+ * @brief  gets the current speed value from the MC
+ * @note   used to measure rpms of motor and display to dash
+ * @retval returns current value stored in MC for actual RPM
+ */
+int Unitek::getSpeedValueFromUnitek(void)
+{
+    return speedValRnReg_0x30;
+}
+
+/** 
+ * @brief   sets the current speed value that is gathered from the MC
+ * @note   will be used once a can message is recieved from the MC with an RPM value
+ * @param  recSpeedValue: received speed value from MC (must be converted to RPMs)
+ * @retval None
+ */
+void Unitek::setSpeedValueFromUnitek(int recRpmSpeedValue)
+{
+    speedValRnReg_0x30=recRpmSpeedValue;
 }
 
 
@@ -79,7 +100,7 @@ void Unitek::setSpeedValue(int userSpeedVal)
  */
 float Unitek::getTemperatureMotorLimit(void)
 {
-    return 0.0;
+    return MAX_VALUE;
 }
 
 
@@ -90,7 +111,7 @@ float Unitek::getTemperatureMotorLimit(void)
  */
 float Unitek::getTemperatureMotor(void)
 {
-    return 0.0;
+    return tempMotorReg_0x49;
 }
 
 
@@ -101,7 +122,7 @@ float Unitek::getTemperatureMotor(void)
  */
 float Unitek::getTemperatureOutputStage(void)
 {
-    return 0.0;
+    return tempOutputStageMCReg_0x4A;
 }
 
 
@@ -112,7 +133,7 @@ float Unitek::getTemperatureOutputStage(void)
  */
 float Unitek::getTemperatureInterior(void)
 {
-    return 0.0;
+    return tempInteriorMCReg_0x4B;
 }
 
 

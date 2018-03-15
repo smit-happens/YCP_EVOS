@@ -163,8 +163,11 @@ public:
 
     int getRpmLimit(void);
 
-    int getSpeedValue(void);
-    void setSpeedValue(int userSpeedVal);
+    int getSpeedValueForUnitek(void);
+    void setSpeedValueForUnitek(int userSpeedVal);
+
+    int getSpeedValueFromUnitek(void);
+    void setSpeedValueFromUnitek(int recSpeedValue);
 
     float getTemperatureMotorLimit(void);   //These functions might require a convertToCelsius() funct
     float getTemperatureMotor(void);
@@ -212,11 +215,12 @@ private:
     bool     I_RunReg_0xE8;                 //Lazy
     uint8_t  goStatusReg_0xE3;              //Lazy
     uint16_t hvBusVoltageReg_0xEB;          //Active
-    uint16_t speedCmdValBeforeRampReg_0x31; //Active
-    uint16_t speedValRnReg_0x30;            //Active
+    uint16_t speedCmdValBeforeRampReg_0x31; //Active - 
+    uint16_t speedValRnReg_0x30;            //Active -
     uint16_t tempMotorReg_0x49;             //Active
     uint16_t tempOutputStageMCReg_0x4A;     //Active
     uint16_t tempInteriorMCReg_0x4B;        //Active
+    uint16_t tempLimitMotorReg_0xA3;        //
 
 };
 
