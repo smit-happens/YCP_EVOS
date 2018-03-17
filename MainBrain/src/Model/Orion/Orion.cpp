@@ -15,7 +15,27 @@
  */
 Orion::Orion(void)
 {
+    pinMode(MB_BMS_STATUS, INPUT);
+}
 
+
+/** 
+ * @brief  Orion destructor
+ */
+Orion::~Orion(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   TODO: implement
+ * @retval None
+ */
+void Orion::update(void)
+{
+    
 }
 
 

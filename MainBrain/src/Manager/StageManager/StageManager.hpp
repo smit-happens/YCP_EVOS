@@ -9,9 +9,9 @@
 #ifndef STAGEMANAGER_HPP
 #define STAGEMANAGER_HPP
 
-#include "../ControllerManager/ControllerManager.hpp"
-#include "EventMasks.hpp"
+#include "../../Controller/Controller.hpp"
 #include "../../Model/Constants/TimeDelay.hpp"
+#include "../../Model/EventTask/EventTask.hpp"
 
 
 class StageManager
@@ -20,37 +20,27 @@ public:
 
     enum Stage
     {
-        BOOTUP,
-        SELF_TEST,
-        SUBSYSTEM_TEST,
-        STANDBY,
-        PRECHARGE,
-        DRIVE,
-        LAUNCH,
-        SHUTDOWN
+        STAGE_BOOTUP,
+        STAGE_SELF_TEST,
+        STAGE_SUBSYSTEM_TEST,
+        STAGE_STANDBY,
+        STAGE_PRECHARGE,
+        STAGE_ENERGIZED,
+        STAGE_DRIVING,
+        STAGE_LAUNCH,
+        STAGE_SHUTDOWN
     };
 
     StageManager();
 
     //handles the various timers we'll be using and setting Task Flags (TFs) based on them
-    uint16_t processTimers(void);
+    uint32_t processTimers(Stage currentStage);
 
-    //the following functions might eventually take a TF as an input param
-    uint16_t processCan(void);
-    uint16_t processCooling(void);
-    uint16_t processDash(void);
-    uint16_t processGlcd(void);
-    uint16_t processImd(void);
-    uint16_t processOrion(void);
-    uint16_t processPedal(void);
-    uint16_t processSdCard(void);
-    uint16_t processUnitek(void);
-    uint16_t processBatlog(void);
-    uint16_t processStandby(void);
-    uint16_t processPrecharge(void);
-    uint16_t processReadyToDrive(void);
-    uint16_t processLaunch(void);
-    uint16_t processShutdown(void);
+    //handles the excecution of the 
+    Stage processEventsStandby(uint32_t &localEventFlags, Priority urgencyLevel);
+    Stage processEventsPrecharge(uint32_t &localEventFlags, Priority urgencyLevel);
+    Stage processEventsEnergized(uint32_t &localEventFlags, Priority urgencyLevel);
+    Stage processEventsDriving(uint32_t &localEventFlags, Priority urgencyLevel);
 
 
 
@@ -63,9 +53,25 @@ private:
     };
     
     Timer* timerList;
-    uint16_t timerTF = 0;
+    uint32_t timerTF = 0;
 
-
+    //Processing functions for the various devices
+    //TODO: Might eventually take a TF as an input param
+    uint32_t processCan(Stage currentStage);
+    uint32_t processCooling(Stage currentStage);
+    uint32_t processDash(Stage currentStage);
+    uint32_t processGlcd(Stage currentStage);
+    uint32_t processImd(Stage currentStage);
+    uint32_t processOrion(Stage currentStage);
+    uint32_t processPedal(Stage currentStage);
+    uint32_t processSdCard(Stage currentStage);
+    uint32_t processUnitek(Stage currentStage);
+    uint32_t processBatlog(Stage currentStage);
+    uint32_t processStandby(Stage currentStage);
+    uint32_t processPrecharge(Stage currentStage);
+    uint32_t processReadyToDrive(Stage currentStage);
+    uint32_t processLaunch(Stage currentStage);
+    uint32_t processShutdown(Stage currentStage);
 
 };
 

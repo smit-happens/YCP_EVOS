@@ -10,10 +10,12 @@
 #define CAN_HPP
 
 #include <FlexCAN.h>
-#include <cppQueue.h>
+// #include <cppQueue.h>
+
+#include "../BaseModel/BaseModel.hpp"
 
 
-class Can : public CANListener
+class Can : public CANListener, public BaseModel
 {
 public:
     const int UNITEKREADID = 0x181;
@@ -24,6 +26,8 @@ public:
 
     Can(void);
     ~Can(void);
+
+    void update(void);
 
     //overrides the parent version
     void gotFrame(CAN_message_t &frame, int mailbox);
@@ -52,9 +56,9 @@ private:
     const int canMailbox = 1;
 
     //queue variables that will be used for the Unitek and Orion devices
-    Queue* mailbox;
-    Queue* inboxUnitek;
-    Queue* inboxOrion;
+    // Queue* mailbox;
+    // Queue* inboxUnitek;
+    // Queue* inboxOrion;
 };
 
 

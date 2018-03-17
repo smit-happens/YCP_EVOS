@@ -14,38 +14,39 @@
  */
 BrakePedal::BrakePedal(void)
 {
+    //FIXME: will have to enable this eventually, commented out to keep pin 13 as a status light
+    // pinMode(MB_BRAKE_OVERTRAVEL, INPUT);
+
+    _linValue = 0;
+}
+
+
+/** 
+ * @brief  BrakePedal destructor
+ */
+BrakePedal::~BrakePedal(void)
+{
 
 }
 
 
 /** 
- * @brief  Retrieves the evaluated Brake percentage
- * @note   Evaluate linear pedal potentiometer
- * @retval BrakePedal percentage
+ * @brief  Retrieves and stores the value of the brake Linear Potentiometer
+ * @note   
+ * @retval None
  */
-float BrakePedal::getPercentage(void)
+void BrakePedal::update(void)
 {
-    return 0.0;
+    _linValue = analogRead(MB_BRAKE);
 }
 
 
 /** 
  * @brief  Retrieves the value of the Linear Potentiometer
- * @note   Will have to determine what is the range of return values
+ * @note   value of 0-8195
  * @retval Analog voltage sensed
  */
-float BrakePedal::getLinValue(void)
+uint16_t BrakePedal::getLinValue(void)
 {
-    return 0.0;
-}
-
-
-/** 
- * @brief  Evaluates the brake pedal potentiometer
- * @note   Needs to check for shorts in wire and extrainious values
- * @retval True if there's an implausibility found, false if not
- */
-bool BrakePedal::isImplausibility(void)
-{
-    return false;
+    return _linValue;
 }

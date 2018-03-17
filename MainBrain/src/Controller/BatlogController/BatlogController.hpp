@@ -13,23 +13,28 @@
 #include "../../Model/Batlog/Batlog.hpp"
 
 
-class BatlogController
+class BatlogController : public BaseController
 {
 public:
-    BatlogController();
     ~BatlogController(void);
+
+    static BatlogController*   getInstance();
 
     void init(void);
     void poll(void);
     void shutdown(void);    //TODO: implement
 
 
-    /**  
-     * Drafting up possible functions
-     * 
-     * 
-     */
 private:
+    //Private contstructor so that it can't be called
+    BatlogController() {};
+    //copy constructor is private
+    BatlogController(BatlogController const&) {};
+
+    //static instance pointer
+    static BatlogController* _pInstance;
+
+    //private instance of model
     Batlog* batlogModel;
 
 };

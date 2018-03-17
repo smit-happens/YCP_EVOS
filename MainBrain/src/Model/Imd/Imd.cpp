@@ -14,7 +14,27 @@
  */
 Imd::Imd(void)
 {
+    pinMode(MB_IMD_STATUS, INPUT);
+}
 
+
+/** 
+ * @brief  Imd destructor
+ */
+Imd::~Imd(void)
+{
+
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval None
+ */
+void Imd::update(void)
+{
+    
 }
 
 

@@ -9,23 +9,23 @@
 #ifndef GASPEDAL_HPP
 #define GASPEDAL_HPP
 
-#include <Arduino.h>
+#include "../BaseModel/BaseModel.hpp"
 
-//Maybe have states the pedal can be in, since it has the chance
-//of causing an error if there's an implausibility or a short in
-//the wires
 
-class GasPedal
+class GasPedal : public BaseModel
 {
 public:
-    GasPedal();
+    GasPedal(void);
+    ~GasPedal(void);
 
-    float getPercentage(void);
-    bool isImplausibility(void);
+    void update(void);
+
+    uint16_t getLinValue(void);
+    uint16_t getLogValue(void);
 
 private:
-    float getLogValue(void);
-    float getLinValue(void);
+    uint16_t _linValue;
+    uint16_t _logValue;
 };
 
 #endif  //GASPEDAL_HPP

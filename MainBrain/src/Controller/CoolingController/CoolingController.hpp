@@ -13,25 +13,32 @@
 #include "../../Model/CoolingSystem/CoolingSystem.hpp"
 
 
-
-class CoolingController
+class CoolingController : public BaseController
 {
 public:
-    CoolingController();
     ~CoolingController(void);
+
+    static CoolingController*   getInstance();
 
     void init(void);
     void poll(void);
     void shutdown(void);    //TODO: implement
 
-    /**  
-     * Drafting up possible functions
-     * 
-     * 
-     */
+    //TODO: implement these
+    float getRadiatorTempIn(void);
+    float getRadiatorTempOut(void);
+    
 private:
-    CoolingSystem* coolingModel;
+    //Private contstructor so that it can't be called
+    CoolingController() {};
+    //copy constructor is private
+    CoolingController(CoolingController const&) {};
 
+    //static instance pointer
+    static CoolingController* _pInstance;
+
+    //private instance of model
+    CoolingSystem* coolingModel;
 };
 
 
