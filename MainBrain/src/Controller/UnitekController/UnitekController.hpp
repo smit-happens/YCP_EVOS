@@ -27,6 +27,7 @@ public:
 
     int calculateSpeedValue(float rpm);
     float calculateRpm(int speedValue);
+    uint16_t calculateSpeedSetPoint(float percent);
     uint16_t calculate90Charge(float batteryVoltage);
 
 private:

@@ -11,6 +11,7 @@
 
 #include <Arduino.h>
 #include "../Constants/Port.hpp"
+#include "../Constants/Constants.hpp"
 
 
 class BaseModel
