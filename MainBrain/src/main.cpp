@@ -14,7 +14,7 @@
 
 //global variable that all the ISRs will flag for their respective event to run
 volatile uint32_t globalEventFlags = 0;
-volatile uint8_t  globalTaskFlags[NUM_DEVICES];
+uint8_t* globalTaskFlags = new uint8_t[NUM_DEVICES];
 
 
 //Start of ISR declarations
@@ -91,12 +91,13 @@ int main(void)
     //The first step when running is bootup
     localStage.currentStage = StageManager::STAGE_BOOTUP;
 
-    //EventTask instance
-    EventTask deviceTasks = EventTask();
 
     //initialize the local and timer event flag variables
     uint32_t localEventFlags = 0;
     uint32_t timerEventFlags = 0;
+
+    //initialize array to zero
+    uint8_t* localTaskFlags = new uint8_t[NUM_DEVICES];
 
     //Configure registers
     //Setting the analog read resolution to the maximum of the Teensy 3.6 (13 bit)
@@ -174,10 +175,6 @@ int main(void)
     //Start 1ms timer (1000 usec)
     myTimer.begin(timerISR, 1000);
 
-    //prints 0
-    // Serial.println(globalEventFlags);
-    // delay(1000);
-
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
@@ -187,13 +184,13 @@ int main(void)
         //Volatile operation for transferring flags from ISRs to local main
         localEventFlags |= globalEventFlags;
         globalEventFlags = 0;
-
-        //Transfer global tasks to local tasks
-        deviceTasks.setAllTaskFlags(globalTaskFlags);
         
         //clearing global task flags for every device
         for(int i = 0; i < DeviceName::NUM_DEVICES; i++ )
+        {
+            localTaskFlags[i] = globalTaskFlags[i];
             globalTaskFlags[i] = 0;
+        }
 
         interrupts();
 
@@ -209,7 +206,7 @@ int main(void)
                 //looping through the events of varying priorities
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
-                    localStage.currentStage = localStage.processEventsStandby(&localEventFlags, (Priority)priorityIterator, &deviceTasks);
+                    localStage.currentStage = localStage.processEventsStandby(&localEventFlags, (Priority)priorityIterator, localTaskFlags);
 
                     //checking if we need to update the timers
                     if(localEventFlags && EF_TIMER)
@@ -223,7 +220,7 @@ int main(void)
                 }
 
                 //All low priority events are handled by the timer event flags
-                localStage.processEventsStandby(&timerEventFlags, Priority::PRIORITY_LOW, &deviceTasks);
+                localStage.processEventsStandby(&timerEventFlags, Priority::PRIORITY_LOW, localTaskFlags);
 
             break;
 
@@ -235,7 +232,7 @@ int main(void)
 
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
-                    localStage.processEventsPrecharge(localEventFlags, (Priority)priorityIterator, deviceTasks);
+                    localStage.processEventsPrecharge(&localEventFlags, (Priority)priorityIterator, localTaskFlags);
 
                     //checking if we need to update the timers
                     if(localEventFlags && EF_TIMER)
@@ -248,7 +245,7 @@ int main(void)
                     }
                 }
 
-                localStage.processEventsPrecharge(timerEventFlags, Priority::PRIORITY_LOW, deviceTasks);
+                localStage.processEventsPrecharge(&timerEventFlags, Priority::PRIORITY_LOW, localTaskFlags);
 
             break;
 
@@ -260,7 +257,7 @@ int main(void)
 
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
-                    localStage.processEventsEnergized(localEventFlags, (Priority)priorityIterator, deviceTasks);
+                    localStage.processEventsEnergized(&localEventFlags, (Priority)priorityIterator, localTaskFlags);
 
                     //checking if we need to update the timers
                     if(localEventFlags && EF_TIMER)
@@ -273,7 +270,7 @@ int main(void)
                     }
                 }
                 
-                localStage.processEventsEnergized(timerEventFlags, Priority::PRIORITY_LOW, deviceTasks);
+                localStage.processEventsEnergized(&timerEventFlags, Priority::PRIORITY_LOW, localTaskFlags);
 
             break;
 
@@ -285,7 +282,7 @@ int main(void)
 
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
-                    localStage.processEventsDriving(localEventFlags, (Priority)priorityIterator, deviceTasks);
+                    localStage.processEventsDriving(&localEventFlags, (Priority)priorityIterator, localTaskFlags);
 
                     //checking if we need to update the timers
                     if(localEventFlags && EF_TIMER)
@@ -298,7 +295,7 @@ int main(void)
                     }
                 }
                 
-                localStage.processEventsDriving(timerEventFlags, Priority::PRIORITY_LOW, deviceTasks);
+                localStage.processEventsDriving(&timerEventFlags, Priority::PRIORITY_LOW, localTaskFlags);
 
             break;
 

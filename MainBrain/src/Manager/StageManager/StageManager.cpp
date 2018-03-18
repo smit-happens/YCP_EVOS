@@ -88,46 +88,60 @@ uint32_t StageManager::processCooling(void)
  * @param  tasks: 
  * @retval 
  */
-uint32_t StageManager::processDash(EventTask* deviceTasks)
+uint32_t StageManager::processDash(uint8_t* taskFlags)
 {
     //do Dash processing
-
-    uint8_t localTasks = deviceTasks->getTaskFlags(DASH);
-
-    Serial.println(localTasks);
+    Serial.print("Dash tasks: ");
+    Serial.println(taskFlags[DASH], BIN); 
 
     switch(currentStage){
         case STAGE_STANDBY:
-            Serial.println("Dash - Standby stage");
-
-            if(localTasks && TF_DASH_PRECHARGE)
+        {
+            if(taskFlags[DASH] & TF_DASH_PRECHARGE)
             {
-                Serial.println("Precharge btn press");
-                deviceTasks->clearTaskFlag(DASH, TF_DASH_PRECHARGE);
+               taskFlags[DASH] &= ~TF_DASH_PRECHARGE;
+                Serial.print("PrechargeBtn task: ");
+                Serial.println(taskFlags[DASH], BIN);
             }
 
-            if(localTasks && TF_DASH_WAYNE_WORLD)
+            if(taskFlags[DASH] & TF_DASH_RTD)
             {
-                Serial.println("WAYNE WORLD btn press");
-                deviceTasks->clearTaskFlag(DASH, TF_DASH_WAYNE_WORLD);
+               taskFlags[DASH] &= ~TF_DASH_RTD;
+                Serial.print("TF_DASH_RTD task: ");
+                Serial.println(taskFlags[DASH], BIN);
             }
 
+            if(taskFlags[DASH] & TF_DASH_WAYNE_WORLD)
+            {
+               taskFlags[DASH] &= ~TF_DASH_WAYNE_WORLD;
+                Serial.print("TF_DASH_WAYNE_WORLD task: ");
+                Serial.println(taskFlags[DASH], BIN);
+            }
+
+            if(taskFlags[DASH] & TF_DASH_STANDBY)
+            {
+               taskFlags[DASH] &= ~TF_DASH_STANDBY;
+                Serial.print("TF_DASH_STANDBY task: ");
+                Serial.println(taskFlags[DASH], BIN);
+            }
+
+        }
         break;
 
 
         case STAGE_PRECHARGE:
-            
+            Serial.println("Precharge Stage");
         break;
 
 
         case STAGE_ENERGIZED:
-
+            Serial.println("Energized Stage");
         break;
 
 
         case STAGE_DRIVING:
         {
-            
+            Serial.println("Driving Stage");            
         }
         break;
 
@@ -147,6 +161,7 @@ uint32_t StageManager::processDash(EventTask* deviceTasks)
         break;
     }
 
+    Serial.println();
 
     return 0;
 }
@@ -497,7 +512,7 @@ void StageManager::configureLaunch(void)
  * @param  urgencyLevel: 
  * @retval 
  */
-StageManager::Stage StageManager::processEventsStandby(uint32_t* localEventFlags, Priority urgencyLevel, EventTask* deviceTasks)
+StageManager::Stage StageManager::processEventsStandby(uint32_t* localEventFlags, Priority urgencyLevel, uint8_t* taskFlags)
 {
     Stage currentStage = Stage::STAGE_STANDBY;
 
@@ -578,7 +593,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t* localEventFlags
 
             if(*localEventFlags && EF_DASH)
             {
-                processDash(deviceTasks);
+                processDash(taskFlags);
 
                 //clearing the EF so we don't trigger this again
                 *localEventFlags &= ~EF_DASH;
@@ -622,7 +637,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t* localEventFlags
  * @param  urgencyLevel: 
  * @retval 
  */
-StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFlags, Priority urgencyLevel, EventTask &deviceTasks)
+StageManager::Stage StageManager::processEventsPrecharge(uint32_t* localEventFlags, Priority urgencyLevel, uint8_t* taskFlags)
 {
     Stage currentStage = Stage::STAGE_PRECHARGE;
 
@@ -630,21 +645,21 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
     {
         case PRIORITY_CRITICAL:
             //code here
-            if(localEventFlags && EF_SHUTDOWN)
+            if(*localEventFlags && EF_SHUTDOWN)
             {
                 processShutdown();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SHUTDOWN;
+                *localEventFlags &= ~EF_SHUTDOWN;
             }
 
 
-            if(localEventFlags && EF_IMD)
+            if(*localEventFlags && EF_IMD)
             {
                 processImd();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_IMD;
+                *localEventFlags &= ~EF_IMD;
             }
 
         break;
@@ -652,30 +667,30 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
         
         case PRIORITY_HIGH:
             //code here
-            if(localEventFlags && EF_CAN)
+            if(*localEventFlags && EF_CAN)
             {
                 processCan();   
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_CAN;
+                *localEventFlags &= ~EF_CAN;
             }
 
 
-            if(localEventFlags && EF_UNITEK)
+            if(*localEventFlags && EF_UNITEK)
             {
                 processUnitek();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_UNITEK;
+                *localEventFlags &= ~EF_UNITEK;
             }
 
 
-            if(localEventFlags && EF_ORION)
+            if(*localEventFlags && EF_ORION)
             {
                 processOrion();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_ORION;
+                *localEventFlags &= ~EF_ORION;
             }
         
         break;
@@ -684,30 +699,30 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
         case PRIORITY_MEDIUM:
             //code here
 
-             if(localEventFlags && EF_COOLING)
+             if(*localEventFlags && EF_COOLING)
             {
                 processCooling();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_COOLING;
+                *localEventFlags &= ~EF_COOLING;
             }
 
 
-            if(localEventFlags && EF_BATLOG)
+            if(*localEventFlags && EF_BATLOG)
             {
                 processBatlog();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_BATLOG;
+                *localEventFlags &= ~EF_BATLOG;
             }
 
 
-            if(localEventFlags && EF_DASH)
+            if(*localEventFlags && EF_DASH)
             {
-                processDash(&deviceTasks);
+                processDash(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_DASH;
+                *localEventFlags &= ~EF_DASH;
             }
 
         break;
@@ -715,21 +730,21 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
 
         case PRIORITY_LOW:
             //code here
-            if(localEventFlags && TIMER_F_SDCARD)
+            if(*localEventFlags && TIMER_F_SDCARD)
             {
                 processSdCard();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~TIMER_F_SDCARD;
+                *localEventFlags &= ~TIMER_F_SDCARD;
             }
 
 
-            if(localEventFlags && TIMER_F_GLCD)
+            if(*localEventFlags && TIMER_F_GLCD)
             {
                 processGlcd();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~TIMER_F_GLCD;
+                *localEventFlags &= ~TIMER_F_GLCD;
             }
 
         break;
@@ -748,7 +763,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
  * @param  urgencyLevel: 
  * @retval 
  */
-StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFlags, Priority urgencyLevel, EventTask &deviceTasks)
+StageManager::Stage StageManager::processEventsEnergized(uint32_t* localEventFlags, Priority urgencyLevel, uint8_t* taskFlags)
 {
     Stage currentStage = Stage::STAGE_ENERGIZED;
 
@@ -756,21 +771,21 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
     {
         case PRIORITY_CRITICAL:
             //code here
-            if(localEventFlags && EF_SHUTDOWN)
+            if(*localEventFlags && EF_SHUTDOWN)
             {
                 processShutdown();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SHUTDOWN;
+                *localEventFlags &= ~EF_SHUTDOWN;
             }
 
 
-            if(localEventFlags && EF_IMD)
+            if(*localEventFlags && EF_IMD)
             {
                 processImd();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_IMD;
+                *localEventFlags &= ~EF_IMD;
             }
 
         break;
@@ -778,30 +793,30 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
         
         case PRIORITY_HIGH:
             //code here
-            if(localEventFlags && EF_CAN)
+            if(*localEventFlags && EF_CAN)
             {
                 processCan();   
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_CAN;
+                *localEventFlags &= ~EF_CAN;
             }
 
 
-            if(localEventFlags && EF_UNITEK)
+            if(*localEventFlags && EF_UNITEK)
             {
                 processUnitek();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_UNITEK;
+                *localEventFlags &= ~EF_UNITEK;
             }
 
 
-            if(localEventFlags && EF_ORION)
+            if(*localEventFlags && EF_ORION)
             {
                 processOrion();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_ORION;
+                *localEventFlags &= ~EF_ORION;
             }
         
         break;
@@ -810,30 +825,30 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
         case PRIORITY_MEDIUM:
             //code here
 
-             if(localEventFlags && EF_COOLING)
+             if(*localEventFlags && EF_COOLING)
             {
                 processCooling();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_COOLING;
+                *localEventFlags &= ~EF_COOLING;
             }
 
 
-            if(localEventFlags && EF_BATLOG)
+            if(*localEventFlags && EF_BATLOG)
             {
                 processBatlog();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_BATLOG;
+                *localEventFlags &= ~EF_BATLOG;
             }
 
 
-            if(localEventFlags && EF_DASH)
+            if(*localEventFlags && EF_DASH)
             {
-                processDash(&deviceTasks);
+                processDash(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_DASH;
+                *localEventFlags &= ~EF_DASH;
             }
 
         break;
@@ -841,21 +856,21 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
 
         case PRIORITY_LOW:
             //code here
-            if(localEventFlags && TIMER_F_GLCD)
+            if(*localEventFlags && TIMER_F_GLCD)
             {
                 processGlcd();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~TIMER_F_GLCD;
+                *localEventFlags &= ~TIMER_F_GLCD;
             }
 
 
-            if(localEventFlags && TIMER_F_SDCARD)
+            if(*localEventFlags && TIMER_F_SDCARD)
             {
                 processSdCard();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~TIMER_F_SDCARD;
+                *localEventFlags &= ~TIMER_F_SDCARD;
             }
 
         break;
@@ -874,7 +889,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
  * @param  urgencyLevel: 
  * @retval 
  */
-StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags, Priority urgencyLevel, EventTask &deviceTasks)
+StageManager::Stage StageManager::processEventsDriving(uint32_t* localEventFlags, Priority urgencyLevel, uint8_t* taskFlags)
 {
     Stage currentStage = Stage::STAGE_STANDBY;
 
@@ -882,21 +897,21 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
     {
         case PRIORITY_CRITICAL:
             //code here
-            if(localEventFlags && EF_SHUTDOWN)
+            if(*localEventFlags && EF_SHUTDOWN)
             {
                 processShutdown();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_SHUTDOWN;
+                *localEventFlags &= ~EF_SHUTDOWN;
             }
 
 
-            if(localEventFlags && EF_IMD)
+            if(*localEventFlags && EF_IMD)
             {
                 processImd();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_IMD;
+                *localEventFlags &= ~EF_IMD;
             }
 
         break;
@@ -904,30 +919,30 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
         
         case PRIORITY_HIGH:
             //code here
-            if(localEventFlags && EF_CAN)
+            if(*localEventFlags && EF_CAN)
             {
                 processCan();   
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_CAN;
+                *localEventFlags &= ~EF_CAN;
             }
 
 
-            if(localEventFlags && EF_UNITEK)
+            if(*localEventFlags && EF_UNITEK)
             {
                 processUnitek();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_UNITEK;
+                *localEventFlags &= ~EF_UNITEK;
             }
 
 
-            if(localEventFlags && EF_ORION)
+            if(*localEventFlags && EF_ORION)
             {
                 processOrion();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_ORION;
+                *localEventFlags &= ~EF_ORION;
             }
         
         break;
@@ -936,30 +951,30 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
         case PRIORITY_MEDIUM:
             //code here
 
-             if(localEventFlags && EF_COOLING)
+             if(*localEventFlags && EF_COOLING)
             {
                 processCooling();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_COOLING;
+                *localEventFlags &= ~EF_COOLING;
             }
 
 
-            if(localEventFlags && EF_BATLOG)
+            if(*localEventFlags && EF_BATLOG)
             {
                 processBatlog();
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_BATLOG;
+                *localEventFlags &= ~EF_BATLOG;
             }
 
 
-            if(localEventFlags && EF_DASH)
+            if(*localEventFlags && EF_DASH)
             {
-                processDash(&deviceTasks);
+                processDash(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~EF_DASH;
+                *localEventFlags &= ~EF_DASH;
             }
 
         break;
@@ -968,30 +983,30 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
         case PRIORITY_LOW:
             
             //
-            if(localEventFlags && TIMER_F_PEDAL)
+            if(*localEventFlags && TIMER_F_PEDAL)
             {
                 processPedal();
 
                 //clearing the Flag so we don't trigger this again
-                localEventFlags &= ~TIMER_F_PEDAL;
+                *localEventFlags &= ~TIMER_F_PEDAL;
             }
 
 
-            if(localEventFlags && TIMER_F_GLCD)
+            if(*localEventFlags && TIMER_F_GLCD)
             {
                 processGlcd();
                 
                 //clearing the Flag so we don't trigger this again
-                localEventFlags &= ~TIMER_F_GLCD;
+                *localEventFlags &= ~TIMER_F_GLCD;
             }
 
 
-            if(localEventFlags && TIMER_F_SDCARD)
+            if(*localEventFlags && TIMER_F_SDCARD)
             {
                 processSdCard();
                 
                 //clearing the Flag so we don't trigger this again
-                localEventFlags &= ~TIMER_F_SDCARD;
+                *localEventFlags &= ~TIMER_F_SDCARD;
             }
 
         break;
