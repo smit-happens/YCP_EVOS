@@ -21,10 +21,10 @@ public:
     void update(void);
 
 
-    String getName(void);
+    // String getName(void);
 
-    int getState(void);
-    void setState(void);
+    // int getState(void);
+    // void setState(void);
 };
 
 

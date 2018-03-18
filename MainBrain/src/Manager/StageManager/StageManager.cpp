@@ -161,25 +161,26 @@ uint32_t StageManager::processUnitek(Stage currentStage)
 
         break;
 
-        case STAGE_SELF_TEST:
+      
+        case STAGE_TEST:
 
         break;
 
-        case STAGE_SUBSYSTEM_TEST:
-
-        break;
 
         case STAGE_STANDBY:
 
         break;
 
+
         case STAGE_PRECHARGE:
             
         break;
 
+
         case STAGE_ENERGIZED:
 
         break;
+
 
         case STAGE_DRIVING:
         {
@@ -191,9 +192,11 @@ uint32_t StageManager::processUnitek(Stage currentStage)
         }
         break;
 
+
         case STAGE_LAUNCH:
 
         break;
+
 
         case STAGE_SHUTDOWN:
 
@@ -524,21 +527,21 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
         case PRIORITY_LOW:
 
-            if(localEventFlags && TF_GLCD)
+            if(localEventFlags && TIMER_F_GLCD)
             {
                 processGlcd(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~TF_GLCD;
+                localEventFlags &= ~TIMER_F_GLCD;
             }
 
 
-            if(localEventFlags && TF_SDCARD)
+            if(localEventFlags && TIMER_F_SDCARD)
             {
                 processSdCard(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~TF_SDCARD;
+                localEventFlags &= ~TIMER_F_SDCARD;
             }
 
         break;
@@ -650,21 +653,21 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
 
         case PRIORITY_LOW:
             //code here
-            if(localEventFlags && TF_SDCARD)
+            if(localEventFlags && TIMER_F_SDCARD)
             {
                 processSdCard(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~TF_SDCARD;
+                localEventFlags &= ~TIMER_F_SDCARD;
             }
 
 
-            if(localEventFlags && TF_GLCD)
+            if(localEventFlags && TIMER_F_GLCD)
             {
                 processGlcd(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~TF_GLCD;
+                localEventFlags &= ~TIMER_F_GLCD;
             }
 
         break;
@@ -776,21 +779,21 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
 
         case PRIORITY_LOW:
             //code here
-            if(localEventFlags && TF_GLCD)
+            if(localEventFlags && TIMER_F_GLCD)
             {
                 processGlcd(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~TF_GLCD;
+                localEventFlags &= ~TIMER_F_GLCD;
             }
 
 
-            if(localEventFlags && TF_SDCARD)
+            if(localEventFlags && TIMER_F_SDCARD)
             {
                 processSdCard(currentStage);
                 
                 //clearing the EF so we don't trigger this again
-                localEventFlags &= ~TF_SDCARD;
+                localEventFlags &= ~TIMER_F_SDCARD;
             }
 
         break;
@@ -903,30 +906,30 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
         case PRIORITY_LOW:
             
             //
-            if(localEventFlags && TF_PEDAL)
+            if(localEventFlags && TIMER_F_PEDAL)
             {
                 processPedal(currentStage);
 
                 //clearing the Flag so we don't trigger this again
-                localEventFlags &= ~TF_PEDAL;
+                localEventFlags &= ~TIMER_F_PEDAL;
             }
 
 
-            if(localEventFlags && TF_GLCD)
+            if(localEventFlags && TIMER_F_GLCD)
             {
                 processGlcd(currentStage);
                 
                 //clearing the Flag so we don't trigger this again
-                localEventFlags &= ~TF_GLCD;
+                localEventFlags &= ~TIMER_F_GLCD;
             }
 
 
-            if(localEventFlags && TF_SDCARD)
+            if(localEventFlags && TIMER_F_SDCARD)
             {
                 processSdCard(currentStage);
                 
                 //clearing the Flag so we don't trigger this again
-                localEventFlags &= ~TF_SDCARD;
+                localEventFlags &= ~TIMER_F_SDCARD;
             }
 
         break;

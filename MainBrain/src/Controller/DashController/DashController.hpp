@@ -10,9 +10,9 @@
 #define DASHCONTROLLER_HPP
 
 #include "../BaseController/BaseController.hpp"
-#include "../../Model/Light/Light.hpp"
 #include "../../Model/Button/Button.hpp"
 #include "../../Model/Siren/Siren.hpp"
+#include "../../Model/Glcd/Glcd.hpp"
 
 
 class DashController : public BaseController
@@ -36,11 +36,9 @@ private:
     //static instance pointer
     static DashController* _pInstance;
 
-    //private instance of model
-    /*
-        //all the buttons need to be implemented
-        Button* shutdownBtn;
-    */ 
+    //private instance of models
+    Glcd* screen;
+    Button* buttons;
 };
 
 

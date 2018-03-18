@@ -21,8 +21,7 @@ public:
     enum Stage
     {
         STAGE_BOOTUP,
-        STAGE_SELF_TEST,
-        STAGE_SUBSYSTEM_TEST,
+        STAGE_TEST,
         STAGE_STANDBY,
         STAGE_PRECHARGE,
         STAGE_ENERGIZED,

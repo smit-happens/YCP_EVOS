@@ -34,7 +34,7 @@ LightController* LightController::getInstance()
  */
 LightController::~LightController(void)
 {
-    delete light;
+    delete lights;
 }
 
 
@@ -45,16 +45,50 @@ LightController::~LightController(void)
  */
 void LightController::init(void)
 {
-    light = new Light();
+    //initializing all the lights on the car
+    lights[RTD]         = new Light(MB_RTD_LED);
+    lights[ERR_BMS]     = new Light(MB_BMS_LED);
+    lights[ERR_Pedal]   = new Light(MB_PEDAL_LED);
+    lights[ERR_Imd]     = new Light(MB_IMD_LED);
+    lights[REVERSE]     = new Light(MB_REVERSE_LED);
+    lights[WAYNE]       = new Light(MB_WAYNE_LED);
+    lights[ENERGIZE]    = new Light(MB_ENERGIZE_LED);
+    lights[BRAKE]       = new Light(MB_BRAKE_LIGHT);
+}
+
+void LightController::turnAllOn(void)
+{
+    for(int lightIterator = 0; lightIterator < LightId::NUM_LIGHTS; lightIterator++)
+        lights[lightIterator]->TurnOn();
+}
+
+
+void LightController::turnAllOff(void)
+{
+    for(int lightIterator = 0; lightIterator < LightId::NUM_LIGHTS; lightIterator++)
+        lights[lightIterator]->TurnOff();
 }
 
 
 /** 
- * @brief  
+ * @brief  Turns off a specific light
  * @note   
+ * @param  lightChoice: 
  * @retval None
  */
-void LightController::poll(void)
+void LightController::turnOn(LightId lightChoice)
 {
+    lights[lightChoice]->turnOn();
+}
 
+
+/** 
+ * @brief  Turns off a specific light
+ * @note   
+ * @param  lightChoice: 
+ * @retval None
+ */
+void LightController::turnOff(LightId lightChoice)
+{
+    lights[lightChoice]->turnOff();
 }

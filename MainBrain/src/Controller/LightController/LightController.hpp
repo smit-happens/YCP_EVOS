@@ -16,13 +16,34 @@
 class LightController : public BaseController
 {
 public:
+    enum LightId 
+    {
+        RTD,
+        ERR_BMS,
+        ERR_Pedal,
+        ERR_Imd,
+        REVERSE,
+        WAYNE,
+        ENERGIZE,
+        BRAKE,
+        NUM_LIGHTS
+    };
+
     ~LightController(void);
 
     static LightController*   getInstance();
 
     void init(void);
-    void poll(void);
     void shutdown(void) {};
+
+    //applies to all the lights in the car
+    void turnAllOn(void);
+    void turnAllOff(void);
+
+    //turning on/off specific lights
+    void turnOn(LightId light);
+    void turnOff(LightId light);
+
 
 
 private:
@@ -35,7 +56,7 @@ private:
     static LightController* _pInstance;
 
     //private instance of model
-    Light* light;
+    Light* lights[LightId::NUM_LIGHTS];
 
 };
 

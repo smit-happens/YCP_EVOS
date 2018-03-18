@@ -9,6 +9,9 @@
 // Unit Testing gaurd
 #ifndef UNIT_TEST
 
+//used to enable/disable serial statements
+#define SERIAL_DEBUG
+
 #include <IntervalTimer.h>
 #include "Manager/StageManager/StageManager.hpp"
 
@@ -23,18 +26,49 @@ void timerISR() {
 }
 
 
+//setting the appropiate event and task flags for Precharge btn press
+void btnPrechargeISR() {
+    globalEventFlags      |= EF_DASH;
+    globalTaskFlags[DASH] |= TF_DASH_PRECHARGE;
+}
+
+
+//setting the appropiate event and task flags for Ready to drive (RTD) btn press
+void btnRtdISR() {
+    globalEventFlags      |= EF_DASH;
+    globalTaskFlags[DASH] |= TF_DASH_RTD;
+}
+
+
+//setting the appropiate event and task flags for Shutdown btn press
+void btnShutdownISR() {
+    globalEventFlags      |= EF_DASH;
+    globalTaskFlags[DASH] |= TF_DASH_SHUTDOWN;
+}
+
+
+//setting the appropiate event and task flags for standby btn press
+void btnStandbyISR() {
+    globalEventFlags      |= EF_DASH;
+    globalTaskFlags[DASH] |= TF_DASH_STANDBY;
+}
+
 
 //---------------------------------------------------------------
 // Begin main function
 int main(void)
 {
-    // Serial.begin(9600);
-    // while (!Serial) {
-    //     ; // wait for serial port to connect
-    // }
 
-    // Serial.print("program started");
+    #ifdef SERIAL_DEBUG
+    Serial.begin(9600);
+    while (!Serial) {
+        ; // wait for serial port to connect
+    }
 
+    Serial.print("program started");
+    #endif
+
+    //Bootup stage functions (any var declared in an if/else falls out of scope afterward)
 
     //Creating the controller singletons
     //Copying each controller location in memory
@@ -59,74 +93,60 @@ int main(void)
     //EventTask instance
     EventTask deviceTasks = EventTask();
 
-
     //initialize the local and timer event flag variables
     uint32_t localEventFlags = 0;
     uint32_t timerEventFlags = 0;
-
-    // using the builtin LED as a status light (for now)
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWriteFast(LED_BUILTIN, 1);
 
     //Configure registers
     //Setting the analog read resolution to the maximum of the Teensy 3.6 (13 bit)
     analogReadResolution(13);
 
-    //Bootup stage functions (anything var declared in an if/else falls out of scope afterward)
-        //Calling init functions for each controller
-        canC->init();
-        unitekC->init();
-        orionC->init();
-        coolingC->init();
-        dashC->init();
-        lightC->init();
-        imdC->init();
-        glcdC->init();
-        pedalC->init();
-        sdCardC->init();
-        batlogC->init();
+    //timer configuration
+    //DO NOT START TIMERS HERE
+    IntervalTimer myTimer;
 
+    //Calling init functions for each controller
+    canC->init();
+    unitekC->init();
+    orionC->init();
+    coolingC->init();
+    dashC->init();
+    lightC->init();
+    imdC->init();
+    glcdC->init();
+    pedalC->init();
+    sdCardC->init();
+    batlogC->init();
 
+    //attaching interrupts
+    //Button interrupts
+    attachInterrupt(MB_PRE_BTN, btnPrechargeISR, RISING);
+    attachInterrupt(MB_RTD_BTN, btnRtdISR, RISING);
+    attachInterrupt(MB_SHUTDOWN_BTN, btnShutdownISR, RISING);
+    attachInterrupt(MB_STANDBY_BTN, btnStandbyISR, RISING);
 
-        //timer configuration
-            //DO NOT START TIMERS HERE
-        IntervalTimer myTimer;
+    //Dashboard
+        //LCD (boot logo)
+        // dashC->
 
-        //Dashboard
-            //LCD (boot logo)
-
-        if(/* check for ShutdownEF*/ 1 )
-        {
-            excecutingStage = StageManager::STAGE_SELF_TEST;
-        }
-        else
-        {
-            excecutingStage = StageManager::STAGE_SHUTDOWN;
-        }
-
-
-    //excecuting all the self test oriented functions
-    if(excecutingStage == StageManager::STAGE_SELF_TEST)
+    if(/* check for ShutdownEF*/ 1 )
     {
-        //Teensy SelfTest (internal functions)
-        //SdCard check (read data, check if good)
-        //Dash test (turn on all LEDS, user confirmation w/ encoder)
-
-        if(/* check for ShutdownEF*/ 1 )
-        {
-            excecutingStage = StageManager::STAGE_SUBSYSTEM_TEST;
-        }
-        else
-        {
-            excecutingStage = StageManager::STAGE_SHUTDOWN;
-        }
+        excecutingStage = StageManager::STAGE_TEST;
+    }
+    else
+    {
+        excecutingStage = StageManager::STAGE_SHUTDOWN;
     }
 
 
-    //Executing all the subsystem test oriented functions
-    if(excecutingStage == StageManager::STAGE_SUBSYSTEM_TEST)
+    //excecuting all the self test oriented functions
+    if(excecutingStage == StageManager::STAGE_TEST)
     {
+        //Teensy SelfTest (internal functions)
         
+        //SdCard check (read data, check if good)
+        //Dash test (turn on all LEDS, user confirmation w/ encoder)
+
         //Unitek check if okay
         //Orion check if okay
         //Cooling check if working

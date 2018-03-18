@@ -45,7 +45,8 @@ DashController::~DashController(void)
  */
 void DashController::init(void)
 {
-
+    buttons = new Button();
+    screen = new Glcd();
 }
 
 
