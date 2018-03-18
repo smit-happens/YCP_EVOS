@@ -98,11 +98,10 @@ void EventTask::clearTaskFlag(DeviceName name, uint8_t task)
 }
 
 
-void EventTask::clearAllTaskFlags(DeviceName name)
+    void EventTask::clearAllDeviceTaskFlags(DeviceName name)
 {
     taskTable[name] = 0;
 }
-
 
 
 /** 

@@ -27,6 +27,7 @@ const uint8_t TF_DASH_PRECHARGE     = 0b1;
 const uint8_t TF_DASH_RTD           = 0b10;
 const uint8_t TF_DASH_SHUTDOWN      = 0b100;
 const uint8_t TF_DASH_STANDBY       = 0b1000;
+const uint8_t TF_DASH_WAYNE_WORLD   = 0b10000;
 
 //Timer flags (the equivalent of an event flag but triggered by a timer)
 const uint32_t TIMER_F_GLCD         = 0b1;  //Glcd EF mask
@@ -82,7 +83,7 @@ public:
     void setAllTaskFlags(volatile uint8_t taskList[]);
 
     void clearTaskFlag(DeviceName name, uint8_t task);
-    void clearAllTaskFlags(DeviceName name);
+    void clearAllDeviceTaskFlags(DeviceName name);
 
     // void incrementDeviceEventFlagCount(DeviceName device);
     // void decrementDeviceEventFlagCount(DeviceName device);

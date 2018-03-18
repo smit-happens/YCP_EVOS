@@ -9,9 +9,6 @@
 // Unit Testing gaurd
 #ifndef UNIT_TEST
 
-//comment/uncomment to enable/disable serial statements
-// #define SERIAL_DEBUG
-
 #include <IntervalTimer.h>
 #include "Manager/StageManager/StageManager.hpp"
 
@@ -54,19 +51,23 @@ void btnStandbyISR() {
 }
 
 
+//setting the appropiate event and task flags for Wayne World btn press
+void btnWayneWorldISR() {
+    globalEventFlags      |= EF_DASH;
+    globalTaskFlags[DASH] |= TF_DASH_WAYNE_WORLD;
+}
+
+
 //---------------------------------------------------------------
 // Begin main function
 int main(void)
 {
-
-    #ifdef SERIAL_DEBUG
     Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect
-    }
+    // while (!Serial) {
+    //     ; // wait for serial port to connect
+    // }
 
-    Serial.print("program started");
-    #endif
+    Serial.println("Bootup stage");
 
     //Bootup stage functions (any var declared in an if/else falls out of scope afterward)
 
@@ -124,6 +125,7 @@ int main(void)
     attachInterrupt(MB_RTD_BTN, btnRtdISR, RISING);
     attachInterrupt(MB_SHUTDOWN_BTN, btnShutdownISR, RISING);
     attachInterrupt(MB_STANDBY_BTN, btnStandbyISR, RISING);
+    attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
 
     //Dashboard
         //LCD (boot logo)
@@ -142,6 +144,8 @@ int main(void)
     //excecuting all the self test oriented functions
     if(localStage.currentStage == StageManager::STAGE_TEST)
     {
+        Serial.println("Test Stage");
+
         //Teensy SelfTest (internal functions)
         
         //SdCard check (read data, check if good)
@@ -170,6 +174,10 @@ int main(void)
     //Start 1ms timer (1000 usec)
     myTimer.begin(timerISR, 1000);
 
+    //prints 0
+    // Serial.println(globalEventFlags);
+    // delay(1000);
+
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
@@ -182,6 +190,11 @@ int main(void)
 
         //Transfer global tasks to local tasks
         deviceTasks.setAllTaskFlags(globalTaskFlags);
+        
+        //clearing global task flags for every device
+        for(int i = 0; i < DeviceName::NUM_DEVICES; i++ )
+            globalTaskFlags[i] = 0;
+
         interrupts();
 
         //for every stage, we check what events need to be handled with varying priority levels
@@ -196,7 +209,7 @@ int main(void)
                 //looping through the events of varying priorities
                 for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
                 {
-                    localStage.currentStage = localStage.processEventsStandby(localEventFlags, (Priority)priorityIterator, deviceTasks);
+                    localStage.currentStage = localStage.processEventsStandby(&localEventFlags, (Priority)priorityIterator, &deviceTasks);
 
                     //checking if we need to update the timers
                     if(localEventFlags && EF_TIMER)
@@ -210,7 +223,7 @@ int main(void)
                 }
 
                 //All low priority events are handled by the timer event flags
-                localStage.processEventsStandby(timerEventFlags, Priority::PRIORITY_LOW, deviceTasks);
+                localStage.processEventsStandby(&timerEventFlags, Priority::PRIORITY_LOW, &deviceTasks);
 
             break;
 

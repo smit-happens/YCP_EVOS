@@ -46,10 +46,10 @@ public:
     uint32_t processTimers(void);
 
     //handles the excecution of the various stages
-    Stage processEventsStandby(uint32_t &localEventFlags, Priority urgencyLevel, EventTask deviceTasks);
-    Stage processEventsPrecharge(uint32_t &localEventFlags, Priority urgencyLevel, EventTask deviceTasks);
-    Stage processEventsEnergized(uint32_t &localEventFlags, Priority urgencyLevel, EventTask deviceTasks);
-    Stage processEventsDriving(uint32_t &localEventFlags, Priority urgencyLevel, EventTask deviceTasks);
+    Stage processEventsStandby(uint32_t* localEventFlags, Priority urgencyLevel, EventTask* deviceTasks);
+    Stage processEventsPrecharge(uint32_t &localEventFlags, Priority urgencyLevel, EventTask &deviceTasks);
+    Stage processEventsEnergized(uint32_t &localEventFlags, Priority urgencyLevel, EventTask &deviceTasks);
+    Stage processEventsDriving(uint32_t &localEventFlags, Priority urgencyLevel, EventTask &deviceTasks);
 
     //contains code that is executed once at the beginning of a stage
     void configureStandby(void);
@@ -77,7 +77,7 @@ private:
     //TODO: Might eventually take a TF as an input param
     uint32_t processCan(void);
     uint32_t processCooling(void);
-    uint32_t processDash(uint8_t tasks);
+    uint32_t processDash(EventTask* deviceTasks);
     uint32_t processGlcd(void);
     uint32_t processImd(void);
     uint32_t processOrion(void);
