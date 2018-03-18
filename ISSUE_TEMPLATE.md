@@ -13,7 +13,7 @@ To Use this Template:
 
 #### Your Code
 
-```
+```c++
 If relevant, paste all of your challenge code in here
 ```
 
