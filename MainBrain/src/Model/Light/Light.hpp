@@ -21,9 +21,9 @@ public:
     //not necessary for each light to have an update function
     void update(void) {};
 
-    void TurnOn(void) { digitalWriteFast(_lightPin, HIGH); };
+    void turnOn(void) { digitalWriteFast(_lightPin, HIGH); };
     
-    void TurnOff(void) { digitalWriteFast(_lightPin, LOW); };
+    void turnOff(void) { digitalWriteFast(_lightPin, LOW); };
 
 private:
     uint8_t _lightPin;

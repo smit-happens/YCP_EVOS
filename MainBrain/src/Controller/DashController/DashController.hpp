@@ -26,6 +26,8 @@ public:
     void poll(void);
     void shutdown(void);    //TODO: implement
 
+    void playStartupSound(void) { siren->timedTone(); };
+
 
 private:
     //Private contstructor so that it can't be called
@@ -39,6 +41,7 @@ private:
     //private instance of models
     Glcd* screen;
     Button* buttons;
+    Siren* siren;
 };
 
 

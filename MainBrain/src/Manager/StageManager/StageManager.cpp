@@ -36,7 +36,7 @@ StageManager::StageManager(void)
  * @note   Might have to be fleshed out more
  * @retval uint32_t with each bit coresponding to which timers went off
  */
-uint32_t StageManager::processTimers(Stage currentStage)
+uint32_t StageManager::processTimers(void)
 {
     //Goes through the array of timers to increment their count and store which ones popped
     for (int i = 0; i < TIMER_NUM; i++)
@@ -62,7 +62,7 @@ uint32_t StageManager::processTimers(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processCan(Stage currentStage)
+uint32_t StageManager::processCan(void)
 {
     //do CAN stuff
     return 0;
@@ -74,20 +74,67 @@ uint32_t StageManager::processCan(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processCooling(Stage currentStage)
+uint32_t StageManager::processCooling(void)
 {
     //do Cooling stuff
     return 0;
 }
 
+
 /** 
  * @brief  
  * @note   
+ * @param  currentStage: 
+ * @param  tasks: 
  * @retval 
  */
-uint32_t StageManager::processDash(Stage currentStage)
+uint32_t StageManager::processDash(uint8_t tasks)
 {
     //do Dash processing
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+            
+            if(tasks == TF_DASH_PRECHARGE)
+            {
+                
+            }
+
+        break;
+
+
+        case STAGE_PRECHARGE:
+            
+        break;
+
+
+        case STAGE_ENERGIZED:
+
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_LAUNCH:
+
+        break;
+
+
+        case STAGE_SHUTDOWN:
+
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
 
     return 0;
 }
@@ -98,7 +145,7 @@ uint32_t StageManager::processDash(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processGlcd(Stage currentStage)
+uint32_t StageManager::processGlcd(void)
 {
     //glcd view display updating
 
@@ -111,7 +158,7 @@ uint32_t StageManager::processGlcd(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processImd(Stage currentStage)
+uint32_t StageManager::processImd(void)
 {    
     return 0;
 }
@@ -121,7 +168,7 @@ uint32_t StageManager::processImd(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processOrion(Stage currentStage)
+uint32_t StageManager::processOrion(void)
 {
     return 0;
 }
@@ -132,7 +179,7 @@ uint32_t StageManager::processOrion(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processPedal(Stage currentStage)
+uint32_t StageManager::processPedal(void)
 {
     return 0;
 }
@@ -143,7 +190,7 @@ uint32_t StageManager::processPedal(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processSdCard(Stage currentStage)
+uint32_t StageManager::processSdCard(void)
 {
     return 0;
 }
@@ -153,7 +200,7 @@ uint32_t StageManager::processSdCard(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processUnitek(Stage currentStage)
+uint32_t StageManager::processUnitek(void)
 {
     
     switch(currentStage){
@@ -212,7 +259,7 @@ uint32_t StageManager::processUnitek(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processBatlog(Stage currentStage)
+uint32_t StageManager::processBatlog(void)
 {
     return 0;
 }
@@ -223,7 +270,7 @@ uint32_t StageManager::processBatlog(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processPrecharge(Stage currentStage)
+uint32_t StageManager::processPrecharge(void)
 {
     return 0;
 }
@@ -234,7 +281,7 @@ uint32_t StageManager::processPrecharge(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processReadyToDrive(Stage currentStage)
+uint32_t StageManager::processReadyToDrive(void)
 {
     return 0;
 }
@@ -244,7 +291,7 @@ uint32_t StageManager::processReadyToDrive(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processLaunch(Stage currentStage)
+uint32_t StageManager::processLaunch(void)
 {
     return 0;
 }
@@ -255,7 +302,7 @@ uint32_t StageManager::processLaunch(Stage currentStage)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processShutdown(Stage currentStage)
+uint32_t StageManager::processShutdown(void)
 {
     return 0;
 }
@@ -267,7 +314,7 @@ uint32_t StageManager::processShutdown(Stage currentStage)
  * @param  currentStage: 
  * @retval None
  */
-void StageManager::resetAllStagesExcept(Stage currentStage)
+void StageManager::resetAllStagesExcept(Stage nonResetStage)
 {
     //initially setting all the stage configurations to false, then "enabling" the current Stage
     isStandbyConfigured = false;
@@ -278,7 +325,7 @@ void StageManager::resetAllStagesExcept(Stage currentStage)
 
 
     //checking which stage we're currently in (same as which stage is configured correctly)
-    switch(currentStage)
+    switch(nonResetStage)
     {
         //Standby stage is configured
         case Stage::STAGE_STANDBY:
@@ -435,7 +482,7 @@ void StageManager::configureLaunch(void)
  * @param  urgencyLevel: 
  * @retval 
  */
-StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags, Priority urgencyLevel)
+StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags, Priority urgencyLevel, EventTask deviceTasks)
 {
     Stage currentStage = Stage::STAGE_STANDBY;
 
@@ -445,7 +492,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
             if(localEventFlags && EF_SHUTDOWN)
             {
-                processShutdown(currentStage);
+                processShutdown();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_SHUTDOWN;
@@ -454,7 +501,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
             if(localEventFlags && EF_IMD)
             {
-                processImd(currentStage);
+                processImd();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_IMD;
@@ -467,7 +514,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
         
             if(localEventFlags && EF_CAN)
             {
-                processCan(currentStage);   
+                processCan();   
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_CAN;
@@ -476,7 +523,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
             if(localEventFlags && EF_UNITEK)
             {
-                processUnitek(currentStage);
+                processUnitek();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_UNITEK;
@@ -485,7 +532,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
             if(localEventFlags && EF_ORION)
             {
-                processOrion(currentStage);
+                processOrion();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_ORION;
@@ -498,7 +545,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
              if(localEventFlags && EF_COOLING)
             {
-                processCooling(currentStage);
+                processCooling();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_COOLING;
@@ -507,7 +554,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
             if(localEventFlags && EF_BATLOG)
             {
-                processBatlog(currentStage);
+                processBatlog();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_BATLOG;
@@ -516,7 +563,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
             if(localEventFlags && EF_DASH)
             {
-                processDash(currentStage);
+                processDash(deviceTasks.getTaskFlags(DASH));
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_DASH;
@@ -529,7 +576,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
             if(localEventFlags && TIMER_F_GLCD)
             {
-                processGlcd(currentStage);
+                processGlcd();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~TIMER_F_GLCD;
@@ -538,7 +585,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
 
             if(localEventFlags && TIMER_F_SDCARD)
             {
-                processSdCard(currentStage);
+                processSdCard();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~TIMER_F_SDCARD;
@@ -560,7 +607,7 @@ StageManager::Stage StageManager::processEventsStandby(uint32_t &localEventFlags
  * @param  urgencyLevel: 
  * @retval 
  */
-StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFlags, Priority urgencyLevel)
+StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFlags, Priority urgencyLevel, EventTask deviceTasks)
 {
     Stage currentStage = Stage::STAGE_PRECHARGE;
 
@@ -570,7 +617,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
             //code here
             if(localEventFlags && EF_SHUTDOWN)
             {
-                processShutdown(currentStage);
+                processShutdown();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_SHUTDOWN;
@@ -579,7 +626,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
 
             if(localEventFlags && EF_IMD)
             {
-                processImd(currentStage);
+                processImd();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_IMD;
@@ -592,7 +639,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
             //code here
             if(localEventFlags && EF_CAN)
             {
-                processCan(currentStage);   
+                processCan();   
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_CAN;
@@ -601,7 +648,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
 
             if(localEventFlags && EF_UNITEK)
             {
-                processUnitek(currentStage);
+                processUnitek();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_UNITEK;
@@ -610,7 +657,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
 
             if(localEventFlags && EF_ORION)
             {
-                processOrion(currentStage);
+                processOrion();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_ORION;
@@ -624,7 +671,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
 
              if(localEventFlags && EF_COOLING)
             {
-                processCooling(currentStage);
+                processCooling();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_COOLING;
@@ -633,7 +680,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
 
             if(localEventFlags && EF_BATLOG)
             {
-                processBatlog(currentStage);
+                processBatlog();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_BATLOG;
@@ -642,7 +689,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
 
             if(localEventFlags && EF_DASH)
             {
-                processDash(currentStage);
+                processDash(deviceTasks.getTaskFlags(DASH));
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_DASH;
@@ -655,7 +702,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
             //code here
             if(localEventFlags && TIMER_F_SDCARD)
             {
-                processSdCard(currentStage);
+                processSdCard();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~TIMER_F_SDCARD;
@@ -664,7 +711,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
 
             if(localEventFlags && TIMER_F_GLCD)
             {
-                processGlcd(currentStage);
+                processGlcd();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~TIMER_F_GLCD;
@@ -686,7 +733,7 @@ StageManager::Stage StageManager::processEventsPrecharge(uint32_t &localEventFla
  * @param  urgencyLevel: 
  * @retval 
  */
-StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFlags, Priority urgencyLevel)
+StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFlags, Priority urgencyLevel, EventTask deviceTasks)
 {
     Stage currentStage = Stage::STAGE_ENERGIZED;
 
@@ -696,7 +743,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
             //code here
             if(localEventFlags && EF_SHUTDOWN)
             {
-                processShutdown(currentStage);
+                processShutdown();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_SHUTDOWN;
@@ -705,7 +752,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
 
             if(localEventFlags && EF_IMD)
             {
-                processImd(currentStage);
+                processImd();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_IMD;
@@ -718,7 +765,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
             //code here
             if(localEventFlags && EF_CAN)
             {
-                processCan(currentStage);   
+                processCan();   
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_CAN;
@@ -727,7 +774,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
 
             if(localEventFlags && EF_UNITEK)
             {
-                processUnitek(currentStage);
+                processUnitek();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_UNITEK;
@@ -736,7 +783,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
 
             if(localEventFlags && EF_ORION)
             {
-                processOrion(currentStage);
+                processOrion();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_ORION;
@@ -750,7 +797,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
 
              if(localEventFlags && EF_COOLING)
             {
-                processCooling(currentStage);
+                processCooling();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_COOLING;
@@ -759,7 +806,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
 
             if(localEventFlags && EF_BATLOG)
             {
-                processBatlog(currentStage);
+                processBatlog();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_BATLOG;
@@ -768,7 +815,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
 
             if(localEventFlags && EF_DASH)
             {
-                processDash(currentStage);
+                processDash(deviceTasks.getTaskFlags(DASH));
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_DASH;
@@ -781,7 +828,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
             //code here
             if(localEventFlags && TIMER_F_GLCD)
             {
-                processGlcd(currentStage);
+                processGlcd();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~TIMER_F_GLCD;
@@ -790,7 +837,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
 
             if(localEventFlags && TIMER_F_SDCARD)
             {
-                processSdCard(currentStage);
+                processSdCard();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~TIMER_F_SDCARD;
@@ -812,7 +859,7 @@ StageManager::Stage StageManager::processEventsEnergized(uint32_t &localEventFla
  * @param  urgencyLevel: 
  * @retval 
  */
-StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags, Priority urgencyLevel)
+StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags, Priority urgencyLevel, EventTask deviceTasks)
 {
     Stage currentStage = Stage::STAGE_STANDBY;
 
@@ -822,7 +869,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
             //code here
             if(localEventFlags && EF_SHUTDOWN)
             {
-                processShutdown(currentStage);
+                processShutdown();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_SHUTDOWN;
@@ -831,7 +878,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
             if(localEventFlags && EF_IMD)
             {
-                processImd(currentStage);
+                processImd();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_IMD;
@@ -844,7 +891,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
             //code here
             if(localEventFlags && EF_CAN)
             {
-                processCan(currentStage);   
+                processCan();   
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_CAN;
@@ -853,7 +900,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
             if(localEventFlags && EF_UNITEK)
             {
-                processUnitek(currentStage);
+                processUnitek();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_UNITEK;
@@ -862,7 +909,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
             if(localEventFlags && EF_ORION)
             {
-                processOrion(currentStage);
+                processOrion();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_ORION;
@@ -876,7 +923,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
              if(localEventFlags && EF_COOLING)
             {
-                processCooling(currentStage);
+                processCooling();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_COOLING;
@@ -885,7 +932,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
             if(localEventFlags && EF_BATLOG)
             {
-                processBatlog(currentStage);
+                processBatlog();
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_BATLOG;
@@ -894,7 +941,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
             if(localEventFlags && EF_DASH)
             {
-                processDash(currentStage);
+                processDash(deviceTasks.getTaskFlags(DASH));
                 
                 //clearing the EF so we don't trigger this again
                 localEventFlags &= ~EF_DASH;
@@ -908,7 +955,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
             //
             if(localEventFlags && TIMER_F_PEDAL)
             {
-                processPedal(currentStage);
+                processPedal();
 
                 //clearing the Flag so we don't trigger this again
                 localEventFlags &= ~TIMER_F_PEDAL;
@@ -917,7 +964,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
             if(localEventFlags && TIMER_F_GLCD)
             {
-                processGlcd(currentStage);
+                processGlcd();
                 
                 //clearing the Flag so we don't trigger this again
                 localEventFlags &= ~TIMER_F_GLCD;
@@ -926,7 +973,7 @@ StageManager::Stage StageManager::processEventsDriving(uint32_t &localEventFlags
 
             if(localEventFlags && TIMER_F_SDCARD)
             {
-                processSdCard(currentStage);
+                processSdCard();
                 
                 //clearing the Flag so we don't trigger this again
                 localEventFlags &= ~TIMER_F_SDCARD;

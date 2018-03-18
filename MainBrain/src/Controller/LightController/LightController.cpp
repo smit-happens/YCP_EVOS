@@ -34,7 +34,8 @@ LightController* LightController::getInstance()
  */
 LightController::~LightController(void)
 {
-    delete lights;
+    for(int lightIterator = 0; lightIterator < LightId::NUM_LIGHTS; lightIterator++)
+        delete lights[lightIterator];
 }
 
 
@@ -59,14 +60,14 @@ void LightController::init(void)
 void LightController::turnAllOn(void)
 {
     for(int lightIterator = 0; lightIterator < LightId::NUM_LIGHTS; lightIterator++)
-        lights[lightIterator]->TurnOn();
+        lights[lightIterator]->turnOn();
 }
 
 
 void LightController::turnAllOff(void)
 {
     for(int lightIterator = 0; lightIterator < LightId::NUM_LIGHTS; lightIterator++)
-        lights[lightIterator]->TurnOff();
+        lights[lightIterator]->turnOff();
 }
 
 

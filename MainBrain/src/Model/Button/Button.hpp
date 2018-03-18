@@ -16,15 +16,10 @@ class Button : public BaseModel
 {
 public:
     Button(void);
-    ~Button(void);
+    ~Button(void) {};
 
-    void update(void);
+    void update(void) {};
 
-
-    // String getName(void);
-
-    // int getState(void);
-    // void setState(void);
 };
 
 
