@@ -10,7 +10,7 @@
 #ifndef UNIT_TEST
 
 //comment/uncomment to enable/disable serial statements
-#define SERIAL_DEBUG
+// #define SERIAL_DEBUG
 
 #include <IntervalTimer.h>
 #include "Manager/StageManager/StageManager.hpp"
@@ -146,6 +146,7 @@ int main(void)
         
         //SdCard check (read data, check if good)
         //Dash test (turn on all LEDS, user confirmation w/ encoder)
+        lightC->test();
 
         //Unitek check if okay
         //Orion check if okay

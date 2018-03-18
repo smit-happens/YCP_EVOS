@@ -17,6 +17,9 @@ const int TIMER_NUM     = 3;    //number of timers in use
 //Ready to drive Siren time
 const int TIME_SIREN    = 2000;
 
+//dash light test time
+const int TIME_LIGHT    = 2000;
+
 //GLCD polling delay
 const int POLL_TIME_GLCD    = 500;
 

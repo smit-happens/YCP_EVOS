@@ -93,3 +93,25 @@ void LightController::turnOff(LightId lightChoice)
 {
     lights[lightChoice]->turnOff();
 }
+
+
+void LightController::test(void)
+{
+    //make sure the lights are off first, just in case
+    turnAllOff();
+
+    //record the current time in milliseconds
+    uint32_t currentTime = millis();
+
+    //turn all the lights on
+    turnAllOn();
+
+    //wait for 2 seconds
+    while((millis() - currentTime) < TIME_LIGHT)
+    {
+        ;
+    }
+
+    turnAllOff();
+
+}

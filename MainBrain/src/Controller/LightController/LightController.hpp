@@ -44,7 +44,7 @@ public:
     void turnOn(LightId light);
     void turnOff(LightId light);
 
-
+    void test(void);
 
 private:
     //Private contstructor so that it can't be called
