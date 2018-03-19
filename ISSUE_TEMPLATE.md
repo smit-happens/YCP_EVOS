@@ -8,12 +8,12 @@ To Use this Template:
 ## End goal
 
 
-## Relavent Info/Links
+## Relevant Info/Links
 
 
 #### Your Code
 
-```
+```c++
 If relevant, paste all of your challenge code in here
 ```
 
