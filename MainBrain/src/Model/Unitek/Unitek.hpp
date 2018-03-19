@@ -163,16 +163,23 @@ public:
 
     int getRpmLimit(void);
 
-    int getSpeedValueForUnitek(void);
-    void setSpeedValueForUnitek(int userSpeedVal);
+    uint16_t getSpeedValueForUnitek(void);
+    void setSpeedValueForUnitek(uint16_t userSpeedVal);
 
-    int getSpeedValueFromUnitek(void);
-    void setSpeedValueFromUnitek(int recSpeedValue);
+    uint16_t getSpeedValueFromUnitek(void);
+    void setSpeedValueFromUnitek(uint16_t recSpeedValue);
 
-    float getTemperatureMotorLimit(void);   //These functions might require a convertToCelsius() funct
-    float getTemperatureMotor(void);
-    float getTemperatureOutputStage(void);
-    float getTemperatureInterior(void);
+    uint16_t getTemperatureMotorLimit(void);   //These functions might require a convertToCelsius() funct
+    void setTemperatureMotorLimit(uint16_t tempMotorLimit);
+    uint16_t getTemperatureMotor(void);
+    void setTemperatureMotor(uint16_t tempMotor);
+    uint16_t getTemperatureOutputStage(void);
+    void setTemperatureOutputStage(uint16_t tempOutputStage);
+    uint16_t getTemperatureInterior(void);
+    void setTemperatureInterior(uint16_t tempInterior);
+
+    uint16_t getVoltageHvBus(void);
+    void setVoltageHvBus(uint16_t hvBusVoltage);
 
     ErrorReg_0x8F getErrorReg_0x8F(void);
     void setErrorReg_0x8F(uint16_t input);
