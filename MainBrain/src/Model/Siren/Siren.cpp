@@ -23,7 +23,7 @@ Siren::Siren(void)
  * @note   Play the sound either through tones or some .wav file
  * @retval None
  */
-void Siren::playStartupSound(void)
+void Siren::timedTone(void)
 {
     //record the current time in milliseconds
     uint32_t currentTime = millis();
