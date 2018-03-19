@@ -194,120 +194,27 @@ int main(void)
 
         interrupts();
 
-        //for every stage, we check what events need to be handled with varying priority levels
         //FIXME: handle Priorities better, right now we loop through them, later we want to handle CRITICAL prioritis first
-        switch(localStage.currentStage)
+        for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
         {
-            case StageManager::STAGE_STANDBY:
+            localStage.currentStage = localStage.processStage((Priority)priorityIterator, &localEventFlags, localTaskFlags);
 
-                //initial one-time configuration for standby stage
-                localStage.configureStandby();
-
-                //looping through the events of varying priorities
-                for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
-                {
-                    localStage.currentStage = localStage.processEventsStandby(&localEventFlags, (Priority)priorityIterator, localTaskFlags);
-
-                    //checking if we need to update the timers
-                    if(localEventFlags && EF_TIMER)
-                    {
-                        //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
-                        timerEventFlags |= localStage.processTimers();
-                        
-                        //clearing the EF so we don't trigger this again
-                        localEventFlags &= ~EF_TIMER;
-                    }
-                }
-
-                //All low priority events are handled by the timer event flags
-                localStage.processEventsStandby(&timerEventFlags, Priority::PRIORITY_LOW, localTaskFlags);
-
-            break;
-
-
-            case StageManager::STAGE_PRECHARGE:
-
-                //initial one-time configuration for precharge stage
-                localStage.configurePrecharge();
-
-                for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
-                {
-                    localStage.processEventsPrecharge(&localEventFlags, (Priority)priorityIterator, localTaskFlags);
-
-                    //checking if we need to update the timers
-                    if(localEventFlags && EF_TIMER)
-                    {
-                        //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
-                        timerEventFlags |= localStage.processTimers();
-                        
-                        //clearing the EF so we don't trigger this again
-                        localEventFlags &= ~EF_TIMER;
-                    }
-                }
-
-                localStage.processEventsPrecharge(&timerEventFlags, Priority::PRIORITY_LOW, localTaskFlags);
-
-            break;
-
-
-            case StageManager::STAGE_ENERGIZED:
-
-                //initial one-time configuration for energized stage
-                localStage.configureEnergized();
-
-                for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
-                {
-                    localStage.processEventsEnergized(&localEventFlags, (Priority)priorityIterator, localTaskFlags);
-
-                    //checking if we need to update the timers
-                    if(localEventFlags && EF_TIMER)
-                    {
-                        //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
-                        timerEventFlags |= localStage.processTimers();
-                        
-                        //clearing the EF so we don't trigger this again
-                        localEventFlags &= ~EF_TIMER;
-                    }
-                }
+            //checking if we need to update the timers
+            if(localEventFlags && EF_TIMER)
+            {
+                //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
+                timerEventFlags |= localStage.processTimers();
                 
-                localStage.processEventsEnergized(&timerEventFlags, Priority::PRIORITY_LOW, localTaskFlags);
+                //clearing the EF so we don't trigger this again
+                localEventFlags &= ~EF_TIMER;
+            }
+        }
 
-            break;
+        //All low priority events are handled by the timer event flags
+        localStage.processStage(Priority::PRIORITY_LOW, &timerEventFlags, localTaskFlags);
 
+    } //end of loop
 
-            case StageManager::STAGE_DRIVING:
-
-                //initial one-time configuration for driving stage
-                localStage.configureDriving();
-
-                for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
-                {
-                    localStage.processEventsDriving(&localEventFlags, (Priority)priorityIterator, localTaskFlags);
-
-                    //checking if we need to update the timers
-                    if(localEventFlags && EF_TIMER)
-                    {
-                        //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
-                        timerEventFlags |= localStage.processTimers();
-                        
-                        //clearing the EF so we don't trigger this again
-                        localEventFlags &= ~EF_TIMER;
-                    }
-                }
-                
-                localStage.processEventsDriving(&timerEventFlags, Priority::PRIORITY_LOW, localTaskFlags);
-
-            break;
-
-
-            default:
-
-                //shouldn't get here
-
-            break;
-
-        }   //end of super loop ------------------------------------------------------
-    }
 
     //SHUTDOWN function
         //EXTREMELY CRITICAL FUNCTIONS, no looping here

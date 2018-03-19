@@ -46,18 +46,11 @@ public:
     uint32_t processTimers(void);
 
     //handles the excecution of the various stages
-    Stage processEventsStandby(uint32_t* localEventFlags, Priority urgencyLevel, uint8_t* taskFlags);
-    Stage processEventsPrecharge(uint32_t* localEventFlags, Priority urgencyLevel, uint8_t* taskFlags);
-    Stage processEventsEnergized(uint32_t* localEventFlags, Priority urgencyLevel, uint8_t* taskFlags);
-    Stage processEventsDriving(uint32_t* localEventFlags, Priority urgencyLevel, uint8_t* taskFlags);
-
+    Stage processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags);
+    
 
     //contains code that is executed once at the beginning of a stage
-    void configureStandby(void);
-    void configurePrecharge(void);
-    void configureEnergized(void);
-    void configureDriving(void);
-    void configureLaunch(void);
+    void configureStage(void);
 
     //for correctly setting the next stage based off the current one
     // void transitionStageToFrom(Stage nextStage, Stage currentStage);
