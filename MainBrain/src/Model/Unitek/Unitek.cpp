@@ -181,7 +181,7 @@ uint16_t Unitek::getTemperatureInterior(void)
  */
 void Unitek::setTemperatureInterior(uint16_t tempInterior)
 {
-    tempInteriorMCReg_0x4B=tempInterior
+    tempInteriorMCReg_0x4B=tempInterior;
 }
 
 /** 
