@@ -23,7 +23,6 @@ public:
 
         pedal.setRawOrigin();
 
-        TEST_ASSERT_INT_WITHIN(1000, pedal.getLinOrigin(), linearVal);
-        TEST_ASSERT_INT_WITHIN(1000, pedal.getLogOrigin(), logVal);
+        TEST_ASSERT_INT_WITHIN(1000, pedal.getRawOrigin(), PedalVal);
     };
 };
