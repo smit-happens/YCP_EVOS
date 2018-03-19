@@ -10,7 +10,7 @@
 #define BASECONTROLLER_HPP
 
 #include <Arduino.h>
-
+#include "../../Model/Constants/TimeDelay.hpp"
 
 class BaseController
 {

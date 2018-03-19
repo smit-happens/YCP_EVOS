@@ -34,7 +34,8 @@ DashController* DashController::getInstance()
  */
 DashController::~DashController(void)
 {
-    // delete buttons
+    delete buttons;
+    delete screen;
 }
 
 
@@ -45,7 +46,9 @@ DashController::~DashController(void)
  */
 void DashController::init(void)
 {
-
+    buttons = new Button();
+    screen = new Glcd();
+    siren = new Siren();
 }
 
 

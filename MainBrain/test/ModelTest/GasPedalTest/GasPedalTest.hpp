@@ -17,12 +17,11 @@ public:
     
     static void setOriginTest(void)
     {
-        int linearVal = analogRead(MB_GAS_LIN);
-        int logVal = analogRead(MB_GAS_LOG);
+        int PedalVal = analogRead(MB_GAS_LIN);
 
         GasPedal pedal;
 
-        pedal.setOrigin();
+        pedal.setRawOrigin();
 
         TEST_ASSERT_INT_WITHIN(1000, pedal.getLinOrigin(), linearVal);
         TEST_ASSERT_INT_WITHIN(1000, pedal.getLogOrigin(), logVal);

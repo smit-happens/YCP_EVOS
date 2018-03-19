@@ -96,3 +96,28 @@ float UnitekController::calculateRpm(int speedValue)
     float percentage = (float)speedValue / unitekModel->MAX_VALUE;
     return percentage * unitekModel->getRpmLimit();
 }
+
+/** 
+ * @brief  calculate numeric speed value to send to the MC
+ * @note   percent will be calculate by getPercentageGas() in PedalController
+ * @param  percent: is the gas pedal percentage pressed
+ * @retval 16 bit value that will be sent over CAN to control motor
+ */
+uint16_t UnitekController::calculateSpeedSetPoint(float percent)
+{
+    int rpmSetPoint=unitekModel->MAX_VALUE*percent;
+    return rpmSetPoint;
+}
+
+ /** @brief  calculate the numerical 90 charge to send to MC
+ * @note   
+ * @param  batteryVoltage: total battery voltage 
+ * @retval numeric value for 90% charge
+ */
+uint16_t UnitekController::calculate90Charge(float batteryVoltage)
+{
+    float batteryPercent=batteryVoltage/(float)unitekModel->VOLTAGE_MAX; //batteryPercent is based off of internal unitek where 32767=2*VMains
+    float batteryVoltageNumeric=batteryPercent*(float)unitekModel->MAX_VALUE;    //batteryVoltageNumeric gives the battery voltage on scale of 0-32767
+    float percent90Charge=0.9*batteryVoltageNumeric;            //finds 90% of numeric battery voltage
+    return (int)percent90Charge;
+}

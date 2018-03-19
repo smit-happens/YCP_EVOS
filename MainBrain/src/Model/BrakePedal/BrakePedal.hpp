@@ -9,13 +9,13 @@
 #ifndef BRAKEPEDAL_HPP
 #define BRAKEPEDAL_HPP
 
-#include "../BaseModel/BaseModel.hpp"
+#include "../BaseModel/BasePedal.hpp"
 
 //Maybe have states the pedal can be in, since it has the chance
 //of causing an error if there's an implausibility or a short in
 //the wires
 
-class BrakePedal : public BaseModel
+class BrakePedal : public BasePedal
 {
 public:
     BrakePedal();
@@ -23,10 +23,10 @@ public:
 
     void update(void);
 
-    uint16_t getLinValue(void);
+    void setRawOrigin(void);
 
 private:
-    uint16_t _linValue;
+
 };
 
 #endif  //BRAKEPEDAL_HPP
