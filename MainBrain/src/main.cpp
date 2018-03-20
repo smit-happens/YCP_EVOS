@@ -188,7 +188,7 @@ int main(void)
         //clearing global task flags for every device
         for(int i = 0; i < DeviceName::NUM_DEVICES; i++ )
         {
-            localTaskFlags[i] = globalTaskFlags[i];
+            localTaskFlags[i] |= globalTaskFlags[i];
             globalTaskFlags[i] = 0;
         }
 

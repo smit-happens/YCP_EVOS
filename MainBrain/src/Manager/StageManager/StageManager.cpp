@@ -483,6 +483,7 @@ void StageManager::configureStage(void)
 
 
         //Launch stage is configured
+        //FIXME: make this an option for driving stage, not a stage
         case Stage::STAGE_LAUNCH:
         {
             //check to make sure this hasn't been ran before for this stage
@@ -523,7 +524,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
     {
         case PRIORITY_CRITICAL:
 
-            if(*eventFlags && EF_SHUTDOWN)
+            if(*eventFlags & EF_SHUTDOWN)
             {
                 processShutdown();
                 
@@ -532,7 +533,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
             }
 
 
-            if(*eventFlags && EF_IMD)
+            if(*eventFlags & EF_IMD)
             {
                 processImd();
                 
@@ -545,7 +546,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
         
         case PRIORITY_HIGH:
         
-            if(*eventFlags && EF_CAN)
+            if(*eventFlags & EF_CAN)
             {
                 processCan();   
                 
@@ -554,7 +555,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
             }
 
 
-            if(*eventFlags && EF_UNITEK)
+            if(*eventFlags & EF_UNITEK)
             {
                 processUnitek();
                 
@@ -563,7 +564,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
             }
 
 
-            if(*eventFlags && EF_ORION)
+            if(*eventFlags & EF_ORION)
             {
                 processOrion();
                 
@@ -576,7 +577,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
 
         case PRIORITY_MEDIUM:
 
-             if(*eventFlags && EF_COOLING)
+             if(*eventFlags & EF_COOLING)
             {
                 processCooling();
                 
@@ -585,7 +586,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
             }
 
 
-            if(*eventFlags && EF_BATLOG)
+            if(*eventFlags & EF_BATLOG)
             {
                 processBatlog();
                 
@@ -594,7 +595,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
             }
 
 
-            if(*eventFlags && EF_DASH)
+            if(*eventFlags & EF_DASH)
             {
                 processDash(taskFlags);
 
@@ -607,7 +608,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
 
         case PRIORITY_LOW:
 
-            if(*eventFlags && TIMER_F_GLCD)
+            if(*eventFlags & TIMER_F_GLCD)
             {
                 processGlcd();
                 
@@ -616,7 +617,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
             }
 
 
-            if(*eventFlags && TIMER_F_SDCARD)
+            if(*eventFlags & TIMER_F_SDCARD)
             {
                 processSdCard();
                 
