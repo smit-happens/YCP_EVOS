@@ -29,8 +29,8 @@ struct ErrorBits
     uint8_t RaceAway        : 1;
     uint8_t User            : 1;
     uint8_t I2R             : 1;
-    uint8_t Reserve         : 1;
-    uint8_t HwFail          : 1;
+    uint8_t HwFail         : 1;
+    uint8_t AdcInt          : 1;
     uint8_t Ballast         : 1;    //bit 15
 };
 

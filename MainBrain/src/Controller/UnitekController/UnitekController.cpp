@@ -259,3 +259,98 @@ void UnitekController::storeTempInterior(uint16_t interiorTemp)
     unitekModel->setTemperatureInterior(interiorTemp);
 }
 
+
+/** 
+ * @brief  checks the warning and error registers to see if shutdown is needed
+ * @note   prior to using this function update the registers via CAN and store function
+ * @retval true if shutdown is needed false otherwise
+ */
+bool UnitekController::checkErrorWarningForShutdown()
+{
+    //get latest values of error reg and warning reg
+    ErrorReg_0x8F errorReg = unitekModel->getErrorReg_0x8F();
+    WarningReg_0x8F warningReg = unitekModel->getWarningReg_0x8F();
+
+    //checks for bad NDrive parameters
+    if(errorReg.errorBits.BadParam==1)
+    {
+        return true;
+    }
+
+    //checks for ouput stage fault
+    else if(errorReg.errorBits.PowerFault==1)
+    {
+        return true;
+    }
+
+    //checks for tansfer fault bus
+    else if(errorReg.errorBits.BusTimeout==1)
+    {
+        return true;
+    }
+
+    //checks for too high motor temperature
+    else if(errorReg.errorBits.MotorTemp==1)
+    {
+        return true;
+    }
+
+    //checks for too high MC temperature
+    else if(errorReg.errorBits.DeviceTemp==1)
+    {
+        return true;
+    }
+
+    //checks for 1.8*max voltage
+    else if(errorReg.errorBits.OverVoltage==1)
+    {
+        return true;
+    }
+
+    //checks for 300% over current
+    else if(errorReg.errorBits.IPeak==1)
+    {
+        return true;
+    }
+
+    //checks for power overload
+    else if(errorReg.errorBits.I2R==1)
+    {
+        return true;
+    }
+
+    //checks to ensre firware is compatible with hardware
+    else if(errorReg.errorBits.HwFail==1)
+    {
+        return true;
+    }
+
+    //checks for current measuring fault
+    else if(errorReg.errorBits.AdcInt==1)
+    {
+        return true;
+    }
+
+    //checks for 87% motor temp
+    else if(warningReg.warningBits.MotorTemp==1)
+    {
+        return true;
+    }
+
+    //checks for 87% device temp
+    else if(warningReg.warningBits.DeviceTemp==1)
+    {
+        return true;
+    }
+
+    //checks for 1.5*max voltage
+    else if(warningReg.warningBits.OverVoltage==1)
+    {
+        return true;
+    }
+
+    //if all tests pass then return false and shutdown won't be needed
+    else{
+        return false;
+    }
+}
