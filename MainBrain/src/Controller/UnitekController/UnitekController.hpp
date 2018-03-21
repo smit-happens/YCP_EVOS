@@ -41,6 +41,7 @@ public:
     void storeTemperatureMotor(uint16_t motorTemp);
     void storeTempOutputStage(uint16_t ouputTemp);
     void storeTempInterior(uint16_t interiorTemp);
+    bool checkErrorWarningForShutdown();
     
 
 private:
