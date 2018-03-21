@@ -121,3 +121,141 @@ uint16_t UnitekController::calculate90Charge(float batteryVoltage)
     float percent90Charge=0.9*batteryVoltageNumeric;            //finds 90% of numeric battery voltage
     return (int)percent90Charge;
 }
+
+/** 
+ * @brief  used to store the recieved speed value from CAN
+ * @note   
+ * @param  RpmSpeed: recieved numeric value from MC that is converted to RPMs using calculateRPM
+ * @retval None
+ */
+void  UnitekController::storeRpmSpeedValue(float RpmSpeed)
+{
+    unitekModel->setSpeedValueFromUnitek(RpmSpeed);
+}
+
+
+/** 
+ * @brief  stores rpm limit if we ever need to change it
+ * @note   should only ever be used if we implement reverse mode
+ * @param  RpmLimit: new RPM limit that should have been set in MC
+ * @retval None
+ */
+void UnitekController::storeRpmLimit(uint16_t RpmLimit)
+{
+    unitekModel->setRpmLimit(RpmLimit);
+}
+
+
+/** 
+ * @brief  stores error register value
+ * @note   
+ * @param  errorReg: recieved value of error reg from CAN
+ * @retval None
+ */
+void UnitekController::storeErrorReg(uint16_t errorReg)
+{
+    unitekModel->setErrorReg_0x8F(errorReg);
+}
+
+
+/** 
+ * @brief  stores warning register value
+ * @note   
+ * @param  warningReg: recieved value of wanring reg from CAN
+ * @retval None
+ */
+void UnitekController::storeWarningReg(uint16_t warningReg)
+{
+    unitekModel->setWarningReg_0x8F(warningReg);
+}
+
+
+/** 
+ * @brief  store state register value
+ * @note   
+ * @param  stateReg: recieved value of state reg from CAN
+ * @retval None
+ */
+void UnitekController::storeStateReg(uint16_t stateReg)
+{
+    unitekModel->setStateReg_0x40(stateReg);
+}
+
+
+/** 
+ * @brief  store mode register value
+ * @note   
+ * @param  modeReg: received value of mode reg from CAN
+ * @retval None
+ */
+void UnitekController::storeModeReg(uint16_t modeReg)
+{
+    unitekModel->setModeReg_0xD8(modeReg);
+}
+
+
+/** 
+ * @brief  store voltage value of hv bus 
+ * @note   value is in unitek resolution
+ * @param  HvBus: received value of HV bus from CAN
+ * @retval None
+ */
+void UnitekController::storeVoltageHvBus(uint16_t HvBus)
+{
+    unitekModel->setVoltageHvBus(HvBus);
+}
+
+
+/** 
+ * @brief  store speed value that is sent to MC
+ * @note   value is in unitek resolution
+ * @param  speedCmdValue: value calculated from pedal press percentage 
+ * @retval None
+ */
+void UnitekController::storeSpeedValueForUnitek(uint16_t speedCmdValue)
+{
+    unitekModel->setSpeedValueForUnitek(speedCmdValue);
+}
+
+
+/** 
+ * @brief  store speed value that is recieved from MC
+ * @note   value is RPM resolution (confirm)
+ * @param  speedValue: value received from MC over CAN
+ * @retval None
+ */
+void UnitekController::storeSpeedValueFromUnitek(uint16_t speedValue)
+{
+    unitekModel->setSpeedValueFromUnitek(speedValue);
+}
+
+
+/** 
+ * @brief  store temperature of the motor
+ * @note   value will be in unitek resolution
+ * @param  motorTemp: temp value recieved from MC over can
+ * @retval None
+ */
+void UnitekController::storeTemperatureMotor(uint16_t motorTemp)
+{
+    unitekModel->setTemperatureMotor(motorTemp);
+}
+
+
+/** 
+ * @brief  stores temperature of the output stage
+ * @note   value will be in unitek resolution
+ * @param  outputTemp: temp value of output stage recieved from MC
+ * @retval None
+ */
+void UnitekController::storeTempOutputStage(uint16_t outputTemp)
+{
+    unitekModel->setTemperatureOutputStage(outputTemp);
+}
+
+
+void UnitekController::storeTempInterior(uint16_t interiorTemp)
+{
+    unitekModel->setTemperatureInterior(interiorTemp);
+}
+
