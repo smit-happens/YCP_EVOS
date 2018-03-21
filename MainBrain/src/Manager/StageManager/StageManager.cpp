@@ -60,331 +60,67 @@ uint32_t StageManager::processTimers(void)
 /** 
  * @brief  
  * @note   
- * @retval 
- */
-uint32_t StageManager::processCan(void)
-{
-    //do CAN stuff
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processCooling(void)
-{
-    //do Cooling stuff
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @param  currentStage: 
- * @param  tasks: 
- * @retval 
- */
-uint32_t StageManager::processDash(uint8_t* taskFlags)
-{
-    //do Dash processing
-    Serial.print("Dash tasks: ");
-    Serial.println(taskFlags[DASH], BIN); 
-
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            if(taskFlags[DASH] & TF_DASH_PRECHARGE)
-            {
-               taskFlags[DASH] &= ~TF_DASH_PRECHARGE;
-                Serial.print("PrechargeBtn task");
-            }
-
-            if(taskFlags[DASH] & TF_DASH_RTD)
-            {
-               taskFlags[DASH] &= ~TF_DASH_RTD;
-                Serial.print("TF_DASH_RTD task: ");
-            }
-
-            if(taskFlags[DASH] & TF_DASH_WAYNE_WORLD)
-            {
-               taskFlags[DASH] &= ~TF_DASH_WAYNE_WORLD;
-                Serial.print("TF_DASH_WAYNE_WORLD task");
-            }
-
-            if(taskFlags[DASH] & TF_DASH_STANDBY)
-            {
-               taskFlags[DASH] &= ~TF_DASH_STANDBY;
-                Serial.print("TF_DASH_STANDBY task");
-            }
-
-            if(taskFlags[DASH] & TF_DASH_SHUTDOWN)
-            {
-               taskFlags[DASH] &= ~TF_DASH_SHUTDOWN;
-                Serial.print("TF_DASH_SHUTDOWN task");
-            }
-
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-            Serial.println("Precharge Stage");
-        break;
-
-
-        case STAGE_ENERGIZED:
-            Serial.println("Energized Stage");
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-            Serial.println("Driving Stage");            
-        }
-        break;
-
-
-        case STAGE_LAUNCH:
-
-        break;
-
-
-        case STAGE_SHUTDOWN:
-
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
-    }
-
-    Serial.println("\n");
-
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processGlcd(void)
-{
-    //glcd view display updating
-
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processImd(void)
-{    
-    return 0;
-}
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processOrion(void)
-{
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processPedal(void)
-{
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processSdCard(void)
-{
-    return 0;
-}
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processUnitek(void)
-{
-    
-    switch(currentStage){
-        case STAGE_BOOTTEST:
-
-        break;
-
-
-        case STAGE_STANDBY:
-
-        break;
-
-
-        case STAGE_PRECHARGE:
-            
-        break;
-
-
-        case STAGE_ENERGIZED:
-
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-            //set RPM Setpoint in MC
-            float pedalPercent=PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
-            uint16_t numericSpeedSetPoint=UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
-            //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
-            CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
-        }
-        break;
-
-
-        case STAGE_LAUNCH:
-
-        break;
-
-
-        case STAGE_SHUTDOWN:
-
-        break;
-    }
-
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processBatlog(void)
-{
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processPrecharge(void)
-{
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processReadyToDrive(void)
-{
-    return 0;
-}
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processLaunch(void)
-{
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processShutdown(void)
-{
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @param  currentStage: 
  * @retval None
  */
-void StageManager::resetAllStagesExcept(Stage nonResetStage)
+void StageManager::bootTest(void)
 {
-    //initially setting all the stage configurations to false, then "enabling" the current Stage
-    isStandbyConfigured = false;
-    isPrechargeConfigured = false;
-    isEnergizedConfigured = false;
-    isDrivingConfigured = false;
-    isLaunchConfigured = false;
+    //Dashboard
+    //LCD (boot logo)
+    // dashC->
 
 
-    //checking which stage we're currently in (same as which stage is configured correctly)
-    switch(nonResetStage)
+    //Teensy SelfTest (internal functions if any)
+
+    
+    //SdCard check (read data, check if good)
+
+
+    //Dash test (turn on all LEDS, user confirmation w/ encoder)
+    LightController::getInstance()->test();
+
+
+    //Unitek Boot/check if okay
+
+    //closes the safety circuit relay as well
+    digitalWriteFast(MB_SCADA_OK, HIGH);
+
+
+    //Orion check if okay
+
+    
+    //Cooling check if working
+
+
+    //GLV batlog level check
+    
+    
+    //assuming everything is okay
+        //Notification: All systens go. Ready to Precharge
+
+
+    if(/* check for ShutdownEF*/ 1 )
     {
-        //Standby stage is configured
-        case Stage::STAGE_STANDBY:
-            isStandbyConfigured = true;
-        break;
-
-        
-        //Precharge stage is configured
-        case Stage::STAGE_PRECHARGE:
-            isPrechargeConfigured = true;
-        break;
-
-
-        //Energized stage is configured
-        case Stage::STAGE_ENERGIZED:
-            isEnergizedConfigured = true;
-        break;
-
-
-        //Driving stage is configured
-        case Stage::STAGE_DRIVING:
-            isDrivingConfigured = true;
-        break;
-
-
-        //Launch stage is configured
-        case Stage::STAGE_LAUNCH:
-            isLaunchConfigured = true;
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
+        currentStage = StageManager::STAGE_STANDBY;
     }
+    else
+    {
+        currentStage = StageManager::STAGE_SHUTDOWN;
+    }
+
+}
+
+
+/** 
+ * @brief  EXTREMELY CRITICAL FUNCTIONS
+ * @note   
+ * @retval None
+ */
+void StageManager::shutdown(void)
+{
+    //SCADA_OK signal to false
+    digitalWriteFast(MB_SCADA_OK, LOW);
+
+    //close out SdCard logs    
 }
 
 
@@ -477,24 +213,6 @@ void StageManager::configureStage(void)
         break;
 
 
-        //Launch stage is configured
-        //FIXME: make this an option for driving stage, not a stage
-        case Stage::STAGE_LAUNCH:
-        {
-            //check to make sure this hasn't been ran before for this stage
-            if(isLaunchConfigured == false)
-            {
-                //set variable to "configured"
-                resetAllStagesExcept(Stage::STAGE_LAUNCH);
-
-                //TODO: Launch setup code
-                
-
-            }
-        }
-        break;
-
-
         default:
             //shouldn't get here
         break;
@@ -504,11 +222,11 @@ void StageManager::configureStage(void)
 
 
 /** 
- * @brief  
- * @note   Entry condition: EVOS finishes subsystem testing
- *         Exit condition:  Driver requests Precharging
- * @param  &eventFlags: 
+ * @brief  Handles the event and task flags for each device
+ * @note   
  * @param  urgencyLevel: 
+ * @param  eventFlags: 
+ * @param  taskFlags: 
  * @retval 
  */
 StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags)
@@ -518,10 +236,10 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
     switch(urgencyLevel)
     {
         case PRIORITY_CRITICAL:
-
+        {
             if(*eventFlags & EF_SHUTDOWN)
             {
-                processShutdown();
+                shutdown();
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_SHUTDOWN;
@@ -535,12 +253,12 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_IMD;
             }
-
+        }
         break;
 
         
         case PRIORITY_HIGH:
-        
+        {
             if(*eventFlags & EF_CAN)
             {
                 processCan();   
@@ -566,12 +284,12 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_ORION;
             }
-        
+        }
         break;
 
 
         case PRIORITY_MEDIUM:
-
+        {
              if(*eventFlags & EF_COOLING)
             {
                 processCooling();
@@ -597,11 +315,18 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_DASH;
             }
-
+        }
         break;
 
 
         case PRIORITY_LOW:
+        {
+            if(*eventFlags & TIMER_F_PEDAL)
+            {
+                processPedal();
+
+                *eventFlags &= ~TIMER_F_PEDAL;
+            }
 
             if(*eventFlags & TIMER_F_GLCD)
             {
@@ -619,10 +344,527 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~TIMER_F_SDCARD;
             }
-
+        }
         break;
 
     } //End switch
 
     return currentStage;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processCan(void)
+{
+    //insert code here that executes for any stage
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processCooling(void)
+{
+    //insert code here that executes for any stage
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  currentStage: 
+ * @param  tasks: 
+ * @retval 
+ */
+uint32_t StageManager::processDash(uint8_t* taskFlags)
+{
+    //do Dash processing
+    Serial.print("Dash tasks: ");
+    Serial.println(taskFlags[DASH], BIN); 
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            if(taskFlags[DASH] & TF_DASH_PRECHARGE)
+            {
+               taskFlags[DASH] &= ~TF_DASH_PRECHARGE;
+                Serial.print("PrechargeBtn task");
+            }
+
+            if(taskFlags[DASH] & TF_DASH_RTD)
+            {
+               taskFlags[DASH] &= ~TF_DASH_RTD;
+                Serial.print("TF_DASH_RTD task: ");
+            }
+
+            if(taskFlags[DASH] & TF_DASH_WAYNE_WORLD)
+            {
+               taskFlags[DASH] &= ~TF_DASH_WAYNE_WORLD;
+                Serial.print("TF_DASH_WAYNE_WORLD task");
+            }
+
+            if(taskFlags[DASH] & TF_DASH_STANDBY)
+            {
+               taskFlags[DASH] &= ~TF_DASH_STANDBY;
+                Serial.print("TF_DASH_STANDBY task");
+            }
+
+            if(taskFlags[DASH] & TF_DASH_SHUTDOWN)
+            {
+               taskFlags[DASH] &= ~TF_DASH_SHUTDOWN;
+                Serial.print("TF_DASH_SHUTDOWN task");
+            }
+
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+            Serial.println("Precharge Stage");
+        break;
+
+
+        case STAGE_ENERGIZED:
+            Serial.println("Energized Stage");
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+            Serial.println("Driving Stage");            
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
+    Serial.println("\n");
+
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processGlcd(void)
+{
+    //glcd view display updating
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+
+    }
+
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processImd(void)
+{    
+    //this will only have like one thing that happens if called
+    //TODO: add in IMD event handling 
+
+    return 0;
+
+}
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processOrion(void)
+{
+    //insert code here that executes for any stage
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processPedal(void)
+{
+    //insert code here that executes for any stage
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processSdCard(void)
+{
+    //insert code here that executes for any stage
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
+    return 0;
+}
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processUnitek(void)
+{
+    
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+            //set RPM Setpoint in MC
+            float pedalPercent=PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
+            uint16_t numericSpeedSetPoint=UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
+            //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
+            CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint32_t StageManager::processBatlog(void)
+{
+    //insert code here that executes for any stage
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+        
+        default:
+            //shouldn't get here
+        break;
+    }
+
+    return 0;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  currentStage: 
+ * @retval None
+ */
+void StageManager::resetAllStagesExcept(Stage nonResetStage)
+{
+    //initially setting all the stage configurations to false, then "enabling" the current Stage
+    isStandbyConfigured = false;
+    isPrechargeConfigured = false;
+    isEnergizedConfigured = false;
+    isDrivingConfigured = false;
+
+
+    //checking which stage we're currently in (same as which stage is configured correctly)
+    switch(nonResetStage)
+    {
+        //Standby stage is configured
+        case Stage::STAGE_STANDBY:
+            isStandbyConfigured = true;
+        break;
+
+        
+        //Precharge stage is configured
+        case Stage::STAGE_PRECHARGE:
+            isPrechargeConfigured = true;
+        break;
+
+
+        //Energized stage is configured
+        case Stage::STAGE_ENERGIZED:
+            isEnergizedConfigured = true;
+        break;
+
+
+        //Driving stage is configured
+        case Stage::STAGE_DRIVING:
+            isDrivingConfigured = true;
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
 }

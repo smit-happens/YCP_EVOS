@@ -107,6 +107,7 @@ int main(void)
     //DO NOT START TIMERS HERE
     IntervalTimer myTimer;
 
+    
     //Calling init functions for each controller
     canC->init();
     unitekC->init();
@@ -120,6 +121,7 @@ int main(void)
     sdCardC->init();
     batlogC->init();
 
+    
     //attaching interrupts
     //Button interrupts
     attachInterrupt(MB_PRE_BTN, btnPrechargeISR, RISING);
@@ -128,47 +130,9 @@ int main(void)
     attachInterrupt(MB_STANDBY_BTN, btnStandbyISR, RISING);
     attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
 
-    //Dashboard
-        //LCD (boot logo)
-        // dashC->
 
-
-        //Teensy SelfTest (internal functions if any)
-
-        
-        //SdCard check (read data, check if good)
-
-
-        //Dash test (turn on all LEDS, user confirmation w/ encoder)
-        lightC->test();
-
-
-        //Unitek Boot/check if okay
-
-        //closes the safety circuit relay as well
-        digitalWriteFast(MB_SCADA_OK, HIGH);
-
-
-        //Orion check if okay
-
-        
-        //Cooling check if working
-
-
-        //GLV batlog level check
-        
-        
-        //assuming everything is okay
-            //Notification: All systens go. Ready to Precharge
-
-    if(/* check for ShutdownEF*/ 1 )
-    {
-        localStage.currentStage = StageManager::STAGE_STANDBY;
-    }
-    else
-    {
-        localStage.currentStage = StageManager::STAGE_SHUTDOWN;
-    }
+    //initializing all the hardware
+    localStage.bootTest();
 
 
     //Start 1ms timer (1000 usec)
@@ -216,9 +180,7 @@ int main(void)
 
 
     //SHUTDOWN function
-        //EXTREMELY CRITICAL FUNCTIONS, no looping here
-        //close out SdCard logs
-        //SCADA_OK signal to false
+    localStage.shutdown();
 
 
     return 0;
