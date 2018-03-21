@@ -89,7 +89,7 @@ int main(void)
     StageManager localStage = StageManager();
 
     //The first step when running is bootup
-    localStage.currentStage = StageManager::STAGE_BOOTUP;
+    localStage.currentStage = StageManager::STAGE_BOOTTEST;
 
 
     //initialize the local and timer event flag variables
@@ -132,22 +132,7 @@ int main(void)
         //LCD (boot logo)
         // dashC->
 
-    if(/* check for ShutdownEF*/ 1 )
-    {
-        localStage.currentStage = StageManager::STAGE_TEST;
-    }
-    else
-    {
-        localStage.currentStage = StageManager::STAGE_SHUTDOWN;
-    }
-
-
-    //excecuting all the self test oriented functions
-    if(localStage.currentStage == StageManager::STAGE_TEST)
-    {
-        Serial.println("Test Stage");
-
-        //Teensy SelfTest (internal functions)
+        //Teensy SelfTest (internal functions if any)
         
         //SdCard check (read data, check if good)
         //Dash test (turn on all LEDS, user confirmation w/ encoder)
@@ -161,14 +146,13 @@ int main(void)
         //assuming everything is okay
             //Notification: All systens go. Ready to Precharge
 
-        if(/* check for ShutdownEF*/ 1 )
-        {
-            localStage.currentStage = StageManager::STAGE_STANDBY;
-        }
-        else
-        {
-            localStage.currentStage = StageManager::STAGE_SHUTDOWN;
-        }
+    if(/* check for ShutdownEF*/ 1 )
+    {
+        localStage.currentStage = StageManager::STAGE_STANDBY;
+    }
+    else
+    {
+        localStage.currentStage = StageManager::STAGE_SHUTDOWN;
     }
 
 
