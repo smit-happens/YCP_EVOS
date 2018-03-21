@@ -233,12 +233,7 @@ uint32_t StageManager::processUnitek(void)
 {
     
     switch(currentStage){
-        case STAGE_BOOTUP:
-
-        break;
-
-      
-        case STAGE_TEST:
+        case STAGE_BOOTTEST:
 
         break;
 

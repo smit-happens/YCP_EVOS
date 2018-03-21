@@ -132,16 +132,31 @@ int main(void)
         //LCD (boot logo)
         // dashC->
 
+
         //Teensy SelfTest (internal functions if any)
+
         
         //SdCard check (read data, check if good)
+
+
         //Dash test (turn on all LEDS, user confirmation w/ encoder)
         lightC->test();
 
-        //Unitek check if okay
+
+        //Unitek Boot/check if okay
+
+        //closes the safety circuit relay as well
+        digitalWriteFast(MB_SCADA_OK, HIGH);
+
+
         //Orion check if okay
+
+        
         //Cooling check if working
+
+
         //GLV batlog level check
+        
         
         //assuming everything is okay
             //Notification: All systens go. Ready to Precharge
