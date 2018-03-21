@@ -30,6 +30,18 @@ public:
     uint16_t calculateSpeedSetPoint(float percent);
     uint16_t calculate90Charge(float batteryVoltage);
     void storeRpmSpeedValue(float RpmSpeed);
+    void storeRpmLimit(uint16_t RpmLimit);
+    void storeErrorReg(uint16_t errorReg);
+    void storeWarningReg(uint16_t warningReg);
+    void storeStateReg(uint16_t stateReg);
+    void storeModeReg(uint16_t modeReg);
+    void storeVoltageHvBus(uint16_t HvBus);
+    void storeSpeedValueForUnitek(uint16_t speedCmdValue);
+    void storeSpeedValueFromUnitek(uint16_t speedValue);
+    void storeTemperatureMotor(uint16_t motorTemp);
+    void storeTempOutputStage(uint16_t ouputTemp);
+    void storeTempInterior(uint16_t interiorTemp);
+    
 
 private:
     //Private contstructor so that it can't be called

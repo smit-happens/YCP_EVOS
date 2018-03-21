@@ -48,6 +48,11 @@ int Unitek::getRpmLimit(void)
     return rpmLimitReg_C8;
 }
 
+void Unitek::setRpmLimit(uint16_t RpmLimit)
+{
+    rpmLimitReg_C8=RpmLimit;
+}
+
 
 /** 
  * @brief  Retrieves the current speed value we will set in the MC

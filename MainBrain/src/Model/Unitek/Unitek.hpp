@@ -162,6 +162,7 @@ public:
     void update(void);
 
     int getRpmLimit(void);
+    void setRpmLimit(uint16_t RpmLimit);
 
     uint16_t getSpeedValueForUnitek(void);
     void setSpeedValueForUnitek(uint16_t userSpeedVal);
