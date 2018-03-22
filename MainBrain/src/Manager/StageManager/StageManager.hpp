@@ -20,13 +20,11 @@ public:
 
     enum Stage
     {
-        STAGE_BOOTUP,
-        STAGE_TEST,
+        STAGE_BOOTTEST,
         STAGE_STANDBY,
         STAGE_PRECHARGE,
         STAGE_ENERGIZED,
         STAGE_DRIVING,
-        STAGE_LAUNCH,
         STAGE_SHUTDOWN
     };
 
@@ -38,19 +36,23 @@ public:
     bool isPrechargeConfigured = false;
     bool isEnergizedConfigured = false;
     bool isDrivingConfigured = false;
-    bool isLaunchConfigured = false;
 
     StageManager();
 
     //handles the various timers we'll be using and setting Task Flags (TFs) based on them
     uint32_t processTimers(void);
 
-    //handles the excecution of the various stages
-    Stage processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags);
-    
+    //Boot for each device
+    void bootTest(void);
+
+    void shutdown(void);
 
     //contains code that is executed once at the beginning of a stage
     void configureStage(void);
+
+    //handles the excecution of the various stages
+    Stage processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags);
+
 
     //for correctly setting the next stage based off the current one
     // void transitionStageToFrom(Stage nextStage, Stage currentStage);
@@ -67,6 +69,7 @@ private:
     Timer* timerList;
     uint32_t timerTF = 0;
 
+
     //Processing functions for the various devices
     //TODO: Might eventually take a TF as an input param
     uint32_t processCan(void);
@@ -80,11 +83,6 @@ private:
     uint32_t processUnitek(void);
     uint32_t processBatlog(void);
 
-    uint32_t processStandby(void);
-    uint32_t processPrecharge(void);
-    uint32_t processReadyToDrive(void);
-    uint32_t processLaunch(void);
-    uint32_t processShutdown(void);
 
     //for making sure that all the stages except the currently executing one needs to be reconfigured
     void resetAllStagesExcept(Stage nonResetStage);
