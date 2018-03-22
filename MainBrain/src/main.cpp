@@ -68,8 +68,7 @@ int main(void)
     // }
 
     Serial.println("Bootup stage");
-
-    //Bootup stage functions (any var declared in an if/else falls out of scope afterward)
+    
 
     //Creating the controller singletons
     //Copying each controller location in memory
@@ -96,8 +95,9 @@ int main(void)
     uint32_t localEventFlags = 0;
     uint32_t timerEventFlags = 0;
 
-    //initialize array to zero
-    uint8_t* localTaskFlags = new uint8_t[NUM_DEVICES];
+    //initialize task flag array to zero
+    uint8_t localTaskFlags[NUM_DEVICES] = { 0 };
+
 
     //Configure registers
     //Setting the analog read resolution to the maximum of the Teensy 3.6 (13 bit)
