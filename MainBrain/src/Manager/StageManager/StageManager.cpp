@@ -731,7 +731,27 @@ uint32_t StageManager::processSdCard(void)
  */
 uint32_t StageManager::processUnitek(void)
 {
-    
+    //PROCESSES FOR ANY STAGE
+
+    //check unitek error and warning registers to determine if shutdown is needed
+    CanController::getInstance()->sendUnitekRead(REG_ERROR, 0);
+    delay(200);     //need to delay so MC has time to return CAN message, not sure of correct time
+    CAN_message_t errorReg;
+    Can1.read(errorReg);        //read error and warning reg and store values in errorReg
+    uint16_t errorValue=(errorReg.buf[4]<<8) || errorReg.buf[3];    //seperates error reg value
+    uint16_t warningValue=(errorReg.buf[2]<<8) || errorReg.buf[1];  //seperates warning reg value
+    UnitekController::getInstance()->storeErrorReg(errorValue);     //stores error value in unitek model
+    UnitekController::getInstance()->storeWarningReg(warningValue); //stores warning value in unitek model
+
+    //check if shutdown is needed
+    if(UnitekController::getInstance()->checkErrorWarningForShutdown()==true)
+    {
+        Serial.println("Problem in MC. Shutdown Required.");
+        return EF_SHUTDOWN;
+    }
+
+
+    //STAGE SPECIFIC PROCESSES
     switch(currentStage){
         case STAGE_STANDBY:
         {
