@@ -56,10 +56,11 @@ void OrionController::init(void)
  */
 void OrionController::poll(void)
 {
-    Orion::CanData_0x420 *data_0x420;// = CanController.getOrionMessage(ID_0x420);
+    Orion::CanData_0x420 *data_0x420;
+    // = CanController.getOrionMessage(ID_0x420);
     Orion::CanData_0x421 *data_0x421;// = CanController.getOrionMessage(ID_0x421);
-    parseAndUpdateModelMessage_0x420(data_0x420);
-    parseAndUpdateModelMessage_0x421(data_0x421);
+    updateModelMessage_0x420(data_0x420);
+    updateModelMessage_0x421(data_0x421);
 }
 
 /** 
@@ -68,7 +69,7 @@ void OrionController::poll(void)
  * @param  messageToParse: the most recent CAN message from the BUS with ID = 0x420
  * @retval None
  */
-void OrionController::parseAndUpdateModelMessage_0x420(Orion::CanData_0x420 *messageToParse)
+void OrionController::updateModelMessage_0x420(Orion::CanData_0x420 *messageToParse)
 {
     //update the stateOfCharge of the pack to the stateOfCharge_Byte divided by 2 
     float newStateOfCharge = (float)messageToParse->stateOfCharge_Byte / 2.0;
@@ -118,7 +119,7 @@ void OrionController::parseAndUpdateModelMessage_0x420(Orion::CanData_0x420 *mes
  * @param  messageToParse: the most recent CAN message from the BUS with ID = 0x421
  * @retval None
  */
-void OrionController::parseAndUpdateModelMessage_0x421(Orion::CanData_0x421 *messageToParse)
+void OrionController::updateModelMessage_0x421(Orion::CanData_0x421 *messageToParse)
 {
     //update the discharge current limit of the pack to the value of packDischargeCurrentLimit_Byte 1 and 2 with no further modification
     //to do this, the newPackDischargeCurrentLimit has to be built from the two bytes into a 16 bit value

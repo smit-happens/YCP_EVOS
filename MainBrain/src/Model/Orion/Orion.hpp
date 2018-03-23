@@ -97,6 +97,8 @@ private:
     float packOpenVoltage;
     float packCurrent;
     float averageOpenCellVoltage;
+    CanData_0x420 *data_0x420;
+    CanData_0x421 *data_0x421;
 
 };
 

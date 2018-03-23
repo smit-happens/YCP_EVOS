@@ -40,8 +40,8 @@ private:
     Orion* orionModel;
 
     //private functions to parse the CAN messages
-    void parseAndUpdateModelMessage_0x420(Orion::CanData_0x420 messageToParse);
-    void parseAndUpdateModelMessage_0x421(Orion::CanData_0x421 messageToParse);
+    void updateModelMessage_0x420(Orion::CanData_0x420 *messageToParse);
+    void updateModelMessage_0x421(Orion::CanData_0x421 *messageToParse);
 
 };
 

@@ -14,6 +14,9 @@
 Orion::Orion(void)
 {
     pinMode(MB_BMS_STATUS, INPUT);
+ 
+    data_0x420 = new CanData_0x420;
+    data_0x421 = new CanData_0x421;
 }
 
 
