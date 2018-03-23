@@ -80,9 +80,6 @@ void StageManager::bootTest(void)
 
     //Unitek Boot/check if okay
 
-    //closes the safety circuit relay as well
-    digitalWriteFast(MB_SCADA_OK, HIGH);
-
 
     //Orion check if okay
 

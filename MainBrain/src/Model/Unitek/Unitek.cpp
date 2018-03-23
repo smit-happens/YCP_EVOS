@@ -15,6 +15,9 @@
 Unitek::Unitek(void)
 {
     rpmLimitReg_C8 = 6600; //0x19C8
+    
+    //closes the safety circuit relay as well
+    digitalWriteFast(MB_SCADA_OK, HIGH);
 }
 
 
