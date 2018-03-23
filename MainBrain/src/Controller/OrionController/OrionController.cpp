@@ -113,9 +113,9 @@ void OrionController::parseAndUpdateModelMessage_0x420(Orion::CanData_0x420 mess
 
 
 /** 
- * @brief  
- * @note   
- * @param  messageToParse: 
+ * @brief  Parse the message and update the model
+ * @note   More explanation of the necessary changes to the values is present in the Orion.hpp in the definitions of the CanData_0x420 and CanData_0x421 structs
+ * @param  messageToParse: the most recent CAN message from the BUS with ID = 0x421
  * @retval None
  */
 void OrionController::parseAndUpdateModelMessage_0x421(Orion::CanData_0x421 messageToParse)
@@ -173,7 +173,7 @@ void OrionController::parseAndUpdateModelMessage_0x421(Orion::CanData_0x421 mess
  */
 void OrionController::shutdown(void)
 {
-    
+    //TODO: will we need this? 
 }
 
 /** 
