@@ -22,6 +22,7 @@ public:
 
     void init(void);
     void poll(void);
+
     void shutdown(void);    //TODO: implement
     float getPackVoltage(void);
 
@@ -37,6 +38,10 @@ private:
 
     //private instance of model
     Orion* orionModel;
+
+    //private functions to parse the CAN messages
+    void parseAndUpdateModelMessage_0x420(Orion::CanData_0x420 messageToParse);
+    void parseAndUpdateModelMessage_0x421(Orion::CanData_0x421 messageToParse);
 
 };
 
