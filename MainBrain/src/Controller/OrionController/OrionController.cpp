@@ -56,8 +56,8 @@ void OrionController::init(void)
  */
 void OrionController::poll(void)
 {
-    Orion::CanData_0x420 data_0x420;// = CanController.getOrionMessage(ID_0x420);
-    Orion::CanData_0x421 data_0x421;// = CanController.getOrionMessage(ID_0x421);
+    Orion::CanData_0x420 *data_0x420;// = CanController.getOrionMessage(ID_0x420);
+    Orion::CanData_0x421 *data_0x421;// = CanController.getOrionMessage(ID_0x421);
     parseAndUpdateModelMessage_0x420(data_0x420);
     parseAndUpdateModelMessage_0x421(data_0x421);
 }
@@ -68,22 +68,22 @@ void OrionController::poll(void)
  * @param  messageToParse: the most recent CAN message from the BUS with ID = 0x420
  * @retval None
  */
-void OrionController::parseAndUpdateModelMessage_0x420(Orion::CanData_0x420 messageToParse)
+void OrionController::parseAndUpdateModelMessage_0x420(Orion::CanData_0x420 *messageToParse)
 {
     //update the stateOfCharge of the pack to the stateOfCharge_Byte divided by 2 
-    float newStateOfCharge = (float)messageToParse.stateOfCharge_Byte / 2.0;
+    float newStateOfCharge = (float)messageToParse->stateOfCharge_Byte / 2.0;
     orionModel->setStateOfCharge(newStateOfCharge);
 
     //update the stateOfHealth of the pack to the stateOfHealth_Byte without modification
-    uint8_t newStateOfHealth = messageToParse.stateOfHealth_Byte;
+    uint8_t newStateOfHealth = messageToParse->stateOfHealth_Byte;
     orionModel->setStateOfHealth(newStateOfHealth);
 
     //update the highest temperature of the pack to the highestCellTemp_Byte without modification
-    uint8_t newHighestCellTemp = messageToParse.highestCellTemp_Byte;
+    uint8_t newHighestCellTemp = messageToParse->highestCellTemp_Byte;
     orionModel->setHighestCellTemp(newHighestCellTemp);
 
     //update the average temperature of the pack to the averageCellTemp_Byte without modification
-    uint8_t newAverageCellTemp = messageToParse.averageCellTemp_Byte;
+    uint8_t newAverageCellTemp = messageToParse->averageCellTemp_Byte;
     orionModel->setAverageCellTemp(newAverageCellTemp);
 
     //update the max open cell voltage to the value of maxOpenCellVoltage_Byte 1 and 2 divided by 10,000
@@ -91,9 +91,9 @@ void OrionController::parseAndUpdateModelMessage_0x420(Orion::CanData_0x420 mess
     uint16_t newMaxOpenCellVoltage = 0;
     //build the 16 bit value
     //shift the first byte over by 8
-    newMaxOpenCellVoltage = (uint16_t)messageToParse.maxOpenCellVoltage_Byte1 << 8;
+    newMaxOpenCellVoltage = (uint16_t)messageToParse->maxOpenCellVoltage_Byte1 << 8;
     //OR in the second byte
-    newMaxOpenCellVoltage |= (uint16_t)messageToParse.maxOpenCellVoltage_Byte2;
+    newMaxOpenCellVoltage |= (uint16_t)messageToParse->maxOpenCellVoltage_Byte2;
     //now divide this value by 10,000 for the actual voltage and set in the model
     orionModel->setMaxOpenCellVoltage((float)newMaxOpenCellVoltage / 10000.0);
 
@@ -102,9 +102,9 @@ void OrionController::parseAndUpdateModelMessage_0x420(Orion::CanData_0x420 mess
     uint16_t newMinOpenCellVoltage = 0;
     //build the 16 bit value
     //shift the first byte over by 8
-    newMinOpenCellVoltage = (uint16_t)messageToParse.minOpenCellVoltage_Byte1 << 8;
+    newMinOpenCellVoltage = (uint16_t)messageToParse->minOpenCellVoltage_Byte1 << 8;
     //OR in the second byte
-    newMinOpenCellVoltage |= (uint16_t)messageToParse.minOpenCellVoltage_Byte2;
+    newMinOpenCellVoltage |= (uint16_t)messageToParse->minOpenCellVoltage_Byte2;
     //now divide this value by 10,000 for the actual voltage and set in the model
     orionModel->setMinOpenCellVoltage((float)newMinOpenCellVoltage / 10000.0);
 
@@ -118,16 +118,16 @@ void OrionController::parseAndUpdateModelMessage_0x420(Orion::CanData_0x420 mess
  * @param  messageToParse: the most recent CAN message from the BUS with ID = 0x421
  * @retval None
  */
-void OrionController::parseAndUpdateModelMessage_0x421(Orion::CanData_0x421 messageToParse)
+void OrionController::parseAndUpdateModelMessage_0x421(Orion::CanData_0x421 *messageToParse)
 {
     //update the discharge current limit of the pack to the value of packDischargeCurrentLimit_Byte 1 and 2 with no further modification
     //to do this, the newPackDischargeCurrentLimit has to be built from the two bytes into a 16 bit value
     uint16_t newPackDischargeCurrentLimit = 0;
     //build the 16 bit value
     //shift the first byte over by 8
-    newPackDischargeCurrentLimit = (uint16_t)messageToParse.packDischargeCurrentLimit_Byte1 << 8;
+    newPackDischargeCurrentLimit = (uint16_t)messageToParse->packDischargeCurrentLimit_Byte1 << 8;
     //OR in the second byte
-    newPackDischargeCurrentLimit |= (uint16_t)messageToParse.packDischargeCurrentLimit_Byte2;
+    newPackDischargeCurrentLimit |= (uint16_t)messageToParse->packDischargeCurrentLimit_Byte2;
     //update the model with this new discharge current limit value
     orionModel->setPackDischargeCurrentLimit(newPackDischargeCurrentLimit);
 
@@ -136,9 +136,9 @@ void OrionController::parseAndUpdateModelMessage_0x421(Orion::CanData_0x421 mess
     uint16_t newPackOpenVoltage = 0;
     //build the 16 bit value
     //shift the first byte over by 8
-    newPackOpenVoltage = (uint16_t)messageToParse.packOpenVoltage_Byte1 << 8;
+    newPackOpenVoltage = (uint16_t)messageToParse->packOpenVoltage_Byte1 << 8;
     //OR in the second byte
-    newPackOpenVoltage |= (uint16_t)messageToParse.packOpenVoltage_Byte2;
+    newPackOpenVoltage |= (uint16_t)messageToParse->packOpenVoltage_Byte2;
     //now divide this value by 10  and set in the model
     orionModel->setPackOpenVoltage((float)newPackOpenVoltage / 10.0);
 
@@ -147,9 +147,9 @@ void OrionController::parseAndUpdateModelMessage_0x421(Orion::CanData_0x421 mess
     uint16_t newPackCurrent = 0;
     //build the 16 bit value
     //shift the first byte over by 8
-    newPackCurrent = (uint16_t)messageToParse.packCurrent_Byte1 << 8;
+    newPackCurrent = (uint16_t)messageToParse->packCurrent_Byte1 << 8;
     //OR in the second byte
-    newPackCurrent |= (uint16_t)messageToParse.packCurrent_Byte2;
+    newPackCurrent |= (uint16_t)messageToParse->packCurrent_Byte2;
     //now divide this value by 10 and set it in the model
     orionModel->setPackCurrent((float)newPackCurrent / 10.0);
 
@@ -158,9 +158,9 @@ void OrionController::parseAndUpdateModelMessage_0x421(Orion::CanData_0x421 mess
     uint16_t newAverageOpenCellVoltage = 0;
     //build the 16 bit value
     //shift the first byte over by 8
-    newAverageOpenCellVoltage = (uint16_t)messageToParse.averageOpenCellVoltage_Byte1 << 8;
+    newAverageOpenCellVoltage = (uint16_t)messageToParse->averageOpenCellVoltage_Byte1 << 8;
     //OR in the second byte
-    newAverageOpenCellVoltage |= (uint16_t)messageToParse.averageOpenCellVoltage_Byte2;
+    newAverageOpenCellVoltage |= (uint16_t)messageToParse->averageOpenCellVoltage_Byte2;
     //now divide this value by 10,000 and set it in the model
     orionModel->setAverageOpenCellVoltage((float)newAverageOpenCellVoltage / 10000.0);
 }

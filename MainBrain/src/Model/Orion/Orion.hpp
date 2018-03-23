@@ -21,6 +21,7 @@ public:
     void update(void);
 
     //all of the public get functions
+    //gets for values from message 0x420
     float getStateOfCharge(void);
     uint8_t getStateOfHealth(void);
     uint8_t getHighestCellTemp(void);
@@ -28,12 +29,14 @@ public:
     float getMaxOpenCellVoltage(void);
     float getMinOpenCellVoltage(void);
     
+    //gets for values from message 0x421
     uint16_t getPackDischargeCurrentLimit(void);
     float getPackOpenVoltage(void);
     float getPackCurrent(void);
     float getAverageOpenCellVoltage(void);
 
     //all of the public set functions
+    //gets for values from message 0x420
     void setStateOfCharge(float newStateOfCharge);
     void setStateOfHealth(uint8_t newStateOfHealth);
     void setHighestCellTemp(uint8_t newHighestCellTemp);
@@ -41,6 +44,7 @@ public:
     void setMaxOpenCellVoltage(float newMaxOpenCellVoltage);
     void setMinOpenCellVoltage(float newMinOpenCellVoltage);
     
+    //gets for values from message 0x421
     void setPackDischargeCurrentLimit(uint16_t newPackDischargeCurrentLimit);
     void setPackOpenVoltage(float newPackOpenVoltage);
     void setPackCurrent(float newPackCurrent);

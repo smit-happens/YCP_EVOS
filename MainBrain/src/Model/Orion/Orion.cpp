@@ -62,7 +62,7 @@ uint8_t Orion::getStateOfHealth(void)
 
 /** 
  * @brief  Retrieve highest cell temperature of the pack
- * @note   Range is 0-256 degrees Celcius
+ * @note   Range is 0-255 degrees Celcius
  * @retval Highest cell temperature in the pack
  */
 uint8_t Orion::getHighestCellTemp(void)
@@ -73,7 +73,7 @@ uint8_t Orion::getHighestCellTemp(void)
 
 /** 
  * @brief  Retrieve average cell temperature of the pack
- * @note   Range is 0-256 degrees Celcius
+ * @note   Range is 0-255 degrees Celcius
  * @retval Average cell temperature for the pack
  */
 uint8_t Orion::getAverageCellTemp(void)
@@ -84,7 +84,7 @@ uint8_t Orion::getAverageCellTemp(void)
 
 /** 
  * @brief  Retrieve max open cell voltage of the pack
- * @note   Range is 0-6.5536 volts
+ * @note   Range is 0-6.5535 volts
  * @retval Max open cell voltage value
  */
 float Orion::getMaxOpenCellVoltage(void)
@@ -95,7 +95,7 @@ float Orion::getMaxOpenCellVoltage(void)
 
 /** 
  * @brief  Retrieve minimum open cell voltage of the pack
- * @note   Range is 0-6.5536 volts
+ * @note   Range is 0-6.5535 volts
  * @retval Min open cell voltage value
  */
 float Orion::getMinOpenCellVoltage(void)
@@ -106,7 +106,7 @@ float Orion::getMinOpenCellVoltage(void)
 
 /** 
  * @brief  Retrieve the discharge current limit of the pack
- * @note   Range is 0-65536 amps
+ * @note   Range is 0-65535 amps
  * @retval Discharge current limit value
  */
 uint16_t Orion::getPackDischargeCurrentLimit(void)
@@ -117,7 +117,7 @@ uint16_t Orion::getPackDischargeCurrentLimit(void)
 
 /** 
  * @brief  Retrieve total open pack voltage of the pack
- * @note   Range is 0-6553.6 volts
+ * @note   Range is 0-6553.5 volts
  * @retval Open voltage value of the pack
  */
 float Orion::getPackOpenVoltage(void)
@@ -128,7 +128,7 @@ float Orion::getPackOpenVoltage(void)
 
 /** 
  * @brief  Retrieve the output current of the pack
- * @note   Range is 0-6553.6 amps
+ * @note   Range is 0-6553.5 amps
  * @retval Output current value of the pack
  */
 float Orion::getPackCurrent(void)
@@ -139,7 +139,7 @@ float Orion::getPackCurrent(void)
 
 /** 
  * @brief  Retrieve average open cell voltage of the pack
- * @note   Range is 0-6.5336 volts
+ * @note   Range is 0-6.5335 volts
  * @retval Average open cell voltage value
  */
 float Orion::getAverageOpenCellVoltage(void)
@@ -177,7 +177,7 @@ void Orion::setStateOfHealth(uint8_t newStateOfHealth)
 
 /** 
  * @brief  Set the highest cell temperature of the pack
- * @note   Range is 0-256 degrees Celcius
+ * @note   Range is 0-255 degrees Celcius
  * @param  newHighestCellTemp: The new state highest cell temperature in the pack
  * @retval None
  */
@@ -189,7 +189,7 @@ void Orion::setHighestCellTemp(uint8_t newHighestCellTemp)
 
 /** 
  * @brief  Set the average cell temperature of the pack
- * @note   Range is 0-256 degrees Celcius
+ * @note   Range is 0-255 degrees Celcius
  * @param  newAverageCellTemp: The new average cell temperature for the pack
  * @retval None
  */
@@ -201,7 +201,7 @@ void Orion::setAverageCellTemp(uint8_t newAverageCellTemp)
 
 /** 
  * @brief  Set the max open cell voltage for the pack
- * @note   Range is 0-6.5536 volts
+ * @note   Range is 0-6.5535 volts
  * @param  newMaxOpenCellVoltage: The new maximum open cell voltage in the pack 
  * @retval None
  */
@@ -213,7 +213,7 @@ void Orion::setMaxOpenCellVoltage(float newMaxOpenCellVoltage)
 
 /** 
  * @brief  Set the minimum open cell voltage for the pack
- * @note   Range is 0-6.5536 volts
+ * @note   Range is 0-6.5535 volts
  * @param  newMinOpenCellVoltage: The new minimum open cell voltage in the pack
  * @retval None
  */
@@ -225,7 +225,7 @@ void Orion::setMinOpenCellVoltage(float newMinOpenCellVoltage)
 
 /** 
  * @brief  Set the pack discharge current limit for the pack
- * @note   Range is 0-65536 amps
+ * @note   Range is 0-65535 amps
  * @param  newPackDischargeCurrentLimit: The new discharge current limit for the pack
  * @retval None
  */
@@ -237,7 +237,7 @@ void Orion::setPackDischargeCurrentLimit(uint16_t newPackDischargeCurrentLimit)
 
 /** 
  * @brief  Set the open voltage of the pack
- * @note   Range is 0-6553.6 volts
+ * @note   Range is 0-6553.5 volts
  * @param  newPackOpenVoltage: The new open voltage value for the pack
  * @retval None
  */
@@ -249,7 +249,7 @@ void Orion::setPackOpenVoltage(float newPackOpenVoltage)
 
 /** 
  * @brief  Set the value of pack output current
- * @note   Range is 0-6553.6 amps
+ * @note   Range is 0-6553.5 amps
  * @param  newPackCurrent: The new current output of the pack
  * @retval None
  */
@@ -261,7 +261,7 @@ void Orion::setPackCurrent(float newPackCurrent)
 
 /** 
  * @brief  Set the value for the average open cell voltage of the pack
- * @note   Range is 0-6.5536 volts
+ * @note   Range is 0-6.5535 volts
  * @param  newAverageOpenCellVoltage: the new average open cell voltage of the pack 
  * @retval None
  */
