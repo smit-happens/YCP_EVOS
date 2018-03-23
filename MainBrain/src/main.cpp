@@ -102,6 +102,8 @@ int main(void)
     //Configure registers
     //Setting the analog read resolution to the maximum of the Teensy 3.6 (13 bit)
     analogReadResolution(13);
+    //Teensy 3.6 analog write resolution needs to be set to 16 bit
+    analogWriteResolution(16);
 
     //timer configuration
     //DO NOT START TIMERS HERE
