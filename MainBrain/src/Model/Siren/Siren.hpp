@@ -20,7 +20,7 @@ class Siren
 public:
   Siren(void);
 
-  void playStartupSound(void);
+  void timedTone(void);
 };
 
 
