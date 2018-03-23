@@ -48,71 +48,166 @@ int Unitek::getRpmLimit(void)
     return rpmLimitReg_C8;
 }
 
+void Unitek::setRpmLimit(uint16_t RpmLimit)
+{
+    rpmLimitReg_C8=RpmLimit;
+}
+
 
 /** 
- * @brief  Retrieves the current speed value set in the Unitek MC
- * @note   Might get called after setting the speed value as a confirmation step
+ * @brief  Retrieves the current speed value we will set in the MC
+ * @note   Might be used in order to monitor speed setpoint versus actual speed
  * @retval Current speed value set in the Unitek MC
  */
-int Unitek::getSpeedValue(void)
+uint16_t Unitek::getSpeedValueForUnitek(void)
 {
-    return 0;
+    return speedCmdValBeforeRampReg_0x31;
 }
 
 
 /** 
  * @brief  Sets the speed value register in the Unitek, or throws an exception (due to CAN?)
  * @note   Affected by the GasPedal class
- * @param  userSpeedVal: Requested speed value to set in Unitek
+ * @param  userSpeedVal: Requested speed value to set in Unitek (calculated by calculateSpeedSetPoint in CanController)
  * @retval None
  */
-void Unitek::setSpeedValue(int userSpeedVal)
+void Unitek::setSpeedValueForUnitek(uint16_t userSpeedVal)
 {
-    
+    speedCmdValBeforeRampReg_0x31=userSpeedVal;
+}
+
+/** 
+ * @brief  gets the current speed value from the MC
+ * @note   used to measure rpms of motor and display to dash
+ * @retval returns current value stored in MC for actual RPM
+ */
+uint16_t Unitek::getSpeedValueFromUnitek(void)
+{
+    return speedValRnReg_0x30;
+}
+
+/** 
+ * @brief   sets the current speed value that is gathered from the MC
+ * @note   will be used once a can message is recieved from the MC with an RPM value
+ * @param  recSpeedValue: received speed value from MC (must be converted to RPMs)
+ * @retval None
+ */
+void Unitek::setSpeedValueFromUnitek(uint16_t recRpmSpeedValue)
+{
+    speedValRnReg_0x30=recRpmSpeedValue;
 }
 
 
 /** 
- * @brief  Retrieves temperature limit of the motor and converts to celsius
+ * @brief  Retrieves temperature limit of the motor
  * @note   If the temperature of the motor goes above this, it triggers the 
- * @retval Temperature limit register value (in celsius) set in the REG_MTEMPLIM
+ * @retval Temperature limit register value (in untitek resolution) set in the REG_MTEMPLIM
  */
-float Unitek::getTemperatureMotorLimit(void)
+uint16_t Unitek::getTemperatureMotorLimit(void)
 {
-    return 0.0;
+    return tempLimitMotorReg_0xA3;
+}
+
+
+/** 
+ * @brief  stores temp limit of the motor
+ * @note   stored in unitek resolution
+ * @param  tempMotorLimit: received motor temp limit from can
+ * @retval 
+ */
+void Unitek::setTemperatureMotorLimit(uint16_t tempMotorLimit)
+{
+    tempLimitMotorReg_0xA3=tempMotorLimit;
 }
 
 
 /** 
  * @brief  Retrieves temperature of the motor and converts to celsius
  * @note   
- * @retval Temperature (in celsius) of the Emrax motor
+ * @retval Temperature (in unitek resolution) of the Emrax motor
  */
-float Unitek::getTemperatureMotor(void)
+uint16_t Unitek::getTemperatureMotor(void)
 {
-    return 0.0;
+    return tempMotorReg_0x49;
 }
 
 
 /** 
- * @brief  Retrieves temperature of the output water and converts to celsius
+ * @brief  stores motor temp value
+ * @note   stores in unitek resolution
+ * @param  tempMotor: temp of motor that would be recieved from CAN
+ * @retval None
+ */
+void Unitek::setTemperatureMotor(uint16_t tempMotor)
+{
+    tempMotorReg_0x49=tempMotor;
+}
+
+
+/** 
+ * @brief  Retrieves temperature of the output water
  * @note   TODO: Ask Alec if this does what I think it does
- * @retval Temperature (in celsius) of the output water from the internal radiator (I think)
+ * @retval Temperature (in unitek resolution) of the output water from the internal radiator (I think)
  */
-float Unitek::getTemperatureOutputStage(void)
+uint16_t Unitek::getTemperatureOutputStage(void)
 {
-    return 0.0;
+    return tempOutputStageMCReg_0x4A;
 }
 
 
 /** 
- * @brief  Retrieves temperature of the Unitek internals and converts to celsius
- * @note   
- * @retval Temperature (in celsius) of the internals of the Unitek
+ * @brief  stores temp of output stage 
+ * @note   stores in unitek resolution
+ * @param  tempOutputStage: 
+ * @retval None
  */
-float Unitek::getTemperatureInterior(void)
+void Unitek::setTemperatureOutputStage(uint16_t tempOutputStage)
 {
-    return 0.0;
+    tempOutputStageMCReg_0x4A=tempOutputStage;
+}
+
+
+/** 
+ * @brief  Retrieves temperature of the Unitek internals 
+ * @note   
+ * @retval Temperature (in unitek resolution) of the internals of the Unitek
+ */
+uint16_t Unitek::getTemperatureInterior(void)
+{
+    return tempInteriorMCReg_0x4B;
+}
+
+
+/** 
+ * @brief  stores temperature of unitek internals
+ * @note   stores in unitek resolution
+ * @param  tempInterior: internal temp resturned from MC via CAN
+ * @retval None
+ */
+void Unitek::setTemperatureInterior(uint16_t tempInterior)
+{
+    tempInteriorMCReg_0x4B=tempInterior;
+}
+
+/** 
+ * @brief  gets current hv bus measurement
+ * @note   this is in Unitek resolution (0-32767)
+ * @retval current HV voltage
+ */
+uint16_t Unitek::getVoltageHvBus(void)
+{
+    return hvBusVoltageReg_0xEB;
+}
+
+/** 
+ * @brief  sets new voltage of HV bus
+ * @note   this is in unitek resolution (0-32767)
+ * @param  hvBusVoltage: new HV bus value returned from CAN
+ * @retval 
+ */
+void Unitek::setVoltageHvBus(uint16_t hvBusVoltage)
+{
+    hvBusVoltageReg_0xEB=hvBusVoltage;
 }
 
 

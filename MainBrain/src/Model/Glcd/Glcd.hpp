@@ -103,13 +103,14 @@ public:
 
     void update(void);
 
+    void showBootLogo(void);
+
     /**  
      * Drafting up possible functions
      * 
      * void print(string);
      * void clear(void);
      * 
-     * void showBootLogo(void);
      * void showList(void);     //maybe a private function?
      * 
      * void setBacklightRgb(int r, int g, int b);

@@ -32,8 +32,8 @@ public:
     //void processMail();
 
     //Format and pass the CAN message to the CAN model to put out on the wire
-    void sendUnitekRead(uint8_t regId, uint8_t pollTime);   //send a register read message
-    void sendUnitekWrite(uint8_t regID, uint8_t buf1, uint8_t buf2);    //send a register write message
+    void sendUnitekRead(const int regId, uint8_t pollTime = 0);   //send a register read message
+    void sendUnitekWrite(const int regId, uint8_t buf1, uint8_t buf2);    //send a register write message
 
     void sendOrion(void);    //TODO: implement this based on testing done with Micaiah
 

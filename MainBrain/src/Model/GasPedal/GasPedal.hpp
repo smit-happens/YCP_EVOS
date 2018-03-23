@@ -9,10 +9,10 @@
 #ifndef GASPEDAL_HPP
 #define GASPEDAL_HPP
 
-#include "../BaseModel/BaseModel.hpp"
+#include "../BaseModel/BasePedal.hpp"
 
 
-class GasPedal : public BaseModel
+class GasPedal : public BasePedal
 {
 public:
     GasPedal(void);
@@ -20,12 +20,8 @@ public:
 
     void update(void);
 
-    uint16_t getLinValue(void);
-    uint16_t getLogValue(void);
+    void setRawOrigin(void);
 
-private:
-    uint16_t _linValue;
-    uint16_t _logValue;
 };
 
 #endif  //GASPEDAL_HPP

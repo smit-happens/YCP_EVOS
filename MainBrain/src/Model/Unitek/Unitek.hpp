@@ -29,8 +29,8 @@ struct ErrorBits
     uint8_t RaceAway        : 1;
     uint8_t User            : 1;
     uint8_t I2R             : 1;
-    uint8_t Reserve         : 1;
-    uint8_t HwFail          : 1;
+    uint8_t HwFail         : 1;
+    uint8_t AdcInt          : 1;
     uint8_t Ballast         : 1;    //bit 15
 };
 
@@ -154,6 +154,7 @@ class Unitek : public BaseModel
 {
 public:
     const int MAX_VALUE = 32767;  //0x7FFF
+    const int VOLTAGE_MAX = 800;  // used for 90% charge setting calculation
 
     Unitek(void);
     ~Unitek(void);
@@ -161,14 +162,25 @@ public:
     void update(void);
 
     int getRpmLimit(void);
+    void setRpmLimit(uint16_t RpmLimit);
 
-    int getSpeedValue(void);
-    void setSpeedValue(int userSpeedVal);
+    uint16_t getSpeedValueForUnitek(void);
+    void setSpeedValueForUnitek(uint16_t userSpeedVal);
 
-    float getTemperatureMotorLimit(void);   //These functions might require a convertToCelsius() funct
-    float getTemperatureMotor(void);
-    float getTemperatureOutputStage(void);
-    float getTemperatureInterior(void);
+    uint16_t getSpeedValueFromUnitek(void);
+    void setSpeedValueFromUnitek(uint16_t recSpeedValue);
+
+    uint16_t getTemperatureMotorLimit(void);   //These functions might require a convertToCelsius() funct
+    void setTemperatureMotorLimit(uint16_t tempMotorLimit);
+    uint16_t getTemperatureMotor(void);
+    void setTemperatureMotor(uint16_t tempMotor);
+    uint16_t getTemperatureOutputStage(void);
+    void setTemperatureOutputStage(uint16_t tempOutputStage);
+    uint16_t getTemperatureInterior(void);
+    void setTemperatureInterior(uint16_t tempInterior);
+
+    uint16_t getVoltageHvBus(void);
+    void setVoltageHvBus(uint16_t hvBusVoltage);
 
     ErrorReg_0x8F getErrorReg_0x8F(void);
     void setErrorReg_0x8F(uint16_t input);
@@ -211,11 +223,12 @@ private:
     bool     I_RunReg_0xE8;                 //Lazy
     uint8_t  goStatusReg_0xE3;              //Lazy
     uint16_t hvBusVoltageReg_0xEB;          //Active
-    uint16_t speedCmdValBeforeRampReg_0x31; //Active
-    uint16_t speedValRnReg_0x30;            //Active
+    uint16_t speedCmdValBeforeRampReg_0x31; //Active - 
+    uint16_t speedValRnReg_0x30;            //Active -
     uint16_t tempMotorReg_0x49;             //Active
     uint16_t tempOutputStageMCReg_0x4A;     //Active
     uint16_t tempInteriorMCReg_0x4B;        //Active
+    uint16_t tempLimitMotorReg_0xA3;        //
 
 };
 

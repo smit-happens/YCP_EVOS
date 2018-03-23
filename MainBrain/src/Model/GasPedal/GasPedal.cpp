@@ -14,9 +14,7 @@
  */
 GasPedal::GasPedal(void)
 {
-    //initializing the values of the gasPedal
-    _linValue = 0;
-    _logValue = 0;
+    //initialized in the base pedal class
 }
 
 
@@ -30,34 +28,22 @@ GasPedal::~GasPedal(void)
 
 
 /** 
- * @brief  Retrieves and stores the value of the 2 gas Potentiometers
+ * @brief  Retrieves and stores the value of the gas Potentiometer
  * @note   
  * @retval None
  */
 void GasPedal::update(void)
 {
-    _linValue = analogRead(MB_GAS_LIN);
-    _logValue = analogRead(MB_GAS_LOG);
+    _rawValue = analogRead(MB_GAS_LIN);
 }
 
 
 /** 
- * @brief  Retrieves the value of the Linear Potentiometer
- * @note   value of 0-8195
- * @retval Analog voltage sensed
+ * @brief  
+ * @note   
+ * @retval None
  */
-uint16_t GasPedal::getLinValue(void)
+void GasPedal::setRawOrigin(void)
 {
-    return _linValue;
-}
-
-
-/** 
- * @brief  Retrieves the value of the Logarithmic Potentiometer
- * @note   value of 0-8195
- * @retval Analog voltage sensed
- */
-uint16_t GasPedal::getLogValue(void)
-{
-    return _logValue;
+    _rawOrigin = analogRead(MB_GAS_LIN);
 }

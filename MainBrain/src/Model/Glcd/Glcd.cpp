@@ -19,11 +19,8 @@ Glcd::Glcd(void)
     // initialize the glcd and set the contrast to 0x18
     display->begin(0x18);
     display->clear();
-
-    // draw the bitmap
-    // glcd.drawbitmap(0, 0, JustBarelyLogo, 128, 64, BLACK);
-    // glcd.display();
 }
+
 
 
 /** 
@@ -43,4 +40,18 @@ Glcd::~Glcd(void)
 void Glcd::update(void)
 {
 
+}
+
+
+/** 
+ * @brief  displays image of "Just Barely" on the screen
+ * @note   
+ * @retval None
+ */
+void Glcd::showBootLogo(void)
+{
+    // draw the bitmap
+    display->clear();
+    display->drawbitmap(0, 0, JustBarelyLogo, 128, 64, BLACK);
+    display->display();
 }
