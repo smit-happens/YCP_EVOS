@@ -26,7 +26,10 @@ void setup() {
 
   //this is the CAN speed of the Orion BMS
   Can1.begin(250000);  
-  
+
+
+  pinMode(LED_BUILTIN, OUTPUT);         //indicator light
+  digitalWriteFast(LED_BUILTIN, HIGH);
 
 }
 
@@ -50,16 +53,21 @@ void loop()
     //this is the message that is populated with the CAN message from the network
     CAN_message_t messageFromNetwork; 
 
+    Serial.print("\nCurrent available messages: ");
+    Serial.println(Can1.available());
+
     //TODO: find out how to read specific CAN messages rather than just anything on the bus
-    int response = Can1.read(messageFromNetwork);
+    // int response = Can1.read(messageFromNetwork);
     //if the response from the read function is 0, then there was no message receieved 
-    if(response == 0)
+    if(Can1.available() == 0)
     {
-        Serial.println("there was no message in the buffer");
+        Serial.println("There was no message in the buffer");
     }
    
-    else
+    else 
     {
+        Can1.read(messageFromNetwork);
+
         //the id for the custom messages is 0x420 and 0x421
         //they contain different information about the pack from the BMS
         if(messageFromNetwork.id == 0x420 || messageFromNetwork.id == 0x421)
