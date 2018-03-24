@@ -371,7 +371,7 @@ void setMCReg()
 
         //send message if the user confirms they want to send it
         if(confirmPopUp(txMessage))
-          Can0.write(txMessage);
+          Can1.write(txMessage);
 
         Serial.print(F(setMCRegMenu));
       }
@@ -481,7 +481,7 @@ void readMCReg()
       if(caseReadMCReg && !defaultCase)
       {
         CAN_message_t txMessage = setupMCMessage(REG_READ, regID);
-        Can0.write(txMessage);
+        Can1.write(txMessage);
 
         Serial.print(F(readMCRegMenu));
       }
@@ -594,7 +594,7 @@ int main(void)
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, ledState);
 
-  Can0.begin(500000);
+//   Can0.begin(500000);
   Can1.begin(500000);
 
   Can1.attachObj(&CANMessage);

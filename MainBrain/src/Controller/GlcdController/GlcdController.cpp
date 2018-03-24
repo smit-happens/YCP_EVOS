@@ -69,3 +69,33 @@ void GlcdController::shutdown(void)
 {
     
 }
+
+
+/** 
+ * @brief  Displays the just barely logo
+ * @note   
+ * @retval None
+ */
+void GlcdController::justBarelyLogo(void)
+{
+
+    glcdModel->showBootLogo();
+
+    // for(int i =0; i<65535; i++)
+    // {
+    //     analogWrite(MB_B, i);
+    //     delayMicroseconds(10);
+    // }
+    
+    // for(int i =0; i<65535; i++)
+    // {
+    //     analogWrite(MB_G, i);
+    //     delayMicroseconds(10);
+    // }
+
+    // for(int i =0; i<65535; i++)
+    // {
+    //     analogWrite(MB_R, i);
+    //     delayMicroseconds(10);
+    // }
+}
