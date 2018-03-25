@@ -56,9 +56,8 @@ void OrionController::init(void)
  */
 void OrionController::poll(void)
 {
-    Orion::CanData_0x420 *data_0x420;
-    // = CanController.getOrionMessage(ID_0x420);
-    Orion::CanData_0x421 *data_0x421;// = CanController.getOrionMessage(ID_0x421);
+    uint8_t* data_0x420;// = CanController.getOrionMessage(ID_0x420);
+    uint8_t* data_0x421;// = CanController.getOrionMessage(ID_0x421);
     updateModelMessage_0x420(data_0x420);
     updateModelMessage_0x421(data_0x421);
 }
@@ -69,47 +68,9 @@ void OrionController::poll(void)
  * @param  messageToParse: the most recent CAN message from the BUS with ID = 0x420
  * @retval None
  */
-void OrionController::updateModelMessage_0x420(Orion::CanData_0x420 *messageToParse)
+void OrionController::updateModelMessage_0x420(uint8_t* messageToParse)
 {
-    //update the stateOfCharge of the pack to the stateOfCharge_Byte divided by 2 
-    float newStateOfCharge = (float)messageToParse->stateOfCharge_Byte / 2.0;
-    orionModel->setStateOfCharge(newStateOfCharge);
-
-    //update the stateOfHealth of the pack to the stateOfHealth_Byte without modification
-    uint8_t newStateOfHealth = messageToParse->stateOfHealth_Byte;
-    orionModel->setStateOfHealth(newStateOfHealth);
-
-    //update the highest temperature of the pack to the highestCellTemp_Byte without modification
-    uint8_t newHighestCellTemp = messageToParse->highestCellTemp_Byte;
-    orionModel->setHighestCellTemp(newHighestCellTemp);
-
-    //update the average temperature of the pack to the averageCellTemp_Byte without modification
-    uint8_t newAverageCellTemp = messageToParse->averageCellTemp_Byte;
-    orionModel->setAverageCellTemp(newAverageCellTemp);
-
-    //update the max open cell voltage to the value of maxOpenCellVoltage_Byte 1 and 2 divided by 10,000
-    //to do this, the newMaxOpenCellVoltage has to be built from the two bytes into a 16 bit value
-    uint16_t newMaxOpenCellVoltage = 0;
-    //build the 16 bit value
-    //shift the first byte over by 8
-    newMaxOpenCellVoltage = (uint16_t)messageToParse->maxOpenCellVoltage_Byte1 << 8;
-    //OR in the second byte
-    newMaxOpenCellVoltage |= (uint16_t)messageToParse->maxOpenCellVoltage_Byte2;
-    //now divide this value by 10,000 for the actual voltage and set in the model
-    orionModel->setMaxOpenCellVoltage((float)newMaxOpenCellVoltage / 10000.0);
-
-    //update the min open cell voltage to the value of minOpenCellVoltage_Byte 1 and 2 divided by 10,000
-    //to do this, the newMinOpenCellVoltage has to be built from the two bytes into a 16 bit value
-    uint16_t newMinOpenCellVoltage = 0;
-    //build the 16 bit value
-    //shift the first byte over by 8
-    newMinOpenCellVoltage = (uint16_t)messageToParse->minOpenCellVoltage_Byte1 << 8;
-    //OR in the second byte
-    newMinOpenCellVoltage |= (uint16_t)messageToParse->minOpenCellVoltage_Byte2;
-    //now divide this value by 10,000 for the actual voltage and set in the model
-    orionModel->setMinOpenCellVoltage((float)newMinOpenCellVoltage / 10000.0);
-
-    //the model is now updated with the values from message ID 0x420
+    orionModel->setStateOfCharge_Byte(messageToParse[0]);
 }
 
 
@@ -119,51 +80,9 @@ void OrionController::updateModelMessage_0x420(Orion::CanData_0x420 *messageToPa
  * @param  messageToParse: the most recent CAN message from the BUS with ID = 0x421
  * @retval None
  */
-void OrionController::updateModelMessage_0x421(Orion::CanData_0x421 *messageToParse)
+void OrionController::updateModelMessage_0x421(uint8_t* messageToParse)
 {
-    //update the discharge current limit of the pack to the value of packDischargeCurrentLimit_Byte 1 and 2 with no further modification
-    //to do this, the newPackDischargeCurrentLimit has to be built from the two bytes into a 16 bit value
-    uint16_t newPackDischargeCurrentLimit = 0;
-    //build the 16 bit value
-    //shift the first byte over by 8
-    newPackDischargeCurrentLimit = (uint16_t)messageToParse->packDischargeCurrentLimit_Byte1 << 8;
-    //OR in the second byte
-    newPackDischargeCurrentLimit |= (uint16_t)messageToParse->packDischargeCurrentLimit_Byte2;
-    //update the model with this new discharge current limit value
-    orionModel->setPackDischargeCurrentLimit(newPackDischargeCurrentLimit);
-
-    //update the open voltage of the pack to the value of packOpenVoltate_Byte 1 and 2 divided by 10
-    //to do this, the newPackOpenVoltage has to be built from the two bytes into a 16 bit value
-    uint16_t newPackOpenVoltage = 0;
-    //build the 16 bit value
-    //shift the first byte over by 8
-    newPackOpenVoltage = (uint16_t)messageToParse->packOpenVoltage_Byte1 << 8;
-    //OR in the second byte
-    newPackOpenVoltage |= (uint16_t)messageToParse->packOpenVoltage_Byte2;
-    //now divide this value by 10  and set in the model
-    orionModel->setPackOpenVoltage((float)newPackOpenVoltage / 10.0);
-
-    //update the pack current to the value of packCurrent_Byte 1 and 2 divided by 10
-    //to do this, the newPackCurrent has to be built from the two bytes into a 16 bit value
-    uint16_t newPackCurrent = 0;
-    //build the 16 bit value
-    //shift the first byte over by 8
-    newPackCurrent = (uint16_t)messageToParse->packCurrent_Byte1 << 8;
-    //OR in the second byte
-    newPackCurrent |= (uint16_t)messageToParse->packCurrent_Byte2;
-    //now divide this value by 10 and set it in the model
-    orionModel->setPackCurrent((float)newPackCurrent / 10.0);
-
-    //update the Average open cell voltage of the pack with the value from averageOpenCellVoltage_Byte 1 and 2 and divide by 10,000
-    //to do this, the newAverageOpenCellVoltage has to be built from the two bytes into a 16 bit value
-    uint16_t newAverageOpenCellVoltage = 0;
-    //build the 16 bit value
-    //shift the first byte over by 8
-    newAverageOpenCellVoltage = (uint16_t)messageToParse->averageOpenCellVoltage_Byte1 << 8;
-    //OR in the second byte
-    newAverageOpenCellVoltage |= (uint16_t)messageToParse->averageOpenCellVoltage_Byte2;
-    //now divide this value by 10,000 and set it in the model
-    orionModel->setAverageOpenCellVoltage((float)newAverageOpenCellVoltage / 10000.0);
+    
 }
 
 
@@ -177,12 +96,170 @@ void OrionController::shutdown(void)
     //TODO: will we need this? 
 }
 
+
+
+//all of the get functions for the Orion Controller
+//this is where the calculations from the raw data are done
 /** 
- * @brief  gets total pack voltage for 90% pre-charge setting
- * @note   need to determine output type of orion
+ * @brief  Retrieve state of charge of the pack as a percent
+ * @note   Range is 0-100%
+ * @retval State of charge of the pack
+ */
+float OrionController::getStateOfCharge(void)
+{
+    //return the state of charge of the pack to the stateOfCharge_Byte divided by 2
+    return (float)orionModel->getStateOfCharge_Byte() / 2.0;
+}
+
+
+/** 
+ * @brief  Retrieve state of health of the pack as a percent
+ * @note   Range is 0-100%
+ * @retval State of health of the pack
+ */
+uint8_t OrionController::getStateOfHealth(void)
+{
+    //get the state of health of the battery pack by returning the stateOfHealth_Byte without modification
+    return orionModel->getStateOfHealth_Byte();
+}
+
+
+/** 
+ * @brief  Retrieve highest cell temperature of the pack
+ * @note   Range is 0-255 degrees Celcius
+ * @retval Highest cell temperature in the pack
+ */
+uint8_t OrionController::getHighestCellTemp(void)
+{
+    //get the highest temperature of the pack by returning the highestCellTemp_Byte without modification
+    return orionModel->getHighestCellTemp_Byte();
+}
+
+
+/** 
+ * @brief  Retrieve average cell temperature of the pack
+ * @note   Range is 0-255 degrees Celcius
+ * @retval Average cell temperature for the pack
+ */
+uint8_t OrionController::getAverageCellTemp(void)
+{
+    
+    //get the average temperature of the pack by returning the averageCellTemp_Byte without modification
+    return orionModel->getAverageCellTemp_Byte();
+}
+
+
+/** 
+ * @brief  Retrieve max open cell voltage of the pack
+ * @note   Range is 0-6.5535 volts
+ * @retval Max open cell voltage value
+ */
+float OrionController::getMaxOpenCellVoltage(void)
+{
+    //return the max open cell voltage by building a 16-bit value from maxOpenCellVoltage_Byte 1 and 2 dividing by 10,000
+    uint16_t maxOpenCellVoltage = 0;
+    //build the 16 bit value
+    //shift the first byte over by 8
+    maxOpenCellVoltage = (uint16_t)orionModel->getMaxOpenCellVoltage_Byte1() << 8;
+    //OR in the second byte
+    maxOpenCellVoltage |= (uint16_t)orionModel->getMaxOpenCellVoltage_Byte2();
+    //now divide this value by 10,000 for the actual voltage and return it
+    return (float)maxOpenCellVoltage / 10000.0;
+}
+
+
+/** 
+ * @brief  Retrieve minimum open cell voltage of the pack
+ * @note   Range is 0-6.5535 volts
+ * @retval Min open cell voltage value
+ */
+float OrionController::getMinOpenCellVoltage(void)
+{
+    //return the min open cell voltage by building a 16-bit value from minOpenCellVoltage_Byte 1 and 2 dividing by 10,000
+    uint16_t minOpenCellVoltage = 0;
+    //build the 16 bit value
+    //shift the first byte over by 8
+    minOpenCellVoltage = (uint16_t)orionModel->getMinOpenCellVoltage_Byte1() << 8;
+    //OR in the second byte
+    minOpenCellVoltage |= (uint16_t)orionModel->getMinOpenCellVoltage_Byte2();
+    //now divide this value by 10,000 for the actual voltage and return it
+    return (float)minOpenCellVoltage / 10000.0;
+}
+
+
+/** 
+ * @brief  Retrieve the discharge current limit of the pack
+ * @note   Range is 0-65535 amps
+ * @retval Discharge current limit value
+ */
+uint16_t OrionController::getPackDischargeCurrentLimit(void)
+{
+    //get the discharge current limit of the pack by taking the value of packDischargeCurrentLimit_Byte 1 and 2 with no further modification
+    //to do this, the packDischargeCurrentLimit has to be built from the two bytes into a 16 bit value
+    uint16_t packDischargeCurrentLimit = 0;
+    //build the 16 bit value
+    //shift the first byte over by 8
+    packDischargeCurrentLimit = (uint16_t)orionModel->getPackDischargeCurrentLimit_Byte1() << 8;
+    //OR in the second byte
+    packDischargeCurrentLimit |= (uint16_t)orionModel->getPackDischargeCurrentLimit_Byte2();
+    //return the discharge current limit value
+    return packDischargeCurrentLimit;
+}
+
+/** 
+ * @brief  Retrieve total open pack voltage of the pack to use for the 90% pre-charge setting
+ * @note   Range is 0-6553.5 volts
  * @retval total voltage of all batteries
  */
 float OrionController::getPackVoltage(void)
 {
-    return orionModel->getPackOpenVoltage();
+    //to get the pack open voltage, the packOpenVoltage has to be built from the two bytes from the model into a 16 bit value
+    uint16_t packOpenVoltage = 0;
+    //build the 16 bit value
+    //shift the first byte over by 8
+    packOpenVoltage = (uint16_t)orionModel->getPackOpenVoltage_Byte1() << 8;
+    //OR in the second byte
+    packOpenVoltage |= (uint16_t)orionModel->getPackOpenVoltage_Byte2();
+    //now divide this value by 10 and return it
+    return (float)packOpenVoltage / 10.0;
+}
+
+
+/** 
+ * @brief  Retrieve the output current of the pack
+ * @note   Range is 0-6553.5 amps
+ * @retval Output current value of the pack
+ */
+float OrionController::getPackCurrent(void)
+{
+    //get the the output current of the pack to the value of packCurrent_Byte 1 and 2 divided by 10
+    //to do this, the packCurrent has to be built from the two bytes into a 16 bit value
+    uint16_t packCurrent = 0;
+    //build the 16 bit value
+    //shift the first byte over by 8
+    packCurrent = (uint16_t)orionModel->getPackCurrent_Byte1() << 8;
+    //OR in the second byte
+    packCurrent |= (uint16_t)orionModel->getPackCurrent_Byte2();
+    //now divide this value by 10 and return the value
+    return (float)packCurrent / 10.0;
+}
+
+
+/** 
+ * @brief  Retrieve average open cell voltage of the pack
+ * @note   Range is 0-6.5335 volts
+ * @retval Average open cell voltage value
+ */
+float OrionController::getAverageOpenCellVoltage(void)
+{
+    //get the average open cell voltage of the pack by building it from averageOpenCellVoltage_Byte 1 and 2 and divide by 10,000
+    //to do this, the averageOpenCellVoltage has to be built from the two bytes into a 16 bit value
+    uint16_t averageOpenCellVoltage = 0;
+    //build the 16 bit value
+    //shift the first byte over by 8
+    averageOpenCellVoltage = (uint16_t)orionModel->getAverageOpenCellVoltage_Byte1() << 8;
+    //OR in the second byte
+    averageOpenCellVoltage |= (uint16_t)orionModel->getAverageOpenCellVoltage_Byte2();
+    //now divide this value by 10,000 and set it in the model
+    return (float)averageOpenCellVoltage / 10000.0;
 }

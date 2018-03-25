@@ -22,33 +22,45 @@ public:
 
     //all of the public get functions
     //gets for values from message 0x420
-    float getStateOfCharge(void);
-    uint8_t getStateOfHealth(void);
-    uint8_t getHighestCellTemp(void);
-    uint8_t getAverageCellTemp(void);
-    float getMaxOpenCellVoltage(void);
-    float getMinOpenCellVoltage(void);
+    uint8_t getStateOfCharge_Byte(void);
+    uint8_t getStateOfHealth_Byte(void);
+    uint8_t getHighestCellTemp_Byte(void);
+    uint8_t getAverageCellTemp_Byte(void);
+    uint8_t getMaxOpenCellVoltage_Byte1(void);
+    uint8_t getMaxOpenCellVoltage_Byte2(void);
+    uint8_t getMinOpenCellVoltage_Byte1(void);
+    uint8_t getMinOpenCellVoltage_Byte2(void);
     
     //gets for values from message 0x421
-    uint16_t getPackDischargeCurrentLimit(void);
-    float getPackOpenVoltage(void);
-    float getPackCurrent(void);
-    float getAverageOpenCellVoltage(void);
+    uint8_t getPackDischargeCurrentLimit_Byte1(void);
+    uint8_t getPackDischargeCurrentLimit_Byte2(void);
+    uint8_t getPackOpenVoltage_Byte1(void);
+    uint8_t getPackOpenVoltage_Byte2(void);
+    uint8_t getPackCurrent_Byte1(void);
+    uint8_t getPackCurrent_Byte2(void);
+    uint8_t getAverageOpenCellVoltage_Byte1(void);
+    uint8_t getAverageOpenCellVoltage_Byte2(void);
 
     //all of the public set functions
     //gets for values from message 0x420
-    void setStateOfCharge(float newStateOfCharge);
-    void setStateOfHealth(uint8_t newStateOfHealth);
-    void setHighestCellTemp(uint8_t newHighestCellTemp);
-    void setAverageCellTemp(uint8_t newAverageCellTemp);
-    void setMaxOpenCellVoltage(float newMaxOpenCellVoltage);
-    void setMinOpenCellVoltage(float newMinOpenCellVoltage);
+    void setStateOfCharge_Byte(uint8_t newStateOfCharge_Byte);
+    void setStateOfHealth_Byte(uint8_t newStateOfHealth_Byte);
+    void setHighestCellTemp_Byte(uint8_t newHighestCellTemp_Byte);
+    void setAverageCellTemp_Byte(uint8_t newAverageCellTemp_Byte);
+    void setMaxOpenCellVoltage_Byte1(uint8_t newMaxOpenCellVoltage_Byte1);
+    void setMaxOpenCellVoltage_Byte2(uint8_t newMaxOpenCellVoltage_Byte2);
+    void setMinOpenCellVoltage_Byte1(uint8_t newMinOpenCellVoltage_Byte1);
+    void setMinOpenCellVoltage_Byte2(uint8_t newMinOpenCellVoltage_Byte2);
     
     //gets for values from message 0x421
-    void setPackDischargeCurrentLimit(uint16_t newPackDischargeCurrentLimit);
-    void setPackOpenVoltage(float newPackOpenVoltage);
-    void setPackCurrent(float newPackCurrent);
-    void setAverageOpenCellVoltage(float newAverageOpenCellVoltage);
+    void setPackDischargeCurrentLimit_Byte1(uint8_t newPackDischargeCurrentLimit_Byte1);
+    void setPackDischargeCurrentLimit_Byte2(uint8_t newPackDischargeCurrentLimit_Byte2);
+    void setPackOpenVoltage_Byte1(uint8_t newPackOpenVoltage_Byte1);
+    void setPackOpenVoltage_Byte2(uint8_t newPackOpenVoltage_Byte2);
+    void setPackCurrent_Byte1(uint8_t newPackCurrent_Byte1);
+    void setPackCurrent_Byte2(uint8_t newPackCurrent_Byte2);
+    void setAverageOpenCellVoltage_Byte1(uint8_t newAverageOpenCellVoltage_Byte1);
+    void setAverageOpenCellVoltage_Byte2(uint8_t newAverageOpenCellVoltage_Byte2);
 
     //This struct represents the structure of the data present in the CAN message from the BMS with the ID 0x420
     //some of the parameters take more than one byte to represent, therefore they are represented with 2 uint8_t's for byte 1 and 2 of their data
@@ -64,7 +76,6 @@ public:
         uint8_t minOpenCellVoltage_Byte1; //This value takes 2 bytes to represent and to get the actual voltage the value needs to be divided by 10,000 (ten-thousand), it represents the minimum open cell voltage of the pack in volts
         uint8_t minOpenCellVoltage_Byte2;
     } CanData_0x420;
-
 
     //This struct represents the structure of the data present in the CAN message from the BMS with the ID 0x421
     //some of the parameters take more than one byte to represent, therefore they are represented with 2 uint8_t's for byte 1 and 2 of their data
@@ -83,21 +94,10 @@ public:
 
 
 private:
-    //private variables used for storing the values for the pack information
-    //variables filled from CAN message with id 0x420
-    float stateOfCharge;
-    uint8_t stateOfHealth;
-    uint8_t highestCellTemp;
-    uint8_t averageCellTemp;
-    float maxOpenCellVoltage;
-    float minOpenCellVoltage;
-
-    //variables filled from CAN message with id 0x421
-    uint16_t packDischargeCurrentLimit;
-    float packOpenVoltage;
-    float packCurrent;
-    float averageOpenCellVoltage;
+    //private structs used for storing the values for the pack information
+    //struct filled with values from CAN message with id 0x420
     CanData_0x420 *data_0x420;
+    //struct filled with values from CAN message with id 0x421
     CanData_0x421 *data_0x421;
 
 };

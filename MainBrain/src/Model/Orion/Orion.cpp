@@ -17,6 +17,26 @@ Orion::Orion(void)
  
     data_0x420 = new CanData_0x420;
     data_0x421 = new CanData_0x421;
+
+    //initialize data_0x420 to 0
+    data_0x420->averageCellTemp_Byte = 0;
+    data_0x420->highestCellTemp_Byte = 0;
+    data_0x420->maxOpenCellVoltage_Byte1 = 0;
+    data_0x420->maxOpenCellVoltage_Byte2 = 0;
+    data_0x420->minOpenCellVoltage_Byte1 = 0;
+    data_0x420->minOpenCellVoltage_Byte2 = 0;
+    data_0x420->stateOfCharge_Byte = 0;
+    data_0x420->stateOfHealth_Byte = 0;
+
+    //initialize data_0x421 to 0
+    data_0x421->averageOpenCellVoltage_Byte1 = 0;
+    data_0x421->averageOpenCellVoltage_Byte2 = 0;
+    data_0x421->packCurrent_Byte1 = 0;
+    data_0x421->packCurrent_Byte2 = 0;
+    data_0x421->packDischargeCurrentLimit_Byte1 = 0;
+    data_0x421->packDischargeCurrentLimit_Byte2 = 0;
+    data_0x421->packOpenVoltage_Byte1 = 0;
+    data_0x421->packOpenVoltage_Byte2 = 0;
 }
 
 
@@ -25,7 +45,8 @@ Orion::Orion(void)
  */
 Orion::~Orion(void)
 {
-
+    delete data_0x420;
+    delete data_0x421;
 }
 
 
@@ -39,236 +60,378 @@ void Orion::update(void)
     
 }
 
-
-//all of the get functions for the Orion Model
+//all of the public get functions
+//gets for values from message 0x420
 /** 
- * @brief  Retrieve state of charge of the pack as a percent
- * @note   Range is 0-100%
- * @retval State of charge of the pack
+ * @brief  
+ * @note   
+ * @retval 
  */
-float Orion::getStateOfCharge(void)
+uint8_t Orion::getStateOfCharge_Byte(void)
 {
-    return stateOfCharge;
+    return data_0x420->stateOfCharge_Byte;
 }
 
 
 /** 
- * @brief  Retrieve state of health of the pack as a percent
- * @note   Range is 0-100%
- * @retval State of health of the pack
+ * @brief  
+ * @note   
+ * @retval 
  */
-uint8_t Orion::getStateOfHealth(void)
+uint8_t Orion::getStateOfHealth_Byte(void)
 {
-    return stateOfHealth;
+    return data_0x420->stateOfHealth_Byte;
 }
 
 
 /** 
- * @brief  Retrieve highest cell temperature of the pack
- * @note   Range is 0-255 degrees Celcius
- * @retval Highest cell temperature in the pack
+ * @brief  
+ * @note   
+ * @retval 
  */
-uint8_t Orion::getHighestCellTemp(void)
+uint8_t Orion::getHighestCellTemp_Byte(void)
 {
-    return highestCellTemp;
+    return data_0x420->highestCellTemp_Byte;
 }
 
 
 /** 
- * @brief  Retrieve average cell temperature of the pack
- * @note   Range is 0-255 degrees Celcius
- * @retval Average cell temperature for the pack
+ * @brief  
+ * @note   
+ * @retval 
  */
-uint8_t Orion::getAverageCellTemp(void)
+uint8_t Orion::getAverageCellTemp_Byte(void)
 {
-    return averageCellTemp;
+    return data_0x420->averageCellTemp_Byte;
 }
 
 
 /** 
- * @brief  Retrieve max open cell voltage of the pack
- * @note   Range is 0-6.5535 volts
- * @retval Max open cell voltage value
+ * @brief  
+ * @note   
+ * @retval 
  */
-float Orion::getMaxOpenCellVoltage(void)
+uint8_t Orion::getMaxOpenCellVoltage_Byte1(void)
 {
-    return maxOpenCellVoltage;
+    return data_0x420->maxOpenCellVoltage_Byte1;
 }
 
 
 /** 
- * @brief  Retrieve minimum open cell voltage of the pack
- * @note   Range is 0-6.5535 volts
- * @retval Min open cell voltage value
+ * @brief  
+ * @note   
+ * @retval 
  */
-float Orion::getMinOpenCellVoltage(void)
+uint8_t Orion::getMaxOpenCellVoltage_Byte2(void)
 {
-    return minOpenCellVoltage;
+    return data_0x420->maxOpenCellVoltage_Byte2;
 }
 
 
 /** 
- * @brief  Retrieve the discharge current limit of the pack
- * @note   Range is 0-65535 amps
- * @retval Discharge current limit value
+ * @brief  
+ * @note   
+ * @retval 
  */
-uint16_t Orion::getPackDischargeCurrentLimit(void)
+uint8_t Orion::getMinOpenCellVoltage_Byte1(void)
 {
-    return packDischargeCurrentLimit;
+    return data_0x420->minOpenCellVoltage_Byte1;
 }
 
 
 /** 
- * @brief  Retrieve total open pack voltage of the pack
- * @note   Range is 0-6553.5 volts
- * @retval Open voltage value of the pack
+ * @brief  
+ * @note   
+ * @retval 
  */
-float Orion::getPackOpenVoltage(void)
+uint8_t Orion::getMinOpenCellVoltage_Byte2(void)
 {
-    return packOpenVoltage;
+    return data_0x420->minOpenCellVoltage_Byte2;
+}
+
+
+
+//gets for values from message 0x421
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint8_t Orion::getPackDischargeCurrentLimit_Byte1(void)
+{
+    return data_0x421->packDischargeCurrentLimit_Byte1;
 }
 
 
 /** 
- * @brief  Retrieve the output current of the pack
- * @note   Range is 0-6553.5 amps
- * @retval Output current value of the pack
+ * @brief  
+ * @note   
+ * @retval 
  */
-float Orion::getPackCurrent(void)
+uint8_t Orion::getPackDischargeCurrentLimit_Byte2(void)
 {
-    return packCurrent;
+    return data_0x421->packDischargeCurrentLimit_Byte2;
 }
 
 
 /** 
- * @brief  Retrieve average open cell voltage of the pack
- * @note   Range is 0-6.5335 volts
- * @retval Average open cell voltage value
+ * @brief  
+ * @note   
+ * @retval 
  */
-float Orion::getAverageOpenCellVoltage(void)
+uint8_t Orion::getPackOpenVoltage_Byte1(void)
 {
-    return averageOpenCellVoltage;
+    return data_0x421->packOpenVoltage_Byte1;
 }
 
 
-//all set functions for the Orion Model
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint8_t Orion::getPackOpenVoltage_Byte2(void)
+{
+    return data_0x421->packOpenVoltage_Byte2;
+}
 
 
 /** 
- * @brief  Set state of charge of the pack as a percent
- * @note   Range is 0-100%
- * @param  newStateOfCharge: The new state of charge for the pack
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint8_t Orion::getPackCurrent_Byte1(void)
+{
+    return data_0x421->packCurrent_Byte1;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint8_t Orion::getPackCurrent_Byte2(void)
+{
+    return data_0x421->packCurrent_Byte2;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint8_t Orion::getAverageOpenCellVoltage_Byte1(void)
+{
+    return data_0x421->averageOpenCellVoltage_Byte1;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval 
+ */
+uint8_t Orion::getAverageOpenCellVoltage_Byte2(void)
+{
+    return data_0x421->averageOpenCellVoltage_Byte2;
+}
+
+
+
+
+//all of the public set functions
+//gets for values from message 0x420
+/** 
+ * @brief  
+ * @note   
+ * @param  newStateOfCharge_Byte: 
  * @retval None
  */
-void Orion::setStateOfCharge(float newStateOfCharge)
+void Orion::setStateOfCharge_Byte(uint8_t newStateOfCharge_Byte)
 {
-    stateOfCharge = newStateOfCharge;
+    data_0x420->stateOfCharge_Byte = newStateOfCharge_Byte;
 }
 
 
 /** 
- * @brief  Set state of health of the pack as a percent
- * @note   Range is 0-100%
- * @param  newStateOfHealth: The new state of health for the pack
+ * @brief  
+ * @note   
+ * @param  newStateOfHealth_Byte: 
  * @retval None
  */
-void Orion::setStateOfHealth(uint8_t newStateOfHealth)
+void Orion::setStateOfHealth_Byte(uint8_t newStateOfHealth_Byte)
 {
-    stateOfHealth = newStateOfHealth;
+    data_0x420->stateOfHealth_Byte = newStateOfHealth_Byte;
 }
 
 
 /** 
- * @brief  Set the highest cell temperature of the pack
- * @note   Range is 0-255 degrees Celcius
- * @param  newHighestCellTemp: The new state highest cell temperature in the pack
+ * @brief  
+ * @note   
+ * @param  newHighestCellTemp_Byte: 
  * @retval None
  */
-void Orion::setHighestCellTemp(uint8_t newHighestCellTemp)
+void Orion::setHighestCellTemp_Byte(uint8_t newHighestCellTemp_Byte)
 {
-    highestCellTemp = newHighestCellTemp;
+    data_0x420->highestCellTemp_Byte = newHighestCellTemp_Byte;
 }
 
 
 /** 
- * @brief  Set the average cell temperature of the pack
- * @note   Range is 0-255 degrees Celcius
- * @param  newAverageCellTemp: The new average cell temperature for the pack
+ * @brief  
+ * @note   
+ * @param  newAverageCellTemp_Byte: 
  * @retval None
  */
-void Orion::setAverageCellTemp(uint8_t newAverageCellTemp)
+void Orion::setAverageCellTemp_Byte(uint8_t newAverageCellTemp_Byte)
 {
-    averageCellTemp = newAverageCellTemp;
+    data_0x420->averageCellTemp_Byte = newAverageCellTemp_Byte;
 }
 
 
 /** 
- * @brief  Set the max open cell voltage for the pack
- * @note   Range is 0-6.5535 volts
- * @param  newMaxOpenCellVoltage: The new maximum open cell voltage in the pack 
+ * @brief  
+ * @note   
+ * @param  newMaxOpenCellVoltage_Byte1: 
  * @retval None
  */
-void Orion::setMaxOpenCellVoltage(float newMaxOpenCellVoltage)
+void Orion::setMaxOpenCellVoltage_Byte1(uint8_t newMaxOpenCellVoltage_Byte1)
 {
-    maxOpenCellVoltage = newMaxOpenCellVoltage;
+    data_0x420->maxOpenCellVoltage_Byte1 = newMaxOpenCellVoltage_Byte1;
 }
 
 
 /** 
- * @brief  Set the minimum open cell voltage for the pack
- * @note   Range is 0-6.5535 volts
- * @param  newMinOpenCellVoltage: The new minimum open cell voltage in the pack
+ * @brief  
+ * @note   
+ * @param  newMaxOpenCellVoltage_Byte2: 
  * @retval None
  */
-void Orion::setMinOpenCellVoltage(float newMinOpenCellVoltage)
+void Orion::setMaxOpenCellVoltage_Byte2(uint8_t newMaxOpenCellVoltage_Byte2)
 {
-    minOpenCellVoltage = newMinOpenCellVoltage;
+    data_0x420->maxOpenCellVoltage_Byte2 = newMaxOpenCellVoltage_Byte2;
 }
 
 
 /** 
- * @brief  Set the pack discharge current limit for the pack
- * @note   Range is 0-65535 amps
- * @param  newPackDischargeCurrentLimit: The new discharge current limit for the pack
+ * @brief  
+ * @note   
+ * @param  newMinOpenCellVoltage_Byte1: 
  * @retval None
  */
-void Orion::setPackDischargeCurrentLimit(uint16_t newPackDischargeCurrentLimit)
+void Orion::setMinOpenCellVoltage_Byte1(uint8_t newMinOpenCellVoltage_Byte1)
 {
-    packDischargeCurrentLimit = newPackDischargeCurrentLimit;
+    data_0x420->minOpenCellVoltage_Byte1 = newMinOpenCellVoltage_Byte1;
 }
 
 
 /** 
- * @brief  Set the open voltage of the pack
- * @note   Range is 0-6553.5 volts
- * @param  newPackOpenVoltage: The new open voltage value for the pack
+ * @brief  
+ * @note   
+ * @param  newMinOpenCellVoltage_Byte2: 
  * @retval None
  */
-void Orion::setPackOpenVoltage(float newPackOpenVoltage)
+void Orion::setMinOpenCellVoltage_Byte2(uint8_t newMinOpenCellVoltage_Byte2)
 {
-    packOpenVoltage = newPackOpenVoltage;
+    data_0x420->minOpenCellVoltage_Byte2 = newMinOpenCellVoltage_Byte2;
+}
+
+
+//gets for values from message 0x421
+/** 
+ * @brief  
+ * @note   
+ * @param  newPackDischargeCurrentLimit: 
+ * @retval None
+ */
+void Orion::setPackDischargeCurrentLimit_Byte1(uint8_t newPackDischargeCurrentLimit_Byte1)
+{
+    data_0x421->packDischargeCurrentLimit_Byte1 = newPackDischargeCurrentLimit_Byte1;
 }
 
 
 /** 
- * @brief  Set the value of pack output current
- * @note   Range is 0-6553.5 amps
- * @param  newPackCurrent: The new current output of the pack
+ * @brief  
+ * @note   
+ * @param  newPackDischargeCurrentLimit: 
  * @retval None
  */
-void Orion::setPackCurrent(float newPackCurrent)
+void Orion::setPackDischargeCurrentLimit_Byte2(uint8_t newPackDischargeCurrentLimit_Byte2)
 {
-    packCurrent = newPackCurrent;
+    data_0x421->packDischargeCurrentLimit_Byte2 = newPackDischargeCurrentLimit_Byte2;
 }
 
 
 /** 
- * @brief  Set the value for the average open cell voltage of the pack
- * @note   Range is 0-6.5535 volts
- * @param  newAverageOpenCellVoltage: the new average open cell voltage of the pack 
+ * @brief  
+ * @note   
+ * @param  newPackOpenVoltage: 
  * @retval None
  */
-void Orion::setAverageOpenCellVoltage(float newAverageOpenCellVoltage)
+void Orion::setPackOpenVoltage_Byte1(uint8_t newPackOpenVoltage_Byte1)
 {
-    averageOpenCellVoltage = newAverageOpenCellVoltage;
+    data_0x421->packOpenVoltage_Byte1 = newPackOpenVoltage_Byte1;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  newPackOpenVoltage: 
+ * @retval None
+ */
+void Orion::setPackOpenVoltage_Byte2(uint8_t newPackOpenVoltage_Byte2)
+{
+    data_0x421->packOpenVoltage_Byte2 = newPackOpenVoltage_Byte2;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  newPackCurrent: 
+ * @retval None
+ */
+void Orion::setPackCurrent_Byte1(uint8_t newPackCurrent_Byte1)
+{
+    data_0x421->packCurrent_Byte1 = newPackCurrent_Byte1;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  newPackCurrent: 
+ * @retval None
+ */
+void Orion::setPackCurrent_Byte2(uint8_t newPackCurrent_Byte2)
+{
+    data_0x421->packCurrent_Byte2 = newPackCurrent_Byte2;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  newAverageOpenCellVoltage: 
+ * @retval None
+ */
+void Orion::setAverageOpenCellVoltage_Byte1(uint8_t newAverageOpenCellVoltage_Byte1)
+{
+    data_0x421->averageOpenCellVoltage_Byte1 = newAverageOpenCellVoltage_Byte1;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @param  newAverageOpenCellVoltage: 
+ * @retval None
+ */
+void Orion::setAverageOpenCellVoltage_Byte2(uint8_t newAverageOpenCellVoltage_Byte2)
+{
+    data_0x421->averageOpenCellVoltage_Byte2 = newAverageOpenCellVoltage_Byte2;
 }
