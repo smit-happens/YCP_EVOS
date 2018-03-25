@@ -122,14 +122,3 @@ void CanController::sendUnitekWrite(const int regId, uint8_t buf1, uint8_t buf2)
     Serial.print(canMessage.buf[1], HEX);
     Serial.println(canMessage.buf[2], HEX);
 }
-
-
-// /** 
-//  * @brief  
-//  * @note   TODO: Have this work for Unitek and Orion
-//  * @retval 
-//  */
-// int CanController::parse(void)
-// {
-//     return 0;
-// }

@@ -217,6 +217,9 @@ void StageManager::configureStage(void)
 
                 //TODO: Driving setup code
                 
+                //RTD sound
+                DashController::getInstance()->playStartupSound();
+                
 
             }
         }
