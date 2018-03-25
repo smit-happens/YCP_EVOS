@@ -594,7 +594,6 @@ int main(void)
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, ledState);
 
-//   Can0.begin(500000);
   Can1.begin(500000);
 
   Can1.attachObj(&CANMessage);
