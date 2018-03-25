@@ -765,7 +765,8 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
         {
               if(taskFlags[UNITEK] & TF_UNITEK_DONE_PRECHARGE)
             {
-                
+                //Changing the stage
+                changeStage = STAGE_ENERGIZED;
 
                 //Clearing event flag
                 taskFlags[UNITEK] &= ~TF_UNITEK_DONE_PRECHARGE;
