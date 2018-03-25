@@ -17,7 +17,7 @@ StageManager::StageManager(void)
 {
     //The first step when running is bootup
     currentStage = STAGE_BOOTTEST;
-
+    
     //changing stage if any events trigger it
     changeStage = currentStage;
 
@@ -91,7 +91,7 @@ void StageManager::bootTest(void)
 
     
     //Cooling check if working
-
+    
 
     //GLV batlog level check
     
@@ -170,7 +170,7 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_PRECHARGE);
 
                 //TODO: Precharge setup code
-                Serial.print("Precharge Stage");
+                Serial.println("Precharge Stage");
                 
                 //set 90% charge
                 float batteryVoltage = OrionController::getInstance()->getPackVoltage();
@@ -242,7 +242,7 @@ void StageManager::configureStage(void)
 StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags)
 {
     configureStage();
-
+    
     //if any of the processing functions change the stage, we don't want it affecting the other processing events
     changeStage = currentStage;
 
@@ -283,7 +283,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
 
             if(*eventFlags & EF_UNITEK)
             {
-                processUnitek(taskFlags);
+                *eventFlags |= processUnitek(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_UNITEK;
@@ -482,6 +482,8 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
             //precharge button is pressed
             if(taskFlags[DASH] & TF_DASH_PRECHARGE)
             {
+                Serial.println("Dash - Precharge btn press");
+
                 //change stage to precharging
                 changeStage = STAGE_PRECHARGE;
             
@@ -493,21 +495,21 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
 
         case STAGE_PRECHARGE:
         {
-            Serial.println("Precharge Stage");
+            // Serial.println("Dash - Precharge Stage");
         }
         break;
 
 
         case STAGE_ENERGIZED:
         {
-            Serial.println("Energized Stage");
+            Serial.println("Dash - Energized Stage");
         }
         break;
 
 
         case STAGE_DRIVING:
         {
-            Serial.println("Driving Stage");            
+            Serial.println("Dash - Driving Stage");            
         }
         break;
 
@@ -516,8 +518,6 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
             //shouldn't get here
         break;
     }
-
-    Serial.println("\n");
 
     return 0;
 }
@@ -664,7 +664,8 @@ uint32_t StageManager::processPedal(void)
 
         case STAGE_DRIVING:
         {
-
+            //read and store the pedal value
+            //set the apropiate can ef and tf for sending the value to the unitek
         }
         break;
 
@@ -745,7 +746,7 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
     // UnitekController::getInstance()->storeWarningReg(warningValue); //stores warning value in unitek model
 
     //check if shutdown is needed
-    if(UnitekController::getInstance()->checkErrorWarningForShutdown()==true)
+    if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)
     {
         Serial.println("Problem in MC. Shutdown Required.");
         return EF_SHUTDOWN;
@@ -770,7 +771,7 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 
                 //Clearing event flag
                 taskFlags[UNITEK] &= ~TF_UNITEK_DONE_PRECHARGE;
-                Serial.print("Precharge Done task");
+                Serial.println("Precharge Done task");
             }
         }
         break;
@@ -812,39 +813,8 @@ uint32_t StageManager::processBatlog(void)
 {
     //insert code here that executes for any stage
 
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-
-        }
-        break;
-
-        
-        default:
-            //shouldn't get here
-        break;
-    }
+    //TODO: analog read MB_BAT_MEASURE and store in model
+    
 
     return 0;
 }
@@ -870,25 +840,34 @@ void StageManager::resetAllStagesExcept(Stage nonResetStage)
     {
         //Standby stage is configured
         case Stage::STAGE_STANDBY:
+        {
             isStandbyConfigured = true;
+        }
         break;
 
         
         //Precharge stage is configured
         case Stage::STAGE_PRECHARGE:
+        {
+            Serial.println("configuring precharging");
             isPrechargeConfigured = true;
+        }
         break;
 
 
         //Energized stage is configured
         case Stage::STAGE_ENERGIZED:
+        {
             isEnergizedConfigured = true;
+        }
         break;
 
 
         //Driving stage is configured
         case Stage::STAGE_DRIVING:
+        {
             isDrivingConfigured = true;
+        }
         break;
 
 

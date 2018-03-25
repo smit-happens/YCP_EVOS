@@ -24,9 +24,16 @@ public:
 
     //TODO: add functions for operation of pump control
 
+    bool isPumpOn(void) { return _pumpState; };
+
+    void pumpOn(void);
+    void pumpOff(void);
+
 private:
     uint16_t _inletTemperature;
     uint16_t _outletTemperature;
+
+    bool _pumpState = false;
 };
 
 
