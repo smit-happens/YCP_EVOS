@@ -57,6 +57,11 @@ void btnWayneWorldISR() {
     globalTaskFlags[DASH] |= TF_DASH_WAYNE_WORLD;
 }
 
+void donePrechargeISR() {
+    globalEventFlags              |= EF_UNITEK;
+    globalTaskFlags[UNITEK]       |= TF_UNITEK_DONE_PRECHARGE;
+}
+
 
 //---------------------------------------------------------------
 // Begin main function
@@ -131,6 +136,9 @@ int main(void)
     attachInterrupt(MB_SHUTDOWN_BTN, btnShutdownISR, RISING);
     attachInterrupt(MB_STANDBY_BTN, btnStandbyISR, RISING);
     attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
+
+    //Unitek interrupts
+    attachInterrupt(MB_DONE_PRE, donePrechargeISR, RISING);
 
 
     //initializing all the hardware

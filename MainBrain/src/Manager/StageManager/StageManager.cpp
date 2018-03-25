@@ -168,6 +168,11 @@ void StageManager::configureStage(void)
                 uint16_t charge90Numeric = UnitekController::getInstance()->calculate90Charge(batteryVoltage);
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
 
+                //Initiatiting the precharge process
+                digitalWriteFast(MB_START_PRE, HIGH);
+                //May need to check for specific error in the future before setting high
+
+
             }   
         }   
         break;
@@ -266,7 +271,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
 
             if(*eventFlags & EF_UNITEK)
             {
-                processUnitek();
+                processUnitek(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_UNITEK;
@@ -725,7 +730,8 @@ uint32_t StageManager::processSdCard(void)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processUnitek(void)
+
+uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 {
     //PROCESSES FOR ANY STAGE
 
@@ -758,7 +764,14 @@ uint32_t StageManager::processUnitek(void)
 
         case STAGE_PRECHARGE:
         {
-            
+              if(taskFlags[UNITEK] & TF_UNITEK_DONE_PRECHARGE)
+            {
+                
+
+                //Clearing event flag
+                taskFlags[UNITEK] &= ~TF_UNITEK_DONE_PRECHARGE;
+                Serial.print("Precharge Done task");
+            }
         }
         break;
 

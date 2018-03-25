@@ -15,9 +15,30 @@
 Unitek::Unitek(void)
 {
     rpmLimitReg_C8 = 6600; //0x19C8
+
+    //Set start precharge as an output
+    pinMode(MB_START_PRE, OUTPUT);
+
+    //Set SCADA Ok as an output
+    pinMode(MB_SCADA_OK, OUTPUT);
+
+    //Set precharge done as an input
+    pinMode(MB_DONE_PRE, INPUT);
+
+    //Set Drive as an output
+    pinMode(MB_DRIVE_EN, OUTPUT);
     
     //closes the safety circuit relay as well
     digitalWriteFast(MB_SCADA_OK, HIGH);
+    //Add logic here, if SCADA should go high 
+
+    //Initialzing the start precharge to low
+    digitalWriteFast(MB_START_PRE, LOW);
+
+    //Initialzing the Drive output to low
+    digitalWriteFast(MB_DRIVE_EN, LOW);
+
+    //TODO: Need to set other things such as drive, etc to low first
 }
 
 
