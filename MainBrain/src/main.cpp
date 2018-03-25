@@ -14,7 +14,7 @@
 
 //global variable that all the ISRs will flag for their respective event to run
 volatile uint32_t globalEventFlags = 0;
-uint8_t* globalTaskFlags = new uint8_t[NUM_DEVICES];
+uint8_t globalTaskFlags [NUM_DEVICES] = { 0 };
 
 
 //Start of ISR declarations
@@ -91,9 +91,6 @@ int main(void)
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
-
-    //The first step when running is bootup
-    localStage.currentStage = StageManager::STAGE_BOOTTEST;
 
 
     //initialize the local and timer event flag variables
