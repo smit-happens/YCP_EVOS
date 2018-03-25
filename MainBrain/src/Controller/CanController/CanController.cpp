@@ -85,8 +85,8 @@ void CanController::sendUnitekRead(const int regId, uint8_t pollTime)
     unitekMessage.buf[2] = pollTime;
 
     //FIXME: polling is not implemented yet
-    if(pollTime != 0)
-        canModel->send(unitekMessage);
+    //if(pollTime != 0)     see Unitek Can manual page 14, buf[2] needs to be 0 for one read
+    canModel->send(unitekMessage);
 
     //Debug print statements
     Serial.print(unitekMessage.id);

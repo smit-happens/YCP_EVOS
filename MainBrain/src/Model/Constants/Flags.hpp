@@ -52,22 +52,14 @@ enum Priority
 //this enum is used as an index in the lookup table and specifies each device for the car
 enum DeviceName
 {
-    TIMER,
     CAN,
     COOLING,
     DASH,
     GLCD,
     IMD,
     ORION,
-    PEDAL,
     SDCARD,
     UNITEK,
-    BATLOG,
-    STANDBY,
-    PRECHARGE,
-    READYTODRIVE,
-    LAUNCH,
-    SHUTDOWN,
     NUM_DEVICES //The number of devices, MAINTAIN AT END OF ENUM
 };
 
