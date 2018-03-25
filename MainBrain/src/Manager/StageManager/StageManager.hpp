@@ -69,6 +69,8 @@ private:
     Timer* timerList;
     uint32_t timerTF = 0;
 
+    Stage changeStage;
+
 
     //Processing functions for the various devices
     //TODO: Might eventually take a TF as an input param

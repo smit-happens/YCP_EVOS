@@ -15,6 +15,12 @@
  */
 StageManager::StageManager(void)
 {
+    //The first step when running is bootup
+    currentStage = STAGE_BOOTTEST;
+
+    //changing stage if any events trigger it
+    changeStage = currentStage;
+
     timerList = new Timer[TIMER_NUM];
     timerList[0].limit = POLL_TIME_GLCD;
     timerList[1].limit = POLL_TIME_SDCARD;
@@ -96,11 +102,11 @@ void StageManager::bootTest(void)
 
     if(/* check for ShutdownEF*/ 1 )
     {
-        currentStage = StageManager::STAGE_STANDBY;
+        currentStage = STAGE_STANDBY;
     }
     else
     {
-        currentStage = StageManager::STAGE_SHUTDOWN;
+        shutdown();
     }
 
 }
@@ -116,7 +122,10 @@ void StageManager::shutdown(void)
     //SCADA_OK signal to false
     digitalWriteFast(MB_SCADA_OK, LOW);
 
-    //close out SdCard logs    
+    //close out SdCard logs   
+
+    //Halt system 
+    while(1) {;}
 }
 
 
@@ -132,13 +141,13 @@ void StageManager::configureStage(void)
     {
         // Entry condition: EVOS finishes subsystem testing
         // Exit condition:  Driver requests Precharging
-        case Stage::STAGE_STANDBY:
+        case STAGE_STANDBY:
         {
             //check to make sure this hasn't been ran before for this stage
             if(isStandbyConfigured == false)
             {
                 //set variable to "configured"
-                resetAllStagesExcept(Stage::STAGE_STANDBY);
+                resetAllStagesExcept(STAGE_STANDBY);
 
                 //TODO: Standby setup code
                 Serial.println("Standby Stage");
@@ -152,13 +161,13 @@ void StageManager::configureStage(void)
         
         // Entry condition: Driver requests Precharging
         // Exit condition:  Precharge done signal recieved from Unitek
-        case Stage::STAGE_PRECHARGE:
+        case STAGE_PRECHARGE:
         {
             //check to make sure this hasn't been ran before for this stage
             if(isPrechargeConfigured == false)
             {
                 //set variable to "configured"
-                resetAllStagesExcept(Stage::STAGE_PRECHARGE);
+                resetAllStagesExcept(STAGE_PRECHARGE);
 
                 //TODO: Precharge setup code
                 Serial.print("Precharge Stage");
@@ -175,13 +184,13 @@ void StageManager::configureStage(void)
 
         // Entry condition: Precharge done signal recieved from Unitek
         // Exit condition:  Driver requests ready to drive
-        case Stage::STAGE_ENERGIZED:
+        case STAGE_ENERGIZED:
         {
             //check to make sure this hasn't been ran before for this stage
             if(isEnergizedConfigured == false)
             {
                 //set variable to "configured"
-                resetAllStagesExcept(Stage::STAGE_ENERGIZED);
+                resetAllStagesExcept(STAGE_ENERGIZED);
 
                 //TODO: Energized setup code
                 Serial.println("Energized Stage");
@@ -193,13 +202,13 @@ void StageManager::configureStage(void)
 
         // Entry condition: Driver requests ready to drive
         // Exit condition:  Driver requests standby
-        case Stage::STAGE_DRIVING:
+        case STAGE_DRIVING:
         {
             //check to make sure this hasn't been ran before for this stage
             if(isDrivingConfigured == false)
             {
                 //set variable to "configured"
-                resetAllStagesExcept(Stage::STAGE_DRIVING);
+                resetAllStagesExcept(STAGE_DRIVING);
 
                 //TODO: Driving setup code
                 
@@ -228,6 +237,9 @@ void StageManager::configureStage(void)
 StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags)
 {
     configureStage();
+
+    //if any of the processing functions change the stage, we don't want it affecting the other processing events
+    changeStage = currentStage;
 
     switch(urgencyLevel)
     {
@@ -345,7 +357,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
 
     } //End switch
 
-    return currentStage;
+    return changeStage;
 }
 
 
@@ -450,54 +462,41 @@ uint32_t StageManager::processCooling(void)
  */
 uint32_t StageManager::processDash(uint8_t* taskFlags)
 {
-    //do Dash processing
-    Serial.print("Dash tasks: ");
-    Serial.println(taskFlags[DASH], BIN); 
+    //shutdown check performed for any stage
+    if(taskFlags[DASH] & TF_DASH_SHUTDOWN)
+    {
+        //user wants to halt the system
+        shutdown();
+
+        taskFlags[DASH] &= ~TF_DASH_SHUTDOWN;
+    }
 
     switch(currentStage){
         case STAGE_STANDBY:
         {
+            //precharge button is pressed
             if(taskFlags[DASH] & TF_DASH_PRECHARGE)
             {
-               taskFlags[DASH] &= ~TF_DASH_PRECHARGE;
-                Serial.print("PrechargeBtn task");
+                //change stage to precharging
+                changeStage = STAGE_PRECHARGE;
+            
+                taskFlags[DASH] &= ~TF_DASH_PRECHARGE;
             }
-
-            if(taskFlags[DASH] & TF_DASH_RTD)
-            {
-               taskFlags[DASH] &= ~TF_DASH_RTD;
-                Serial.print("TF_DASH_RTD task: ");
-            }
-
-            if(taskFlags[DASH] & TF_DASH_WAYNE_WORLD)
-            {
-               taskFlags[DASH] &= ~TF_DASH_WAYNE_WORLD;
-                Serial.print("TF_DASH_WAYNE_WORLD task");
-            }
-
-            if(taskFlags[DASH] & TF_DASH_STANDBY)
-            {
-               taskFlags[DASH] &= ~TF_DASH_STANDBY;
-                Serial.print("TF_DASH_STANDBY task");
-            }
-
-            if(taskFlags[DASH] & TF_DASH_SHUTDOWN)
-            {
-               taskFlags[DASH] &= ~TF_DASH_SHUTDOWN;
-                Serial.print("TF_DASH_SHUTDOWN task");
-            }
-
         }
         break;
 
 
         case STAGE_PRECHARGE:
+        {
             Serial.println("Precharge Stage");
+        }
         break;
 
 
         case STAGE_ENERGIZED:
+        {
             Serial.println("Energized Stage");
+        }
         break;
 
 
