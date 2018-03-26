@@ -17,11 +17,8 @@ Can::Can(void)
     Can1.begin(500000);
 
     //queue used for the main receiver of new CAN messages to be sorted later
-    // mailbox = new Queue(sizeof(CAN_message_t), 20, FIFO);
-    
-    // //internal inboxes for the Unitek and Orion devices
-    // inboxUnitek = new Queue(sizeof(uint8_t)*4, 20, FIFO);
-    // inboxOrion = new Queue(sizeof(CAN_message_t), 20, FIFO);
+    volatileMailbox = new Queue();
+    localMailbox = new Queue();
 }
 
 
@@ -30,7 +27,8 @@ Can::Can(void)
  */
 Can::~Can(void)
 {
-
+    delete volatileMailbox;
+    delete localMailbox;
 }
 
 
@@ -55,8 +53,11 @@ void Can::update(void)
  */
 void Can::gotFrame(CAN_message_t &frame, int mailbox)
 {
-    //TODO: message just came in, check ID and send data to Unitek or Orion
-    //check id, store in orion or unitek queue, (maybe) set queueHasDataFlag
+    //TODO: message just came in, store it and set EF/TF 
+
+    volatileMailbox->enqueue(frame);
+
+    // globalEventFlags |= EF_CAN; //out of scope error
 
     //FIXME: TESTING CODE
     Serial.println("Entered CAN interrupt");
