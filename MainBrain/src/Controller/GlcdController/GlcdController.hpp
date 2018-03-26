@@ -25,6 +25,8 @@ public:
     void poll(void);
     void shutdown(void);    //TODO: implement
 
+    void justBarelyLogo(void);
+
 
 private:
     //Private contstructor so that it can't be called

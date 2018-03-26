@@ -85,14 +85,14 @@ void CanController::sendUnitekRead(const int regId, uint8_t pollTime)
     unitekMessage.buf[2] = pollTime;
 
     //FIXME: polling is not implemented yet
-    if(pollTime != 0)
-        canModel->send(unitekMessage);
+    //if(pollTime != 0)     see Unitek Can manual page 14, buf[2] needs to be 0 for one read
+    canModel->send(unitekMessage);
 
     //Debug print statements
-    Serial.print(unitekMessage.id);
-    Serial.print(unitekMessage.buf[0]);
-    Serial.print(unitekMessage.buf[1]);
-    Serial.print(unitekMessage.buf[2]);
+    Serial.print(unitekMessage.id, HEX);
+    Serial.print(unitekMessage.buf[0], HEX);
+    Serial.print(unitekMessage.buf[1], HEX);
+    Serial.println(unitekMessage.buf[2], HEX);
 }
 
 /** 
@@ -117,19 +117,8 @@ void CanController::sendUnitekWrite(const int regId, uint8_t buf1, uint8_t buf2)
     canModel->send(canMessage);
 
     //Debug print statements
-    Serial.print(canMessage.id);
-    Serial.print(canMessage.buf[0]);
-    Serial.print(canMessage.buf[1]);
-    Serial.print(canMessage.buf[2]);
+    Serial.print(canMessage.id, HEX);
+    Serial.print(canMessage.buf[0], HEX);
+    Serial.print(canMessage.buf[1], HEX);
+    Serial.println(canMessage.buf[2], HEX);
 }
-
-
-// /** 
-//  * @brief  
-//  * @note   TODO: Have this work for Unitek and Orion
-//  * @retval 
-//  */
-// int CanController::parse(void)
-// {
-//     return 0;
-// }

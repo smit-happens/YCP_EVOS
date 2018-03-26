@@ -47,16 +47,22 @@ LightController::~LightController(void)
 void LightController::init(void)
 {
     //initializing all the lights on the car
-    lights[RTD]         = new Light(MB_RTD_LED);
-    lights[ERR_BMS]     = new Light(MB_BMS_LED);
-    lights[ERR_Pedal]   = new Light(MB_PEDAL_LED);
-    lights[ERR_Imd]     = new Light(MB_IMD_LED);
-    lights[REVERSE]     = new Light(MB_REVERSE_LED);
-    lights[WAYNE]       = new Light(MB_WAYNE_LED);
-    lights[ENERGIZE]    = new Light(MB_ENERGIZE_LED);
-    lights[BRAKE]       = new Light(MB_BRAKE_LIGHT);
+    lights[LIGHT_RTD]         = new Light(MB_RTD_LED);
+    lights[LIGHT_ERR_BMS]     = new Light(MB_BMS_LED);
+    lights[LIGHT_ERR_PEDAL]   = new Light(MB_PEDAL_LED);
+    lights[LIGHT_ERR_IMD]     = new Light(MB_IMD_LED);
+    lights[LIGHT_REVERSE]     = new Light(MB_REVERSE_LED);
+    lights[LIGHT_WAYNE]       = new Light(MB_WAYNE_LED);
+    lights[LIGHT_ENERGIZE]    = new Light(MB_ENERGIZE_LED);
+    lights[LIGHT_BRAKE]       = new Light(MB_BRAKE_LIGHT);
 }
 
+
+/** 
+ * @brief  Turns on all the lights on the Dash
+ * @note   
+ * @retval None
+ */
 void LightController::turnAllOn(void)
 {
     for(int lightIterator = 0; lightIterator < LightId::NUM_LIGHTS; lightIterator++)
@@ -64,12 +70,31 @@ void LightController::turnAllOn(void)
 }
 
 
+/** 
+ * @brief  Turns off all the lights on the Dash
+ * @note   
+ * @retval None
+ */
 void LightController::turnAllOff(void)
 {
     for(int lightIterator = 0; lightIterator < LightId::NUM_LIGHTS; lightIterator++)
         lights[lightIterator]->turnOff();
 }
 
+
+/** 
+ * @brief  On shutdown, we want the error lights to stay on (if any were triggered)
+ * @note   
+ * @retval 
+ */
+void LightController::turnNonErrorOff(void)
+{
+    lights[LIGHT_RTD]->turnOff();
+    lights[LIGHT_REVERSE]->turnOff();
+    lights[LIGHT_WAYNE]->turnOff();
+    lights[LIGHT_ENERGIZE]->turnOff();
+    lights[LIGHT_BRAKE]->turnOff();
+}
 
 /** 
  * @brief  Turns off a specific light

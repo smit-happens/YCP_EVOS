@@ -14,7 +14,7 @@
 
 //global variable that all the ISRs will flag for their respective event to run
 volatile uint32_t globalEventFlags = 0;
-uint8_t* globalTaskFlags = new uint8_t[NUM_DEVICES];
+uint8_t globalTaskFlags [NUM_DEVICES] = { 0 };
 
 
 //Start of ISR declarations
@@ -58,18 +58,23 @@ void btnWayneWorldISR() {
 }
 
 
+void donePrechargeISR() {
+    globalEventFlags              |= EF_UNITEK;
+    globalTaskFlags[UNITEK]       |= TF_UNITEK_DONE_PRECHARGE;
+}
+
+
 //---------------------------------------------------------------
 // Begin main function
 int main(void)
 {
     Serial.begin(9600);
-    // while (!Serial) {
-    //     ; // wait for serial port to connect
-    // }
+    while (!Serial) {
+        ; // wait for serial port to connect
+    }
 
     Serial.println("Bootup stage");
-
-    //Bootup stage functions (any var declared in an if/else falls out of scope afterward)
+    
 
     //Creating the controller singletons
     //Copying each controller location in memory
@@ -88,25 +93,26 @@ int main(void)
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
 
-    //The first step when running is bootup
-    localStage.currentStage = StageManager::STAGE_BOOTUP;
-
 
     //initialize the local and timer event flag variables
     uint32_t localEventFlags = 0;
     uint32_t timerEventFlags = 0;
 
-    //initialize array to zero
-    uint8_t* localTaskFlags = new uint8_t[NUM_DEVICES];
+    //initialize task flag array to zero
+    uint8_t localTaskFlags[NUM_DEVICES] = { 0 };
+
 
     //Configure registers
     //Setting the analog read resolution to the maximum of the Teensy 3.6 (13 bit)
     analogReadResolution(13);
+    //Teensy 3.6 analog write resolution needs to be set to 16 bit
+    analogWriteResolution(16);
 
     //timer configuration
     //DO NOT START TIMERS HERE
     IntervalTimer myTimer;
 
+    
     //Calling init functions for each controller
     canC->init();
     unitekC->init();
@@ -120,6 +126,7 @@ int main(void)
     sdCardC->init();
     batlogC->init();
 
+    
     //attaching interrupts
     //Button interrupts
     attachInterrupt(MB_PRE_BTN, btnPrechargeISR, RISING);
@@ -128,48 +135,12 @@ int main(void)
     attachInterrupt(MB_STANDBY_BTN, btnStandbyISR, RISING);
     attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
 
-    //Dashboard
-        //LCD (boot logo)
-        // dashC->
-
-    if(/* check for ShutdownEF*/ 1 )
-    {
-        localStage.currentStage = StageManager::STAGE_TEST;
-    }
-    else
-    {
-        localStage.currentStage = StageManager::STAGE_SHUTDOWN;
-    }
+    //Unitek interrupts
+    attachInterrupt(MB_DONE_PRE, donePrechargeISR, RISING);
 
 
-    //excecuting all the self test oriented functions
-    if(localStage.currentStage == StageManager::STAGE_TEST)
-    {
-        Serial.println("Test Stage");
-
-        //Teensy SelfTest (internal functions)
-        
-        //SdCard check (read data, check if good)
-        //Dash test (turn on all LEDS, user confirmation w/ encoder)
-        lightC->test();
-
-        //Unitek check if okay
-        //Orion check if okay
-        //Cooling check if working
-        //GLV batlog level check
-        
-        //assuming everything is okay
-            //Notification: All systens go. Ready to Precharge
-
-        if(/* check for ShutdownEF*/ 1 )
-        {
-            localStage.currentStage = StageManager::STAGE_STANDBY;
-        }
-        else
-        {
-            localStage.currentStage = StageManager::STAGE_SHUTDOWN;
-        }
-    }
+    //initializing all the hardware
+    localStage.bootTest();
 
 
     //Start 1ms timer (1000 usec)
@@ -188,7 +159,7 @@ int main(void)
         //clearing global task flags for every device
         for(int i = 0; i < DeviceName::NUM_DEVICES; i++ )
         {
-            localTaskFlags[i] = globalTaskFlags[i];
+            localTaskFlags[i] |= globalTaskFlags[i];
             globalTaskFlags[i] = 0;
         }
 
@@ -217,9 +188,7 @@ int main(void)
 
 
     //SHUTDOWN function
-        //EXTREMELY CRITICAL FUNCTIONS, no looping here
-        //close out SdCard logs
-        //SCADA_OK signal to false
+    localStage.shutdown();
 
 
     return 0;

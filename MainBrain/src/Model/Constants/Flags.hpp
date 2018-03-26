@@ -31,6 +31,10 @@ const uint8_t TF_DASH_STANDBY       = 0b1000;
 const uint8_t TF_DASH_WAYNE_WORLD   = 0b10000;
 
 
+//task flag (TF) for Unitek
+const uint8_t TF_UNITEK_DONE_PRECHARGE  =0b1;
+
+
 //Timer flags (the equivalent of an event flag but triggered by a timer)
 const uint32_t TIMER_F_GLCD         = 0b1;  //Glcd EF mask
 const uint32_t TIMER_F_PEDAL        = 0b10;  //Pedal EF mask
@@ -52,22 +56,14 @@ enum Priority
 //this enum is used as an index in the lookup table and specifies each device for the car
 enum DeviceName
 {
-    TIMER,
     CAN,
     COOLING,
     DASH,
     GLCD,
     IMD,
     ORION,
-    PEDAL,
     SDCARD,
     UNITEK,
-    BATLOG,
-    STANDBY,
-    PRECHARGE,
-    READYTODRIVE,
-    LAUNCH,
-    SHUTDOWN,
     NUM_DEVICES //The number of devices, MAINTAIN AT END OF ENUM
 };
 

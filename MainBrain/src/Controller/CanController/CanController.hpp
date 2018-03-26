@@ -37,8 +37,6 @@ public:
 
     void sendOrion(void);    //TODO: implement this based on testing done with Micaiah
 
-    void parse(void);
-
 private:
     //Private contstructor so that it can't be called
     CanController() {};

@@ -30,9 +30,7 @@ Can::Can(void)
  */
 Can::~Can(void)
 {
-    // delete mailbox;
-    // delete inboxUnitek;
-    // delete inboxOrion;
+
 }
 
 
@@ -50,7 +48,7 @@ void Can::update(void)
 
 /** 
  * @brief  Called whenever a new CAN frame is received
- * @note   All CAN messages will be sent received from mailbox 1 (CAN port 1) 
+ * @note   All CAN messages will be sent received from CAN port 1
  * @param  &frame:  CAN_message_t reference
  * @param  mailbox: Port message came on
  * @retval None
@@ -59,13 +57,14 @@ void Can::gotFrame(CAN_message_t &frame, int mailbox)
 {
     //TODO: message just came in, check ID and send data to Unitek or Orion
     //check id, store in orion or unitek queue, (maybe) set queueHasDataFlag
-    //globalEventFlags = 0;
+
     //FIXME: TESTING CODE
-    // Serial.println("Entered CAN interrupt");
-    // Serial.println(frame.buf[0]);
-    // Serial.println(frame.buf[1]);
-    // Serial.println(frame.buf[2]);
-    // Serial.println(frame.buf[3]);
+    Serial.println("Entered CAN interrupt");
+    Serial.println(frame.id, HEX);
+    Serial.println(frame.buf[0], HEX);
+    Serial.println(frame.buf[1], HEX);
+    Serial.println(frame.buf[2], HEX);
+    Serial.println(frame.buf[3], HEX);
     //FIXME: TESTING CODE
 }
 

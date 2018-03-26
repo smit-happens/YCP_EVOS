@@ -15,6 +15,12 @@
  */
 StageManager::StageManager(void)
 {
+    //The first step when running is bootup
+    currentStage = STAGE_BOOTTEST;
+    
+    //changing stage if any events trigger it
+    changeStage = currentStage;
+
     timerList = new Timer[TIMER_NUM];
     timerList[0].limit = POLL_TIME_GLCD;
     timerList[1].limit = POLL_TIME_SDCARD;
@@ -60,11 +66,368 @@ uint32_t StageManager::processTimers(void)
 /** 
  * @brief  
  * @note   
+ * @retval None
+ */
+void StageManager::bootTest(void)
+{
+    //LCD (boot logo)
+    GlcdController::getInstance()->justBarelyLogo();
+
+
+    //Teensy SelfTest (internal functions if any)
+
+    
+    //SdCard check (read data, check if good)
+
+
+    //Dash test (turn on all LEDS, user confirmation w/ encoder)
+    LightController::getInstance()->test();
+
+
+    //Unitek Boot/check if okay
+
+
+    //Orion check if okay
+
+    
+    //Cooling check if working
+    
+
+    //GLV batlog level check
+    
+    
+    //assuming everything is okay
+        //Notification: All systens go. Ready to Precharge
+
+
+    if(/* check for ShutdownEF*/ 1 )
+    {
+        currentStage = STAGE_STANDBY;
+    }
+    else
+    {
+        shutdown();
+    }
+
+}
+
+
+/** 
+ * @brief  EXTREMELY CRITICAL FUNCTIONS
+ * @note   
+ * @retval None
+ */
+void StageManager::shutdown(void)
+{
+    //SCADA_OK signal to false
+    digitalWriteFast(MB_SCADA_OK, LOW);
+
+    Serial.println("Shutdown Stage");
+
+    //TODO: close out SdCard logs   
+
+    //turn off all dash lights except for Error lights
+    LightController::getInstance()->turnNonErrorOff();
+
+
+    //Halt system 
+    while(1) {;}
+}
+
+
+/** 
+ * @brief  Contains the initial configuration steps for the standby stage
+ * @note   
+ * @retval None
+ */
+void StageManager::configureStage(void)
+{
+
+    switch(currentStage)
+    {
+        // Entry condition: EVOS finishes subsystem testing
+        // Exit condition:  Driver requests Precharging
+        case STAGE_STANDBY:
+        {
+            //check to make sure this hasn't been ran before for this stage
+            if(isStandbyConfigured == false)
+            {
+                //set variable to "configured"
+                resetAllStagesExcept(STAGE_STANDBY);
+
+                //TODO: Standby setup code
+                Serial.println("Standby Stage");
+
+
+
+            }
+        }
+        break;
+
+        
+        // Entry condition: Driver requests Precharging
+        // Exit condition:  Precharge done signal recieved from Unitek
+        case STAGE_PRECHARGE:
+        {
+            //check to make sure this hasn't been ran before for this stage
+            if(isPrechargeConfigured == false)
+            {
+                //set variable to "configured"
+                resetAllStagesExcept(STAGE_PRECHARGE);
+
+                //TODO: Precharge setup code
+                Serial.println("Precharge Stage");
+                
+                //set 90% charge
+                float batteryVoltage = OrionController::getInstance()->getPackVoltage();
+                uint16_t charge90Numeric = UnitekController::getInstance()->calculate90Charge(batteryVoltage);
+                CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
+
+                //TODO: blink Energized Light to indicate to user that car is precharging
+
+                //Initiatiting the precharge process
+                digitalWriteFast(MB_START_PRE, HIGH);
+                //May need to check for specific error in the future before setting high
+                //TODO: Is this where the brake needs to be pushed? 
+
+
+            }   
+        }   
+        break;
+
+
+        // Entry condition: Precharge done signal recieved from Unitek
+        // Exit condition:  Driver requests ready to drive
+        case STAGE_ENERGIZED:
+        {
+            //check to make sure this hasn't been ran before for this stage
+            if(isEnergizedConfigured == false)
+            {
+                //set variable to "configured"
+                resetAllStagesExcept(STAGE_ENERGIZED);
+
+                //TODO: Energized setup code
+                Serial.println("Energized Stage");
+
+                //indicate to Driver that car is energized
+                LightController::getInstance()->turnOn(LightController::LIGHT_ENERGIZE);
+            }
+        }
+        break;
+
+
+        // Entry condition: Driver requests ready to drive
+        // Exit condition:  Driver requests standby
+        case STAGE_DRIVING:
+        {
+            //check to make sure this hasn't been ran before for this stage
+            if(isDrivingConfigured == false)
+            {
+                //set variable to "configured"
+                resetAllStagesExcept(STAGE_DRIVING);
+
+                //TODO: Driving setup code
+                Serial.println("Driving Stage");
+
+                //Set Drive to high to go into 'Drive'
+                digitalWriteFast(MB_DRIVE_EN, HIGH);
+
+                //indicate to Driver that car is Ready to drive
+                LightController::getInstance()->turnOn(LightController::LIGHT_RTD);
+
+                //RTD sound
+                DashController::getInstance()->playStartupSound();
+
+            }
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
+}
+
+
+/** 
+ * @brief  Handles the event and task flags for each device
+ * @note   
+ * @param  urgencyLevel: 
+ * @param  eventFlags: 
+ * @param  taskFlags: 
+ * @retval 
+ */
+StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags)
+{
+    configureStage();
+    
+    //if any of the processing functions change the stage, we don't want it affecting the other processing events
+    changeStage = currentStage;
+
+    switch(urgencyLevel)
+    {
+        case PRIORITY_CRITICAL:
+        {
+            if(*eventFlags & EF_SHUTDOWN)
+            {
+                shutdown();
+                
+                //clearing the EF so we don't trigger this again
+                *eventFlags &= ~EF_SHUTDOWN;
+            }
+
+
+            if(*eventFlags & EF_IMD)
+            {
+                processImd();
+                
+                //clearing the EF so we don't trigger this again
+                *eventFlags &= ~EF_IMD;
+            }
+        }
+        break;
+
+        
+        case PRIORITY_HIGH:
+        {
+            if(*eventFlags & EF_CAN)
+            {
+                processCan();   
+                
+                //clearing the EF so we don't trigger this again
+                *eventFlags &= ~EF_CAN;
+            }
+
+
+            if(*eventFlags & EF_UNITEK)
+            {
+                *eventFlags |= processUnitek(taskFlags);
+                
+                //clearing the EF so we don't trigger this again
+                *eventFlags &= ~EF_UNITEK;
+            }
+
+
+            if(*eventFlags & EF_ORION)
+            {
+                processOrion();
+                
+                //clearing the EF so we don't trigger this again
+                *eventFlags &= ~EF_ORION;
+            }
+        }
+        break;
+
+
+        case PRIORITY_MEDIUM:
+        {
+             if(*eventFlags & EF_COOLING)
+            {
+                processCooling();
+                
+                //clearing the EF so we don't trigger this again
+                *eventFlags &= ~EF_COOLING;
+            }
+
+
+            if(*eventFlags & EF_BATLOG)
+            {
+                processBatlog();
+                
+                //clearing the EF so we don't trigger this again
+                *eventFlags &= ~EF_BATLOG;
+            }
+
+
+            if(*eventFlags & EF_DASH)
+            {
+                processDash(taskFlags);
+
+                //clearing the EF so we don't trigger this again
+                *eventFlags &= ~EF_DASH;
+            }
+        }
+        break;
+
+
+        case PRIORITY_LOW:
+        {
+            if(*eventFlags & TIMER_F_PEDAL)
+            {
+                processPedal();
+
+                *eventFlags &= ~TIMER_F_PEDAL;
+            }
+
+            if(*eventFlags & TIMER_F_GLCD)
+            {
+                processGlcd();
+                
+                //clearing the EF so we don't trigger this again
+                *eventFlags &= ~TIMER_F_GLCD;
+            }
+
+
+            if(*eventFlags & TIMER_F_SDCARD)
+            {
+                processSdCard();
+                
+                //clearing the EF so we don't trigger this again
+                *eventFlags &= ~TIMER_F_SDCARD;
+            }
+        }
+        break;
+
+    } //End switch
+
+    return changeStage;
+}
+
+
+/** 
+ * @brief  
+ * @note   
  * @retval 
  */
 uint32_t StageManager::processCan(void)
 {
-    //do CAN stuff
+    //insert code here that executes for any stage
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+            //TODO: send pedal value over CAN
+        }
+        break;
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
     return 0;
 }
 
@@ -76,7 +439,41 @@ uint32_t StageManager::processCan(void)
  */
 uint32_t StageManager::processCooling(void)
 {
-    //do Cooling stuff
+    //insert code here that executes for any stage
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
     return 0;
 }
 
@@ -90,71 +487,60 @@ uint32_t StageManager::processCooling(void)
  */
 uint32_t StageManager::processDash(uint8_t* taskFlags)
 {
-    //do Dash processing
-    Serial.print("Dash tasks: ");
-    Serial.println(taskFlags[DASH], BIN); 
+    //shutdown check performed for any stage
+    if(taskFlags[DASH] & TF_DASH_SHUTDOWN)
+    {
+        //user wants to halt the system
+        shutdown();
+
+        taskFlags[DASH] &= ~TF_DASH_SHUTDOWN;
+    }
 
     switch(currentStage){
         case STAGE_STANDBY:
         {
+            //precharge button is pressed
             if(taskFlags[DASH] & TF_DASH_PRECHARGE)
             {
-               taskFlags[DASH] &= ~TF_DASH_PRECHARGE;
-                Serial.print("PrechargeBtn task");
-            }
+                Serial.println("Dash - Precharge btn press");
 
-            if(taskFlags[DASH] & TF_DASH_RTD)
-            {
-               taskFlags[DASH] &= ~TF_DASH_RTD;
-                Serial.print("TF_DASH_RTD task: ");
+                //change stage to precharging
+                changeStage = STAGE_PRECHARGE;
+            
+                taskFlags[DASH] &= ~TF_DASH_PRECHARGE;
             }
-
-            if(taskFlags[DASH] & TF_DASH_WAYNE_WORLD)
-            {
-               taskFlags[DASH] &= ~TF_DASH_WAYNE_WORLD;
-                Serial.print("TF_DASH_WAYNE_WORLD task");
-            }
-
-            if(taskFlags[DASH] & TF_DASH_STANDBY)
-            {
-               taskFlags[DASH] &= ~TF_DASH_STANDBY;
-                Serial.print("TF_DASH_STANDBY task");
-            }
-
-            if(taskFlags[DASH] & TF_DASH_SHUTDOWN)
-            {
-               taskFlags[DASH] &= ~TF_DASH_SHUTDOWN;
-                Serial.print("TF_DASH_SHUTDOWN task");
-            }
-
         }
         break;
 
 
         case STAGE_PRECHARGE:
-            Serial.println("Precharge Stage");
+        {
+
+        }
         break;
 
 
         case STAGE_ENERGIZED:
-            Serial.println("Energized Stage");
+        {
+            if(taskFlags[DASH] & TF_DASH_RTD)
+            {
+                Serial.println("Dash - RTD Drive task");
+                
+                //Changing the stage
+                changeStage = STAGE_DRIVING;
+
+                //Clearing event flag
+                taskFlags[DASH] &= ~TF_DASH_RTD;
+            }
+
+        }
         break;
 
 
         case STAGE_DRIVING:
         {
-            Serial.println("Driving Stage");            
+            
         }
-        break;
-
-
-        case STAGE_LAUNCH:
-
-        break;
-
-
-        case STAGE_SHUTDOWN:
-
         break;
 
 
@@ -162,8 +548,6 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
             //shouldn't get here
         break;
     }
-
-    Serial.println("\n");
 
     return 0;
 }
@@ -177,6 +561,40 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
 uint32_t StageManager::processGlcd(void)
 {
     //glcd view display updating
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+
+    }
 
     return 0;
 }
@@ -189,7 +607,15 @@ uint32_t StageManager::processGlcd(void)
  */
 uint32_t StageManager::processImd(void)
 {    
+    //this will only have like one thing that happens if called
+    //TODO: add in IMD event handling 
+
+    LightController::getInstance()->turnOn(LightController::LIGHT_ERR_IMD);
+
+    shutdown();
+
     return 0;
+
 }
 
 /** 
@@ -199,6 +625,42 @@ uint32_t StageManager::processImd(void)
  */
 uint32_t StageManager::processOrion(void)
 {
+    //insert code here that executes for any stage
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
     return 0;
 }
 
@@ -210,7 +672,53 @@ uint32_t StageManager::processOrion(void)
  */
 uint32_t StageManager::processPedal(void)
 {
-    return 0;
+    //insert code here that executes for any stage
+
+    uint32_t returnedEF = 0;
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+            //read and store the pedal value
+            //set the apropiate can ef and tf for sending the value to the unitek
+
+            PedalController::getInstance()->poll();
+
+            returnedEF |= EF_CAN;
+
+            //taskflag setting for pedal value sending
+
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
+    return returnedEF;
 }
 
 
@@ -221,6 +729,42 @@ uint32_t StageManager::processPedal(void)
  */
 uint32_t StageManager::processSdCard(void)
 {
+    //insert code here that executes for any stage
+
+    switch(currentStage){
+        case STAGE_STANDBY:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_PRECHARGE:
+        {
+            
+        }  
+        break;
+
+
+        case STAGE_ENERGIZED:
+        {
+            
+        }
+        break;
+
+
+        case STAGE_DRIVING:
+        {
+
+        }
+        break;
+
+
+        default:
+            //shouldn't get here
+        break;
+    }
+
     return 0;
 }
 
@@ -229,32 +773,57 @@ uint32_t StageManager::processSdCard(void)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processUnitek(void)
+
+uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 {
-    
+    //PROCESSES FOR ANY STAGE
+
+    //check unitek error and warning registers to determine if shutdown is needed
+    // CanController::getInstance()->sendUnitekRead(REG_ERROR, 0);
+    // delay(200);     //need to delay so MC has time to return CAN message, not sure of correct time
+    // CAN_message_t errorReg;
+    // Can1.read(errorReg);        //read error and warning reg and store values in errorReg
+    // uint16_t errorValue=(errorReg.buf[4]<<8) || errorReg.buf[3];    //seperates error reg value
+    // uint16_t warningValue=(errorReg.buf[2]<<8) || errorReg.buf[1];  //seperates warning reg value
+    // UnitekController::getInstance()->storeErrorReg(errorValue);     //stores error value in unitek model
+    // UnitekController::getInstance()->storeWarningReg(warningValue); //stores warning value in unitek model
+
+    //check if shutdown is needed
+    if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)
+    {
+        Serial.println("Problem in MC. Shutdown Required.");
+        return EF_SHUTDOWN;
+    }
+
+
+    //STAGE SPECIFIC PROCESSES
     switch(currentStage){
-        case STAGE_BOOTUP:
-
-        break;
-
-      
-        case STAGE_TEST:
-
-        break;
-
-
         case STAGE_STANDBY:
-
+        {
+            
+        }
         break;
 
 
         case STAGE_PRECHARGE:
-            
+        {
+              if(taskFlags[UNITEK] & TF_UNITEK_DONE_PRECHARGE)
+            {
+                //Changing the stage
+                changeStage = STAGE_ENERGIZED;
+
+                //Clearing event flag
+                taskFlags[UNITEK] &= ~TF_UNITEK_DONE_PRECHARGE;
+                Serial.println("Precharge Done task");
+            }
+        }
         break;
 
 
         case STAGE_ENERGIZED:
-
+        {
+ 
+        }
         break;
 
 
@@ -269,13 +838,8 @@ uint32_t StageManager::processUnitek(void)
         break;
 
 
-        case STAGE_LAUNCH:
-
-        break;
-
-
-        case STAGE_SHUTDOWN:
-
+        default:
+            //shouldn't get here
         break;
     }
 
@@ -290,49 +854,11 @@ uint32_t StageManager::processUnitek(void)
  */
 uint32_t StageManager::processBatlog(void)
 {
-    return 0;
-}
+    //insert code here that executes for any stage
 
+    //TODO: analog read MB_BAT_MEASURE and store in model
+    
 
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processPrecharge(void)
-{
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processReadyToDrive(void)
-{
-    return 0;
-}
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processLaunch(void)
-{
-    return 0;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-uint32_t StageManager::processShutdown(void)
-{
     return 0;
 }
 
@@ -350,7 +876,6 @@ void StageManager::resetAllStagesExcept(Stage nonResetStage)
     isPrechargeConfigured = false;
     isEnergizedConfigured = false;
     isDrivingConfigured = false;
-    isLaunchConfigured = false;
 
 
     //checking which stage we're currently in (same as which stage is configured correctly)
@@ -358,143 +883,33 @@ void StageManager::resetAllStagesExcept(Stage nonResetStage)
     {
         //Standby stage is configured
         case Stage::STAGE_STANDBY:
+        {
             isStandbyConfigured = true;
+        }
         break;
 
         
         //Precharge stage is configured
         case Stage::STAGE_PRECHARGE:
+        {
+            Serial.println("configuring precharging");
             isPrechargeConfigured = true;
+        }
         break;
 
 
         //Energized stage is configured
         case Stage::STAGE_ENERGIZED:
+        {
             isEnergizedConfigured = true;
+        }
         break;
 
 
         //Driving stage is configured
         case Stage::STAGE_DRIVING:
+        {
             isDrivingConfigured = true;
-        break;
-
-
-        //Launch stage is configured
-        case Stage::STAGE_LAUNCH:
-            isLaunchConfigured = true;
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
-    }
-}
-
-
-/** 
- * @brief  Contains the initial configuration steps for the standby stage
- * @note   
- * @retval None
- */
-void StageManager::configureStage(void)
-{
-
-    switch(currentStage)
-    {
-        // Entry condition: EVOS finishes subsystem testing
-        // Exit condition:  Driver requests Precharging
-        case Stage::STAGE_STANDBY:
-        {
-            //check to make sure this hasn't been ran before for this stage
-            if(isStandbyConfigured == false)
-            {
-                //set variable to "configured"
-                resetAllStagesExcept(Stage::STAGE_STANDBY);
-
-                //TODO: Standby setup code
-                Serial.println("Standby Stage");
-
-
-
-            }
-        }
-        break;
-
-        
-        // Entry condition: Driver requests Precharging
-        // Exit condition:  Precharge done signal recieved from Unitek
-        case Stage::STAGE_PRECHARGE:
-        {
-            //check to make sure this hasn't been ran before for this stage
-            if(isPrechargeConfigured == false)
-            {
-                //set variable to "configured"
-                resetAllStagesExcept(Stage::STAGE_PRECHARGE);
-
-                //TODO: Precharge setup code
-                Serial.print("Precharge Stage");
-                
-                //set 90% charge
-                float batteryVoltage = OrionController::getInstance()->getPackVoltage();
-                uint16_t charge90Numeric = UnitekController::getInstance()->calculate90Charge(batteryVoltage);
-                CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
-
-            }   
-        }   
-        break;
-
-
-        // Entry condition: Precharge done signal recieved from Unitek
-        // Exit condition:  Driver requests ready to drive
-        case Stage::STAGE_ENERGIZED:
-        {
-            //check to make sure this hasn't been ran before for this stage
-            if(isEnergizedConfigured == false)
-            {
-                //set variable to "configured"
-                resetAllStagesExcept(Stage::STAGE_ENERGIZED);
-
-                //TODO: Energized setup code
-                Serial.println("Energized Stage");
-
-            }
-        }
-        break;
-
-
-        // Entry condition: Driver requests ready to drive
-        // Exit condition:  Driver requests standby
-        case Stage::STAGE_DRIVING:
-        {
-            //check to make sure this hasn't been ran before for this stage
-            if(isDrivingConfigured == false)
-            {
-                //set variable to "configured"
-                resetAllStagesExcept(Stage::STAGE_DRIVING);
-
-                //TODO: Driving setup code
-                
-
-            }
-        }
-        break;
-
-
-        //Launch stage is configured
-        case Stage::STAGE_LAUNCH:
-        {
-            //check to make sure this hasn't been ran before for this stage
-            if(isLaunchConfigured == false)
-            {
-                //set variable to "configured"
-                resetAllStagesExcept(Stage::STAGE_LAUNCH);
-
-                //TODO: Launch setup code
-                
-
-            }
         }
         break;
 
@@ -503,130 +918,4 @@ void StageManager::configureStage(void)
             //shouldn't get here
         break;
     }
-
-}
-
-
-/** 
- * @brief  
- * @note   Entry condition: EVOS finishes subsystem testing
- *         Exit condition:  Driver requests Precharging
- * @param  &eventFlags: 
- * @param  urgencyLevel: 
- * @retval 
- */
-StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags)
-{
-    configureStage();
-
-    switch(urgencyLevel)
-    {
-        case PRIORITY_CRITICAL:
-
-            if(*eventFlags && EF_SHUTDOWN)
-            {
-                processShutdown();
-                
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~EF_SHUTDOWN;
-            }
-
-
-            if(*eventFlags && EF_IMD)
-            {
-                processImd();
-                
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~EF_IMD;
-            }
-
-        break;
-
-        
-        case PRIORITY_HIGH:
-        
-            if(*eventFlags && EF_CAN)
-            {
-                processCan();   
-                
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~EF_CAN;
-            }
-
-
-            if(*eventFlags && EF_UNITEK)
-            {
-                processUnitek();
-                
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~EF_UNITEK;
-            }
-
-
-            if(*eventFlags && EF_ORION)
-            {
-                processOrion();
-                
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~EF_ORION;
-            }
-        
-        break;
-
-
-        case PRIORITY_MEDIUM:
-
-             if(*eventFlags && EF_COOLING)
-            {
-                processCooling();
-                
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~EF_COOLING;
-            }
-
-
-            if(*eventFlags && EF_BATLOG)
-            {
-                processBatlog();
-                
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~EF_BATLOG;
-            }
-
-
-            if(*eventFlags && EF_DASH)
-            {
-                processDash(taskFlags);
-
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~EF_DASH;
-            }
-
-        break;
-
-
-        case PRIORITY_LOW:
-
-            if(*eventFlags && TIMER_F_GLCD)
-            {
-                processGlcd();
-                
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~TIMER_F_GLCD;
-            }
-
-
-            if(*eventFlags && TIMER_F_SDCARD)
-            {
-                processSdCard();
-                
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~TIMER_F_SDCARD;
-            }
-
-        break;
-
-    } //End switch
-
-    return currentStage;
 }

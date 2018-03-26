@@ -139,8 +139,8 @@ const uint8_t MB_STANDBY_BTN       = 46;  //[0,1] Digital Input
 const uint8_t MB_REVERSE_SW        = 41;  //[0,1] Digital Input
 
 //Encoder
-const uint8_t MB_ENC_PINA          = 25;  //[0,1] Digital Input
-const uint8_t MB_ENC_PINB          = 26;  //[0,1] Digital Input
+const uint8_t MB_ENC_PINA          = 26;  //[0,1] Digital Input
+const uint8_t MB_ENC_PINB          = 25;  //[0,1] Digital Input
 
 //Status LEDs (0 = Bad; 1 = Good TODO: see if this is still true)
 const uint8_t MB_RTD_LED           = 0;   //[0,1] Digital Output

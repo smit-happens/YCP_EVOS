@@ -27,7 +27,7 @@ const int POLL_TIME_GLCD    = 500;
 const int POLL_TIME_SDCARD  = 500;
 
 //Pedal polling delay
-const int POLL_TIME_PEDAL   = 100;
+const int POLL_TIME_PEDAL   = 50;
 
 
 #endif  //TIMEDELAY_HPP
