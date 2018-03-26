@@ -124,6 +124,9 @@ void StageManager::shutdown(void)
 
     //close out SdCard logs   
 
+    //turn off all dash lights
+    LightController::getInstance()->turnAllOff();
+
     //Halt system 
     while(1) {;}
 }
@@ -177,6 +180,8 @@ void StageManager::configureStage(void)
                 uint16_t charge90Numeric = UnitekController::getInstance()->calculate90Charge(batteryVoltage);
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
 
+                //TODO: blink Energized Light to indicate to user that car is precharging
+
                 //Initiatiting the precharge process
                 digitalWriteFast(MB_START_PRE, HIGH);
                 //May need to check for specific error in the future before setting high
@@ -201,7 +206,8 @@ void StageManager::configureStage(void)
                 //TODO: Energized setup code
                 Serial.println("Energized Stage");
 
-
+                //indicate to Driver that car is energized
+                LightController::getInstance()->turnOn(LightController::ENERGIZE);
             }
         }
         break;
@@ -218,7 +224,11 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_DRIVING);
 
                 //TODO: Driving setup code
+                Serial.println("Driving Stage");
                 
+                //indicate to Driver that car is Ready to drive
+                LightController::getInstance()->turnOn(LightController::RTD);
+
                 //RTD sound
                 DashController::getInstance()->playStartupSound();
                 
@@ -504,7 +514,7 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
 
         case STAGE_PRECHARGE:
         {
-            // Serial.println("Dash - Precharge Stage");
+
         }
         break;
 
@@ -513,21 +523,22 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
         {
             if(taskFlags[DASH] & TF_DASH_RTD)
             {
+                Serial.println("Dash - RTD Drive task");
+                
                 //Changing the stage
                 changeStage = STAGE_DRIVING;
 
                 //Clearing event flag
                 taskFlags[DASH] &= ~TF_DASH_RTD;
-                Serial.print("Go into Drive Unitek task");
             }
-            Serial.println("Dash - Energized Stage");
+
         }
         break;
 
 
         case STAGE_DRIVING:
         {
-            Serial.println("Dash - Driving Stage");            
+            
         }
         break;
 
