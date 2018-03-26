@@ -17,6 +17,10 @@ CoolingSystem::CoolingSystem(void)
     //Cooling pump control
     pinMode(MB_PUMP_CTRL, OUTPUT);
 
+    //TODO: have this be controlled by more advanced functionality
+    //turning on the pump
+    pumpOn();
+
     //initializing the temperature values
     _inletTemperature  = 0;
     _outletTemperature = 0;
@@ -65,4 +69,28 @@ uint16_t CoolingSystem::getInletValue(void)
 uint16_t CoolingSystem::getOutletValue(void)
 {
     return _outletTemperature;
+}
+
+
+/** 
+ * @brief  turns on pump
+ * @note   
+ * @retval None
+ */
+void CoolingSystem::pumpOn(void)
+{
+    digitalWriteFast(MB_PUMP_CTRL, HIGH);
+    _pumpState = true;
+}
+
+
+/** 
+ * @brief  turns off pump
+ * @note   
+ * @retval None
+ */
+void CoolingSystem::pumpOff(void)
+{
+    digitalWriteFast(MB_PUMP_CTRL, LOW);
+    _pumpState = false;
 }

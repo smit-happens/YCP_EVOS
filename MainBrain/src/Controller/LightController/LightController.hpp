@@ -18,14 +18,14 @@ class LightController : public BaseController
 public:
     enum LightId 
     {
-        RTD,
-        ERR_BMS,
-        ERR_Pedal,
-        ERR_Imd,
-        REVERSE,
-        WAYNE,
-        ENERGIZE,
-        BRAKE,
+        LIGHT_RTD,
+        LIGHT_ERR_BMS,
+        LIGHT_ERR_PEDAL,
+        LIGHT_ERR_IMD,
+        LIGHT_REVERSE,
+        LIGHT_WAYNE,
+        LIGHT_ENERGIZE,
+        LIGHT_BRAKE,
         NUM_LIGHTS
     };
 
@@ -39,6 +39,9 @@ public:
     //applies to all the lights in the car
     void turnAllOn(void);
     void turnAllOff(void);
+
+    //Turning off all but the errors
+    void turnNonErrorOff(void);
 
     //turning on/off specific lights
     void turnOn(LightId light);

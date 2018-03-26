@@ -17,7 +17,7 @@ StageManager::StageManager(void)
 {
     //The first step when running is bootup
     currentStage = STAGE_BOOTTEST;
-
+    
     //changing stage if any events trigger it
     changeStage = currentStage;
 
@@ -91,7 +91,7 @@ void StageManager::bootTest(void)
 
     
     //Cooling check if working
-
+    
 
     //GLV batlog level check
     
@@ -122,7 +122,13 @@ void StageManager::shutdown(void)
     //SCADA_OK signal to false
     digitalWriteFast(MB_SCADA_OK, LOW);
 
-    //close out SdCard logs   
+    Serial.println("Shutdown Stage");
+
+    //TODO: close out SdCard logs   
+
+    //turn off all dash lights except for Error lights
+    LightController::getInstance()->turnNonErrorOff();
+
 
     //Halt system 
     while(1) {;}
@@ -170,16 +176,19 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_PRECHARGE);
 
                 //TODO: Precharge setup code
-                Serial.print("Precharge Stage");
+                Serial.println("Precharge Stage");
                 
                 //set 90% charge
                 float batteryVoltage = OrionController::getInstance()->getPackVoltage();
                 uint16_t charge90Numeric = UnitekController::getInstance()->calculate90Charge(batteryVoltage);
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
 
+                //TODO: blink Energized Light to indicate to user that car is precharging
+
                 //Initiatiting the precharge process
                 digitalWriteFast(MB_START_PRE, HIGH);
                 //May need to check for specific error in the future before setting high
+                //TODO: Is this where the brake needs to be pushed? 
 
 
             }   
@@ -200,6 +209,8 @@ void StageManager::configureStage(void)
                 //TODO: Energized setup code
                 Serial.println("Energized Stage");
 
+                //indicate to Driver that car is energized
+                LightController::getInstance()->turnOn(LightController::LIGHT_ENERGIZE);
             }
         }
         break;
@@ -216,7 +227,16 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_DRIVING);
 
                 //TODO: Driving setup code
-                
+                Serial.println("Driving Stage");
+
+                //Set Drive to high to go into 'Drive'
+                digitalWriteFast(MB_DRIVE_EN, HIGH);
+
+                //indicate to Driver that car is Ready to drive
+                LightController::getInstance()->turnOn(LightController::LIGHT_RTD);
+
+                //RTD sound
+                DashController::getInstance()->playStartupSound();
 
             }
         }
@@ -242,7 +262,7 @@ void StageManager::configureStage(void)
 StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags)
 {
     configureStage();
-
+    
     //if any of the processing functions change the stage, we don't want it affecting the other processing events
     changeStage = currentStage;
 
@@ -283,7 +303,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
 
             if(*eventFlags & EF_UNITEK)
             {
-                processUnitek(taskFlags);
+                *eventFlags |= processUnitek(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_UNITEK;
@@ -399,7 +419,7 @@ uint32_t StageManager::processCan(void)
 
         case STAGE_DRIVING:
         {
-
+            //TODO: send pedal value over CAN
         }
         break;
 
@@ -482,6 +502,8 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
             //precharge button is pressed
             if(taskFlags[DASH] & TF_DASH_PRECHARGE)
             {
+                Serial.println("Dash - Precharge btn press");
+
                 //change stage to precharging
                 changeStage = STAGE_PRECHARGE;
             
@@ -493,21 +515,31 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
 
         case STAGE_PRECHARGE:
         {
-            Serial.println("Precharge Stage");
+
         }
         break;
 
 
         case STAGE_ENERGIZED:
         {
-            Serial.println("Energized Stage");
+            if(taskFlags[DASH] & TF_DASH_RTD)
+            {
+                Serial.println("Dash - RTD Drive task");
+                
+                //Changing the stage
+                changeStage = STAGE_DRIVING;
+
+                //Clearing event flag
+                taskFlags[DASH] &= ~TF_DASH_RTD;
+            }
+
         }
         break;
 
 
         case STAGE_DRIVING:
         {
-            Serial.println("Driving Stage");            
+            
         }
         break;
 
@@ -516,8 +548,6 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
             //shouldn't get here
         break;
     }
-
-    Serial.println("\n");
 
     return 0;
 }
@@ -580,6 +610,10 @@ uint32_t StageManager::processImd(void)
     //this will only have like one thing that happens if called
     //TODO: add in IMD event handling 
 
+    LightController::getInstance()->turnOn(LightController::LIGHT_ERR_IMD);
+
+    shutdown();
+
     return 0;
 
 }
@@ -640,6 +674,8 @@ uint32_t StageManager::processPedal(void)
 {
     //insert code here that executes for any stage
 
+    uint32_t returnedEF = 0;
+
     switch(currentStage){
         case STAGE_STANDBY:
         {
@@ -664,6 +700,14 @@ uint32_t StageManager::processPedal(void)
 
         case STAGE_DRIVING:
         {
+            //read and store the pedal value
+            //set the apropiate can ef and tf for sending the value to the unitek
+
+            PedalController::getInstance()->poll();
+
+            returnedEF |= EF_CAN;
+
+            //taskflag setting for pedal value sending
 
         }
         break;
@@ -674,7 +718,7 @@ uint32_t StageManager::processPedal(void)
         break;
     }
 
-    return 0;
+    return returnedEF;
 }
 
 
@@ -745,7 +789,7 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
     // UnitekController::getInstance()->storeWarningReg(warningValue); //stores warning value in unitek model
 
     //check if shutdown is needed
-    if(UnitekController::getInstance()->checkErrorWarningForShutdown()==true)
+    if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)
     {
         Serial.println("Problem in MC. Shutdown Required.");
         return EF_SHUTDOWN;
@@ -770,7 +814,7 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 
                 //Clearing event flag
                 taskFlags[UNITEK] &= ~TF_UNITEK_DONE_PRECHARGE;
-                Serial.print("Precharge Done task");
+                Serial.println("Precharge Done task");
             }
         }
         break;
@@ -778,7 +822,7 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 
         case STAGE_ENERGIZED:
         {
-            
+ 
         }
         break;
 
@@ -812,39 +856,8 @@ uint32_t StageManager::processBatlog(void)
 {
     //insert code here that executes for any stage
 
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-
-        }
-        break;
-
-        
-        default:
-            //shouldn't get here
-        break;
-    }
+    //TODO: analog read MB_BAT_MEASURE and store in model
+    
 
     return 0;
 }
@@ -870,25 +883,34 @@ void StageManager::resetAllStagesExcept(Stage nonResetStage)
     {
         //Standby stage is configured
         case Stage::STAGE_STANDBY:
+        {
             isStandbyConfigured = true;
+        }
         break;
 
         
         //Precharge stage is configured
         case Stage::STAGE_PRECHARGE:
+        {
+            Serial.println("configuring precharging");
             isPrechargeConfigured = true;
+        }
         break;
 
 
         //Energized stage is configured
         case Stage::STAGE_ENERGIZED:
+        {
             isEnergizedConfigured = true;
+        }
         break;
 
 
         //Driving stage is configured
         case Stage::STAGE_DRIVING:
+        {
             isDrivingConfigured = true;
+        }
         break;
 
 

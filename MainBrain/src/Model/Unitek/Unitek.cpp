@@ -16,6 +16,10 @@ Unitek::Unitek(void)
 {
     rpmLimitReg_C8 = 6600; //0x19C8
 
+    //zero initializing values
+    setErrorReg_0x8F(0);
+    setWarningReg_0x8F(0);
+
     //Set start precharge as an output
     pinMode(MB_START_PRE, OUTPUT);
 
@@ -37,6 +41,8 @@ Unitek::Unitek(void)
 
     //Initialzing the Drive output to low
     digitalWriteFast(MB_DRIVE_EN, LOW);
+
+
 
     //TODO: Need to set other things such as drive, etc to low first
 }
