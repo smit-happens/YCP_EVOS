@@ -122,6 +122,8 @@ void StageManager::shutdown(void)
     //SCADA_OK signal to false
     digitalWriteFast(MB_SCADA_OK, LOW);
 
+    Serial.println("Shutdown Stage");
+
     //TODO: close out SdCard logs   
 
     //turn off all dash lights except for Error lights
@@ -704,6 +706,8 @@ uint32_t StageManager::processPedal(void)
             PedalController::getInstance()->poll();
 
             returnedEF |= EF_CAN;
+
+            //taskflag setting for pedal value sending
 
         }
         break;

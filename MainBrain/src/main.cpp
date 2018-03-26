@@ -57,6 +57,7 @@ void btnWayneWorldISR() {
     globalTaskFlags[DASH] |= TF_DASH_WAYNE_WORLD;
 }
 
+
 void donePrechargeISR() {
     globalEventFlags              |= EF_UNITEK;
     globalTaskFlags[UNITEK]       |= TF_UNITEK_DONE_PRECHARGE;
@@ -68,9 +69,9 @@ void donePrechargeISR() {
 int main(void)
 {
     Serial.begin(9600);
-    // while (!Serial) {
-    //     ; // wait for serial port to connect
-    // }
+    while (!Serial) {
+        ; // wait for serial port to connect
+    }
 
     Serial.println("Bootup stage");
     
