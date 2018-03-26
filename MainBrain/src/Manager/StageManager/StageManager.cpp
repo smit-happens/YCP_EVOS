@@ -180,6 +180,7 @@ void StageManager::configureStage(void)
                 //Initiatiting the precharge process
                 digitalWriteFast(MB_START_PRE, HIGH);
                 //May need to check for specific error in the future before setting high
+                //TODO: Is this where the brake needs to be pushed? 
 
 
             }   
@@ -199,6 +200,7 @@ void StageManager::configureStage(void)
 
                 //TODO: Energized setup code
                 Serial.println("Energized Stage");
+
 
             }
         }
@@ -220,6 +222,10 @@ void StageManager::configureStage(void)
                 //RTD sound
                 DashController::getInstance()->playStartupSound();
                 
+
+                 //Set Drive to high to go into 'Drive'
+                digitalWriteFast(MB_DRIVE_EN, HIGH);
+                //TODO: May need to add logic, is there were the brake must be pushed?
 
             }
         }
@@ -505,6 +511,15 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
 
         case STAGE_ENERGIZED:
         {
+            if(taskFlags[DASH] & TF_DASH_RTD)
+            {
+                //Changing the stage
+                changeStage = STAGE_DRIVING;
+
+                //Clearing event flag
+                taskFlags[DASH] &= ~TF_DASH_RTD;
+                Serial.print("Go into Drive Unitek task");
+            }
             Serial.println("Dash - Energized Stage");
         }
         break;
@@ -782,7 +797,7 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 
         case STAGE_ENERGIZED:
         {
-            
+ 
         }
         break;
 
