@@ -38,6 +38,8 @@ Unitek::Unitek(void)
     //Initialzing the Drive output to low
     digitalWriteFast(MB_DRIVE_EN, LOW);
 
+
+
     //TODO: Need to set other things such as drive, etc to low first
 }
 
