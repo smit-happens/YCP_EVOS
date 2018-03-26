@@ -226,17 +226,15 @@ void StageManager::configureStage(void)
 
                 //TODO: Driving setup code
                 Serial.println("Driving Stage");
-                
+
+                //Set Drive to high to go into 'Drive'
+                digitalWriteFast(MB_DRIVE_EN, HIGH);
+
                 //indicate to Driver that car is Ready to drive
                 LightController::getInstance()->turnOn(LightController::LIGHT_RTD);
 
                 //RTD sound
                 DashController::getInstance()->playStartupSound();
-                
-
-                 //Set Drive to high to go into 'Drive'
-                digitalWriteFast(MB_DRIVE_EN, HIGH);
-                //TODO: May need to add logic, is there were the brake must be pushed?
 
             }
         }
