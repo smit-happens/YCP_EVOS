@@ -122,10 +122,11 @@ void StageManager::shutdown(void)
     //SCADA_OK signal to false
     digitalWriteFast(MB_SCADA_OK, LOW);
 
-    //close out SdCard logs   
+    //TODO: close out SdCard logs   
 
-    //turn off all dash lights
-    LightController::getInstance()->turnAllOff();
+    //turn off all dash lights except for Error lights
+    LightController::getInstance()->turnNonErrorOff();
+
 
     //Halt system 
     while(1) {;}
@@ -207,7 +208,7 @@ void StageManager::configureStage(void)
                 Serial.println("Energized Stage");
 
                 //indicate to Driver that car is energized
-                LightController::getInstance()->turnOn(LightController::ENERGIZE);
+                LightController::getInstance()->turnOn(LightController::LIGHT_ENERGIZE);
             }
         }
         break;
@@ -227,7 +228,7 @@ void StageManager::configureStage(void)
                 Serial.println("Driving Stage");
                 
                 //indicate to Driver that car is Ready to drive
-                LightController::getInstance()->turnOn(LightController::RTD);
+                LightController::getInstance()->turnOn(LightController::LIGHT_RTD);
 
                 //RTD sound
                 DashController::getInstance()->playStartupSound();
@@ -418,7 +419,7 @@ uint32_t StageManager::processCan(void)
 
         case STAGE_DRIVING:
         {
-
+            //TODO: send pedal value over CAN
         }
         break;
 
@@ -609,6 +610,10 @@ uint32_t StageManager::processImd(void)
     //this will only have like one thing that happens if called
     //TODO: add in IMD event handling 
 
+    LightController::getInstance()->turnOn(LightController::LIGHT_ERR_IMD);
+
+    shutdown();
+
     return 0;
 
 }
@@ -669,6 +674,8 @@ uint32_t StageManager::processPedal(void)
 {
     //insert code here that executes for any stage
 
+    uint32_t returnedEF = 0;
+
     switch(currentStage){
         case STAGE_STANDBY:
         {
@@ -695,6 +702,11 @@ uint32_t StageManager::processPedal(void)
         {
             //read and store the pedal value
             //set the apropiate can ef and tf for sending the value to the unitek
+
+            PedalController::getInstance()->poll();
+
+            returnedEF |= EF_CAN;
+
         }
         break;
 
@@ -704,7 +716,7 @@ uint32_t StageManager::processPedal(void)
         break;
     }
 
-    return 0;
+    return returnedEF;
 }
 
 
