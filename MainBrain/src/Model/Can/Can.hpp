@@ -39,17 +39,7 @@ public:
     //controller to sort through
     uint8_t* getMail(void);
 
-    //get/set functions that will handle the storage of the data for each of the CAN devices
-    uint8_t* getInboxUnitek(void);
-    void setInboxUnitek(uint8_t* canData[]);
-
-    //getInboxOrion();
-    //setInboxOrion();
-
-
-    //function that UnitekC/OrionC will call in order to see if there exists any new messages for it
-    bool checkInboxUnitek(void);
-    bool checkInboxOrion(void);
+    bool checkMailVolatile(void);
 
 private:
     //CAN port the Teensy will be using

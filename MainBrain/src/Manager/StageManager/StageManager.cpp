@@ -294,7 +294,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
         {
             if(*eventFlags & EF_CAN)
             {
-                processCan();   
+                *eventFlags |= processCan(taskFlags);   
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_CAN;
@@ -391,9 +391,18 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
  * @note   
  * @retval 
  */
-uint32_t StageManager::processCan(void)
+uint32_t StageManager::processCan(uint8_t* taskFlags)
 {
     //insert code here that executes for any stage
+
+    if(taskFlags[CAN] & TF_CAN_NEW_MAIL)
+    {
+        //user wants to halt the system
+        Serial.println("process CAN event");
+
+        taskFlags[CAN] &= ~TF_CAN_NEW_MAIL;
+    }
+
 
     switch(currentStage){
         case STAGE_STANDBY:

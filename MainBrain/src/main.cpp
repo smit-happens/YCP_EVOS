@@ -163,6 +163,13 @@ int main(void)
             globalTaskFlags[i] = 0;
         }
 
+        //checking to see if we have new CAN messages to process
+        if(canC->checkMail())
+        {
+            localEventFlags     |= EF_CAN;
+            localTaskFlags[CAN] |= TF_CAN_NEW_MAIL;
+        }
+
         interrupts();
 
         //FIXME: handle Priorities better, right now we loop through them, later we want to handle CRITICAL prioritis first

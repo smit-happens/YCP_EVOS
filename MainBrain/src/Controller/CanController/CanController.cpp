@@ -66,6 +66,12 @@ void CanController::poll(void)
 }
 
 
+bool CanController::checkMail(void)
+{
+    return canModel->checkMailVolatile();
+}
+
+
 /** 
  * @brief  Formats and sends a Unitek CAN message to read the value of a register
  * @note   Add polling if we care about that later

@@ -32,7 +32,10 @@ const uint8_t TF_DASH_WAYNE_WORLD   = 0b10000;
 
 
 //task flag (TF) for Unitek
-const uint8_t TF_UNITEK_DONE_PRECHARGE  =0b1;
+const uint8_t TF_UNITEK_DONE_PRECHARGE  = 0b1;
+
+//TF for CAN
+const uint8_t TF_CAN_NEW_MAIL  = 0b1;
 
 
 //Timer flags (the equivalent of an event flag but triggered by a timer)

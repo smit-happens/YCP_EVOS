@@ -95,20 +95,9 @@ void Can::send(CAN_message_t message)
 /** 
  * @brief  
  * @note   
- * @retval 
+ * @retval true/false based on if there's anything in the "inbox"
  */
-// uint8_t* Can::getInboxUnitek(void)
-// {
-//     return inboxUnitek;
-// }
-
-
-/** 
- * @brief  
- * @note   
- * @retval true/false based on if there's anything 
- */
-bool Can::checkInboxUnitek(void)
+bool Can::checkMailVolatile(void)
 {
-    return false;//!inboxUnitek->isEmpty();
+    return volatileMailbox->isEmpty();
 }

@@ -26,7 +26,7 @@ public:
     void init(void);
     void poll(void);
 
-    // void display(void);
+    bool checkMail(void);
 
     //TODO: implement the process mail function for sorting and striping the CAN id out of messages
     //void processMail();
