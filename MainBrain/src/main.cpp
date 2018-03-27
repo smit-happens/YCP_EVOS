@@ -152,6 +152,7 @@ int main(void)
     while(localStage.currentStage != StageManager::STAGE_SHUTDOWN)
     {
         noInterrupts();
+        
         //Volatile operation for transferring flags from ISRs to local main
         localEventFlags |= globalEventFlags;
         globalEventFlags = 0;
@@ -172,8 +173,13 @@ int main(void)
 
         interrupts();
 
+        
+        //transfering timer event flags to local EF
+        localEventFlags |= timerEventFlags;
+
+
         //FIXME: handle Priorities better, right now we loop through them, later we want to handle CRITICAL prioritis first
-        for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
+        for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::NUM_PRIORITY; priorityIterator++)
         {
             localStage.currentStage = localStage.processStage((Priority)priorityIterator, &localEventFlags, localTaskFlags);
 
@@ -187,9 +193,6 @@ int main(void)
                 localEventFlags &= ~EF_TIMER;
             }
         }
-
-        //All low priority events are handled by the timer event flags
-        localStage.processStage(Priority::PRIORITY_LOW, &timerEventFlags, localTaskFlags);
 
     } //end of loop
 

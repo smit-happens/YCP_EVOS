@@ -85,12 +85,12 @@ void CanController::distributeMail(void)
 
         if(canMessage.id == canModel->ORIONID1)
         {
-            Serial.println("Storing Orion message 0x420");
+            // Serial.println("Storing Orion message 0x420");
             OrionController::getInstance()->updateModelMessage_0x420(canMessage.buf);
         }
         else if(canMessage.id == canModel->ORIONID2)
         {
-            Serial.println("Storing Orion message 0x421");
+            // Serial.println("Storing Orion message 0x421");
             OrionController::getInstance()->updateModelMessage_0x421(canMessage.buf);
         }
         else if(canMessage.id == canModel->UNITEKREADID)
@@ -154,8 +154,9 @@ void CanController::sendUnitekWrite(const int regId, uint8_t buf1, uint8_t buf2)
     canModel->send(canMessage);
 
     //Debug print statements
-    Serial.print(canMessage.id, HEX);
-    Serial.print(canMessage.buf[0], HEX);
-    Serial.print(canMessage.buf[1], HEX);
-    Serial.println(canMessage.buf[2], HEX);
+    // Serial.println("sending unitek write");
+    // Serial.print(canMessage.id, HEX);
+    // Serial.print(canMessage.buf[0], HEX);
+    // Serial.print(canMessage.buf[1], HEX);
+    // Serial.println(canMessage.buf[2], HEX);
 }

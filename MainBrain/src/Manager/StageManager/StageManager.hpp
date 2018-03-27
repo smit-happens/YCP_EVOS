@@ -73,14 +73,13 @@ private:
 
 
     //Processing functions for the various devices
-    //TODO: Might eventually take a TF as an input param
     uint32_t processCan(uint8_t* taskFlags);
     uint32_t processCooling(void);
     uint32_t processDash(uint8_t* taskFlags);
     uint32_t processGlcd(void);
     uint32_t processImd(void);
     uint32_t processOrion(void);
-    uint32_t processPedal(uint8_t* taskFlags);
+    void processPedal(uint32_t* eventFlags, uint8_t* taskFlags);
     uint32_t processSdCard(void);
     uint32_t processUnitek(uint8_t* taskFlags);
     uint32_t processBatlog(void);

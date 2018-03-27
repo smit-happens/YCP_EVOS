@@ -21,7 +21,6 @@ public:
     virtual ~BaseModel() {};  //to prevent memory leaks
 
     //Every model should have an update function for it's locally stored data
-    virtual void update() = 0;
 };
 
 

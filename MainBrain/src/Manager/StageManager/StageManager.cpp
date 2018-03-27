@@ -296,7 +296,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
         {
             if(*eventFlags & EF_CAN)
             {
-                *eventFlags |= processCan(taskFlags);   
+                *eventFlags |= processCan(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_CAN;
@@ -358,7 +358,9 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
         {
             if(*eventFlags & TIMER_F_PEDAL)
             {
-                *eventFlags |= processPedal(taskFlags);
+                // Serial.println("pedal event");
+
+                processPedal(eventFlags, taskFlags);
 
                 *eventFlags &= ~TIMER_F_PEDAL;
             }
@@ -382,6 +384,11 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
         }
         break;
 
+
+        default:
+            //shouldn't get here (for NUM_PRIORITY ENUM)
+        break;
+
     } //End switch
 
     return changeStage;
@@ -395,59 +402,35 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
  */
 uint32_t StageManager::processCan(uint8_t* taskFlags)
 {
+    //code here is executed for any stage
+
 
     if(taskFlags[CAN] & TF_CAN_NEW_MAIL)
     {
-        // Serial.println("process CAN event");
+        // Serial.println("New CAN mail task");
 
         CanController::getInstance()->distributeMail();
 
         taskFlags[CAN] &= ~TF_CAN_NEW_MAIL;
     }
 
-
-    switch(currentStage){
-        case STAGE_STANDBY:
+    //executed for only the driving stage
+    if(currentStage == STAGE_DRIVING)
+    {
+        //TODO: send pedal value over CAN
+        if(taskFlags[CAN] & TF_CAN_SEND_PEDAL)
         {
-            
+            //set RPM Setpoint in MC
+            float pedalPercent = PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
+            uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
+
+            // Serial.println("sending pedal value");
+
+            //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
+            CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
+
+            taskFlags[CAN] &= ~TF_CAN_SEND_PEDAL;
         }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-            //TODO: send pedal value over CAN
-            if(taskFlags[CAN] & TF_CAN_SEND_PEDAL)
-            {
-                //set RPM Setpoint in MC
-                float pedalPercent = PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
-                uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
-
-                //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
-                CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
-
-                taskFlags[CAN] &= ~TF_CAN_SEND_PEDAL;
-            }
-        }
-        break;
-
-        default:
-            //shouldn't get here
-        break;
     }
 
     return 0;
@@ -592,59 +575,25 @@ uint32_t StageManager::processOrion(void)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processPedal(uint8_t* taskFlags)
+void StageManager::processPedal(uint32_t* eventFlags, uint8_t* taskFlags)
 {
     //insert code here that executes for any stage
 
-    uint32_t returnedEF = 0;
+    if(currentStage == STAGE_DRIVING)
+    {
+        //read and store the pedal value
+        //set the apropiate can ef and tf for sending the value to the unitek
 
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
+        // Serial.println("Pedal polling");
 
+        PedalController::getInstance()->poll();
 
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
+        *eventFlags |= EF_CAN;
 
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-            //read and store the pedal value
-            //set the apropiate can ef and tf for sending the value to the unitek
-
-            // Serial.println("Pedal polling");
-
-            PedalController::getInstance()->poll();
-
-            returnedEF |= EF_CAN;
-
-            taskFlags[CAN] |= TF_CAN_SEND_PEDAL;
-
-            //taskflag setting for pedal value sending
-
-        }
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
+        //taskflag setting for pedal value sending
+        taskFlags[CAN] |= TF_CAN_SEND_PEDAL;
     }
 
-    return returnedEF;
 }
 
 
