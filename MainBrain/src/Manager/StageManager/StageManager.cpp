@@ -183,7 +183,10 @@ void StageManager::configureStage(void)
                 //set 90% charge
                 float batteryVoltage = OrionController::getInstance()->getPackVoltage();
                 uint16_t charge90Numeric = UnitekController::getInstance()->calculate90Charge(batteryVoltage);
-                CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
+                
+                Serial.println(charge90Numeric);
+
+                // CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
 
                 //TODO: blink Energized Light to indicate to user that car is precharging
 
@@ -424,7 +427,7 @@ uint32_t StageManager::processCan(uint8_t* taskFlags)
             float pedalPercent = PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
             uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
 
-            // Serial.println("sending pedal value");
+            // Serial.println(numericSpeedSetPoint);
 
             //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
             CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);

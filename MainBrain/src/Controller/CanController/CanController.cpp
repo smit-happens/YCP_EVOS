@@ -115,6 +115,7 @@ void CanController::sendUnitekRead(const int regId, uint8_t pollTime)
     //initializing and constructing the CAN message for the Unitek
     CAN_message_t unitekMessage;
 
+    unitekMessage.ext = 0;
     unitekMessage.id = canModel->UNITEKSENDID;
     unitekMessage.len = 3;
     unitekMessage.buf[0] = REG_READ;
@@ -144,13 +145,13 @@ void CanController::sendUnitekWrite(const int regId, uint8_t buf1, uint8_t buf2)
     //intializing and constructing the CAN message 
     CAN_message_t canMessage;
 
-    canMessage.id=canModel->UNITEKSENDID;
-    canMessage.len=3;
-    canMessage.buf[0]=regId;
-    canMessage.buf[1]=buf2;
-    canMessage.buf[2]=buf1;
+    canMessage.ext = 0;
+    canMessage.id = canModel->UNITEKSENDID;
+    canMessage.len = 3;
+    canMessage.buf[0] = regId;
+    canMessage.buf[1] = buf2;
+    canMessage.buf[2] = buf1;
 
-    // canModel.
     canModel->send(canMessage);
 
     //Debug print statements

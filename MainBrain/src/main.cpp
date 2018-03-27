@@ -136,7 +136,7 @@ int main(void)
     attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
 
     //Unitek interrupts
-    attachInterrupt(MB_DONE_PRE, donePrechargeISR, RISING);
+    attachInterrupt(MB_DONE_PRE, donePrechargeISR, FALLING);
 
 
     //initializing all the hardware
