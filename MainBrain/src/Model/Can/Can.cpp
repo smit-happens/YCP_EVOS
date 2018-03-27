@@ -33,18 +33,6 @@ Can::~Can(void)
 
 
 /** 
- * @brief  
- * @note   TODO: fill this out (if necessary)
- * @retval None
- */
-void Can::update(void)
-{
-    
-}
-
-
-
-/** 
  * @brief  Called whenever a new CAN frame is received
  * @note   All CAN messages will be sent received from CAN port 1
  * @param  &frame:  CAN_message_t reference
@@ -57,15 +45,13 @@ void Can::gotFrame(CAN_message_t &frame, int mailbox)
 
     volatileMailbox->enqueue(frame);
 
-    // globalEventFlags |= EF_CAN; //out of scope error
-
     //FIXME: TESTING CODE
-    Serial.println("Entered CAN interrupt");
-    Serial.println(frame.id, HEX);
-    Serial.println(frame.buf[0], HEX);
-    Serial.println(frame.buf[1], HEX);
-    Serial.println(frame.buf[2], HEX);
-    Serial.println(frame.buf[3], HEX);
+    // Serial.println("Entered CAN interrupt");
+    // Serial.println(frame.id, HEX);
+    // Serial.println(frame.buf[0], HEX);
+    // Serial.println(frame.buf[1], HEX);
+    // Serial.println(frame.buf[2], HEX);
+    // Serial.println(frame.buf[3], HEX);
     //FIXME: TESTING CODE
 }
 
@@ -81,15 +67,13 @@ void Can::send(CAN_message_t message)
 }
 
 
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-// uint8_t* Can::getMail(void)
-// {
-
-// }
+void Can::storeMail(void)
+{
+    while(!volatileMailbox->isEmpty())
+    {
+        localMailbox->enqueue(volatileMailbox->dequeue()); 
+    }
+}
 
 
 /** 
@@ -99,5 +83,5 @@ void Can::send(CAN_message_t message)
  */
 bool Can::checkMailVolatile(void)
 {
-    return volatileMailbox->isEmpty();
+    return !volatileMailbox->isEmpty();
 }

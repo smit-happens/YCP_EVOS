@@ -12,8 +12,10 @@
 
 #include "../BaseController/BaseController.hpp"
 #include "../../Model/Can/Can.hpp"
-#include "../../Model/Constants/RegistersOrion.hpp"
-#include "../../Model/Constants/RegistersUnitek.hpp"
+// #include "../../Model/Constants/RegistersOrion.hpp"
+// #include "../../Model/Constants/RegistersUnitek.hpp"
+#include "../OrionController/OrionController.hpp"
+#include "../UnitekController/UnitekController.hpp"
 
 
 class CanController : public BaseController
@@ -29,7 +31,7 @@ public:
     bool checkMail(void);
 
     //TODO: implement the process mail function for sorting and striping the CAN id out of messages
-    //void processMail();
+    void distributeMail(void);
 
     //Format and pass the CAN message to the CAN model to put out on the wire
     void sendUnitekRead(const int regId, uint8_t pollTime = 0);   //send a register read message

@@ -25,6 +25,8 @@ public:
     //queue is empty if both front and rear are -1
     bool isEmpty(void) { return front == -1 && rear == -1; };
 
+    CAN_message_t peek(void) { return _queueArray[front]; };
+
     // void display(void);
 
 private:

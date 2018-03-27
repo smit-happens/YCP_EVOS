@@ -50,16 +50,6 @@ Orion::~Orion(void)
 }
 
 
-/** 
- * @brief  
- * @note   TODO: Determine if we will need an update function for this class. At this point it does not seem necessary since the controller will update the model with the poll function
- * @retval None
- */
-void Orion::update(void)
-{
-    
-}
-
 //all of the public get functions
 //gets for values from message 0x420
 /** 

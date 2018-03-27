@@ -26,12 +26,14 @@ StageManager::StageManager(void)
     timerList[1].limit = POLL_TIME_SDCARD;
     timerList[2].limit = POLL_TIME_PEDAL;
     
+    timerList[0].TFmask = TIMER_F_GLCD;
+    timerList[1].TFmask = TIMER_F_SDCARD;
+    timerList[2].TFmask = TIMER_F_PEDAL;
 
     //initializing the variables in the Timer array
     for(int i = 0; i < TIMER_NUM; i++) 
     {
         //creating the individual mask for each timer
-        timerList[i].TFmask = 1 << i;
         timerList[i].count = 0;
     }
 }
@@ -356,7 +358,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
         {
             if(*eventFlags & TIMER_F_PEDAL)
             {
-                processPedal();
+                *eventFlags |= processPedal(taskFlags);
 
                 *eventFlags &= ~TIMER_F_PEDAL;
             }
@@ -393,12 +395,12 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
  */
 uint32_t StageManager::processCan(uint8_t* taskFlags)
 {
-    //insert code here that executes for any stage
 
     if(taskFlags[CAN] & TF_CAN_NEW_MAIL)
     {
-        //user wants to halt the system
-        Serial.println("process CAN event");
+        // Serial.println("process CAN event");
+
+        CanController::getInstance()->distributeMail();
 
         taskFlags[CAN] &= ~TF_CAN_NEW_MAIL;
     }
@@ -429,6 +431,17 @@ uint32_t StageManager::processCan(uint8_t* taskFlags)
         case STAGE_DRIVING:
         {
             //TODO: send pedal value over CAN
+            if(taskFlags[CAN] & TF_CAN_SEND_PEDAL)
+            {
+                //set RPM Setpoint in MC
+                float pedalPercent = PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
+                uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
+
+                //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
+                CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
+
+                taskFlags[CAN] &= ~TF_CAN_SEND_PEDAL;
+            }
         }
         break;
 
@@ -450,38 +463,6 @@ uint32_t StageManager::processCooling(void)
 {
     //insert code here that executes for any stage
 
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-
-        }
-        break;
-
-        default:
-            //shouldn't get here
-        break;
-    }
 
     return 0;
 }
@@ -570,40 +551,6 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
 uint32_t StageManager::processGlcd(void)
 {
     //glcd view display updating
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-
-        }
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
-
-    }
 
     return 0;
 }
@@ -636,40 +583,6 @@ uint32_t StageManager::processOrion(void)
 {
     //insert code here that executes for any stage
 
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-
-        }
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
-    }
-
     return 0;
 }
 
@@ -679,7 +592,7 @@ uint32_t StageManager::processOrion(void)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processPedal(void)
+uint32_t StageManager::processPedal(uint8_t* taskFlags)
 {
     //insert code here that executes for any stage
 
@@ -712,9 +625,13 @@ uint32_t StageManager::processPedal(void)
             //read and store the pedal value
             //set the apropiate can ef and tf for sending the value to the unitek
 
+            // Serial.println("Pedal polling");
+
             PedalController::getInstance()->poll();
 
             returnedEF |= EF_CAN;
+
+            taskFlags[CAN] |= TF_CAN_SEND_PEDAL;
 
             //taskflag setting for pedal value sending
 
@@ -739,40 +656,6 @@ uint32_t StageManager::processPedal(void)
 uint32_t StageManager::processSdCard(void)
 {
     //insert code here that executes for any stage
-
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-
-        }
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
-    }
 
     return 0;
 }
@@ -838,11 +721,7 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 
         case STAGE_DRIVING:
         {
-            //set RPM Setpoint in MC
-            float pedalPercent=PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
-            uint16_t numericSpeedSetPoint=UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
-            //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
-            CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
+            
         }
         break;
 

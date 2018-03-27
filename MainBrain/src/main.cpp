@@ -90,6 +90,20 @@ int main(void)
     SdCardController* sdCardC   = SdCardController::getInstance();
     BatlogController* batlogC   = BatlogController::getInstance();
 
+    //Calling init functions for each controller
+    canC->init();
+    unitekC->init();
+    orionC->init();
+    coolingC->init();
+    dashC->init();
+    lightC->init();
+    imdC->init();
+    glcdC->init();
+    pedalC->init();
+    sdCardC->init();
+    batlogC->init();
+
+
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
 
@@ -111,20 +125,6 @@ int main(void)
     //timer configuration
     //DO NOT START TIMERS HERE
     IntervalTimer myTimer;
-
-    
-    //Calling init functions for each controller
-    canC->init();
-    unitekC->init();
-    orionC->init();
-    coolingC->init();
-    dashC->init();
-    lightC->init();
-    imdC->init();
-    glcdC->init();
-    pedalC->init();
-    sdCardC->init();
-    batlogC->init();
 
     
     //attaching interrupts
@@ -178,7 +178,7 @@ int main(void)
             localStage.currentStage = localStage.processStage((Priority)priorityIterator, &localEventFlags, localTaskFlags);
 
             //checking if we need to update the timers
-            if(localEventFlags && EF_TIMER)
+            if(localEventFlags & EF_TIMER)
             {
                 //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
                 timerEventFlags |= localStage.processTimers();

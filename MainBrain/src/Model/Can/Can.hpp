@@ -18,16 +18,17 @@
 class Can : public CANListener, public BaseModel
 {
 public:
-    const int UNITEKREADID = 0x181;
-    const int UNITEKSENDID = 0x201;
+    const uint32_t UNITEKREADID = 0x181;
+    const uint32_t UNITEKSENDID = 0x201;
 
-    // const int ORIONREADID = 0x840;   //Micaiah - "i think it's the same"
-    const int ORIONSENDID = 0x840;
+    const uint32_t ORIONID1 = 0x420;
+    const uint32_t ORIONID2 = 0x421;
+
+    Queue* localMailbox;
 
     Can(void);
     ~Can(void);
-
-    void update(void);
+    
 
     //overrides the parent version
     void gotFrame(CAN_message_t &frame, int mailbox);
@@ -35,9 +36,7 @@ public:
     //Send the CAN message on the Wire
     void send(CAN_message_t message);
 
-    //TODO: implement getMail function that will return a list (of some data type) for the
-    //controller to sort through
-    uint8_t* getMail(void);
+    void storeMail(void);
 
     bool checkMailVolatile(void);
 
@@ -47,7 +46,6 @@ private:
 
     //queue variables that will be used for the Unitek and Orion devices
     Queue* volatileMailbox;
-    Queue* localMailbox;
 };
 
 

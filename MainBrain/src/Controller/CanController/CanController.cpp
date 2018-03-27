@@ -34,7 +34,6 @@ CanController* CanController::getInstance()
  */
 CanController::~CanController(void)
 {
-    //TODO: remove this
     canModel->detachGeneralHandler();
     Can1.detachObj(canModel);
 }
@@ -58,17 +57,49 @@ void CanController::init(void)
 /** 
  * @brief  
  * @note   
- * @retval None
+ * @retval true if we have mail to process
  */
-void CanController::poll(void)
-{
-    //TODO: implement this
-}
-
-
 bool CanController::checkMail(void)
 {
     return canModel->checkMailVolatile();
+}
+
+
+/** 
+ * @brief  Processes and stores the CAN messages until the queue is empty
+ * @note   
+ * @retval None
+ */
+void CanController::distributeMail(void)
+{
+    noInterrupts();
+    //transfering CAN messages to non volatile queue
+    canModel->storeMail();
+    interrupts();
+
+    CAN_message_t canMessage;
+
+    while(!canModel->localMailbox->isEmpty())
+    {
+        canMessage = canModel->localMailbox->dequeue();
+
+        if(canMessage.id == canModel->ORIONID1)
+        {
+            Serial.println("Storing Orion message 0x420");
+            OrionController::getInstance()->updateModelMessage_0x420(canMessage.buf);
+        }
+        else if(canMessage.id == canModel->ORIONID2)
+        {
+            Serial.println("Storing Orion message 0x421");
+            OrionController::getInstance()->updateModelMessage_0x421(canMessage.buf);
+        }
+        else if(canMessage.id == canModel->UNITEKREADID)
+        {
+            
+        }
+
+
+    }
 }
 
 

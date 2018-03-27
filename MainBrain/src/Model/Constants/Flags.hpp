@@ -35,13 +35,14 @@ const uint8_t TF_DASH_WAYNE_WORLD   = 0b10000;
 const uint8_t TF_UNITEK_DONE_PRECHARGE  = 0b1;
 
 //TF for CAN
-const uint8_t TF_CAN_NEW_MAIL  = 0b1;
+const uint8_t TF_CAN_NEW_MAIL    = 0b1;
+const uint8_t TF_CAN_SEND_PEDAL  = 0b10;
 
 
 //Timer flags (the equivalent of an event flag but triggered by a timer)
 const uint32_t TIMER_F_GLCD         = 0b1;  //Glcd EF mask
-const uint32_t TIMER_F_PEDAL        = 0b10;  //Pedal EF mask
-const uint32_t TIMER_F_SDCARD       = 0b100;  //SdCard EF mask
+const uint32_t TIMER_F_SDCARD       = 0b10;  //SdCard EF mask
+const uint32_t TIMER_F_PEDAL        = 0b100;  //Pedal EF mask
 
 
 //as of right now, we have 4 levels of priority
