@@ -187,6 +187,7 @@ void StageManager::configureStage(void)
                 Serial.println(charge90Numeric);
 
                 // CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
+                CanController::getInstance()->sendUnitekWrite(REG_VAR2, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
 
                 //TODO: blink Energized Light to indicate to user that car is precharging
 
@@ -427,10 +428,11 @@ uint32_t StageManager::processCan(uint8_t* taskFlags)
             float pedalPercent = PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
             uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
 
-            // Serial.println(numericSpeedSetPoint);
+            Serial.println(numericSpeedSetPoint);
 
             //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
             CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
+            // CanController::getInstance()->sendUnitekWrite(REG_VAR2, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
 
             taskFlags[CAN] &= ~TF_CAN_SEND_PEDAL;
         }

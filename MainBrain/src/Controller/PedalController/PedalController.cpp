@@ -89,7 +89,8 @@ float PedalController::getPercentageGas(void)
     gasModel->update();
 
     //percent = (current pedal value - origin pedal value)/((2^13-1) - origin pedal value)
-    float percentageValue = ((float)gasModel->getRawValue() - (float)gasModel->getRawOrigin()) / (MAX_ANALOGREAD - (float)gasModel->getRawOrigin());    
+    // float percentageValue = ((float)gasModel->getRawValue() - (float)gasModel->getRawOrigin()) / (MAX_ANALOGREAD - (float)gasModel->getRawOrigin());    
+    float percentageValue = ((float)gasModel->getRawValue()) / MAX_ANALOGREAD;
 
     return percentageValue; 
 }

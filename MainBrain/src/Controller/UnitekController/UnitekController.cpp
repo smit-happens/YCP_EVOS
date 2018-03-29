@@ -106,7 +106,7 @@ float UnitekController::calculateRpm(int speedValue)
  */
 uint16_t UnitekController::calculateSpeedSetPoint(float percent)
 {
-    int rpmSetPoint = unitekModel->MAX_VALUE * percent;
+    uint16_t rpmSetPoint = unitekModel->MAX_VALUE * percent;
     return rpmSetPoint;
 }
 
