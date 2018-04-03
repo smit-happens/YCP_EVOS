@@ -23,7 +23,11 @@ public:
     void init(void);
     void poll(void);
 
-    void shutdown(void);    //TODO: implement
+    void shutdown(void) {};    //TODO: implement
+
+    //private functions to parse the CAN messages
+    void updateModelMessage_0x420(uint8_t* messageToParse);
+    void updateModelMessage_0x421(uint8_t* messageToParse);
 
 
     //all of the public get functions
@@ -52,10 +56,6 @@ private:
 
     //private instance of model
     Orion* orionModel;
-
-    //private functions to parse the CAN messages
-    void updateModelMessage_0x420(uint8_t* messageToParse);
-    void updateModelMessage_0x421(uint8_t* messageToParse);
 
 };
 

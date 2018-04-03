@@ -26,12 +26,14 @@ StageManager::StageManager(void)
     timerList[1].limit = POLL_TIME_SDCARD;
     timerList[2].limit = POLL_TIME_PEDAL;
     
+    timerList[0].TFmask = TIMER_F_GLCD;
+    timerList[1].TFmask = TIMER_F_SDCARD;
+    timerList[2].TFmask = TIMER_F_PEDAL;
 
     //initializing the variables in the Timer array
     for(int i = 0; i < TIMER_NUM; i++) 
     {
         //creating the individual mask for each timer
-        timerList[i].TFmask = 1 << i;
         timerList[i].count = 0;
     }
 }
@@ -122,6 +124,9 @@ void StageManager::shutdown(void)
     //SCADA_OK signal to false
     digitalWriteFast(MB_SCADA_OK, LOW);
 
+    //Resetting VAR1 precharge value to the "off" state
+    CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
+
     Serial.println("Shutdown Stage");
 
     //TODO: close out SdCard logs   
@@ -158,7 +163,8 @@ void StageManager::configureStage(void)
                 //TODO: Standby setup code
                 Serial.println("Standby Stage");
 
-
+                //Resetting VAR1 precharge value to the "off" state
+                CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
 
             }
         }
@@ -177,19 +183,51 @@ void StageManager::configureStage(void)
 
                 //TODO: Precharge setup code
                 Serial.println("Precharge Stage");
-                
-                //set 90% charge
-                float batteryVoltage = OrionController::getInstance()->getPackVoltage();
-                uint16_t charge90Numeric = UnitekController::getInstance()->calculate90Charge(batteryVoltage);
-                CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
 
-                //TODO: blink Energized Light to indicate to user that car is precharging
+                //TODO: check for specific error in the future before setting high
 
                 //Initiatiting the precharge process
                 digitalWriteFast(MB_START_PRE, HIGH);
-                //May need to check for specific error in the future before setting high
-                //TODO: Is this where the brake needs to be pushed? 
 
+                //TODO: blink Energized Light to indicate to user that car is precharging
+
+                //record the current time in milliseconds
+                uint32_t currentTime = millis();
+
+                //wait for precharge
+                while((millis() - currentTime) < TIME_PRECHARGE)
+                {;}
+                
+                float batteryVoltage = OrionController::getInstance()->getPackVoltage();
+                // float batteryVoltage = 50.49;
+                uint16_t numericVoltage = UnitekController::getInstance()->convertVoltageToNumeric(batteryVoltage);
+                
+                Serial.println(batteryVoltage);
+                Serial.print("full numeric: ");
+                Serial.println(numericVoltage);
+
+                numericVoltage *= 0.75;
+                Serial.print("75% numeric: ");
+                Serial.println(numericVoltage);
+
+                CanController::getInstance()->sendUnitekRead(REG_HVBUS);
+                
+                //record the current time in milliseconds
+                currentTime = millis();
+
+                //wait for 10 milliseconds for CAN message
+                while((millis() - currentTime) < 10)
+                {;}
+
+                if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
+                {
+                    //error state
+                    shutdown();
+                }
+
+                //sending 0 to VAR1 in Unitek, indicating that precharge is done
+                Serial.println("Sending 0");
+                CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0, 0);                
 
             }   
         }   
@@ -294,7 +332,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
         {
             if(*eventFlags & EF_CAN)
             {
-                processCan();   
+                *eventFlags |= processCan(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_CAN;
@@ -356,7 +394,9 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
         {
             if(*eventFlags & TIMER_F_PEDAL)
             {
-                processPedal();
+                // Serial.println("pedal event");
+
+                processPedal(eventFlags, taskFlags);
 
                 *eventFlags &= ~TIMER_F_PEDAL;
             }
@@ -380,6 +420,11 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
         }
         break;
 
+
+        default:
+            //shouldn't get here (for NUM_PRIORITY ENUM)
+        break;
+
     } //End switch
 
     return changeStage;
@@ -391,41 +436,38 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
  * @note   
  * @retval 
  */
-uint32_t StageManager::processCan(void)
+uint32_t StageManager::processCan(uint8_t* taskFlags)
 {
-    //insert code here that executes for any stage
+    //code here is executed for any stage
 
-    switch(currentStage){
-        case STAGE_STANDBY:
+
+    if(taskFlags[CAN] & TF_CAN_NEW_MAIL)
+    {
+        // Serial.println("New CAN mail task");
+
+        CanController::getInstance()->distributeMail();
+
+        taskFlags[CAN] &= ~TF_CAN_NEW_MAIL;
+    }
+
+    //executed for only the driving stage
+    if(currentStage == STAGE_DRIVING)
+    {
+        //TODO: send pedal value over CAN
+        if(taskFlags[CAN] & TF_CAN_SEND_PEDAL)
         {
-            
+            //set RPM Setpoint in MC
+            float pedalPercent = PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
+            uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
+
+            Serial.println(numericSpeedSetPoint);
+
+            //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
+            CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
+            // CanController::getInstance()->sendUnitekWrite(REG_VAR2, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
+
+            taskFlags[CAN] &= ~TF_CAN_SEND_PEDAL;
         }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-            //TODO: send pedal value over CAN
-        }
-        break;
-
-        default:
-            //shouldn't get here
-        break;
     }
 
     return 0;
@@ -441,38 +483,6 @@ uint32_t StageManager::processCooling(void)
 {
     //insert code here that executes for any stage
 
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-
-        }
-        break;
-
-        default:
-            //shouldn't get here
-        break;
-    }
 
     return 0;
 }
@@ -561,40 +571,6 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
 uint32_t StageManager::processGlcd(void)
 {
     //glcd view display updating
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-
-        }
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
-
-    }
 
     return 0;
 }
@@ -627,40 +603,6 @@ uint32_t StageManager::processOrion(void)
 {
     //insert code here that executes for any stage
 
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-
-        }
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
-    }
-
     return 0;
 }
 
@@ -670,55 +612,25 @@ uint32_t StageManager::processOrion(void)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processPedal(void)
+void StageManager::processPedal(uint32_t* eventFlags, uint8_t* taskFlags)
 {
     //insert code here that executes for any stage
 
-    uint32_t returnedEF = 0;
+    if(currentStage == STAGE_DRIVING)
+    {
+        //read and store the pedal value
+        //set the apropiate can ef and tf for sending the value to the unitek
 
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
+        // Serial.println("Pedal polling");
 
+        PedalController::getInstance()->poll();
 
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
+        *eventFlags |= EF_CAN;
 
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-            //read and store the pedal value
-            //set the apropiate can ef and tf for sending the value to the unitek
-
-            PedalController::getInstance()->poll();
-
-            returnedEF |= EF_CAN;
-
-            //taskflag setting for pedal value sending
-
-        }
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
+        //taskflag setting for pedal value sending
+        taskFlags[CAN] |= TF_CAN_SEND_PEDAL;
     }
 
-    return returnedEF;
 }
 
 
@@ -730,40 +642,6 @@ uint32_t StageManager::processPedal(void)
 uint32_t StageManager::processSdCard(void)
 {
     //insert code here that executes for any stage
-
-    switch(currentStage){
-        case STAGE_STANDBY:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_PRECHARGE:
-        {
-            
-        }  
-        break;
-
-
-        case STAGE_ENERGIZED:
-        {
-            
-        }
-        break;
-
-
-        case STAGE_DRIVING:
-        {
-
-        }
-        break;
-
-
-        default:
-            //shouldn't get here
-        break;
-    }
 
     return 0;
 }
@@ -829,11 +707,7 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 
         case STAGE_DRIVING:
         {
-            //set RPM Setpoint in MC
-            float pedalPercent=PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
-            uint16_t numericSpeedSetPoint=UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
-            //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
-            CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
+            
         }
         break;
 

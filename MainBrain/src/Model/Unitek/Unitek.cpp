@@ -80,7 +80,7 @@ int Unitek::getRpmLimit(void)
 
 void Unitek::setRpmLimit(uint16_t RpmLimit)
 {
-    rpmLimitReg_C8=RpmLimit;
+    rpmLimitReg_C8 = RpmLimit;
 }
 
 
@@ -103,7 +103,7 @@ uint16_t Unitek::getSpeedValueForUnitek(void)
  */
 void Unitek::setSpeedValueForUnitek(uint16_t userSpeedVal)
 {
-    speedCmdValBeforeRampReg_0x31=userSpeedVal;
+    speedCmdValBeforeRampReg_0x31 = userSpeedVal;
 }
 
 /** 
@@ -124,7 +124,7 @@ uint16_t Unitek::getSpeedValueFromUnitek(void)
  */
 void Unitek::setSpeedValueFromUnitek(uint16_t recRpmSpeedValue)
 {
-    speedValRnReg_0x30=recRpmSpeedValue;
+    speedValRnReg_0x30 = recRpmSpeedValue;
 }
 
 
@@ -147,7 +147,7 @@ uint16_t Unitek::getTemperatureMotorLimit(void)
  */
 void Unitek::setTemperatureMotorLimit(uint16_t tempMotorLimit)
 {
-    tempLimitMotorReg_0xA3=tempMotorLimit;
+    tempLimitMotorReg_0xA3 = tempMotorLimit;
 }
 
 
@@ -170,7 +170,7 @@ uint16_t Unitek::getTemperatureMotor(void)
  */
 void Unitek::setTemperatureMotor(uint16_t tempMotor)
 {
-    tempMotorReg_0x49=tempMotor;
+    tempMotorReg_0x49 = tempMotor;
 }
 
 
@@ -193,7 +193,7 @@ uint16_t Unitek::getTemperatureOutputStage(void)
  */
 void Unitek::setTemperatureOutputStage(uint16_t tempOutputStage)
 {
-    tempOutputStageMCReg_0x4A=tempOutputStage;
+    tempOutputStageMCReg_0x4A = tempOutputStage;
 }
 
 
@@ -216,7 +216,7 @@ uint16_t Unitek::getTemperatureInterior(void)
  */
 void Unitek::setTemperatureInterior(uint16_t tempInterior)
 {
-    tempInteriorMCReg_0x4B=tempInterior;
+    tempInteriorMCReg_0x4B = tempInterior;
 }
 
 /** 
@@ -224,7 +224,7 @@ void Unitek::setTemperatureInterior(uint16_t tempInterior)
  * @note   this is in Unitek resolution (0-32767)
  * @retval current HV voltage
  */
-uint16_t Unitek::getVoltageHvBus(void)
+uint16_t Unitek::getHvBus(void)
 {
     return hvBusVoltageReg_0xEB;
 }
@@ -235,9 +235,9 @@ uint16_t Unitek::getVoltageHvBus(void)
  * @param  hvBusVoltage: new HV bus value returned from CAN
  * @retval 
  */
-void Unitek::setVoltageHvBus(uint16_t hvBusVoltage)
+void Unitek::setHvBus(uint16_t hvBusVoltage)
 {
-    hvBusVoltageReg_0xEB=hvBusVoltage;
+    hvBusVoltageReg_0xEB = hvBusVoltage;
 }
 
 

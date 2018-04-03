@@ -155,6 +155,7 @@ class Unitek : public BaseModel
 public:
     const int MAX_VALUE = 32767;  //0x7FFF
     const int VOLTAGE_MAX = 800;  // used for 90% charge setting calculation
+    const float NUMERIC_PER_VOLTAGE = 31.6259;  // for voltage to numeric bit value conversion
 
     Unitek(void);
     ~Unitek(void);
@@ -179,8 +180,8 @@ public:
     uint16_t getTemperatureInterior(void);
     void setTemperatureInterior(uint16_t tempInterior);
 
-    uint16_t getVoltageHvBus(void);
-    void setVoltageHvBus(uint16_t hvBusVoltage);
+    uint16_t getHvBus(void);
+    void setHvBus(uint16_t hvBusVoltage);
 
     ErrorReg_0x8F getErrorReg_0x8F(void);
     void setErrorReg_0x8F(uint16_t input);

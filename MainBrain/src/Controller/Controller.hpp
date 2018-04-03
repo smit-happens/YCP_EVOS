@@ -17,7 +17,6 @@
 #include "CoolingController/CoolingController.hpp"
 #include "DashController/DashController.hpp"
 #include "GlcdController/GlcdController.hpp"
-#include "ImdController/ImdController.hpp"
 #include "LightController/LightController.hpp"
 #include "PedalController/PedalController.hpp"
 #include "OrionController/OrionController.hpp"

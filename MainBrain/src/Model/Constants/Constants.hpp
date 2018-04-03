@@ -8,7 +8,7 @@
 #define CONSTANTS_HPP
 
 //Max analog read value
-const int MAX_ANALOGREAD = 8191;    //(2^13)-1
+const int MAX_ANALOGREAD = 8195;    //(2^13)-1
 
 
 #endif  //CONSTANTS_HPP

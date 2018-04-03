@@ -12,6 +12,7 @@
 #include <Arduino.h>
 
 
+//General Event Flags for devices
 const uint32_t EF_TIMER             = 0b1;   //The first event flag (EF) mask
 const uint32_t EF_CAN               = 0b10;  //CAN EF mask
 const uint32_t EF_COOLING           = 0b100;  //cooling EF mask
@@ -21,6 +22,11 @@ const uint32_t EF_ORION             = 0b100000;  //Orion EF mask
 const uint32_t EF_UNITEK            = 0b1000000;  //Unitek EF mask
 const uint32_t EF_BATLOG            = 0b10000000;  //BatLog EF mask
 const uint32_t EF_SHUTDOWN          = 0b100000000;  //Shutdown EF mask
+
+//Timer flags (the equivalent of an event flag but triggered by a timer)
+const uint32_t TIMER_F_GLCD         = 0b1 << 16;  //Glcd Timer mask
+const uint32_t TIMER_F_SDCARD       = 0b10 << 16;  //SdCard Timer mask
+const uint32_t TIMER_F_PEDAL        = 0b100 << 16;  //Pedal Timer mask
 
 
 //task flags (TF) for specific tasks a device can do
@@ -32,13 +38,11 @@ const uint8_t TF_DASH_WAYNE_WORLD   = 0b10000;
 
 
 //task flag (TF) for Unitek
-const uint8_t TF_UNITEK_DONE_PRECHARGE  =0b1;
+const uint8_t TF_UNITEK_DONE_PRECHARGE  = 0b1;
 
-
-//Timer flags (the equivalent of an event flag but triggered by a timer)
-const uint32_t TIMER_F_GLCD         = 0b1;  //Glcd EF mask
-const uint32_t TIMER_F_PEDAL        = 0b10;  //Pedal EF mask
-const uint32_t TIMER_F_SDCARD       = 0b100;  //SdCard EF mask
+//TF for CAN
+const uint8_t TF_CAN_NEW_MAIL    = 0b1;
+const uint8_t TF_CAN_SEND_PEDAL  = 0b10;
 
 
 //as of right now, we have 4 levels of priority
@@ -49,7 +53,8 @@ enum Priority
     PRIORITY_CRITICAL,
     PRIORITY_HIGH,
     PRIORITY_MEDIUM,
-    PRIORITY_LOW
+    PRIORITY_LOW,
+    NUM_PRIORITY
 };
 
 

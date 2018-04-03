@@ -69,9 +69,9 @@ void donePrechargeISR() {
 int main(void)
 {
     Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect
-    }
+    // while (!Serial) {
+    //     ; // wait for serial port to connect
+    // }
 
     Serial.println("Bootup stage");
     
@@ -84,11 +84,23 @@ int main(void)
     CoolingController* coolingC = CoolingController::getInstance();
     DashController* dashC       = DashController::getInstance();
     LightController* lightC     = LightController::getInstance();
-    ImdController* imdC         = ImdController::getInstance();
     GlcdController* glcdC       = GlcdController::getInstance();
     PedalController* pedalC     = PedalController::getInstance();
     SdCardController* sdCardC   = SdCardController::getInstance();
     BatlogController* batlogC   = BatlogController::getInstance();
+
+    //Calling init functions for each controller
+    canC->init();
+    unitekC->init();
+    orionC->init();
+    coolingC->init();
+    dashC->init();
+    lightC->init();
+    glcdC->init();
+    pedalC->init();
+    sdCardC->init();
+    batlogC->init();
+
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
@@ -113,20 +125,6 @@ int main(void)
     IntervalTimer myTimer;
 
     
-    //Calling init functions for each controller
-    canC->init();
-    unitekC->init();
-    orionC->init();
-    coolingC->init();
-    dashC->init();
-    lightC->init();
-    imdC->init();
-    glcdC->init();
-    pedalC->init();
-    sdCardC->init();
-    batlogC->init();
-
-    
     //attaching interrupts
     //Button interrupts
     attachInterrupt(MB_PRE_BTN, btnPrechargeISR, RISING);
@@ -136,7 +134,7 @@ int main(void)
     attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
 
     //Unitek interrupts
-    attachInterrupt(MB_DONE_PRE, donePrechargeISR, RISING);
+    attachInterrupt(MB_DONE_PRE, donePrechargeISR, FALLING);
 
 
     //initializing all the hardware
@@ -152,6 +150,7 @@ int main(void)
     while(localStage.currentStage != StageManager::STAGE_SHUTDOWN)
     {
         noInterrupts();
+        
         //Volatile operation for transferring flags from ISRs to local main
         localEventFlags |= globalEventFlags;
         globalEventFlags = 0;
@@ -163,15 +162,27 @@ int main(void)
             globalTaskFlags[i] = 0;
         }
 
+        //checking to see if we have new CAN messages to process
+        if(canC->checkMail())
+        {
+            localEventFlags     |= EF_CAN;
+            localTaskFlags[CAN] |= TF_CAN_NEW_MAIL;
+        }
+
         interrupts();
 
+        
+        //transfering timer event flags to local EF
+        localEventFlags |= timerEventFlags;
+
+
         //FIXME: handle Priorities better, right now we loop through them, later we want to handle CRITICAL prioritis first
-        for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::PRIORITY_LOW; priorityIterator++)
+        for(int priorityIterator = Priority::PRIORITY_CRITICAL; priorityIterator < Priority::NUM_PRIORITY; priorityIterator++)
         {
             localStage.currentStage = localStage.processStage((Priority)priorityIterator, &localEventFlags, localTaskFlags);
 
             //checking if we need to update the timers
-            if(localEventFlags && EF_TIMER)
+            if(localEventFlags & EF_TIMER)
             {
                 //bit shifting the timer Task Flags (TFs) to the upper half of the localEF var
                 timerEventFlags |= localStage.processTimers();
@@ -180,9 +191,6 @@ int main(void)
                 localEventFlags &= ~EF_TIMER;
             }
         }
-
-        //All low priority events are handled by the timer event flags
-        localStage.processStage(Priority::PRIORITY_LOW, &timerEventFlags, localTaskFlags);
 
     } //end of loop
 

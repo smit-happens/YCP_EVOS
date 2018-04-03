@@ -71,6 +71,13 @@ void OrionController::poll(void)
 void OrionController::updateModelMessage_0x420(uint8_t* messageToParse)
 {
     orionModel->setStateOfCharge_Byte(messageToParse[0]);
+    orionModel->setStateOfHealth_Byte(messageToParse[1]);
+    orionModel->setHighestCellTemp_Byte(messageToParse[2]);
+    orionModel->setAverageCellTemp_Byte(messageToParse[3]);
+    orionModel->setMaxOpenCellVoltage_Byte1(messageToParse[4]);
+    orionModel->setMaxOpenCellVoltage_Byte2(messageToParse[5]);
+    orionModel->setMinOpenCellVoltage_Byte1(messageToParse[6]);
+    orionModel->setMinOpenCellVoltage_Byte2(messageToParse[7]);
 }
 
 
@@ -82,20 +89,15 @@ void OrionController::updateModelMessage_0x420(uint8_t* messageToParse)
  */
 void OrionController::updateModelMessage_0x421(uint8_t* messageToParse)
 {
-    
+    orionModel->setPackDischargeCurrentLimit_Byte1(messageToParse[0]);
+    orionModel->setPackDischargeCurrentLimit_Byte2(messageToParse[1]);
+    orionModel->setPackOpenVoltage_Byte1(messageToParse[2]);
+    orionModel->setPackOpenVoltage_Byte2(messageToParse[3]);
+    orionModel->setPackCurrent_Byte1(messageToParse[4]);
+    orionModel->setPackCurrent_Byte2(messageToParse[5]);
+    orionModel->setAverageOpenCellVoltage_Byte1(messageToParse[6]);
+    orionModel->setAverageOpenCellVoltage_Byte2(messageToParse[7]);
 }
-
-
-/** 
- * @brief  
- * @note   
- * @retval None
- */
-void OrionController::shutdown(void)
-{
-    //TODO: will we need this? 
-}
-
 
 
 //all of the get functions for the Orion Controller
