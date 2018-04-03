@@ -57,8 +57,8 @@ script:
     - echo "Building project for Teensy 3.6"
     - platformio ci --board=teensy36
 
-    - echo "List remote devices"
-    - platformio remote device list
+    # - echo "List remote devices"
+    # - platformio remote device list
 
     # - echo "Run embedded test on remote Teensy 3.6"
     # - platformio remote test --project-dir MainBrain/
