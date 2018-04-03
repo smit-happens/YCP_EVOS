@@ -20,6 +20,10 @@ const int TIME_SIREN    = 2000;
 //dash light test time
 const int TIME_LIGHT    = 2000;
 
+//waiting period for precharging Unitek
+const int TIME_PRECHARGE    = 666;
+
+
 //GLCD polling delay
 const int POLL_TIME_GLCD    = 500;
 

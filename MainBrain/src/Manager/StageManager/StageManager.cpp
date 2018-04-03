@@ -124,6 +124,9 @@ void StageManager::shutdown(void)
     //SCADA_OK signal to false
     digitalWriteFast(MB_SCADA_OK, LOW);
 
+    //Resetting VAR1 precharge value to the "off" state
+    CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
+
     Serial.println("Shutdown Stage");
 
     //TODO: close out SdCard logs   
@@ -160,7 +163,8 @@ void StageManager::configureStage(void)
                 //TODO: Standby setup code
                 Serial.println("Standby Stage");
 
-
+                //Resetting VAR1 precharge value to the "off" state
+                CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
 
             }
         }
@@ -179,23 +183,51 @@ void StageManager::configureStage(void)
 
                 //TODO: Precharge setup code
                 Serial.println("Precharge Stage");
-                
-                //set 90% charge
-                float batteryVoltage = OrionController::getInstance()->getPackVoltage();
-                uint16_t charge90Numeric = UnitekController::getInstance()->calculate90Charge(batteryVoltage);
-                
-                Serial.println(charge90Numeric);
 
-                // CanController::getInstance()->sendUnitekWrite(REG_VAR1, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
-                CanController::getInstance()->sendUnitekWrite(REG_VAR2, (uint8_t)(charge90Numeric >> 8), charge90Numeric);
-
-                //TODO: blink Energized Light to indicate to user that car is precharging
+                //TODO: check for specific error in the future before setting high
 
                 //Initiatiting the precharge process
                 digitalWriteFast(MB_START_PRE, HIGH);
-                //May need to check for specific error in the future before setting high
-                //TODO: Is this where the brake needs to be pushed? 
 
+                //TODO: blink Energized Light to indicate to user that car is precharging
+
+                //record the current time in milliseconds
+                uint32_t currentTime = millis();
+
+                //wait for precharge
+                while((millis() - currentTime) < TIME_PRECHARGE)
+                {;}
+                
+                float batteryVoltage = OrionController::getInstance()->getPackVoltage();
+                // float batteryVoltage = 50.49;
+                uint16_t numericVoltage = UnitekController::getInstance()->convertVoltageToNumeric(batteryVoltage);
+                
+                Serial.println(batteryVoltage);
+                Serial.print("full numeric: ");
+                Serial.println(numericVoltage);
+
+                numericVoltage *= 0.75;
+                Serial.print("75% numeric: ");
+                Serial.println(numericVoltage);
+
+                CanController::getInstance()->sendUnitekRead(REG_HVBUS);
+                
+                //record the current time in milliseconds
+                currentTime = millis();
+
+                //wait for 10 milliseconds for CAN message
+                while((millis() - currentTime) < 10)
+                {;}
+
+                if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
+                {
+                    //error state
+                    shutdown();
+                }
+
+                //sending 0 to VAR1 in Unitek, indicating that precharge is done
+                Serial.println("Sending 0");
+                CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0, 0);                
 
             }   
         }   

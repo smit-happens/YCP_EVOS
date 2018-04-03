@@ -111,19 +111,35 @@ uint16_t UnitekController::calculateSpeedSetPoint(float percent)
 }
 
 
- /** @brief  calculate the numerical 90 charge to send to MC
+ /**  
+ * @brief  calculate the numerical 90 charge to send to MC
  * @note   
  * @param  batteryVoltage: total battery voltage 
  * @retval numeric value for 90% charge
  */
 uint16_t UnitekController::calculate90Charge(float batteryVoltage)
 {
-    float batteryPercent = batteryVoltage / (float)unitekModel->VOLTAGE_MAX; //batteryPercent is based off of internal unitek where 32767=2*VMains
-    float batteryVoltageNumeric = batteryPercent * (float)unitekModel->MAX_VALUE;    //batteryVoltageNumeric gives the battery voltage on scale of 0-32767
-    float percent90Charge = 0.9 * batteryVoltageNumeric;            //finds 90% of numeric battery voltage
+    //batteryPercent is based off of internal unitek where 32767=2*VMains
+    float batteryPercent = batteryVoltage / (float)unitekModel->VOLTAGE_MAX; 
+    //batteryVoltageNumeric gives the battery voltage on scale of 0-32767
+    float batteryVoltageNumeric = batteryPercent * (float)unitekModel->MAX_VALUE;
+    //finds 90% of numeric battery voltage
+    float percent90Charge = 0.9 * batteryVoltageNumeric;
     return (uint16_t)percent90Charge;
 }
 
+
+ /**  
+ * @brief calculate the numerical percentage based off Unitek Numeric/Voltage constant
+ * @note   
+ * @param  batteryVoltage: total battery voltage 
+ * @retval numeric value for given voltage
+ */
+uint16_t UnitekController::convertVoltageToNumeric(float batteryVoltage)
+{
+    //we don't care about the decimals in this calculation
+    return batteryVoltage * unitekModel->NUMERIC_PER_VOLTAGE;
+}
 
 /** 
  * @brief  used to store the recieved speed value from CAN
@@ -203,9 +219,17 @@ void UnitekController::storeModeReg(uint16_t modeReg)
  * @param  HvBus: received value of HV bus from CAN
  * @retval None
  */
-void UnitekController::storeVoltageHvBus(uint16_t HvBus)
+void UnitekController::storeVoltageHvBus(uint8_t* messageToParse)
 {
-    unitekModel->setVoltageHvBus(HvBus);
+    Serial.println((messageToParse[2] << 8) | messageToParse[1]);
+    unitekModel->setHvBus((messageToParse[2] << 8) | messageToParse[1]);
+
+}
+
+
+uint16_t UnitekController::getHvBusNumeric(void)
+{
+    return unitekModel->getHvBus();
 }
 
 

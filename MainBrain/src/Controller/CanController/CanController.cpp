@@ -95,7 +95,12 @@ void CanController::distributeMail(void)
         }
         else if(canMessage.id == canModel->UNITEKREADID)
         {
-            
+            //only thing we have to read/store for now
+            if(canMessage.buf[0] == REG_HVBUS)
+            {
+                Serial.println("Sending 0");
+                UnitekController::getInstance()->storeVoltageHvBus(canMessage.buf);
+            }
         }
 
 
@@ -125,12 +130,6 @@ void CanController::sendUnitekRead(const int regId, uint8_t pollTime)
     //FIXME: polling is not implemented yet
     //if(pollTime != 0)     see Unitek Can manual page 14, buf[2] needs to be 0 for one read
     canModel->send(unitekMessage);
-
-    //Debug print statements
-    Serial.print(unitekMessage.id, HEX);
-    Serial.print(unitekMessage.buf[0], HEX);
-    Serial.print(unitekMessage.buf[1], HEX);
-    Serial.println(unitekMessage.buf[2], HEX);
 }
 
 /** 
@@ -153,11 +152,4 @@ void CanController::sendUnitekWrite(const int regId, uint8_t buf1, uint8_t buf2)
     canMessage.buf[2] = buf1;
 
     canModel->send(canMessage);
-
-    //Debug print statements
-    // Serial.println("sending unitek write");
-    // Serial.print(canMessage.id, HEX);
-    // Serial.print(canMessage.buf[0], HEX);
-    // Serial.print(canMessage.buf[1], HEX);
-    // Serial.println(canMessage.buf[2], HEX);
 }

@@ -84,7 +84,6 @@ int main(void)
     CoolingController* coolingC = CoolingController::getInstance();
     DashController* dashC       = DashController::getInstance();
     LightController* lightC     = LightController::getInstance();
-    ImdController* imdC         = ImdController::getInstance();
     GlcdController* glcdC       = GlcdController::getInstance();
     PedalController* pedalC     = PedalController::getInstance();
     SdCardController* sdCardC   = SdCardController::getInstance();
@@ -97,7 +96,6 @@ int main(void)
     coolingC->init();
     dashC->init();
     lightC->init();
-    imdC->init();
     glcdC->init();
     pedalC->init();
     sdCardC->init();
