@@ -60,8 +60,8 @@ script:
     - echo "List remote devices"
     - platformio remote device list
 
-    - echo "Run embedded test on remote Teensy 3.6"
-    - platformio remote test --project-dir MainBrain/
+    # - echo "Run embedded test on remote Teensy 3.6"
+    # - platformio remote test --project-dir MainBrain/
 
 notifications:
     slack: 
@@ -69,28 +69,3 @@ notifications:
             - electriccarteam:asuKUGdj8PTljANmYngSspek#builds
         on_success: change
         on_failure: always
-
-
-#
-# Template #2: The project is intended to by used as a library with examples
-#
-
-# language: python
-# python:
-#     - "2.7"
-#
-# sudo: false
-# cache:
-#     directories:
-#         - "~/.platformio"
-#
-# env:
-#     - PLATFORMIO_CI_SRC=path/to/test/file.c
-#     - PLATFORMIO_CI_SRC=examples/file.ino
-#     - PLATFORMIO_CI_SRC=path/to/test/directory
-#
-# install:
-#     - pip install -U platformio
-#
-# script:
-#     - platformio ci --lib="." --board=ID_1 --board=ID_2 --board=ID_N
