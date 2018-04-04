@@ -15,18 +15,18 @@
 class Light : public BaseModel
 {
 public:
-    Light(void);
-    ~Light(void);
+    Light(const uint8_t lightPin);
+    ~Light(void) {};
 
-    void update(void);
+    //not necessary for each light to have an update function
+    void update(void) {};
 
+    void turnOn(void) { digitalWriteFast(_lightPin, HIGH); };
+    
+    void turnOff(void) { digitalWriteFast(_lightPin, LOW); };
 
-    String getName(void);
-
-    int getState(void);
-    void setState(bool);
-
-    void turnOnAll(void);  
+private:
+    uint8_t _lightPin;
 };
 
 

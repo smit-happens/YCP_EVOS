@@ -10,9 +10,9 @@
 #define DASHCONTROLLER_HPP
 
 #include "../BaseController/BaseController.hpp"
-#include "../../Model/Light/Light.hpp"
 #include "../../Model/Button/Button.hpp"
 #include "../../Model/Siren/Siren.hpp"
+#include "../../Model/Glcd/Glcd.hpp"
 
 
 class DashController : public BaseController
@@ -26,6 +26,8 @@ public:
     void poll(void);
     void shutdown(void);    //TODO: implement
 
+    void playStartupSound(void) { siren->timedTone(); };
+
 
 private:
     //Private contstructor so that it can't be called
@@ -36,11 +38,10 @@ private:
     //static instance pointer
     static DashController* _pInstance;
 
-    //private instance of model
-    /*
-        //all the buttons need to be implemented
-        Button* shutdownBtn;
-    */ 
+    //private instance of models
+    Glcd* screen;
+    Button* buttons;
+    Siren* siren;
 };
 
 

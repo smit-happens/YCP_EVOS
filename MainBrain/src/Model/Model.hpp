@@ -22,7 +22,6 @@
 #include "EncoderWrapper/EncoderWrapper.hpp"
 #include "GasPedal/GasPedal.hpp"
 #include "Glcd/Glcd.hpp"
-#include "Imd/Imd.hpp"
 #include "Light/Light.hpp"
 #include "Orion/Orion.hpp"
 #include "Rtc/Rtc.hpp"

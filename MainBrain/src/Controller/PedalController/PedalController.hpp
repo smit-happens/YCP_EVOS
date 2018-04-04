@@ -40,6 +40,7 @@ private:
     //static instance pointer
     static PedalController* _pInstance;
 
+
     //private instance of models
     BrakePedal* brakeModel;
     GasPedal* gasModel;

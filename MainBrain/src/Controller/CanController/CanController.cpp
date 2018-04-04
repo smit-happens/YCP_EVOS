@@ -34,7 +34,6 @@ CanController* CanController::getInstance()
  */
 CanController::~CanController(void)
 {
-    //TODO: remove this
     canModel->detachGeneralHandler();
     Can1.detachObj(canModel);
 }
@@ -58,11 +57,54 @@ void CanController::init(void)
 /** 
  * @brief  
  * @note   
+ * @retval true if we have mail to process
+ */
+bool CanController::checkMail(void)
+{
+    return canModel->checkMailVolatile();
+}
+
+
+/** 
+ * @brief  Processes and stores the CAN messages until the queue is empty
+ * @note   
  * @retval None
  */
-void CanController::poll(void)
+void CanController::distributeMail(void)
 {
-    //TODO: implement this
+    noInterrupts();
+    //transfering CAN messages to non volatile queue
+    canModel->storeMail();
+    interrupts();
+
+    CAN_message_t canMessage;
+
+    while(!canModel->localMailbox->isEmpty())
+    {
+        canMessage = canModel->localMailbox->dequeue();
+
+        if(canMessage.id == canModel->ORIONID1)
+        {
+            // Serial.println("Storing Orion message 0x420");
+            OrionController::getInstance()->updateModelMessage_0x420(canMessage.buf);
+        }
+        else if(canMessage.id == canModel->ORIONID2)
+        {
+            // Serial.println("Storing Orion message 0x421");
+            OrionController::getInstance()->updateModelMessage_0x421(canMessage.buf);
+        }
+        else if(canMessage.id == canModel->UNITEKREADID)
+        {
+            //only thing we have to read/store for now
+            if(canMessage.buf[0] == REG_HVBUS)
+            {
+                Serial.println("Sending 0");
+                UnitekController::getInstance()->storeVoltageHvBus(canMessage.buf);
+            }
+        }
+
+
+    }
 }
 
 
@@ -73,11 +115,12 @@ void CanController::poll(void)
  * @param  pollTime: Time for polling interval (or REG_HALTPOLL)
  * @retval None
  */
-void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
+void CanController::sendUnitekRead(const int regId, uint8_t pollTime)
 {
     //initializing and constructing the CAN message for the Unitek
     CAN_message_t unitekMessage;
 
+    unitekMessage.ext = 0;
     unitekMessage.id = canModel->UNITEKSENDID;
     unitekMessage.len = 3;
     unitekMessage.buf[0] = REG_READ;
@@ -85,14 +128,8 @@ void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
     unitekMessage.buf[2] = pollTime;
 
     //FIXME: polling is not implemented yet
-    if(pollTime != 0)
-        canModel->send(unitekMessage);
-
-    //Debug print statements
-    Serial.print(unitekMessage.id);
-    Serial.print(unitekMessage.buf[0]);
-    Serial.print(unitekMessage.buf[1]);
-    Serial.print(unitekMessage.buf[2]);
+    //if(pollTime != 0)     see Unitek Can manual page 14, buf[2] needs to be 0 for one read
+    canModel->send(unitekMessage);
 }
 
 /** 
@@ -103,33 +140,16 @@ void CanController::sendUnitekRead(uint8_t regId, uint8_t pollTime = 0)
  * @param  buf2: upper 8 bits of value
  * @retval None
  */
-void CanController::sendUnitekWrite(uint8_t regID, uint8_t buf1, uint8_t buf2){
+void CanController::sendUnitekWrite(const int regId, uint8_t buf1, uint8_t buf2){
     //intializing and constructing the CAN message 
     CAN_message_t canMessage;
 
-    canMessage.id=canModel->UNITEKSENDID;
-    canMessage.len=3;
-    canMessage.buf[0]=regID;
-    canMessage.buf[1]=buf2;
-    canMessage.buf[2]=buf1;
+    canMessage.ext = 0;
+    canMessage.id = canModel->UNITEKSENDID;
+    canMessage.len = 3;
+    canMessage.buf[0] = regId;
+    canMessage.buf[1] = buf2;
+    canMessage.buf[2] = buf1;
 
-    // canModel.
     canModel->send(canMessage);
-
-    //Debug print statements
-    Serial.print(canMessage.id);
-    Serial.print(canMessage.buf[0]);
-    Serial.print(canMessage.buf[1]);
-    Serial.print(canMessage.buf[2]);
 }
-
-
-// /** 
-//  * @brief  
-//  * @note   TODO: Have this work for Unitek and Orion
-//  * @retval 
-//  */
-// int CanController::parse(void)
-// {
-//     return 0;
-// }

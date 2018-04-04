@@ -17,11 +17,8 @@ Can::Can(void)
     Can1.begin(500000);
 
     //queue used for the main receiver of new CAN messages to be sorted later
-    // mailbox = new Queue(sizeof(CAN_message_t), 20, FIFO);
-    
-    // //internal inboxes for the Unitek and Orion devices
-    // inboxUnitek = new Queue(sizeof(uint8_t)*4, 20, FIFO);
-    // inboxOrion = new Queue(sizeof(CAN_message_t), 20, FIFO);
+    volatileMailbox = new Queue();
+    localMailbox = new Queue();
 }
 
 
@@ -30,42 +27,31 @@ Can::Can(void)
  */
 Can::~Can(void)
 {
-    // delete mailbox;
-    // delete inboxUnitek;
-    // delete inboxOrion;
+    delete volatileMailbox;
+    delete localMailbox;
 }
-
-
-/** 
- * @brief  
- * @note   TODO: fill this out (if necessary)
- * @retval None
- */
-void Can::update(void)
-{
-    
-}
-
 
 
 /** 
  * @brief  Called whenever a new CAN frame is received
- * @note   All CAN messages will be sent received from mailbox 1 (CAN port 1) 
+ * @note   All CAN messages will be sent received from CAN port 1
  * @param  &frame:  CAN_message_t reference
  * @param  mailbox: Port message came on
  * @retval None
  */
 void Can::gotFrame(CAN_message_t &frame, int mailbox)
 {
-    //TODO: message just came in, check ID and send data to Unitek or Orion
-    //check id, store in orion or unitek queue, (maybe) set queueHasDataFlag
-    //globalEventFlags = 0;
+    //TODO: message just came in, store it and set EF/TF 
+
+    volatileMailbox->enqueue(frame);
+
     //FIXME: TESTING CODE
     // Serial.println("Entered CAN interrupt");
-    // Serial.println(frame.buf[0]);
-    // Serial.println(frame.buf[1]);
-    // Serial.println(frame.buf[2]);
-    // Serial.println(frame.buf[3]);
+    // Serial.println(frame.id, HEX);
+    // Serial.println(frame.buf[0], HEX);
+    // Serial.println(frame.buf[1], HEX);
+    // Serial.println(frame.buf[2], HEX);
+    // Serial.println(frame.buf[3], HEX);
     //FIXME: TESTING CODE
 }
 
@@ -81,34 +67,21 @@ void Can::send(CAN_message_t message)
 }
 
 
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-// uint8_t* Can::getMail(void)
-// {
-
-// }
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-// uint8_t* Can::getInboxUnitek(void)
-// {
-//     return inboxUnitek;
-// }
-
-
-/** 
- * @brief  
- * @note   
- * @retval true/false based on if there's anything 
- */
-bool Can::checkInboxUnitek(void)
+void Can::storeMail(void)
 {
-    return false;//!inboxUnitek->isEmpty();
+    while(!volatileMailbox->isEmpty())
+    {
+        localMailbox->enqueue(volatileMailbox->dequeue()); 
+    }
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval true/false based on if there's anything in the "inbox"
+ */
+bool Can::checkMailVolatile(void)
+{
+    return !volatileMailbox->isEmpty();
 }

@@ -22,8 +22,28 @@ public:
 
     void init(void);
     void poll(void);
-    void shutdown(void);    //TODO: implement
 
+    void shutdown(void) {};    //TODO: implement
+
+    //private functions to parse the CAN messages
+    void updateModelMessage_0x420(uint8_t* messageToParse);
+    void updateModelMessage_0x421(uint8_t* messageToParse);
+
+
+    //all of the public get functions
+    //gets for values from message 0x420
+    float getStateOfCharge(void);
+    uint8_t getStateOfHealth(void);
+    uint8_t getHighestCellTemp(void);
+    uint8_t getAverageCellTemp(void);
+    float getMaxOpenCellVoltage(void);
+    float getMinOpenCellVoltage(void);
+    
+    //gets for values from message 0x421
+    uint16_t getPackDischargeCurrentLimit(void);
+    float getPackVoltage(void);
+    float getPackCurrent(void);
+    float getAverageOpenCellVoltage(void);
 
 private:
     //Private contstructor so that it can't be called
