@@ -98,7 +98,6 @@ void CanController::distributeMail(void)
             //only thing we have to read/store for now
             if(canMessage.buf[0] == REG_HVBUS)
             {
-                Serial.println("Sending 0");
                 UnitekController::getInstance()->storeVoltageHvBus(canMessage.buf);
             }
         }

@@ -219,6 +219,9 @@ void StageManager::configureStage(void)
                 while((millis() - currentTime) < 10)
                 {;}
 
+                //"forcing" cancontroller to update unitek model
+                CanController::getInstance()->distributeMail();
+
                 if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
                 {
                     //error state
