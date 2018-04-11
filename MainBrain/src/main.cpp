@@ -105,7 +105,7 @@ int main(void)
     sdCardC->init();
     batlogC->init();
 
-    // loggerC->log("MAIN", "Bootup Begin", MSG_DEBUG);
+     loggerC->log("MAIN", "Bootup Begin", MSG_DEBUG);
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
