@@ -69,9 +69,9 @@ void donePrechargeISR() {
 int main(void)
 {
     Serial.begin(9600);
-    // while (!Serial) {
-    //     ; // wait for serial port to connect
-    // }
+    while (!Serial) {
+        ; // wait for serial port to connect
+    }
 
     Serial.println("Bootup stage");
     
@@ -89,7 +89,14 @@ int main(void)
     SdCardController* sdCardC   = SdCardController::getInstance();
     BatlogController* batlogC   = BatlogController::getInstance();
 
+    Logger* loggerC             = Logger::getInstance();
+    
+    
     //Calling init functions for each controller
+    loggerC->init();
+
+     loggerC->log("MAIN", "Bootup Begin", MSG_DEBUG);
+
     canC->init();
     unitekC->init();
     orionC->init();
@@ -144,6 +151,7 @@ int main(void)
     //Start 1ms timer (1000 usec)
     myTimer.begin(timerISR, 1000);
 
+    loggerC->log("MAIN", "Bootup Complete", MSG_DEBUG);
 
     //---------------------------------------------------------------
     // Begin main program Super Loop

@@ -26,6 +26,11 @@ Logger* Logger::getInstance()
     return _pInstance;
 }
 
+Logger::~Logger() 
+{
+
+}
+
 bool Logger::addSubscriber(LogListener* listener)
 {
     //have we exceeded number of broadcast subscribers
@@ -37,7 +42,7 @@ bool Logger::addSubscriber(LogListener* listener)
 
 void Logger::msgPump(char* key, char* message, msg_type type)
 {
-    for(int i=0; i< mNumSubscribers; i++)
+    for(int i=0; i<= mNumSubscribers; i++)
     {
         mSubscribers[i]->onLogFiled(key, message, type);
     }
@@ -45,9 +50,6 @@ void Logger::msgPump(char* key, char* message, msg_type type)
 
 bool Logger::log(char* key, char* message, msg_type type)
 {
-    Serial.print(key); 
-    Serial.print("\t");
-    Serial.print(message);
     msgPump(key, message, type);
     return true;
 }

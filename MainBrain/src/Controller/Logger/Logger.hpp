@@ -11,20 +11,14 @@
 
 #include "../../Controller/SdCardController/SdCardController.hpp"
 #include "../../Controller/BaseController/BaseController.hpp"
-
-enum msg_type{
-    MSG_LOG,
-    MSG_DEBUG,
-    MSG_WARN,
-    MSG_ERR
-};
-
+#include "LogListener.hpp"
 class LogListener; //forward declaration of logListener
 
 class Logger: BaseController
 {
 public:
     //maximum number of broadcast subscribers
+
     static const int MAX_SUBSCRIBERS = 20;
     ~Logger(void);
 
@@ -38,11 +32,11 @@ public:
     //logs message 
     bool log(char* key, char* message,  msg_type type);
     //adds new subscribers to list 
-    bool addSubscriber(LogListener* listener);
+    bool addSubscriber(LogListener *listener);
     
 
 private:
-    Logger();
+    Logger() {};
     Logger(Logger const&) {};
     
     int mNumSubscribers;
@@ -52,16 +46,6 @@ private:
     static Logger* _pInstance;
     //private logging functions/ variables
 
-};
-
-class LogListener //interface for broadcast 
-{
-public:
-    virtual ~LogListener(void) {};
-
-    virtual void onLogFiled(char* key, char* message,  msg_type type) const = 0;
-private:
-    LogListener(void) {};
 };
 
 #endif  //LOGGER_HPP

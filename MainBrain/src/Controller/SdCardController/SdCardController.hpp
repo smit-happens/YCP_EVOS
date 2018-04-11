@@ -10,7 +10,11 @@
 #define SDCARDCONTROLLER_HPP
 
 #include "../BaseController/BaseController.hpp"
+#include "../../Model/Constants/Constants.hpp"
 #include "../../Model/SdCard/SdCard.hpp"
+#include "../Logger/Logger.hpp"
+#include "../Logger/LogListener.hpp"
+
 
 /**  
  * Example of possible log file:
@@ -27,7 +31,9 @@
  * ╚════════════════════════════╩══════════════╩═══════════════╩═════════════════════════════════════════════════════════╩═════╝
  */
 
-class SdCardController  : public BaseController
+//class LogListener;
+
+class SdCardController  : public BaseController, public LogListener
 {
 public:
     ~SdCardController(void);
@@ -61,6 +67,8 @@ private:
 
     //private instance of model
     SdCard* sdCardModel;
+
+    void onLogFiled(char* key, char* message,  msg_type type);
 
 };
 
