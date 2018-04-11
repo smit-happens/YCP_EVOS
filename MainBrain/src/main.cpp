@@ -94,8 +94,10 @@ int main(void)
     
     //Calling init functions for each controller
     loggerC->init();
+    Serial.println("before logger");
 
-     loggerC->log("MAIN", "Bootup Begin", MSG_DEBUG);
+    loggerC->log("MAIN", "Bootup Begin", MSG_DEBUG);
+    Serial.println("after logger");
 
     canC->init();
     unitekC->init();

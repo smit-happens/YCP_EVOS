@@ -72,7 +72,7 @@ void SdCardController::shutdown(void)
     
 }
 
-void SdCardController::onLogFiled(char* key, char* message,  msg_type type) {
+void SdCardController::onLogFiled(const char* key, const char* message,  msg_type type) {
     //TODO: Move to serial logger class. 
     Serial.print(key); 
     Serial.print("\t");

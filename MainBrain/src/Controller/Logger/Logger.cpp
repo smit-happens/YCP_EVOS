@@ -40,7 +40,7 @@ bool Logger::addSubscriber(LogListener* listener)
     return true;
 }
 
-void Logger::msgPump(char* key, char* message, msg_type type)
+void Logger::msgPump(const char* key, const char* message, msg_type type)
 {
     for(int i=0; i<= mNumSubscribers; i++)
     {
@@ -48,7 +48,7 @@ void Logger::msgPump(char* key, char* message, msg_type type)
     }
 }
 
-bool Logger::log(char* key, char* message, msg_type type)
+bool Logger::log(const char* key, const char* message, msg_type type)
 {
     msgPump(key, message, type);
     return true;

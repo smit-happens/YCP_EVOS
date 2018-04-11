@@ -30,7 +30,7 @@ public:
     //singleton getter
     static Logger* getInstance();
     //logs message 
-    bool log(char* key, char* message,  msg_type type);
+    bool log(const char* key, const char* message,  msg_type type);
     //adds new subscribers to list 
     bool addSubscriber(LogListener *listener);
     
@@ -41,7 +41,7 @@ private:
     
     int mNumSubscribers;
     LogListener* mSubscribers[MAX_SUBSCRIBERS];
-    void msgPump(char* key, char* message,  msg_type type);
+    void msgPump(const char* key, const char* message,  msg_type type);
 
     static Logger* _pInstance;
     //private logging functions/ variables

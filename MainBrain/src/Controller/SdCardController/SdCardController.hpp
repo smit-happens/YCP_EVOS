@@ -68,7 +68,7 @@ private:
     //private instance of model
     SdCard* sdCardModel;
 
-    void onLogFiled(char* key, char* message,  msg_type type);
+    void onLogFiled(const char* key, const char* message,  msg_type type);
 
 };
 
