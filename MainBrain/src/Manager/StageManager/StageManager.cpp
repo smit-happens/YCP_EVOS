@@ -669,6 +669,19 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
     // UnitekController::getInstance()->storeErrorReg(errorValue);     //stores error value in unitek model
     // UnitekController::getInstance()->storeWarningReg(warningValue); //stores warning value in unitek model
 
+    //need to update error/warning reg prior to checking for errors
+    CanController::getInstance()->sendUnitekRead(REG_ERROR);
+                
+    //record the current time in milliseconds
+    currentTime = millis();
+
+    //wait for 10 milliseconds for CAN message
+    while((millis() - currentTime) < 10)
+    {;}
+
+    //"forcing" cancontroller to update unitek model
+    CanController::getInstance()->distributeMail();
+
     //check if shutdown is needed
     if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)
     {
