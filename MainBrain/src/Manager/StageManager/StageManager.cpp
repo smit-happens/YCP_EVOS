@@ -673,10 +673,10 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
     CanController::getInstance()->sendUnitekRead(REG_ERROR);
                 
     //record the current time in milliseconds
-    currentTime = millis();
+    uint32_t startTime = millis();
 
     //wait for 10 milliseconds for CAN message
-    while((millis() - currentTime) < 10)
+    while((millis() - startTime) < 10)
     {;}
 
     //"forcing" cancontroller to update unitek model
