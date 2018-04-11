@@ -94,11 +94,6 @@ int main(void)
     
     //Calling init functions for each controller
     loggerC->init();
-    Serial.println("before logger");
-
-    loggerC->log("MAIN", "Bootup Begin", MSG_DEBUG);
-    Serial.println("after logger");
-
     canC->init();
     unitekC->init();
     orionC->init();
@@ -110,6 +105,7 @@ int main(void)
     sdCardC->init();
     batlogC->init();
 
+    // loggerC->log("MAIN", "Bootup Begin", MSG_DEBUG);
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
@@ -153,7 +149,7 @@ int main(void)
     //Start 1ms timer (1000 usec)
     myTimer.begin(timerISR, 1000);
 
-    loggerC->log("MAIN", "Bootup Complete", MSG_DEBUG);
+    // loggerC->log("MAIN", "Bootup Complete", MSG_DEBUG);
 
     //---------------------------------------------------------------
     // Begin main program Super Loop

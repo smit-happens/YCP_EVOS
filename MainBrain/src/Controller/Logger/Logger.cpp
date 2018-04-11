@@ -42,7 +42,7 @@ bool Logger::addSubscriber(LogListener* listener)
 
 void Logger::msgPump(const char* key, const char* message, msg_type type)
 {
-    for(int i=0; i<= mNumSubscribers; i++)
+    for(int i=0; i <= mNumSubscribers; i++)
     {
         mSubscribers[i]->onLogFiled(key, message, type);
     }
