@@ -11,29 +11,41 @@
 
 #include "../../Controller/SdCardController/SdCardController.hpp"
 
+enum msg_type{
+    MSG_LOG,
+    MSG_DEBUG,
+    MSG_WARN
+};
+
 
 class Logger
 {
 public:
-    Logger();
 
+    ~Logger(void);
+
+    static Logger* getInstance();
     //public logging functions
-
-    /** 
-     * Drafting up possible functions
-     * 
-     * newDataPoint()
-     * newLogFile()         //name log file based on current date/time
-     * openLogFile()
-     * LogChunk()
-     * 
-     * 
-     */
-
+    bool log(char* key, char* message,  msg_type);
+    
 
 private:
+    Logger();
+    Logger(Logger const&) {};
+
+    static Logger* _pInstance;
     //private logging functions/ variables
 
+};
+
+class LogListener
+{
+public:
+    virtual ~LogListener(void) {};
+
+    virtual void onLogFiled(char* key, char* message,  msg_type) const = 0;
+private:
+    LogListener() {};
 };
 
 #endif  //LOGGER_HPP
