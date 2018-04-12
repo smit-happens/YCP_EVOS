@@ -72,28 +72,7 @@ void SdCardController::shutdown(void)
     
 }
 
-void SdCardController::onLogFiled(const char* key, const char* message,  msg_type type) {
-    //TODO: Move to serial logger class. 
-    Serial.print(key); 
-    Serial.print("\t");
-    Serial.print(message);
-    Serial.print("\t");
-
-    switch(type) {
-        case MSG_ERR:
-            Serial.print("ERR");
-        break;
-        case MSG_LOG:
-            Serial.print("LOG");
-        break;
-        case MSG_WARN:
-             Serial.print("WARN");
-        break;
-        case MSG_DEBUG:
-             Serial.print("DEBUG");
-        break;
-        default:break;
-    }
-
-    Serial.println();
+void SdCardController::onLogFiled(const char* key, const char* message,  msg_type type) 
+{
+    //TODO: Log to SD Card file
 }

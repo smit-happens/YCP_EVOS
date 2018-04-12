@@ -78,6 +78,8 @@ int main(void)
 
     //Creating the controller singletons
     //Copying each controller location in memory
+    Logger* loggerC             = Logger::getInstance();
+    SerialLogger* serialLogC    = SerialLogger::getInstance();
     CanController* canC         = CanController::getInstance();
     UnitekController* unitekC   = UnitekController::getInstance();
     OrionController* orionC     = OrionController::getInstance();
@@ -89,11 +91,12 @@ int main(void)
     SdCardController* sdCardC   = SdCardController::getInstance();
     BatlogController* batlogC   = BatlogController::getInstance();
 
-    Logger* loggerC             = Logger::getInstance();
+    
     
     
     //Calling init functions for each controller
     loggerC->init();
+    serialLogC->init();//begins serial logger
     canC->init();
     unitekC->init();
     orionC->init();
@@ -105,7 +108,7 @@ int main(void)
     sdCardC->init();
     batlogC->init();
 
-     loggerC->log("MAIN", "Bootup Begin", MSG_DEBUG);
+    loggerC->log("MAIN", "Bootup Begin", MSG_DEBUG);
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
