@@ -58,6 +58,8 @@ public:
 
 private:
     //Private contstructor so that it can't be called
+    const uint8_t MSG_STR_BUF_LEN = 100;
+    const char* DELIM = "|"; //NOTE this MUST be of length 1!!
     SdCardController() {};
     //copy constructor is private
     SdCardController(SdCardController const&) {};
@@ -69,7 +71,7 @@ private:
     SdCard* sdCardModel;
 
     void onLogFiled(const char* key, const char* message,  msg_type type);
-
+    void setupLogFileHeader();
 };
 
 #endif  //SDCARDCONTROLLER_HPP

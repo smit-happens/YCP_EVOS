@@ -52,8 +52,23 @@ void SdCardController::init(void)
     noInterrupts(); //this must be atomic
     sdCardModel->beginCard();
     sdCardModel->openFile();
-    sdCardModel->writeMessage("Milis | Calling Class | Message | Log Level");
+
+    setupLogFileHeader();
     interrupts();
+}
+
+void SdCardController::setupLogFileHeader()
+{
+        char msg[50];
+        strcpy(msg, "Millis");
+        strcat(msg, DELIM);
+        strcat(msg, "Calling Class");
+        strcat(msg, DELIM);
+        strcat(msg, "Message");
+        strcat(msg, DELIM);
+        strcat(msg, "Log Level");
+        strcat(msg, DELIM);
+        sdCardModel->writeMessage(msg);
 }
 
 
@@ -83,12 +98,12 @@ void SdCardController::onLogFiled(const char* key, const char* message,  msg_typ
 {
     //TODO: Log to SD Card file
     if(sdCardModel->hasCardBegun() && sdCardModel->isFileOpen()){
-        char msg[100];
+        char msg[MSG_STR_BUF_LEN]; //FIXME: buffer overflow?
         sprintf(msg, "%lu|", millis()); //record time of log
         strcat(msg, key);
-        strcat(msg, "|");
+        strcat(msg, DELIM);
         strcat(msg, message);
-        strcat(msg, "|");
+        strcat(msg, DELIM);
         switch(type) {
             case MSG_ERR:
                 strcat(msg, "ERR");
