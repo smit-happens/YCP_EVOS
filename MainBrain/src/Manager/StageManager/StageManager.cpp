@@ -127,9 +127,10 @@ void StageManager::shutdown(void)
     //Resetting VAR1 precharge value to the "off" state
     CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
 
-    Serial.println("Shutdown Stage");
+    Logger::getInstance()->log("STAGE_MGR", "Stage: shutdown", MSG_LOG);
 
-    //TODO: close out SdCard logs   
+    //close SD card. TODO: shutdown other things?
+    SdCardController::getInstance()->shutdown(); 
 
     //turn off all dash lights except for Error lights
     LightController::getInstance()->turnNonErrorOff();
@@ -161,7 +162,8 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_STANDBY);
 
                 //TODO: Standby setup code
-                Serial.println("Standby Stage");
+                //Serial.println("Standby Stage");
+                Logger::getInstance()->log("STAGE_MGR", "Stage: Standby", MSG_LOG);
 
                 //Resetting VAR1 precharge value to the "off" state
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
@@ -182,7 +184,8 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_PRECHARGE);
 
                 //TODO: Precharge setup code
-                Serial.println("Precharge Stage");
+                //Serial.println("Precharge Stage");
+                Logger::getInstance()->log("STAGE_MGR", "Stage: Precharge", MSG_LOG);
 
                 //TODO: check for specific error in the future before setting high
 
@@ -202,13 +205,20 @@ void StageManager::configureStage(void)
                 // float batteryVoltage = 50.49;
                 uint16_t numericVoltage = UnitekController::getInstance()->convertVoltageToNumeric(batteryVoltage);
                 
-                Serial.println(batteryVoltage);
-                Serial.print("full numeric: ");
-                Serial.println(numericVoltage);
+                char buf[60]; //string buffer for sprintf
+                // Serial.println(batteryVoltage);
+                // Serial.print("full numeric: ");
+                // Serial.println(numericVoltage);
+                sprintf(buf, "Full Numeric battery voltage %d", numericVoltage);
+                Logger::getInstance()->log("STAGE_MGR", buf, MSG_LOG);
+                
 
-                numericVoltage *= 0.75;
-                Serial.print("75% numeric: ");
-                Serial.println(numericVoltage);
+                 numericVoltage *= 0.75;
+                // Serial.print("75% numeric: ");
+                // Serial.println(numericVoltage);
+
+                sprintf(buf, "75 percent numeric battery voltage %d", numericVoltage);
+                Logger::getInstance()->log("STAGE_MGR", buf, MSG_LOG);
 
                 CanController::getInstance()->sendUnitekRead(REG_HVBUS);
                 
@@ -229,7 +239,8 @@ void StageManager::configureStage(void)
                 }
 
                 //sending 0 to VAR1 in Unitek, indicating that precharge is done
-                Serial.println("Sending 0");
+                //Serial.println("Sending 0");
+                Logger::getInstance()->log("STAGE_MGR", "Sending 0 to MC: Precharge complete", MSG_LOG);
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0, 0);                
 
             }   
@@ -248,7 +259,8 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_ENERGIZED);
 
                 //TODO: Energized setup code
-                Serial.println("Energized Stage");
+                //Serial.println("Energized Stage");
+                Logger::getInstance()->log("STAGE_MGR", "Stage: Energized", MSG_LOG);
 
                 //indicate to Driver that car is energized
                 LightController::getInstance()->turnOn(LightController::LIGHT_ENERGIZE);
@@ -268,7 +280,8 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_DRIVING);
 
                 //TODO: Driving setup code
-                Serial.println("Driving Stage");
+                //Serial.println("Driving Stage");
+                Logger::getInstance()->log("STAGE_MGR", "Stage: Driving", MSG_LOG);
 
                 //Set Drive to high to go into 'Drive'
                 digitalWriteFast(MB_DRIVE_EN, HIGH);
@@ -515,7 +528,8 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
             //precharge button is pressed
             if(taskFlags[DASH] & TF_DASH_PRECHARGE)
             {
-                Serial.println("Dash - Precharge btn press");
+                //Serial.println("Dash - Precharge btn press");
+                Logger::getInstance()->log("STAGE_MGR", "Dash - Precharge btn press", MSG_LOG);
 
                 //change stage to precharging
                 changeStage = STAGE_PRECHARGE;
@@ -537,7 +551,8 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
         {
             if(taskFlags[DASH] & TF_DASH_RTD)
             {
-                Serial.println("Dash - RTD Drive task");
+                //Serial.println("Dash - RTD Drive task");
+                Logger::getInstance()->log("STAGE_MGR", "Dash- RTD Drive task", MSG_LOG);
                 
                 //Changing the stage
                 changeStage = STAGE_DRIVING;
@@ -672,7 +687,8 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
     //check if shutdown is needed
     if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)
     {
-        Serial.println("Problem in MC. Shutdown Required.");
+        //Serial.println("Problem in MC. Shutdown Required.");
+        Logger::getInstance()->log("STAGE_MGR", "Error in MC. Shutdown Required", MSG_ERR);
         return EF_SHUTDOWN;
     }
 
@@ -695,7 +711,7 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 
                 //Clearing event flag
                 taskFlags[UNITEK] &= ~TF_UNITEK_DONE_PRECHARGE;
-                Serial.println("Precharge Done task");
+               Logger::getInstance()->log("STAGE_MGR", "Precharge task complete", MSG_LOG);
             }
         }
         break;
@@ -769,7 +785,8 @@ void StageManager::resetAllStagesExcept(Stage nonResetStage)
         //Precharge stage is configured
         case Stage::STAGE_PRECHARGE:
         {
-            Serial.println("configuring precharging");
+            //Serial.println("configuring precharging");
+            Logger::getInstance()->log("STAGE_MGR", "Started configuring precharge", MSG_LOG);
             isPrechargeConfigured = true;
         }
         break;

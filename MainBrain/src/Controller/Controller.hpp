@@ -22,5 +22,7 @@
 #include "OrionController/OrionController.hpp"
 #include "SdCardController/SdCardController.hpp"
 #include "UnitekController/UnitekController.hpp"
+#include "Logger/Logger.hpp"
+#include "Logger/SerialLogger.hpp"
 
 #endif  //CONTROLLER_HPP

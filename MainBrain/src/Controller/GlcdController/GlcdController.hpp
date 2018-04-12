@@ -11,10 +11,12 @@
 
 #include "../BaseController/BaseController.hpp"
 #include "../../Model/Glcd/Glcd.hpp"
+#include "../Logger/LogListener.hpp"
+#include "../Logger/Logger.hpp"
 
 
 
-class GlcdController : public BaseController
+class GlcdController : public BaseController, public LogListener
 {
 public:
     ~GlcdController(void);
@@ -39,6 +41,8 @@ private:
 
     //private instance of model
     Glcd* glcdModel;
+
+    void onLogFiled(const char* key, const char* message,  msg_type type);
 };
 
 

@@ -45,6 +45,7 @@ GlcdController::~GlcdController(void)
  */
 void GlcdController::init(void)
 {
+    Logger::getInstance()->addSubscriber(_pInstance);
     glcdModel = new Glcd();
 }
 
@@ -98,4 +99,8 @@ void GlcdController::justBarelyLogo(void)
         analogWrite(MB_R, i);
         delayMicroseconds(10);
     }
+}
+
+void GlcdController::onLogFiled(const char* key, const char* message,  msg_type type) {
+    //TODO: print messages to screen
 }

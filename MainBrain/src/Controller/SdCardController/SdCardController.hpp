@@ -10,14 +10,18 @@
 #define SDCARDCONTROLLER_HPP
 
 #include "../BaseController/BaseController.hpp"
+#include "../../Model/Constants/Constants.hpp"
 #include "../../Model/SdCard/SdCard.hpp"
+#include "../Logger/Logger.hpp"
+#include "../Logger/LogListener.hpp"
+
 
 /**  
  * Example of possible log file:
  * ╔════════════════════════════╦══════════════╦═══════════════╦═════════════════════════════════════════════════════════╦═════╗
  * ║ Millis since program start ║ Category     ║ Calling Class ║ Message                                                 ║ ... ║
  * ╠════════════════════════════╬══════════════╬═══════════════╬═════════════════════════════════════════════════════════╬═════╣
- * ║ 1145                       ║ Notification ║ Unitek        ║ No errors/warnings found                                ║     ║
+ * ║ 1145                       ║ Log          ║ Unitek        ║ No errors/warnings found                                ║     ║
  * ╠════════════════════════════╬══════════════╬═══════════════╬═════════════════════════════════════════════════════════╬═════╣
  * ║ 1650                       ║ Warning      ║ Orion         ║ Average cell temperature of 45°C close to limit of 60°C ║     ║
  * ╠════════════════════════════╬══════════════╬═══════════════╬═════════════════════════════════════════════════════════╬═════╣
@@ -27,7 +31,9 @@
  * ╚════════════════════════════╩══════════════╩═══════════════╩═════════════════════════════════════════════════════════╩═════╝
  */
 
-class SdCardController  : public BaseController
+//class LogListener;
+
+class SdCardController  : public BaseController, public LogListener
 {
 public:
     ~SdCardController(void);
@@ -52,6 +58,8 @@ public:
 
 private:
     //Private contstructor so that it can't be called
+    const uint8_t MSG_STR_BUF_LEN = 100;
+    const char* DELIM = "|"; //NOTE this MUST be of length 1!!
     SdCardController() {};
     //copy constructor is private
     SdCardController(SdCardController const&) {};
@@ -62,6 +70,8 @@ private:
     //private instance of model
     SdCard* sdCardModel;
 
+    void onLogFiled(const char* key, const char* message,  msg_type type);
+    void setupLogFileHeader();
 };
 
 #endif  //SDCARDCONTROLLER_HPP

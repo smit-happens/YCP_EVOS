@@ -69,15 +69,17 @@ void donePrechargeISR() {
 int main(void)
 {
     Serial.begin(9600);
-    // while (!Serial) {
-    //     ; // wait for serial port to connect
-    // }
+    while (!Serial) {
+        ; // wait for serial port to connect
+    }
 
     Serial.println("Bootup stage");
     
 
     //Creating the controller singletons
     //Copying each controller location in memory
+    Logger* loggerC             = Logger::getInstance();
+    SerialLogger* serialLogC    = SerialLogger::getInstance();
     CanController* canC         = CanController::getInstance();
     UnitekController* unitekC   = UnitekController::getInstance();
     OrionController* orionC     = OrionController::getInstance();
@@ -89,7 +91,17 @@ int main(void)
     SdCardController* sdCardC   = SdCardController::getInstance();
     BatlogController* batlogC   = BatlogController::getInstance();
 
+    
+    
+    
     //Calling init functions for each controller
+    loggerC->init();
+    serialLogC->init();//begins serial logger
+    char buf[30]; //output buffer for sprintf
+    uint32_t bootStart = millis(); //tracks boot time
+    sprintf(buf, "Bootup begin at %lu ms", bootStart);
+    loggerC->log("MAIN", buf, MSG_LOG);
+
     canC->init();
     unitekC->init();
     orionC->init();
@@ -100,6 +112,7 @@ int main(void)
     pedalC->init();
     sdCardC->init();
     batlogC->init();
+    
 
 
     //local instance of the Stage manager class
@@ -143,7 +156,9 @@ int main(void)
 
     //Start 1ms timer (1000 usec)
     myTimer.begin(timerISR, 1000);
-
+    
+    sprintf(buf, "Bootup complete at %lu ms, took %lu ms", millis(), (millis()- bootStart));
+    loggerC->log("MAIN", buf, MSG_LOG);
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
