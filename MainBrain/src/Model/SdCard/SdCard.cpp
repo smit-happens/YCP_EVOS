@@ -20,11 +20,11 @@ SdCard::SdCard(void)
     sdEx = new SdFatSdioEX();
     hasBegun = false;
     fileOpen = false;
+    writeCount = 0;
 }
 
 SdCard::~SdCard(void)
 {
-    //TODO: close card?
     if(fileOpen)
     {
         closeFile();
@@ -35,7 +35,8 @@ bool SdCard::beginCard()
 {
     if(!sdEx->begin()){
         Logger::getInstance()->log("SD_CARD", "Could not Initalize SD card",  MSG_ERR);
-        sdEx->initErrorHalt();
+        //sdEx->initErrorHalt();
+        sdEx->errorPrint();
         hasBegun = false;
         return false;
     } 
@@ -46,6 +47,9 @@ bool SdCard::beginCard()
 
 bool SdCard::openFile()
 {
+    char fileName[30];
+    determineFileName(fileName);
+    Logger::getInstance()->log("SD_CARD", fileName, MSG_LOG);
     //TODO: load in files from root dir and sift through them. Create a file 1 newer than last
     if(!logFile.open("test.csv", O_RDWR | O_CREAT)){
         Logger::getInstance()->log("SD_CARD", "Could not Open SD file",  MSG_ERR);
@@ -57,13 +61,55 @@ bool SdCard::openFile()
     return true;
 }
 
-bool SdCard::writeMessage(const char* message)
+void SdCard::determineFileName(char* buf){
+    uint8_t fileNum = 0; //which file we're on
+    char fileName[30]; // the base filename and the one we use to track it
+    char fileEnding[8]; //holds the filename ending ie '00.csv'
+    strcpy(fileName, FILE_BASE_NAME); //put the base name in
+    sprintf(fileEnding, "%05d.csv", fileNum); //construct the file ending '00.csv'
+    strcat(fileName, fileEnding); //concat BASE_FILE_NAME and ending ie 'EVOS_LOG00.csv'
+    Logger::getInstance()->log("SD_CARD", fileName, MSG_LOG);
+    // used to increment the file number
+    while (sdEx->exists(fileName)) {
+        fileNum++; //increment the file number since this one exists already
+        memset();
+        strcpy(fileName, FILE_BASE_NAME); //copy in the base string
+        sprintf(fileEnding, "%05d.csv", fileNum); //construct the file ending again
+        strcat(fileName, fileEnding); //concat BASE_FILE_NAME and ending ie 'EVOS_LOG00.csv'
+    }
+    
+    strcpy(buf, fileName);
+}
+
+
+
+
+bool SdCard::writeMessage(const char* message, bool writeOut)
 {
     if(logFile.println(message)< 0) //if write successful
     {
         Logger::getInstance()->log("SD_CARD", "SD Write Error",  MSG_ERR);
         return false;
     }
+    if(writeOut) {
+        Logger::getInstance()->log("SD_CARD", "Writing special warn/error data out",  MSG_DEBUG);
+        writeCount = 0;
+        if (!logFile.sync() || logFile.getWriteError()) {
+            sdEx->errorPrint();
+            Logger::getInstance()->log("SD_CARD", "SD Sync Write Error",  MSG_ERR);
+        }
+
+    }
+    else if(writeCount >= WRITE_THRESH){
+        //Logger::getInstance()->log("SD_CARD", "Writing data out",  MSG_DEBUG);
+        writeCount = 0;
+        if (!logFile.sync() || logFile.getWriteError()) {
+            sdEx->errorPrint();
+            Logger::getInstance()->log("SD_CARD", "SD Sync Write Error",  MSG_ERR);
+        }
+
+    }
+    writeCount++;
     return true;
 }
 

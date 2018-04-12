@@ -97,8 +97,10 @@ void SdCardController::shutdown(void)
 void SdCardController::onLogFiled(const char* key, const char* message,  msg_type type) 
 {
     //TODO: Log to SD Card file
+    if(strcmp(key, "SD_CARD") == 0) {return;} // do not log any SD card messages to the SD card.
     if(sdCardModel->hasCardBegun() && sdCardModel->isFileOpen()){
         char msg[MSG_STR_BUF_LEN]; //FIXME: buffer overflow?
+        bool writeOut = false;
         sprintf(msg, "%lu|", millis()); //record time of log
         strcat(msg, key);
         strcat(msg, DELIM);
@@ -107,12 +109,14 @@ void SdCardController::onLogFiled(const char* key, const char* message,  msg_typ
         switch(type) {
             case MSG_ERR:
                 strcat(msg, "ERR");
+                writeOut = true;
             break;
             case MSG_LOG:
                 strcat(msg, "LOG");
             break;
             case MSG_WARN:
                 strcat(msg, "WARN");
+                writeOut = true;
             break;
             case MSG_DEBUG:
                 strcat(msg, "DEBUG");
@@ -120,7 +124,7 @@ void SdCardController::onLogFiled(const char* key, const char* message,  msg_typ
             default:break;
         }
         noInterrupts(); //write is atomic 
-        sdCardModel->writeMessage(msg);
+        sdCardModel->writeMessage(msg, writeOut);
         interrupts();
     }
 }
