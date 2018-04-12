@@ -32,8 +32,16 @@ public:
      * 
      * 
      */
+
+    bool beginCard();
+    bool openFile();
+    bool writeMessage(char* message);
+    void closeFile();
 private:
-    SdFatSdioEX* storageCard;
+    char mFileName[13];
+    SdFatSdioEX* sdEx;
+    SdFile logFile;
+
 };
 
 

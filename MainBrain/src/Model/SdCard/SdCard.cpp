@@ -15,9 +15,46 @@
  */
 SdCard::SdCard(void)
 {
-    storageCard = new SdFatSdioEX();
+    sdEx = new SdFatSdioEX();
 }
 
+
+bool SdCard::beginCard()
+{
+    if(!sdEx->begin()){
+        Serial.println("SD_CARD\t Could not Initalize SD card\t ERR");
+        sdEx->initErrorHalt();
+        return false;
+    } 
+    Serial.println("SD_CARD\t Initalized SD card\t LOG");
+    return true;
+}
+
+bool SdCard::openFile(){
+    //TODO: load in files from root dir and sift through them. Create a file 1 newer than last
+    Serial.println("SD_CARD\t BEGIN open file\t LOG");
+    if(!logFile.open("test.txt", O_RDWR | O_CREAT)){
+        Serial.println("SD_CARD\t Could not Open SD file\t ERR");
+        return false;
+    }
+    Serial.println("SD_CARD\t FINISHED open file\t LOG");
+    return true;
+}
+
+bool SdCard::writeMessage(char* message)
+{
+    if(logFile.println(message)< 0)
+    {
+        Serial.print("SD_CARD\t SD Write Error\t ERR");
+        return false;
+    }
+    return true;
+}
+
+void SdCard::closeFile()
+{
+    logFile.close();
+}
 
 // // Log file base name
 // #define FILE_BASE_NAME "Smitty"

@@ -48,6 +48,12 @@ void SdCardController::init(void)
 {
     sdCardModel = new SdCard();
     Logger::getInstance()->addSubscriber(_pInstance);
+    
+    noInterrupts(); //this must be atomic
+    sdCardModel->beginCard();
+    sdCardModel->openFile();
+    sdCardModel->writeMessage("THIS IS A TEST");
+    interrupts();
 }
 
 
@@ -69,7 +75,7 @@ void SdCardController::poll(void)
  */
 void SdCardController::shutdown(void)
 {
-    
+    //TODO: close sdcard file off. 
 }
 
 void SdCardController::onLogFiled(const char* key, const char* message,  msg_type type) 
