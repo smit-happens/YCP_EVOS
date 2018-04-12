@@ -81,16 +81,18 @@ bool SerialLogger::printMessage(msg_type type)
         case MSG_DEBUG:
             return mFilter.bits.MSG_DEBUG;
         break;
-        default:break;
+        default:
+            return true;
+        break;
     }
 }
 
 
 void SerialLogger::onLogFiled(const char* key, const char* message, msg_type type)
 {
-   //TODO: Move to serial logger class. 
-   if(!printMessage(type)) { return;} //if certian log type is fitered. 
+   //TODO: Move to serial logger class. type is fitered. 
 
+   if(!printMessage(type)) { return;} //if certian log 
     Serial.print(key); 
     Serial.print("\t");
     Serial.print(message);
