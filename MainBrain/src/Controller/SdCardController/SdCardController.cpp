@@ -52,7 +52,7 @@ void SdCardController::init(void)
     noInterrupts(); //this must be atomic
     sdCardModel->beginCard();
     sdCardModel->openFile();
-    sdCardModel->writeMessage("THIS IS A TEST");
+    sdCardModel->writeMessage("Milis | Calling Class | Message | Log Level");
     interrupts();
 }
 
@@ -76,9 +76,36 @@ void SdCardController::poll(void)
 void SdCardController::shutdown(void)
 {
     //TODO: close sdcard file off. 
+    sdCardModel->closeFile();
 }
 
 void SdCardController::onLogFiled(const char* key, const char* message,  msg_type type) 
 {
     //TODO: Log to SD Card file
+    if(sdCardModel->hasCardBegun() && sdCardModel->isFileOpen()){
+        char msg[100];
+        sprintf(msg, "%lu|", millis()); //record time of log
+        strcat(msg, key);
+        strcat(msg, "|");
+        strcat(msg, message);
+        strcat(msg, "|");
+        switch(type) {
+            case MSG_ERR:
+                strcat(msg, "ERR");
+            break;
+            case MSG_LOG:
+                strcat(msg, "LOG");
+            break;
+            case MSG_WARN:
+                strcat(msg, "WARN");
+            break;
+            case MSG_DEBUG:
+                strcat(msg, "DEBUG");
+            break;
+            default:break;
+        }
+        noInterrupts(); //write is atomic 
+        sdCardModel->writeMessage(msg);
+        interrupts();
+    }
 }

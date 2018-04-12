@@ -7,6 +7,8 @@
  */
 
 #include "SdCard.hpp"
+#include "../../Controller/Logger/Logger.hpp"
+
 
 //FIXME: rip out all the demo code and put into functions
 
@@ -16,36 +18,50 @@
 SdCard::SdCard(void)
 {
     sdEx = new SdFatSdioEX();
+    hasBegun = false;
+    fileOpen = false;
 }
 
+SdCard::~SdCard(void)
+{
+    //TODO: close card?
+    if(fileOpen)
+    {
+        closeFile();
+    }
+}
 
 bool SdCard::beginCard()
 {
     if(!sdEx->begin()){
-        Serial.println("SD_CARD\t Could not Initalize SD card\t ERR");
+        Logger::getInstance()->log("SD_CARD", "Could not Initalize SD card",  MSG_ERR);
         sdEx->initErrorHalt();
+        hasBegun = false;
         return false;
     } 
-    Serial.println("SD_CARD\t Initalized SD card\t LOG");
+   Logger::getInstance()->log("SD_CARD", "SD card Initalized",  MSG_LOG);
+    hasBegun = true;
     return true;
 }
 
-bool SdCard::openFile(){
+bool SdCard::openFile()
+{
     //TODO: load in files from root dir and sift through them. Create a file 1 newer than last
-    Serial.println("SD_CARD\t BEGIN open file\t LOG");
-    if(!logFile.open("test.txt", O_RDWR | O_CREAT)){
-        Serial.println("SD_CARD\t Could not Open SD file\t ERR");
+    if(!logFile.open("test.csv", O_RDWR | O_CREAT)){
+        Logger::getInstance()->log("SD_CARD", "Could not Open SD file",  MSG_ERR);
+        fileOpen = false;
         return false;
     }
-    Serial.println("SD_CARD\t FINISHED open file\t LOG");
+    Logger::getInstance()->log("SD_CARD", "SD file opened",  MSG_LOG);
+    fileOpen = true;
     return true;
 }
 
-bool SdCard::writeMessage(char* message)
+bool SdCard::writeMessage(const char* message)
 {
-    if(logFile.println(message)< 0)
+    if(logFile.println(message)< 0) //if write successful
     {
-        Serial.print("SD_CARD\t SD Write Error\t ERR");
+        Logger::getInstance()->log("SD_CARD", "SD Write Error",  MSG_ERR);
         return false;
     }
     return true;
@@ -54,7 +70,20 @@ bool SdCard::writeMessage(char* message)
 void SdCard::closeFile()
 {
     logFile.close();
+    fileOpen = false;
+    Logger::getInstance()->log("SD_CARD", "SD card file closed.", MSG_LOG);
 }
+
+bool SdCard::isFileOpen()
+{
+    return fileOpen;
+}
+
+bool SdCard::hasCardBegun()
+{
+    return hasBegun;
+}
+
 
 // // Log file base name
 // #define FILE_BASE_NAME "Smitty"

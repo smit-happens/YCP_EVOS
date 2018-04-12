@@ -12,6 +12,7 @@
 
 #include "SdFat.h"
 #include "../Constants/Port.hpp"
+#include "../Constants/Constants.hpp"
 
 //Might need additional methods to flesh out all the functionality
 
@@ -21,7 +22,7 @@ class SdCard
 {
 public:
     SdCard(void);
-
+    virtual ~SdCard();
     /** 
      * Drafting up possible functions
      * 
@@ -35,9 +36,14 @@ public:
 
     bool beginCard();
     bool openFile();
-    bool writeMessage(char* message);
+    bool writeMessage(const char* message);
     void closeFile();
+
+    bool hasCardBegun();
+    bool isFileOpen();
 private:
+    bool hasBegun;
+    bool fileOpen;
     char mFileName[13];
     SdFatSdioEX* sdEx;
     SdFile logFile;

@@ -97,6 +97,11 @@ int main(void)
     //Calling init functions for each controller
     loggerC->init();
     serialLogC->init();//begins serial logger
+    char buf[30]; //output buffer for sprintf
+    uint32_t bootStart = millis(); //tracks boot time
+    sprintf(buf, "Bootup begin at %lu ms", bootStart);
+    loggerC->log("MAIN", buf, MSG_LOG);
+
     canC->init();
     unitekC->init();
     orionC->init();
@@ -108,10 +113,7 @@ int main(void)
     sdCardC->init();
     batlogC->init();
     
-    char buf[30]; //output buffer for sprintf
-    uint32_t bootStart = millis(); //tracks boot time
-    sprintf(buf, "Bootup begin at %lu ms", bootStart);
-    loggerC->log("MAIN", buf, MSG_DEBUG);
+
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
@@ -156,7 +158,7 @@ int main(void)
     myTimer.begin(timerISR, 1000);
     
     sprintf(buf, "Bootup complete at %lu ms, took %lu ms", millis(), (millis()- bootStart));
-    loggerC->log("MAIN", buf, MSG_DEBUG);
+    loggerC->log("MAIN", buf, MSG_LOG);
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
