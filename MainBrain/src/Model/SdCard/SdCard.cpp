@@ -50,7 +50,7 @@ bool SdCard::openFile()
 {
     char fileName[30];
     determineFileName(fileName);
-    Logger::getInstance()->log("SD_CARD", fileName, MSG_LOG);
+    Logger::getInstance()->log("SD_CARD", fileName, MSG_DEBUG);
     if(!logFile.open(fileName, O_RDWR | O_CREAT)){
         Logger::getInstance()->log("SD_CARD", "Could not Open SD file",  MSG_ERR);
         fileOpen = false;
@@ -64,7 +64,6 @@ bool SdCard::openFile()
 void SdCard::determineFileName(char* buf){
     uint8_t fileNum = 0; //which file we're on
     String fname = String(FILE_BASE_NAME + String(fileNum, DEC) + ".csv"); //construct filename string from filenum
-    Logger::getInstance()->log("SD_CARD", fname.c_str(), MSG_LOG); 
     // used to increment the file number until it finds a name we can use for a new file
     while (sdEx->exists(fname.c_str())) {
         fileNum++; //increment the file number since this one exists already
