@@ -10,6 +10,7 @@
 #include "../../Controller/Logger/Logger.hpp"
 
 
+
 //FIXME: rip out all the demo code and put into functions
 
 /** 
@@ -50,8 +51,7 @@ bool SdCard::openFile()
     char fileName[30];
     determineFileName(fileName);
     Logger::getInstance()->log("SD_CARD", fileName, MSG_LOG);
-    //TODO: load in files from root dir and sift through them. Create a file 1 newer than last
-    if(!logFile.open("test.csv", O_RDWR | O_CREAT)){
+    if(!logFile.open(fileName, O_RDWR | O_CREAT)){
         Logger::getInstance()->log("SD_CARD", "Could not Open SD file",  MSG_ERR);
         fileOpen = false;
         return false;
@@ -63,22 +63,15 @@ bool SdCard::openFile()
 
 void SdCard::determineFileName(char* buf){
     uint8_t fileNum = 0; //which file we're on
-    char fileName[30]; // the base filename and the one we use to track it
-    char fileEnding[8]; //holds the filename ending ie '00.csv'
-    strcpy(fileName, FILE_BASE_NAME); //put the base name in
-    sprintf(fileEnding, "%05d.csv", fileNum); //construct the file ending '00.csv'
-    strcat(fileName, fileEnding); //concat BASE_FILE_NAME and ending ie 'EVOS_LOG00.csv'
-    Logger::getInstance()->log("SD_CARD", fileName, MSG_LOG);
-    // used to increment the file number
-    while (sdEx->exists(fileName)) {
+    String fname = String(FILE_BASE_NAME + String(fileNum, DEC) + ".csv"); //construct filename string from filenum
+    Logger::getInstance()->log("SD_CARD", fname.c_str(), MSG_LOG); 
+    // used to increment the file number until it finds a name we can use for a new file
+    while (sdEx->exists(fname.c_str())) {
         fileNum++; //increment the file number since this one exists already
-        memset();
-        strcpy(fileName, FILE_BASE_NAME); //copy in the base string
-        sprintf(fileEnding, "%05d.csv", fileNum); //construct the file ending again
-        strcat(fileName, fileEnding); //concat BASE_FILE_NAME and ending ie 'EVOS_LOG00.csv'
+        fname = FILE_BASE_NAME + String(fileNum, DEC) + ".csv";
     }
     
-    strcpy(buf, fileName);
+    strcpy(buf, fname.c_str());
 }
 
 
