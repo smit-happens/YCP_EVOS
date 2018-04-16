@@ -25,10 +25,10 @@ public:
 
     void shutdown(void) {};    //TODO: implement
 
-    //private functions to parse the CAN messages
+    //functions to parse the CAN messages
     void updateModelMessage_0x420(uint8_t* messageToParse);
     void updateModelMessage_0x421(uint8_t* messageToParse);
-
+    
 
     //all of the public get functions
     //gets for values from message 0x420
