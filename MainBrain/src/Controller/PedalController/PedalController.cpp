@@ -92,6 +92,11 @@ float PedalController::getPercentageGas(void)
     // float percentageValue = ((float)gasModel->getRawValue() - (float)gasModel->getRawOrigin()) / (MAX_ANALOGREAD - (float)gasModel->getRawOrigin());    
     float percentageValue = ((float)gasModel->getRawValue()) / MAX_ANALOGREAD;
 
+    //tolerance for gas pedal and handles brake pressed
+    if (percentageValue<=20 || PedalController::getPercentageBrake()>0){
+        percentageValue = 0;
+    }
+
     return percentageValue; 
 }
 
@@ -120,7 +125,16 @@ bool PedalController::isImplausibilityGas(void)
  */
 float PedalController::getPercentageBrake(void)
 {
-    return 0.0; //TODO: Implement
+    brakeModel->update();
+
+    float percentageValue = ((float)brakeModel->getRawValue()) / MAX_ANALOGREAD;
+
+    if (percentageValue<=20)    //this number may need to be change on how the brake pot acts
+    {
+        percentageValue=0;
+    }
+
+    return percentageValue; 
 }
 
 
