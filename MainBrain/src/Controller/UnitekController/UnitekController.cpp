@@ -5,7 +5,7 @@
  *
  * A longer description.
  */
-
+#ifndef UNIT_TEST
 #include "UnitekController.hpp"
 
 
@@ -381,3 +381,5 @@ bool UnitekController::checkErrorWarningForShutdown()
         return false;
     }
 }
+
+#endif

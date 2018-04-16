@@ -12,9 +12,11 @@
 /** 
  * @brief  BaseControllerTest constructor
  */
-BaseControllerTest::BaseControllerTest(void)
+int BaseControllerTest()
 {
-    
+    return 0;
 }
+
+
 
 

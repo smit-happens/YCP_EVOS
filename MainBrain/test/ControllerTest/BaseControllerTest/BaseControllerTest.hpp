@@ -9,17 +9,23 @@
 #ifndef BASECONTROLLERTEST_HPP
 #define BASECONTROLLERTEST_HPP
 
-#include <Arduino.h>
 #include "../../../src/Controller/Controller.hpp"
-// #include "../../../src/Model/Model.hpp"
+#include <Arduino.h>
 #include <unity.h>
 
+#ifdef UNIT_TEST
 
-class BaseControllerTest
-{
-public:
-    BaseControllerTest();
+class BaseControllerTest {
+    public:
+        BaseControllerTest(){};
+        virtual ~BaseControllerTest(){};
+
+        virtual int main(){return 0};
+
+    private:
+
 };
 
 
 #endif  //BASECONTROLLERTEST_HPP
+#endif  //UNIT_TEST

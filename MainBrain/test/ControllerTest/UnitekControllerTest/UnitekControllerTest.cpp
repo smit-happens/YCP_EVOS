@@ -9,34 +9,29 @@
 #include "UnitekControllerTest.hpp"
 
 
-UnitekControllerTest::UnitekControllerTest(void)
-{
-    
+void test_Unitek_Some_Functionality(void) {
+    TEST_ASSERT_EQUAL(1, 1);
 }
 
-
 /** 
- * @brief  Convert RPM to a compatible MC speed value
- * @note   The speed value represents a percentage from 0 to 0x7FFF
- *         That percentage represents the RPM from 0 to RPM_LIMIT (Ex: 7000)
- * @param  rpm: RPM value
- * @retval      Speed value for the MC
- */
-void UnitekControllerTest::calculateSpeedValue(void)
-{
-    // float percentage = rpm / unitekModel->getRpmLimit();
-    // return percentage * unitekModel->MAX_VALUE;
-}
-
-
-/** 
- * @brief  Convert a given MC speed value to RPM
+ * @brief  Main Function for this test class.
  * @note   
- * @param  speedValue: Given from MC
- * @retval             RPM value
+ * @retval Always returns 0
  */
-void UnitekControllerTest::calculateRpm(void)
-{
-    // float percentage = (float)speedValue / unitekModel->MAX_VALUE;
-    // return percentage * unitekModel->getRpmLimit();
+int UnitekControllerTest(){
+    // NOTE!!! Wait for >2 secs if board doesn't support software reset via Serial.DTR/RTS
+    delay(2000);
+    UNITY_BEGIN();
+
+    RUN_TEST(test_Unitek_Some_Functionality);
+
+    UNITY_END();
+
+    return 0;
 }
+
+// UnitekControllerTest :: UnitekControllerTest(void) {
+//     // necessary delay
+//     delay(2000);
+
+// }
