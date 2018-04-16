@@ -674,15 +674,18 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 {
     //PROCESSES FOR ANY STAGE
 
-    //check unitek error and warning registers to determine if shutdown is needed
-    // CanController::getInstance()->sendUnitekRead(REG_ERROR, 0);
-    // delay(200);     //need to delay so MC has time to return CAN message, not sure of correct time
-    // CAN_message_t errorReg;
-    // Can1.read(errorReg);        //read error and warning reg and store values in errorReg
-    // uint16_t errorValue=(errorReg.buf[4]<<8) || errorReg.buf[3];    //seperates error reg value
-    // uint16_t warningValue=(errorReg.buf[2]<<8) || errorReg.buf[1];  //seperates warning reg value
-    // UnitekController::getInstance()->storeErrorReg(errorValue);     //stores error value in unitek model
-    // UnitekController::getInstance()->storeWarningReg(warningValue); //stores warning value in unitek model
+    //need to update error/warning reg prior to checking for errors
+    CanController::getInstance()->sendUnitekRead(REG_ERROR);
+                
+    //record the current time in milliseconds
+    uint32_t startTime = millis();
+
+    //wait for 10 milliseconds for CAN message
+    while((millis() - startTime) < 10)
+    {;}
+
+    //"forcing" cancontroller to update unitek model
+    CanController::getInstance()->distributeMail();
 
     //check if shutdown is needed
     if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)

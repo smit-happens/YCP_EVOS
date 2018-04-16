@@ -100,6 +100,15 @@ void CanController::distributeMail(void)
             {
                 UnitekController::getInstance()->storeVoltageHvBus(canMessage.buf);
             }
+
+            //error/warning reg
+            if(canMessage.buf[0] == REG_ERROR)
+            {
+                uint16_t errorValue=(canMessage.buf[4]<<8) || canMessage.buf[3];
+                uint16_t warningValue=(canMessage.buf[2]<<8) || canMessage.buf[1];
+                UnitekController::getInstance()->storeErrorReg(errorValue);
+                UnitekController::getInstance()->storeWarningReg(warningValue);
+            }
         }
 
 
