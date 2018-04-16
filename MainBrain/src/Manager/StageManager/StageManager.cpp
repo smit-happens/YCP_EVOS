@@ -644,8 +644,13 @@ uint32_t StageManager::processOrion(void)
     }
 
     //second check for pack temperature issues
-    //third check for the cell delta being too large
-    //fourth check for the low cell voltage being too low
+    uint8_t highestTempOfPack = OrionController::getInstance()->getHighestCellTemp();
+    //if the highest temperature in the pack is greater than 60 degrees celcius, shut off the car
+    if(highestTempOfPack > 60)
+    {
+        Logger::getInstance()->log("ORION", "Highest cell temp too high: " + highestTempOfPack, MSG_LOG);
+        StageManager::shutdown();
+    }
 
     return 0;
 }
