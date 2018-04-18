@@ -102,13 +102,14 @@ void CanController::distributeMail(void)
             }
 
             //error/warning reg
-            if(canMessage.buf[0] == REG_ERROR)
-            {
-                uint16_t errorValue=(canMessage.buf[4]<<8) || canMessage.buf[3];
-                uint16_t warningValue=(canMessage.buf[2]<<8) || canMessage.buf[1];
-                UnitekController::getInstance()->storeErrorReg(errorValue);
-                UnitekController::getInstance()->storeWarningReg(warningValue);
-            }
+            //FIXME: this is crap, put this logic into the unitek controller
+            // if(canMessage.buf[0] == REG_ERROR)
+            // {
+            //     uint16_t errorValue=(canMessage.buf[4]<<8) || canMessage.buf[3];
+            //     uint16_t warningValue=(canMessage.buf[2]<<8) || canMessage.buf[1];
+            //     UnitekController::getInstance()->storeErrorReg(errorValue);
+            //     UnitekController::getInstance()->storeWarningReg(warningValue);
+            // }
         }
 
 

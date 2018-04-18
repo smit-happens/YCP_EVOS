@@ -82,23 +82,23 @@ void GlcdController::justBarelyLogo(void)
 
     glcdModel->showBootLogo();
 
-    for(int i =0; i<65535; i++)
-    {
-        analogWrite(MB_B, i);
-        delayMicroseconds(10);
-    }
+    // for(int i =0; i<65535; i++)
+    // {
+    //     analogWrite(MB_B, i);
+    //     delayMicroseconds(10);
+    // }
     
-    for(int i =0; i<65535; i++)
-    {
-        analogWrite(MB_G, i);
-        delayMicroseconds(10);
-    }
+    // for(int i =0; i<65535; i++)
+    // {
+    //     analogWrite(MB_G, i);
+    //     delayMicroseconds(10);
+    // }
 
-    for(int i =0; i<65535; i++)
-    {
-        analogWrite(MB_R, i);
-        delayMicroseconds(10);
-    }
+    // for(int i =0; i<65535; i++)
+    // {
+    //     analogWrite(MB_R, i);
+    //     delayMicroseconds(10);
+    // }
 }
 
 void GlcdController::onLogFiled(const char* key, const char* message,  msg_type type) {
