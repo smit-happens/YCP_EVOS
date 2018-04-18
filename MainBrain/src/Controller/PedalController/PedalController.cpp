@@ -92,8 +92,15 @@ float PedalController::getPercentageGas(void)
     // float percentageValue = ((float)gasModel->getRawValue() - (float)gasModel->getRawOrigin()) / (MAX_ANALOGREAD - (float)gasModel->getRawOrigin());    
     float percentageValue = ((float)gasModel->getRawValue()) / MAX_ANALOGREAD;
 
+    //TODO: uncomment this stuff and fix this
+    // char buf[30];           //output buffer for sprintf
+    // sprintf(buf, "Bootup begin at %lu ms", bootStart);
+    // loggerC->log("PEDAL", buf, MSG_LOG);
+
     //tolerance for gas pedal and handles brake pressed
-    if (percentageValue<=2 || PedalController::getPercentageBrake()>0){
+    // if (percentageValue<=2 || PedalController::getPercentageBrake()>0){
+    if (percentageValue <= 2)
+    {
         percentageValue = 0;
     }
 
