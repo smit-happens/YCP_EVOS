@@ -74,7 +74,9 @@ int main(void)
     // }
 
     Serial.println("Bootup stage");
-    
+
+    //tracks boot time
+    uint32_t bootStart = millis();
 
     //Creating the controller singletons
     //Copying each controller location in memory
@@ -92,16 +94,11 @@ int main(void)
     BatlogController* batlogC   = BatlogController::getInstance();
 
     
-    
+    char buf[30]; //output buffer for sprintf logging    
     
     //Calling init functions for each controller
     loggerC->init();
-    serialLogC->init();//begins serial logger
-    char buf[30]; //output buffer for sprintf
-    uint32_t bootStart = millis(); //tracks boot time
-    sprintf(buf, "Bootup begin at %lu ms", bootStart);
-    loggerC->log("MAIN", buf, MSG_LOG);
-
+    serialLogC->init();     //begins serial logger
     canC->init();
     unitekC->init();
     orionC->init();
@@ -113,7 +110,8 @@ int main(void)
     sdCardC->init();
     batlogC->init();
     
-
+    sprintf(buf, "Bootup begin at %lu ms", bootStart);
+    loggerC->log("MAIN", buf, MSG_LOG);
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();

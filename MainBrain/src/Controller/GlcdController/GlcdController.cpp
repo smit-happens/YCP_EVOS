@@ -82,6 +82,10 @@ void GlcdController::justBarelyLogo(void)
 
     glcdModel->showBootLogo();
 
+    analogWrite(MB_B, 65535);
+    analogWrite(MB_G, 65535);
+    analogWrite(MB_R, 65535);
+
     // for(int i =0; i<65535; i++)
     // {
     //     analogWrite(MB_B, i);

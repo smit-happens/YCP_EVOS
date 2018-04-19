@@ -214,8 +214,6 @@ void StageManager::configureStage(void)
                 
 
                  numericVoltage *= 0.75;
-                // Serial.print("75% numeric: ");
-                // Serial.println(numericVoltage);
 
                 sprintf(buf, "75 percent numeric battery voltage %d", numericVoltage);
                 Logger::getInstance()->log("STAGE_MGR", buf, MSG_LOG);
@@ -231,6 +229,9 @@ void StageManager::configureStage(void)
 
                 //"forcing" cancontroller to update unitek model
                 CanController::getInstance()->distributeMail();
+
+                sprintf(buf, "Current HV-bus numeric voltage %d", UnitekController::getInstance()->getHvBusNumeric());
+                Logger::getInstance()->log("STAGE_MGR", buf, MSG_LOG);
 
                 if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
                 {
@@ -259,7 +260,6 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_ENERGIZED);
 
                 //TODO: Energized setup code
-                //Serial.println("Energized Stage");
                 Logger::getInstance()->log("STAGE_MGR", "Stage: Energized", MSG_LOG);
 
                 //indicate to Driver that car is energized
@@ -459,8 +459,6 @@ uint32_t StageManager::processCan(uint8_t* taskFlags)
 
     if(taskFlags[CAN] & TF_CAN_NEW_MAIL)
     {
-        // Serial.println("New CAN mail task");
-
         CanController::getInstance()->distributeMail();
 
         taskFlags[CAN] &= ~TF_CAN_NEW_MAIL;
@@ -480,7 +478,6 @@ uint32_t StageManager::processCan(uint8_t* taskFlags)
 
             //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
             CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
-            // CanController::getInstance()->sendUnitekWrite(REG_VAR2, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
 
             taskFlags[CAN] &= ~TF_CAN_SEND_PEDAL;
         }
@@ -528,7 +525,6 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
             //precharge button is pressed
             if(taskFlags[DASH] & TF_DASH_PRECHARGE)
             {
-                //Serial.println("Dash - Precharge btn press");
                 Logger::getInstance()->log("STAGE_MGR", "Dash - Precharge btn press", MSG_LOG);
 
                 //change stage to precharging
@@ -674,26 +670,26 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 {
     //PROCESSES FOR ANY STAGE
 
-    //need to update error/warning reg prior to checking for errors
-    CanController::getInstance()->sendUnitekRead(REG_ERROR);
+    // //need to update error/warning reg prior to checking for errors
+    // CanController::getInstance()->sendUnitekRead(REG_ERROR);
                 
-    //record the current time in milliseconds
-    uint32_t startTime = millis();
+    // //record the current time in milliseconds
+    // uint32_t startTime = millis();
 
-    //wait for 10 milliseconds for CAN message
-    while((millis() - startTime) < 10)
-    {;}
+    // //wait for 10 milliseconds for CAN message
+    // while((millis() - startTime) < 10)
+    // {;}
 
-    //"forcing" cancontroller to update unitek model
-    CanController::getInstance()->distributeMail();
+    // //"forcing" cancontroller to update unitek model
+    // CanController::getInstance()->distributeMail();
 
-    //check if shutdown is needed
-    if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)
-    {
-        //Serial.println("Problem in MC. Shutdown Required.");
-        Logger::getInstance()->log("STAGE_MGR", "Error in MC. Shutdown Required", MSG_ERR);
-        return EF_SHUTDOWN;
-    }
+    // //check if shutdown is needed
+    // if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)
+    // {
+    //     //Serial.println("Problem in MC. Shutdown Required.");
+    //     Logger::getInstance()->log("STAGE_MGR", "Error in MC. Shutdown Required", MSG_ERR);
+    //     return EF_SHUTDOWN;
+    // }
 
 
     //STAGE SPECIFIC PROCESSES
@@ -714,7 +710,7 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 
                 //Clearing event flag
                 taskFlags[UNITEK] &= ~TF_UNITEK_DONE_PRECHARGE;
-               Logger::getInstance()->log("STAGE_MGR", "Precharge task complete", MSG_LOG);
+                Logger::getInstance()->log("STAGE_MGR", "Precharge task complete", MSG_LOG);
             }
         }
         break;
@@ -788,7 +784,6 @@ void StageManager::resetAllStagesExcept(Stage nonResetStage)
         //Precharge stage is configured
         case Stage::STAGE_PRECHARGE:
         {
-            //Serial.println("configuring precharging");
             Logger::getInstance()->log("STAGE_MGR", "Started configuring precharge", MSG_LOG);
             isPrechargeConfigured = true;
         }
