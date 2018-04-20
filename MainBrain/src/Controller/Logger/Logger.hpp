@@ -11,6 +11,9 @@
 
 #include "../../Controller/BaseController/BaseController.hpp"
 #include "LogListener.hpp"
+#include "SerialLogger.hpp"
+#include "../SdCardController/SdCardController.hpp"
+
 
 class LogListener; //forward declaration of logListener
 

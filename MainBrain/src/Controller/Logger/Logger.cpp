@@ -7,7 +7,6 @@
  */
 
 #include "Logger.hpp"
-#include "SerialLogger.hpp"
 
 //to see if the instance of the class has been initialized yet
 Logger* Logger::_pInstance = NULL; 
