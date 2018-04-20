@@ -9,9 +9,7 @@
 #ifndef SERIALLOGGER_HPP
 #define SERIALLOGGER_HPP
 
-#include "LogListener.hpp"
 #include "Logger.hpp"
-#include "../../Model/Constants/Constants.hpp"
 
 struct filter_bits{
     uint8_t MSG_DEBUG   :1;
@@ -25,6 +23,7 @@ typedef union {
     uint8_t raw;
     struct filter_bits bits;
 } filter_pack;
+
 
 class SerialLogger: public BaseController, public LogListener
 {

@@ -9,9 +9,9 @@
 #ifndef GLCDCONTROLLER_HPP
 #define GLCDCONTROLLER_HPP
 
-#include "../BaseController/BaseController.hpp"
+// #include "../BaseController/BaseController.hpp"
 #include "../../Model/Glcd/Glcd.hpp"
-#include "../Logger/LogListener.hpp"
+// #include "../Logger/LogListener.hpp"
 #include "../Logger/Logger.hpp"
 
 

@@ -73,8 +73,6 @@ int main(void)
     //     ; // wait for serial port to connect
     // }
 
-    Serial.println("Bootup stage");
-
     //tracks boot time
     uint32_t bootStart = millis();
 
@@ -90,7 +88,7 @@ int main(void)
     LightController* lightC     = LightController::getInstance();
     GlcdController* glcdC       = GlcdController::getInstance();
     PedalController* pedalC     = PedalController::getInstance();
-    SdCardController* sdCardC   = SdCardController::getInstance();
+    // SdCardController* sdCardC   = SdCardController::getInstance();
     BatlogController* batlogC   = BatlogController::getInstance();
 
     
@@ -107,7 +105,7 @@ int main(void)
     lightC->init();
     glcdC->init();
     pedalC->init();
-    sdCardC->init();
+    // sdCardC->init();
     batlogC->init();
     
     sprintf(buf, "Bootup begin at %lu ms", bootStart);

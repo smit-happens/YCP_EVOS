@@ -9,7 +9,6 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 
-// #include "../../Controller/SdCardController/SdCardController.hpp"
 #include "../../Controller/BaseController/BaseController.hpp"
 #include "LogListener.hpp"
 

@@ -17,16 +17,19 @@ SerialLogger* SerialLogger::getInstance()
     return _pInstance;
 }
 
+
 void SerialLogger::init() 
 {
     mFilter.raw = (uint8_t)(0xFF); //sets all fiters to high
     Logger::getInstance()->addSubscriber(this);
 }
 
+
 void SerialLogger::setFilter(uint8_t filter_raw)
 {
     mFilter.raw = filter_raw;
 }
+
 
 void SerialLogger::addFilter(msg_type type) 
 {
@@ -47,6 +50,7 @@ void SerialLogger::addFilter(msg_type type)
     }
 }
 
+
 void SerialLogger::removeFilter(msg_type type) 
 {
     switch(type) {
@@ -66,21 +70,26 @@ void SerialLogger::removeFilter(msg_type type)
     }
 }
 
+
 bool SerialLogger::printMessage(msg_type type)
 {
-        switch(type) {
+    switch(type) {
         case MSG_ERR:
             return mFilter.bits.MSG_ERR;
         break;
+
         case MSG_LOG:
             return mFilter.bits.MSG_LOG;
         break;
+
         case MSG_WARN:
             return mFilter.bits.MSG_WARN;
         break;
+
         case MSG_DEBUG:
             return mFilter.bits.MSG_DEBUG;
         break;
+
         default:
             return true;
         break;
@@ -90,9 +99,8 @@ bool SerialLogger::printMessage(msg_type type)
 
 void SerialLogger::onLogFiled(const char* key, const char* message, msg_type type)
 {
-   //TODO: Move to serial logger class. type is fitered. 
+    if(!printMessage(type)) { return;} //if certain log 
 
-   if(!printMessage(type)) { return;} //if certian log 
     Serial.print(key); 
     Serial.print("\t");
     Serial.print(message);
@@ -102,15 +110,19 @@ void SerialLogger::onLogFiled(const char* key, const char* message, msg_type typ
         case MSG_ERR:
             Serial.print(" ERR");
         break;
+
         case MSG_LOG:
             Serial.print(" LOG");
         break;
+
         case MSG_WARN:
              Serial.print(" WARN");
         break;
+
         case MSG_DEBUG:
              Serial.print(" DEBUG");
         break;
+
         default:break;
     }
 
