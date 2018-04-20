@@ -54,6 +54,7 @@ public:
      * 
      * millisSinceStart()
      */
+    void onLogFiled(const char* key, const char* message,  msg_type type);
 
 
 private:
@@ -70,7 +71,6 @@ private:
     //private instance of model
     SdCard* sdCardModel;
 
-    void onLogFiled(const char* key, const char* message,  msg_type type);
     void setupLogFileHeader();
 };
 

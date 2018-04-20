@@ -19,8 +19,6 @@
 SdCard::SdCard(void)
 {
     sdEx = new SdFatSdioEX();
-    hasBegun = false;
-    fileOpen = false;
     writeCount = 0;
 }
 

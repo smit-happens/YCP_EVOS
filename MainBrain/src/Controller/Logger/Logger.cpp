@@ -7,6 +7,7 @@
  */
 
 #include "Logger.hpp"
+#include "SerialLogger.hpp"
 
 //to see if the instance of the class has been initialized yet
 Logger* Logger::_pInstance = NULL; 
@@ -31,6 +32,7 @@ Logger::~Logger()
 
 }
 
+//Observer Pattern is broken these messages are depreciated.
 bool Logger::addSubscriber(LogListener* listener)
 {
     //have we exceeded number of broadcast subscribers
@@ -44,12 +46,14 @@ void Logger::msgPump(const char* key, const char* message, msg_type type)
 {
     for(int i=0; i < mNumSubscribers; i++)
     {
-        mSubscribers[i]->onLogFiled(key, message, type);
+        mSubscribers[i]->onLogFiled(key, message, type); //this line breaks can if called.
     }
 }
 
 bool Logger::log(const char* key, const char* message, msg_type type)
 {
-    msgPump(key, message, type);
+    //msgPump(key, message, type); //instead simply add your listener here manually
+    SerialLogger::getInstance()->onLogFiled(key, message, type);
+    SdCardController::getInstance()->onLogFiled(key, message, type);
     return true;
 }

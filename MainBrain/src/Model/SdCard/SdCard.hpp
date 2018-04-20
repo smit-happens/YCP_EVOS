@@ -45,8 +45,8 @@ private:
     uint32_t writeCount; //buffered write counter.
     const uint32_t WRITE_THRESH = 2; //how many buffered writes before we sync the card. 
     const char* FILE_BASE_NAME = "EVOS_LOG";
-    bool hasBegun;
-    bool fileOpen;
+    bool hasBegun = false;
+    bool fileOpen = false;
     void determineFileName(char*);
     char mFileName[13];
     SdFatSdioEX* sdEx;

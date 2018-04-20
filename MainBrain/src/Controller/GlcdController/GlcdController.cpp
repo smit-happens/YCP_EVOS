@@ -45,7 +45,7 @@ GlcdController::~GlcdController(void)
  */
 void GlcdController::init(void)
 {
-    Logger::getInstance()->addSubscriber(_pInstance);
+    //Logger::getInstance()->addSubscriber(_pInstance);
     glcdModel = new Glcd();
 }
 
