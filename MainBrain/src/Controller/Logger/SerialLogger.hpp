@@ -34,6 +34,7 @@ class SerialLogger: public BaseController, public LogListener
         void setFilter(uint8_t filter_raw);
         void addFilter(msg_type type);
         void removeFilter(msg_type type);
+        void onLogFiled(const char* key, const char* message, msg_type type);
 
     private:
         filter_pack mFilter;
@@ -43,10 +44,8 @@ class SerialLogger: public BaseController, public LogListener
         SerialLogger() {};
         virtual ~SerialLogger() {};
 
-        void onLogFiled(const char* key, const char* message, msg_type type);
-
         bool printMessage(msg_type type);
-
+    
 };
 
 

@@ -73,8 +73,10 @@ int main(void)
     //     ; // wait for serial port to connect
     // }
 
-    //tracks boot time
-    uint32_t bootStart = millis();
+    Serial.println("Bootup stage");
+    
+    uint32_t bootStart = millis(); //tracks boot time
+    char buf[30]; //output buffer for sprintf
 
     //Creating the controller singletons
     //Copying each controller location in memory
@@ -88,28 +90,28 @@ int main(void)
     LightController* lightC     = LightController::getInstance();
     GlcdController* glcdC       = GlcdController::getInstance();
     PedalController* pedalC     = PedalController::getInstance();
-    // SdCardController* sdCardC   = SdCardController::getInstance();
+    SdCardController* sdCardC   = SdCardController::getInstance();
     BatlogController* batlogC   = BatlogController::getInstance();
 
     
-    char buf[30]; //output buffer for sprintf logging    
-    
     //Calling init functions for each controller
     loggerC->init();
-    serialLogC->init();     //begins serial logger
+    serialLogC->init();//begins serial logger
+    sdCardC->init();
+    glcdC->init();
+
+    sprintf(buf, "Bootup begin at %lu ms", bootStart);
+    loggerC->log("MAIN", buf, MSG_LOG);
+
     canC->init();
     unitekC->init();
     orionC->init();
     coolingC->init();
     dashC->init();
     lightC->init();
-    glcdC->init();
     pedalC->init();
-    // sdCardC->init();
     batlogC->init();
     
-    sprintf(buf, "Bootup begin at %lu ms", bootStart);
-    loggerC->log("MAIN", buf, MSG_LOG);
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();

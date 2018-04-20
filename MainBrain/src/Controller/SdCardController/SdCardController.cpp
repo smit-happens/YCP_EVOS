@@ -37,8 +37,7 @@ SdCardController* SdCardController::getInstance()
 void SdCardController::init(void)
 {
     sdCardModel = new SdCard();
-    Logger::getInstance()->addSubscriber(_pInstance);
-    
+    //Logger::getInstance()->addSubscriber(_pInstance);
     noInterrupts(); //this must be atomic
     sdCardModel->beginCard();
     sdCardModel->openFile();
