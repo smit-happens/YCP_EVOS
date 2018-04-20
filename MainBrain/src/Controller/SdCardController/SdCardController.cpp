@@ -13,6 +13,7 @@
 //to see if the instance of the class has been initialized yet
 SdCardController* SdCardController::_pInstance = NULL; 
 
+
 /** 
  * @brief  Used to maintain the singleton format
  * @note   
@@ -25,17 +26,6 @@ SdCardController* SdCardController::getInstance()
         _pInstance = new SdCardController();
 
     return _pInstance;
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval 
- */
-SdCardController::~SdCardController(void)
-{
-    delete sdCardModel;
 }
 
 
@@ -57,29 +47,19 @@ void SdCardController::init(void)
     interrupts();
 }
 
+
 void SdCardController::setupLogFileHeader()
 {
-        char msg[50];
-        strcpy(msg, "Millis");
-        strcat(msg, DELIM);
-        strcat(msg, "Calling Class");
-        strcat(msg, DELIM);
-        strcat(msg, "Message");
-        strcat(msg, DELIM);
-        strcat(msg, "Log Level");
-        strcat(msg, DELIM);
-        sdCardModel->writeMessage(msg);
-}
-
-
-/** 
- * @brief  
- * @note   
- * @retval None
- */
-void SdCardController::poll(void)
-{
-
+    char msg[50];
+    strcpy(msg, "Millis");
+    strcat(msg, DELIM);
+    strcat(msg, "Calling Class");
+    strcat(msg, DELIM);
+    strcat(msg, "Message");
+    strcat(msg, DELIM);
+    strcat(msg, "Log Level");
+    strcat(msg, DELIM);
+    sdCardModel->writeMessage(msg);
 }
 
 
@@ -98,15 +78,19 @@ void SdCardController::onLogFiled(const char* key, const char* message,  msg_typ
 {
     //TODO: Log to SD Card file
     if(strcmp(key, "SD_CARD") == 0) {return;} // do not log any SD card messages to the SD card.
-    if(sdCardModel->hasCardBegun() && sdCardModel->isFileOpen()){
+
+    if(sdCardModel->hasCardBegun() && sdCardModel->isFileOpen())
+    {
         char msg[MSG_STR_BUF_LEN]; //FIXME: buffer overflow?
         bool writeOut = false;
-        sprintf(msg, "%lu|", millis()); //record time of log
+        sprintf(msg, "%lu", millis()); //record time of log
+        strcat(msg, DELIM);
         strcat(msg, key);
         strcat(msg, DELIM);
         strcat(msg, message);
         strcat(msg, DELIM);
-        switch(type) {
+        switch(type) 
+        {
             case MSG_ERR:
                 strcat(msg, "ERR");
                 writeOut = true;
@@ -123,6 +107,7 @@ void SdCardController::onLogFiled(const char* key, const char* message,  msg_typ
             break;
             default:break;
         }
+
         noInterrupts(); //write is atomic 
         sdCardModel->writeMessage(msg, writeOut);
         interrupts();

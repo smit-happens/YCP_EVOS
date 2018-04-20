@@ -11,11 +11,13 @@
 //to see if the instance of the class has been initialized yet
 Logger* Logger::_pInstance = NULL; 
 
+
 void Logger::init(void)
 {
     //what do we do here??
     mNumSubscribers = 0;
 }
+
 
 Logger* Logger::getInstance()
 {
@@ -26,10 +28,6 @@ Logger* Logger::getInstance()
     return _pInstance;
 }
 
-Logger::~Logger() 
-{
-
-}
 
 bool Logger::addSubscriber(LogListener* listener)
 {
@@ -40,6 +38,7 @@ bool Logger::addSubscriber(LogListener* listener)
     return true;
 }
 
+
 void Logger::msgPump(const char* key, const char* message, msg_type type)
 {
     for(int i=0; i < mNumSubscribers; i++)
@@ -47,6 +46,7 @@ void Logger::msgPump(const char* key, const char* message, msg_type type)
         mSubscribers[i]->onLogFiled(key, message, type);
     }
 }
+
 
 bool Logger::log(const char* key, const char* message, msg_type type)
 {
