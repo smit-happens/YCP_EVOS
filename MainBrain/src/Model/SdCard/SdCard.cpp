@@ -7,8 +7,6 @@
  */
 
 #include "SdCard.hpp"
-// #include "../../Controller/Logger/Logger.hpp"
-
 
 
 /** 
@@ -33,12 +31,10 @@ SdCard::~SdCard(void)
 bool SdCard::beginCard()
 {
     if(!sdEx->begin()){
-        // Logger::getInstance()->log("SD_CARD", "Could not Initalize SD card",  MSG_ERR);
         sdEx->errorPrint();
         hasBegun = false;
         return false;
     } 
-//    Logger::getInstance()->log("SD_CARD", "SD card Initalized",  MSG_LOG);
     hasBegun = true;
     return true;
 }
@@ -46,31 +42,35 @@ bool SdCard::beginCard()
 
 bool SdCard::openFile()
 {
-    char fileName[30];
-    determineFileName(fileName);
-    // Logger::getInstance()->log("SD_CARD", fileName, MSG_DEBUG);
+    determineFileName();
     if(!logFile.open(fileName, O_RDWR | O_CREAT)){
-        // Logger::getInstance()->log("SD_CARD", "Could not Open SD file",  MSG_ERR);
         fileOpen = false;
         return false;
     }
-    // Logger::getInstance()->log("SD_CARD", "SD file opened",  MSG_LOG);
     fileOpen = true;
     return true;
 }
 
 
-void SdCard::determineFileName(char* buf){
+void SdCard::determineFileName(){
     uint8_t fileNum = 0; //which file we're on
     String fname = String(FILE_BASE_NAME + String(fileNum, DEC) + ".csv"); //construct filename string from filenum
+
+    //TODO: experiment with saving this number to EEPROM to get rid of this loop
     // used to increment the file number until it finds a name we can use for a new file
     while (sdEx->exists(fname.c_str())) 
     {
         fileNum++; //increment the file number since this one exists already
         fname = FILE_BASE_NAME + String(fileNum, DEC) + ".csv";
     }
-    
-    strcpy(buf, fname.c_str());
+
+    strcpy(fileName, fname.c_str());
+}
+
+
+char* SdCard::getFileName(void)
+{
+    return fileName;
 }
 
 
@@ -111,7 +111,6 @@ void SdCard::closeFile()
 {
     logFile.close();
     fileOpen = false;
-    // Logger::getInstance()->log("SD_CARD", "SD card file closed.", MSG_LOG);
 }
 
 

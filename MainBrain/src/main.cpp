@@ -72,8 +72,6 @@ int main(void)
     // while (!Serial) {
     //     ; // wait for serial port to connect
     // }
-
-    Serial.println("Bootup stage");
     
     uint32_t bootStart = millis(); //tracks boot time
     char buf[30]; //output buffer for sprintf

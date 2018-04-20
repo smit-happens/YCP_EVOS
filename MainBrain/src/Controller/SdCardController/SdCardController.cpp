@@ -39,10 +39,22 @@ void SdCardController::init(void)
     sdCardModel = new SdCard();
     //Logger::getInstance()->addSubscriber(_pInstance);
     noInterrupts(); //this must be atomic
-    sdCardModel->beginCard();
-    sdCardModel->openFile();
+
+    if(!sdCardModel->beginCard())
+        Logger::getInstance()->log("SDCARD_C", "Could not Initalize SD card",  MSG_ERR);
+    else
+        Logger::getInstance()->log("SDCARD_C", "SD card Initalized",  MSG_LOG);
+
+    //attempt to open sdfile
+    if(!sdCardModel->openFile())
+        Logger::getInstance()->log("SDCARD_C", "Could not Open SD file",  MSG_ERR);
+    else
+        Logger::getInstance()->log("SDCARD_C", "SD file opened",  MSG_LOG);
 
     setupLogFileHeader();
+
+    Logger::getInstance()->log("SDCARD_C", sdCardModel->getFileName(), MSG_DEBUG);
+
     interrupts();
 }
 
@@ -69,8 +81,9 @@ void SdCardController::setupLogFileHeader()
  */
 void SdCardController::shutdown(void)
 {
-    //TODO: close sdcard file off. 
+    //closing the sdcard file
     sdCardModel->closeFile();
+    Logger::getInstance()->log("SDCARD_C", "SD card file closed.", MSG_LOG);    
 }
 
 void SdCardController::onLogFiled(const char* key, const char* message,  msg_type type) 
