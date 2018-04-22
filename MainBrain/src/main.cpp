@@ -91,8 +91,8 @@ int main(void)
 
     //Creating the controller singletons
     //Copying each controller location in memory
-    Logger* loggerC             = Logger::getInstance();
-    SerialLogger* serialLogC    = SerialLogger::getInstance();
+    Logger* logger              = Logger::getInstance();
+    SerialLogger* serialLog     = SerialLogger::getInstance();
     CanController* canC         = CanController::getInstance();
     UnitekController* unitekC   = UnitekController::getInstance();
     OrionController* orionC     = OrionController::getInstance();
@@ -106,13 +106,13 @@ int main(void)
 
     
     //Calling init functions for each controller
-    loggerC->init();
-    serialLogC->init();     //begins serial logger
+    logger->init();
+    serialLog->init();     //begins serial logger
     sdCardC->init();
     glcdC->init();
 
     sprintf(buf, "Bootup begin at %lu ms", bootStart);
-    loggerC->log("MAIN", buf, MSG_LOG);
+    logger->log("MAIN", buf, MSG_LOG);
 
     canC->init();
     unitekC->init();
@@ -177,7 +177,7 @@ int main(void)
     myTimer.begin(timerISR, 1000);
     
     sprintf(buf, "Bootup complete at %lu ms, took %lu ms", millis(), (millis()- bootStart));
-    loggerC->log("MAIN", buf, MSG_LOG);
+    logger->log("MAIN", buf, MSG_LOG);
 
     //---------------------------------------------------------------
     // Begin main program Super Loop

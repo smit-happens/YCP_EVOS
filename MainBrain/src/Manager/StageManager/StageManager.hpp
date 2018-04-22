@@ -67,6 +67,8 @@ private:
 
     Stage changeStage;
 
+    //Logger instance
+    Logger* logger;
 
     //Processing functions for the various devices
     void processCan(uint8_t* taskFlags);
