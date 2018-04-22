@@ -160,8 +160,14 @@ void StageManager::configureStage(void)
                 //TODO: Standby setup code
                 Logger::getInstance()->log("STAGE_MGR", "Stage: Standby", MSG_LOG);
 
+                //go out of driving state
+                digitalWriteFast(MB_DRIVE_EN, LOW);
+
                 //Resetting VAR1 precharge value to the "off" state
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
+
+                //ressetting the precharge process
+                digitalWriteFast(MB_START_PRE, LOW);
 
             }
         }
@@ -203,7 +209,6 @@ void StageManager::configureStage(void)
                 sprintf(buf, "Full Numeric battery voltage %d", numericVoltage);
                 Logger::getInstance()->log("STAGE_MGR", buf, MSG_LOG);
                 
-
                 numericVoltage *= 0.75;
 
                 sprintf(buf, "75 percent numeric battery voltage %d", numericVoltage);
