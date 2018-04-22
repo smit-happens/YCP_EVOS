@@ -58,11 +58,24 @@ void btnWayneWorldISR() {
 }
 
 
+//triggered when TSCB says we're done precharging
 void donePrechargeISR() {
     globalEventFlags        |= EF_UNITEK;
     globalTaskFlags[UNITEK] |= TF_UNITEK_DONE_PRECHARGE;
 }
 
+
+//triggered when the shutdown board senses an Orion error
+void errorBmsISR() {
+    globalEventFlags        |= EF_ORION;
+    globalTaskFlags[ORION]  |= TF_ORION_ERROR;
+}
+
+
+//triggered when the shutdown board senses an IMD error
+void errorImdISR() {
+    globalEventFlags        |= EF_IMD;
+}
 
 //---------------------------------------------------------------
 // Begin main function
@@ -149,7 +162,11 @@ int main(void)
     attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
 
     //Unitek interrupts
-    attachInterrupt(MB_DONE_PRE, donePrechargeISR, FALLING);
+    attachInterrupt(MB_DONE_PRE, donePrechargeISR, FALLING);    //LOW == we are done precharging
+
+    //shutdown board interrupts
+    attachInterrupt(MB_BMS_STATUS, errorBmsISR, FALLING);       //LOW == Orion error occured
+    attachInterrupt(MB_IMD_STATUS, errorImdISR, FALLING);       //LOW == IMD error occured
 
 
     //initializing all the hardware
