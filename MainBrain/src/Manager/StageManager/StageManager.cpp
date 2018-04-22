@@ -138,7 +138,7 @@ void StageManager::shutdown(void)
 
 
 /** 
- * @brief  Contains the initial configuration steps for the standby stage
+ * @brief  Contains the initial configuration steps for any stage
  * @note   
  * @retval None
  */
@@ -540,10 +540,10 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
             Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_STANDBY", MSG_LOG);
             
             //Changing the stage
-            changeStage = STAGE_DRIVING;
+            changeStage = STAGE_STANDBY;
 
             //Clearing event flag
-            taskFlags[DASH] &= ~TF_DASH_RTD;
+            taskFlags[DASH] &= ~TF_DASH_STANDBY;
         }
     }
 

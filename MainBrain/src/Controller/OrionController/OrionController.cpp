@@ -50,19 +50,6 @@ void OrionController::init(void)
 
 
 /** 
- * @brief  Read the BMS CAN BUS to receive the data from the battery pack
- * @note   Use this data to update the model
- * @retval None
- */
-void OrionController::poll(void)
-{
-    uint8_t* data_0x420;// = CanController.getOrionMessage(ID_0x420);
-    uint8_t* data_0x421;// = CanController.getOrionMessage(ID_0x421);
-    updateModelMessage_0x420(data_0x420);
-    updateModelMessage_0x421(data_0x421);
-}
-
-/** 
  * @brief  Parse the message and update the model
  * @note   More explanation of the necessary changes to the values is present in the Orion.hpp in the definitions of the CanData_0x420 and CanData_0x421 structs
  * @param  messageToParse: the most recent CAN message from the BUS with ID = 0x420
