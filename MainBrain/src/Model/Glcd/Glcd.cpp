@@ -14,11 +14,14 @@
  */
 Glcd::Glcd(void)
 {
-    display = new ST7565(MB_SID, MB_SCLK, MB_A0, MB_RST, MB_CS);
-    
+    //display = new ST7565(MB_SID, MB_SCLK, MB_A0, MB_RST, MB_CS);
+    U8G2_ST7565_LM6059_F_4W_SW_SPI u8g2(U8G2_R0, MB_SCLK, MB_SID, MB_CS, MB_A0, MB_RST);
     // initialize the glcd and set the contrast to 0x18
-    display->begin(0x18);
-    display->clear();
+    u8g2.begin();
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_ncenB14_tr);
+    u8g2.drawStr(0,20,"Hello World!");
+    u8g2.sendBuffer();
 }
 
 
@@ -28,7 +31,7 @@ Glcd::Glcd(void)
  */
 Glcd::~Glcd(void)
 {
-    delete display;
+    //delete display;
 }
 
 
@@ -51,7 +54,7 @@ void Glcd::update(void)
 void Glcd::showBootLogo(void)
 {
     // draw the bitmap
-    display->clear();
-    display->drawbitmap(0, 0, JustBarelyLogo, 128, 64, BLACK);
-    display->display();
+    //display->clear();
+    //display->drawbitmap(0, 0, JustBarelyLogo, 128, 64, BLACK);
+    //display->display();
 }

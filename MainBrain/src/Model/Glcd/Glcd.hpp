@@ -9,7 +9,9 @@
 #ifndef GLCD_HPP
 #define GLCD_HPP
 
-#include "ST7565.h"
+//#include "ST7565.h"
+#include <U8g2lib.h>
+#include <SPI.h>
 #include "../BaseModel/BaseModel.hpp"
 
 
@@ -127,7 +129,7 @@ private:
     };
 
     //private instance of the ST7565 object for our GLCD
-    ST7565* display;
+     //U8G2_ST7565_LM6059_F_4W_SW_SPI display;
 
 };
 
