@@ -19,48 +19,48 @@ uint8_t globalTaskFlags [NUM_DEVICES] = { 0 };
 
 //Start of ISR declarations
 void timerISR() {
-    globalEventFlags |= EF_TIMER;
+    globalEventFlags        |= EF_TIMER;
 }
 
 
 //setting the appropiate event and task flags for Precharge btn press
 void btnPrechargeISR() {
-    globalEventFlags      |= EF_DASH;
-    globalTaskFlags[DASH] |= TF_DASH_PRECHARGE;
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_PRECHARGE;
 }
 
 
 //setting the appropiate event and task flags for Ready to drive (RTD) btn press
 void btnRtdISR() {
-    globalEventFlags      |= EF_DASH;
-    globalTaskFlags[DASH] |= TF_DASH_RTD;
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_RTD;
 }
 
 
 //setting the appropiate event and task flags for Shutdown btn press
 void btnShutdownISR() {
-    globalEventFlags      |= EF_DASH;
-    globalTaskFlags[DASH] |= TF_DASH_SHUTDOWN;
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_SHUTDOWN;
 }
 
 
 //setting the appropiate event and task flags for standby btn press
 void btnStandbyISR() {
-    globalEventFlags      |= EF_DASH;
-    globalTaskFlags[DASH] |= TF_DASH_STANDBY;
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_STANDBY;
 }
 
 
 //setting the appropiate event and task flags for Wayne World btn press
 void btnWayneWorldISR() {
-    globalEventFlags      |= EF_DASH;
-    globalTaskFlags[DASH] |= TF_DASH_WAYNE_WORLD;
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_WAYNE_WORLD;
 }
 
 
 void donePrechargeISR() {
-    globalEventFlags              |= EF_UNITEK;
-    globalTaskFlags[UNITEK]       |= TF_UNITEK_DONE_PRECHARGE;
+    globalEventFlags        |= EF_UNITEK;
+    globalTaskFlags[UNITEK] |= TF_UNITEK_DONE_PRECHARGE;
 }
 
 
@@ -69,12 +69,12 @@ void donePrechargeISR() {
 int main(void)
 {
     Serial.begin(9600);
-    // while (!Serial) {
-    //     ; // wait for serial port to connect
-    // }
+    while (!Serial) {
+        ; // wait for serial port to connect
+    }
     
-    uint32_t bootStart = millis(); //tracks boot time
-    char buf[30]; //output buffer for sprintf
+    uint32_t bootStart = millis();  //tracks boot time
+    char buf[30];                   //output buffer for sprintf
 
     //Creating the controller singletons
     //Copying each controller location in memory
@@ -94,7 +94,7 @@ int main(void)
     
     //Calling init functions for each controller
     loggerC->init();
-    serialLogC->init();//begins serial logger
+    serialLogC->init();     //begins serial logger
     sdCardC->init();
     glcdC->init();
 
@@ -113,7 +113,6 @@ int main(void)
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
-
 
     //initialize the local and timer event flag variables
     uint32_t localEventFlags = 0;
@@ -134,7 +133,14 @@ int main(void)
     IntervalTimer myTimer;
 
     
-    //attaching interrupts
+    /*
+            _   _             _     _                _       _                             _
+       __ _| |_| |_ __ _  ___| |__ (_)_ __   __ _   (_)_ __ | |_ ___ _ __ _ __ _   _ _ __ | |_ ___
+      / _` | __| __/ _` |/ __| '_ \| | '_ \ / _` |  | | '_ \| __/ _ \ '__| '__| | | | '_ \| __/ __|
+     | (_| | |_| || (_| | (__| | | | | | | | (_| |  | | | | | ||  __/ |  | |  | |_| | |_) | |_\__ \
+      \__,_|\__|\__\__,_|\___|_| |_|_|_| |_|\__, |  |_|_| |_|\__\___|_|  |_|   \__,_| .__/ \__|___/
+                                            |___/                                   |_|
+    */
     //Button interrupts
     attachInterrupt(MB_PRE_BTN, btnPrechargeISR, RISING);
     attachInterrupt(MB_RTD_BTN, btnRtdISR, RISING);
@@ -147,8 +153,8 @@ int main(void)
 
 
     //initializing all the hardware
-    localStage.bootTest();
-
+    localStage.bootTest(&localEventFlags);
+    
 
     //Start 1ms timer (1000 usec)
     myTimer.begin(timerISR, 1000);
@@ -203,7 +209,7 @@ int main(void)
             }
         }
 
-    } //end of loop
+    } //end while()
 
 
     //SHUTDOWN function

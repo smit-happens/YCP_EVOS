@@ -74,25 +74,11 @@ void SerialLogger::removeFilter(msg_type type)
 bool SerialLogger::printMessage(msg_type type)
 {
     switch(type) {
-        case MSG_ERR:
-            return mFilter.bits.MSG_ERR;
-        break;
-
-        case MSG_LOG:
-            return mFilter.bits.MSG_LOG;
-        break;
-
-        case MSG_WARN:
-            return mFilter.bits.MSG_WARN;
-        break;
-
-        case MSG_DEBUG:
-            return mFilter.bits.MSG_DEBUG;
-        break;
-
-        default:
-            return true;
-        break;
+        case MSG_ERR:   return mFilter.bits.MSG_ERR;
+        case MSG_LOG:   return mFilter.bits.MSG_LOG;
+        case MSG_WARN:  return mFilter.bits.MSG_WARN;
+        case MSG_DEBUG: return mFilter.bits.MSG_DEBUG;
+        default:        return true;
     }
 }
 
@@ -101,30 +87,33 @@ void SerialLogger::onLogFiled(const char* key, const char* message, msg_type typ
 {
     if(!printMessage(type)) { return;} //if certain log 
 
-    Serial.print(key); 
-    Serial.print("\t");
-    Serial.print(message);
-    Serial.print("\t");
+    //default Serial message lengthl 
+    char buf[100];
 
-    switch(type) {
-        case MSG_ERR:
-            Serial.print(" ERR");
-        break;
+    uint currentMessageLen = (unsigned)strlen(message);
+    uint currentKeyLen = (unsigned)strlen(key);
 
-        case MSG_LOG:
-            Serial.print(" LOG");
-        break;
+    //check if current message is longer than our longest message
+    if(currentMessageLen > longestMessage)
+        longestMessage = currentMessageLen;
 
-        case MSG_WARN:
-             Serial.print(" WARN");
-        break;
+    //check if key is longer than our current longest key
+    if(currentKeyLen > longestKey)
+        longestKey = currentKeyLen;
 
-        case MSG_DEBUG:
-             Serial.print(" DEBUG");
-        break;
+    //temp variable for log message type
+    char logType[8];
 
-        default:break;
+    switch(type) 
+    {
+        case MSG_ERR:   strcpy(logType, "ERR");     break;
+        case MSG_LOG:   strcpy(logType, "LOG");     break;
+        case MSG_WARN:  strcpy(logType, "WARN");    break;
+        case MSG_DEBUG: strcpy(logType, "DEBUG");   break;
+        default:    break;
     }
 
-    Serial.println();
+    sprintf(buf, "%s%*s\t%s%*s\t%s", key, longestKey-currentKeyLen, "", message, longestMessage-currentMessageLen, "", logType);
+
+    Serial.println(buf);
 }

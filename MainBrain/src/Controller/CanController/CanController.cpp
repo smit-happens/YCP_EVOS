@@ -77,6 +77,7 @@ void CanController::distributeMail(void)
     canModel->storeMail();
     interrupts();
 
+    //local CAN message variable
     CAN_message_t canMessage;
 
     while(!canModel->localMailbox->isEmpty())
@@ -95,14 +96,14 @@ void CanController::distributeMail(void)
         }
         else if(canMessage.id == canModel->UNITEKREADID)
         {
-            //only thing we have to read/store for now
+            //FIXME: handling the return messages
             if(canMessage.buf[0] == REG_HVBUS)
             {
                 UnitekController::getInstance()->storeVoltageHvBus(canMessage.buf);
             }
 
             //error/warning reg
-            //FIXME: this is crap, put this logic into the unitek controller
+            //FIXME: put this logic into the unitek controller
             // if(canMessage.buf[0] == REG_ERROR)
             // {
             //     uint16_t errorValue=(canMessage.buf[4]<<8) || canMessage.buf[3];

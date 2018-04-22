@@ -27,24 +27,27 @@ typedef union {
 
 class SerialLogger: public BaseController, public LogListener
 {
-    public:        
-        void init(void);
-        static SerialLogger* getInstance();
+public:        
+    void init(void);
+    static SerialLogger* getInstance();
 
-        void setFilter(uint8_t filter_raw);
-        void addFilter(msg_type type);
-        void removeFilter(msg_type type);
-        void onLogFiled(const char* key, const char* message, msg_type type);
+    void setFilter(uint8_t filter_raw);
+    void addFilter(msg_type type);
+    void removeFilter(msg_type type);
+    void onLogFiled(const char* key, const char* message, msg_type type);
 
-    private:
-        filter_pack mFilter;
+private:
+    //instance pointer used for singleton
+    static SerialLogger* _pInstance;
 
-        static SerialLogger* _pInstance;
+    SerialLogger() {};
+    virtual ~SerialLogger() {};
 
-        SerialLogger() {};
-        virtual ~SerialLogger() {};
+    filter_pack mFilter;
 
-        bool printMessage(msg_type type);
+    uint longestMessage, longestKey = 0;
+
+    bool printMessage(msg_type type);
     
 };
 

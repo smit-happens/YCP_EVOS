@@ -70,7 +70,7 @@ uint32_t StageManager::processTimers(void)
  * @note   
  * @retval None
  */
-void StageManager::bootTest(void)
+void StageManager::bootTest(uint32_t* eventFlags)
 {
     //LCD (boot logo)
     GlcdController::getInstance()->justBarelyLogo();
@@ -101,15 +101,11 @@ void StageManager::bootTest(void)
     //assuming everything is okay
         //Notification: All systens go. Ready to Precharge
 
-
-    if(/* check for ShutdownEF*/ 1 )
-    {
-        currentStage = STAGE_STANDBY;
-    }
-    else
-    {
+    //checking if the shutdown EF triggered
+    if(*eventFlags & EF_SHUTDOWN)
         shutdown();
-    }
+    else
+        currentStage = STAGE_STANDBY;
 
 }
 
@@ -208,7 +204,7 @@ void StageManager::configureStage(void)
                 Logger::getInstance()->log("STAGE_MGR", buf, MSG_LOG);
                 
 
-                 numericVoltage *= 0.75;
+                numericVoltage *= 0.75;
 
                 sprintf(buf, "75 percent numeric battery voltage %d", numericVoltage);
                 Logger::getInstance()->log("STAGE_MGR", buf, MSG_LOG);
@@ -235,7 +231,6 @@ void StageManager::configureStage(void)
                 }
 
                 //sending 0 to VAR1 in Unitek, indicating that precharge is done
-                //Serial.println("Sending 0");
                 Logger::getInstance()->log("STAGE_MGR", "Sending 0 to MC: Precharge complete", MSG_LOG);
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0, 0);                
 
@@ -322,9 +317,6 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
             if(*eventFlags & EF_SHUTDOWN)
             {
                 shutdown();
-                
-                //clearing the EF so we don't trigger this again
-                *eventFlags &= ~EF_SHUTDOWN;
             }
 
 
@@ -466,13 +458,14 @@ uint32_t StageManager::processCan(uint8_t* taskFlags)
             float pedalPercent = PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
             uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
 
-            Serial.println(numericSpeedSetPoint);
-
             //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
             CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
 
+            //clearing the TF for sending pedal values
             taskFlags[CAN] &= ~TF_CAN_SEND_PEDAL;
         }
+
+        //TODO: add function to poll unitek so we update our local pedal value
     }
 
     return 0;
@@ -507,8 +500,6 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
     {
         //user wants to halt the system
         shutdown();
-
-        taskFlags[DASH] &= ~TF_DASH_SHUTDOWN;
     }
 
     //checks in standby stage
@@ -517,7 +508,7 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
         //precharge button is pressed
         if(taskFlags[DASH] & TF_DASH_PRECHARGE)
         {
-            Logger::getInstance()->log("STAGE_MGR", "Dash - Precharge btn press", MSG_LOG);
+            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_PRECHARGE", MSG_LOG);
 
             //change stage to precharging
             changeStage = STAGE_PRECHARGE;
@@ -531,8 +522,22 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
     {
         if(taskFlags[DASH] & TF_DASH_RTD)
         {
-            //Serial.println("Dash - RTD Drive task");
-            Logger::getInstance()->log("STAGE_MGR", "Dash- RTD Drive task", MSG_LOG);
+            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_RTD", MSG_LOG);
+            
+            //Changing the stage
+            changeStage = STAGE_DRIVING;
+
+            //Clearing event flag
+            taskFlags[DASH] &= ~TF_DASH_RTD;
+        }
+    }
+
+    //checks in everything but standby stage
+    if(currentStage != STAGE_STANDBY)
+    {
+        if(taskFlags[DASH] & TF_DASH_STANDBY)
+        {
+            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_STANDBY", MSG_LOG);
             
             //Changing the stage
             changeStage = STAGE_DRIVING;
@@ -638,26 +643,26 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 {
     //PROCESSES FOR ANY STAGE
 
-    // //need to update error/warning reg prior to checking for errors
-    // CanController::getInstance()->sendUnitekRead(REG_ERROR);
+    //need to update error/warning reg prior to checking for errors
+    CanController::getInstance()->sendUnitekRead(REG_ERROR);
                 
-    // //record the current time in milliseconds
-    // uint32_t startTime = millis();
+    //record the current time in milliseconds
+    uint32_t startTime = millis();
 
-    // //wait for 10 milliseconds for CAN message
-    // while((millis() - startTime) < 10)
-    // {;}
+    //wait for 10 milliseconds for CAN message
+    while((millis() - startTime) < 10)
+    {;}
 
-    // //"forcing" cancontroller to update unitek model
-    // CanController::getInstance()->distributeMail();
+    //"forcing" cancontroller to update unitek model
+    CanController::getInstance()->distributeMail();
 
-    // //check if shutdown is needed
-    // if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)
-    // {
-    //     //Serial.println("Problem in MC. Shutdown Required.");
-    //     Logger::getInstance()->log("STAGE_MGR", "Error in MC. Shutdown Required", MSG_ERR);
-    //     return EF_SHUTDOWN;
-    // }
+    //check if shutdown is needed
+    if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)
+    {
+        //Serial.println("Problem in MC. Shutdown Required.");
+        Logger::getInstance()->log("STAGE_MGR", "Error in MC. Shutdown Required", MSG_ERR);
+        return EF_SHUTDOWN;
+    }
 
 
     //STAGE SPECIFIC PROCESSES
