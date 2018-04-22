@@ -9,10 +9,14 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 
-#include "../../Controller/SdCardController/SdCardController.hpp"
 #include "../../Controller/BaseController/BaseController.hpp"
 #include "LogListener.hpp"
+#include "SerialLogger.hpp"
+#include "../SdCardController/SdCardController.hpp"
+
+
 class LogListener; //forward declaration of logListener
+
 
 class Logger: BaseController
 {
@@ -20,12 +24,10 @@ public:
     //maximum number of broadcast subscribers
 
     static const int MAX_SUBSCRIBERS = 20;
-    ~Logger(void);
+    ~Logger(void) {};
 
     void init(void); //we do need an init to setup the singleton.
-    void poll(void) {}; //no need for poll, logger is updated when log is fired
 
-    void shutdown(void) {}; 
 
     //singleton getter
     static Logger* getInstance();

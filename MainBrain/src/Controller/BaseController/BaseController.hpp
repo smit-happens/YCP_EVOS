@@ -11,6 +11,8 @@
 
 #include <Arduino.h>
 #include "../../Model/Constants/TimeDelay.hpp"
+#include "../../Model/Constants/Constants.hpp"
+
 
 class BaseController
 {
@@ -18,7 +20,7 @@ public:
     BaseController() {};
     virtual ~BaseController() {};  //to prevent memory leaks
 
-    //Due to the simgleton manager, constructors shouldn't be doing anything complicated
+    //Due to the singleton manager, constructors shouldn't be doing anything complicated
     //so this requires a function for initialization for every controller
     virtual void init() = 0;
 

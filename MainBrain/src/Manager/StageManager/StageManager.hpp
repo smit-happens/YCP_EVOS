@@ -43,7 +43,7 @@ public:
     uint32_t processTimers(void);
 
     //Boot for each device
-    void bootTest(void);
+    void bootTest(uint32_t* eventFlags);
 
     void shutdown(void);
 

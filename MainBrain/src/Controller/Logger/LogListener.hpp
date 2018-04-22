@@ -19,8 +19,6 @@ public:
     virtual ~LogListener(void) {};
 
     virtual void onLogFiled(const char* key, const char* message, msg_type type) = 0;
-private:
-    //LogListener(void) {};
 };
 
 #endif

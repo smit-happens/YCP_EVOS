@@ -92,8 +92,11 @@ float PedalController::getPercentageGas(void)
     // float percentageValue = ((float)gasModel->getRawValue() - (float)gasModel->getRawOrigin()) / (MAX_ANALOGREAD - (float)gasModel->getRawOrigin());    
     float percentageValue = ((float)gasModel->getRawValue()) / MAX_ANALOGREAD;
 
+    //FIXME: uncomment this stuff and fix this
     //tolerance for gas pedal and handles brake pressed
-    if (percentageValue<=2 || PedalController::getPercentageBrake()>0){
+    // if (percentageValue<=2 || PedalController::getPercentageBrake()>0){
+    if (percentageValue <= 2)
+    {
         percentageValue = 0;
     }
 

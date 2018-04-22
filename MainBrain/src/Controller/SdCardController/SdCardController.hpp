@@ -10,7 +10,6 @@
 #define SDCARDCONTROLLER_HPP
 
 #include "../BaseController/BaseController.hpp"
-#include "../../Model/Constants/Constants.hpp"
 #include "../../Model/SdCard/SdCard.hpp"
 #include "../Logger/Logger.hpp"
 #include "../Logger/LogListener.hpp"
@@ -36,13 +35,12 @@
 class SdCardController  : public BaseController, public LogListener
 {
 public:
-    ~SdCardController(void);
+    ~SdCardController(void) { delete sdCardModel; };
 
     static SdCardController*   getInstance();
 
     void init(void);
-    void poll(void);
-    void shutdown(void);    //TODO: implement
+    void shutdown(void);
     
 
     /** 
@@ -58,9 +56,10 @@ public:
 
 
 private:
-    //Private contstructor so that it can't be called
     const uint8_t MSG_STR_BUF_LEN = 100;
     const char* DELIM = "|"; //NOTE this MUST be of length 1!!
+
+    //Private contstructor so that it can't be called
     SdCardController() {};
     //copy constructor is private
     SdCardController(SdCardController const&) {};

@@ -21,9 +21,6 @@ public:
     static OrionController*   getInstance();
 
     void init(void);
-    void poll(void);
-
-    void shutdown(void) {};    //TODO: implement
 
     //private functions to parse the CAN messages
     void updateModelMessage_0x420(uint8_t* messageToParse);

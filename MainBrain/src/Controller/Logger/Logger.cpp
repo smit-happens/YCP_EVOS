@@ -7,16 +7,17 @@
  */
 
 #include "Logger.hpp"
-#include "SerialLogger.hpp"
 
 //to see if the instance of the class has been initialized yet
 Logger* Logger::_pInstance = NULL; 
+
 
 void Logger::init(void)
 {
     //what do we do here??
     mNumSubscribers = 0;
 }
+
 
 Logger* Logger::getInstance()
 {
@@ -27,10 +28,6 @@ Logger* Logger::getInstance()
     return _pInstance;
 }
 
-Logger::~Logger() 
-{
-
-}
 
 //Observer Pattern is broken these messages are depreciated.
 bool Logger::addSubscriber(LogListener* listener)
@@ -42,6 +39,7 @@ bool Logger::addSubscriber(LogListener* listener)
     return true;
 }
 
+
 void Logger::msgPump(const char* key, const char* message, msg_type type)
 {
     for(int i=0; i < mNumSubscribers; i++)
@@ -49,6 +47,7 @@ void Logger::msgPump(const char* key, const char* message, msg_type type)
         mSubscribers[i]->onLogFiled(key, message, type); //this line breaks can if called.
     }
 }
+
 
 bool Logger::log(const char* key, const char* message, msg_type type)
 {
