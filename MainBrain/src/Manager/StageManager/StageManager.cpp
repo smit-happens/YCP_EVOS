@@ -513,7 +513,7 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
         //precharge button is pressed
         if(taskFlags[DASH] & TF_DASH_PRECHARGE)
         {
-            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_PRECHARGE", MSG_LOG);
+            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_PRECHARGE", MSG_DEBUG);
 
             //change stage to precharging
             changeStage = STAGE_PRECHARGE;
@@ -527,7 +527,7 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
     {
         if(taskFlags[DASH] & TF_DASH_RTD)
         {
-            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_RTD", MSG_LOG);
+            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_RTD", MSG_DEBUG);
             
             //Changing the stage
             changeStage = STAGE_DRIVING;
@@ -542,7 +542,7 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
     {
         if(taskFlags[DASH] & TF_DASH_STANDBY)
         {
-            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_STANDBY", MSG_LOG);
+            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_STANDBY", MSG_DEBUG);
             
             //Changing the stage
             changeStage = STAGE_STANDBY;
