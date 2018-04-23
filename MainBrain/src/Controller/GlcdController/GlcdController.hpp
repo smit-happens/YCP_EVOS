@@ -14,11 +14,15 @@
 // #include "../Logger/LogListener.hpp"
 #include "../Logger/Logger.hpp"
 
-
-
 class GlcdController : public BaseController, public LogListener
 {
 public:
+    enum DispMode{
+        MODE_LOG,
+        MODE_DASH,
+        MODE_MENU
+    };
+
     ~GlcdController(void);
 
     static GlcdController*   getInstance();
@@ -29,6 +33,9 @@ public:
 
     void justBarelyLogo(void);
 
+    void onLogFiled(const char* key, const char* message,  msg_type type);
+
+    void setNewState(Stage);
 
 private:
     //Private contstructor so that it can't be called
@@ -42,7 +49,8 @@ private:
     //private instance of model
     Glcd* glcdModel;
 
-    void onLogFiled(const char* key, const char* message,  msg_type type);
+    DispMode mode = MODE_DASH;
+    
 };
 
 

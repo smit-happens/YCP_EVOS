@@ -146,8 +146,8 @@ const static unsigned char Shutdown_bits[] = {
    0xff, 0x7f, 0x00, 0xc0, 0xff, 0xff, 0x3f, 0x00, 0x80, 0xff, 0xff, 0x1f,
    0x00, 0x00, 0xff, 0xff, 0x01, 0x00, 0x00, 0xe0, 0x3f, 0x00, 0x00 };
 
-
-
+#define MODE_START_X 40
+#define MODE_START_Y 30
 
 class Glcd : public BaseModel
 {
@@ -159,6 +159,7 @@ public:
 
     void showBootLogo(void);
     void showShutdownLogo(void);
+    void drawModeSelection(Stage);
     /**  
      * Drafting up possible functions
      * 
@@ -168,11 +169,14 @@ public:
      * void showList(void);     //maybe a private function?
      * 
      * void setBacklightRgb(int r, int g, int b);
+     * 
      */
 
+    bool getDirtyBit(void); //if the buffer has been written to.
+    void flushGlcdBuffer(void);
 
 private:
-
+    bool dirtyBit = false; //if buffer has been modified
     //private instance of the ST7565 object for our GLCD
      U8G2_ST7565_LM6059_F_4W_SW_SPI* display;
 

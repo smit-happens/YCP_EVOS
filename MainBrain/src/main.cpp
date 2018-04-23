@@ -164,7 +164,7 @@ int main(void)
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
-    while(localStage.currentStage != StageManager::STAGE_SHUTDOWN)
+    while(localStage.currentStage != STAGE_SHUTDOWN)
     {
         noInterrupts();
         

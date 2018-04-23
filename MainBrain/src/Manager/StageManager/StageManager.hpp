@@ -18,16 +18,6 @@ class StageManager
 {
 public:
 
-    enum Stage
-    {
-        STAGE_BOOTTEST,
-        STAGE_STANDBY,
-        STAGE_PRECHARGE,
-        STAGE_ENERGIZED,
-        STAGE_DRIVING,
-        STAGE_SHUTDOWN
-    };
-
     //current stage that we're processing
     Stage currentStage;
 

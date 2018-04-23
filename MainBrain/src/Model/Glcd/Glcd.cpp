@@ -20,9 +20,7 @@ Glcd::Glcd(void)
     // initialize the glcd and set the contrast to 0x18
     display->begin();
     display->clearBuffer();
-    display->setFont(u8g2_font_ncenB14_tr);
-    display->drawStr(0,20,"Hello World!");
-    display->sendBuffer();
+    display->setContrast(130);
 }
 
 
@@ -32,7 +30,7 @@ Glcd::Glcd(void)
  */
 Glcd::~Glcd(void)
 {
-    delete display;
+    //delete display;
 }
 
 
@@ -46,11 +44,54 @@ void Glcd::update(void)
 
 }
 
+//displays the current mode selection on the GLCD in a graphical manner. There is a drop capital so that the mode is easily distinguishable
+void Glcd::drawModeSelection(Stage stage)
+{
+    display->setFont(u8g2_font_profont29_tr);
+    display->clearBuffer();
+    switch(stage){
+        case STAGE_STANDBY:
+            display->drawStr(MODE_START_X, MODE_START_Y, "S");
+            display->setFont(u8g2_font_profont10_tr);
+            display->drawStr(MODE_START_X+14, MODE_START_Y, "tdby");
+        break;
+        case STAGE_PRECHARGE:
+            display->drawStr(MODE_START_X, MODE_START_Y, "P");
+            display->setFont(u8g2_font_profont10_tr);
+            display->drawStr(MODE_START_X+14, MODE_START_Y, "re");
+        break;
+        case STAGE_ENERGIZED:
+            display->drawStr(MODE_START_X, MODE_START_Y, "E");
+            display->setFont(u8g2_font_profont10_tr);
+            display->drawStr(MODE_START_X+14, MODE_START_Y, "nergized");
+        break;
+        case STAGE_DRIVING:
+            display->drawStr(MODE_START_X, MODE_START_Y, "D");
+            display->setFont(u8g2_font_profont10_tr);
+            display->drawStr(MODE_START_X+14, MODE_START_Y, "rive");
+        break;
+        default: break;
+    }
+    dirtyBit = true;
+}
+
+void Glcd::flushGlcdBuffer(void)
+{
+    display->sendBuffer();
+    dirtyBit = false;
+}
+
+bool Glcd::getDirtyBit(void)
+{
+    return dirtyBit;
+}
+
+
 void Glcd::showShutdownLogo(void)
 {
     display->clearBuffer();
     display->drawXBM(46, 5, Shutdown_width, Shutdown_height, Shutdown_bits);
-    display->sendBuffer();
+    display->sendBuffer(); //this is ok since everthing is shutdown
 }
 
 /** 
@@ -69,5 +110,5 @@ void Glcd::showBootLogo(void)
     display->drawXBM(0, 0, Just_Barely_width, Just_Barely_height, Just_Barely_bits);
     // display->setFont(u8g2_font_ncenB14_tr);
     // display->drawStr(0,20,"SPLASH SCREEN");
-    display->sendBuffer();
+    display->sendBuffer(); //this is ok since we're in start
 }

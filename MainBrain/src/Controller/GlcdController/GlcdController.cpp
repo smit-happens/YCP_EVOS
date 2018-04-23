@@ -47,6 +47,7 @@ void GlcdController::init(void)
 {
     //Logger::getInstance()->addSubscriber(_pInstance);
     glcdModel = new Glcd();
+    mode = MODE_DASH; //start the mode off at dashboard
 }
 
 
@@ -57,7 +58,9 @@ void GlcdController::init(void)
  */
 void GlcdController::poll(void)
 {
-
+    if(glcdModel->getDirtyBit()){
+        glcdModel->flushGlcdBuffer();
+    }
 }
 
 
@@ -71,6 +74,13 @@ void GlcdController::shutdown(void)
     glcdModel->showShutdownLogo();
 }
 
+
+void GlcdController::setNewState(Stage stage) {
+    Logger::getInstance()->log("GLCD_Controller", "Setting Mode", MSG_DEBUG);
+    if(mode == MODE_DASH){ //TODO: set mode here? or just display if already in dash?
+        glcdModel->drawModeSelection(stage);
+    } 
+}
 
 /** 
  * @brief  Displays the just barely logo

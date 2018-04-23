@@ -25,7 +25,7 @@ const int TIME_PRECHARGE    = 666;
 
 
 //GLCD polling delay
-const int POLL_TIME_GLCD    = 500;
+const int POLL_TIME_GLCD    = 300;
 
 //SdCard logging delay
 const int POLL_TIME_SDCARD  = 500;

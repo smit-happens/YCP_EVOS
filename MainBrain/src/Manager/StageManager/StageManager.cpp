@@ -160,6 +160,7 @@ void StageManager::configureStage(void)
 
                 //TODO: Standby setup code
                 Logger::getInstance()->log("STAGE_MGR", "Stage: Standby", MSG_LOG);
+                GlcdController::getInstance()->setNewState(STAGE_STANDBY);
 
                 //Resetting VAR1 precharge value to the "off" state
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
@@ -181,6 +182,7 @@ void StageManager::configureStage(void)
 
                 //TODO: Precharge setup code
                 Logger::getInstance()->log("STAGE_MGR", "Stage: Precharge", MSG_LOG);
+                GlcdController::getInstance()->setNewState(STAGE_PRECHARGE);
 
                 //TODO: check for specific error in the future before setting high
 
@@ -252,6 +254,7 @@ void StageManager::configureStage(void)
 
                 //TODO: Energized setup code
                 Logger::getInstance()->log("STAGE_MGR", "Stage: Energized", MSG_LOG);
+                GlcdController::getInstance()->setNewState(STAGE_ENERGIZED);
 
                 //indicate to Driver that car is energized
                 LightController::getInstance()->turnOn(LightController::LIGHT_ENERGIZE);
@@ -273,6 +276,7 @@ void StageManager::configureStage(void)
                 //TODO: Driving setup code
                 //Serial.println("Driving Stage");
                 Logger::getInstance()->log("STAGE_MGR", "Stage: Driving", MSG_LOG);
+                GlcdController::getInstance()->setNewState(STAGE_DRIVING);
 
                 //Set Drive to high to go into 'Drive'
                 digitalWriteFast(MB_DRIVE_EN, HIGH);
@@ -304,7 +308,7 @@ void StageManager::configureStage(void)
  * @param  taskFlags: 
  * @retval 
  */
-StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags)
+Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags)
 {
     configureStage();
     
@@ -561,7 +565,7 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
 uint32_t StageManager::processGlcd(void)
 {
     //glcd view display updating
-
+    GlcdController::getInstance()->poll(); //will flush buffer if required.
     return 0;
 }
 
