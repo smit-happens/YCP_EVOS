@@ -621,20 +621,25 @@ uint32_t StageManager::processOrion(void)
 {
     //first check for pack state of charge issues
     float packSOC = OrionController::getInstance()->getStateOfCharge();
+    //maxCellTemperature represents the maximum temperature that we will allow a battery to reach before shutting off the car
+    uint8_t maxCellTemperatureCelcius = 60;
+
     //if the pack is greater than 20% and less than 25%, change the view on the GLCD to notify the driver
     if(packSOC > 20 && packSOC <= 25)
     {
-        //the GLCD will update with a change on the user interface for the 
+        //the GLCD will update with a change on the user interface for the driver to know the battery is getting low
         //GLCD_warnSocLow()
     }
     //if the pack is greater than 15% and less than 20%, cut the max RPM to 1000 to conserve power and be able to return to the original location without pulling as much power
     else if(packSOC > 15 && packSOC <= 20)
     {
-        UnitekController::getInstance()->storeRpmLimit(1000);
+        //set the speed calculation factor to 8 which will make the max rpm sent be 6600/8 = 825 rpms
+        UnitekController::getInstance()->storeSpeedCalculationFactor(8);
     }
     //if the pack is at 15%, shut off the tractive system and continually flash the Orion error light until the GLV system is shut off
     else if(packSOC <= 15)
     {
+        Logger::getInstance()->log("ORION", "Battery SOC too low, shutting off tractive system", MSG_LOG);
         //shut down the car immediately
         StageManager::shutdown();
     }
@@ -646,7 +651,7 @@ uint32_t StageManager::processOrion(void)
     //second check for pack temperature issues
     uint8_t highestTempOfPack = OrionController::getInstance()->getHighestCellTemp();
     //if the highest temperature in the pack is greater than 60 degrees celcius, shut off the car
-    if(highestTempOfPack > 60)
+    if(highestTempOfPack > maxCellTemperatureCelcius)
     {
         Logger::getInstance()->log("ORION", "Highest cell temp too high: " + highestTempOfPack, MSG_LOG);
         StageManager::shutdown();

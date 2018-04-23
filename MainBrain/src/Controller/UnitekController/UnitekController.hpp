@@ -44,6 +44,8 @@ public:
     void storeTempOutputStage(uint16_t ouputTemp);
     void storeTempInterior(uint16_t interiorTemp);
     bool checkErrorWarningForShutdown();
+    void storeSpeedCalculationFactor(float newSpeedCalculationFactor);
+
     
 
 private:

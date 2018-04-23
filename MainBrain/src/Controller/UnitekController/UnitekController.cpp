@@ -46,6 +46,8 @@ UnitekController::~UnitekController(void)
 void UnitekController::init(void)
 {
     unitekModel = new Unitek();
+    //set the speedcalculation factor to not modify the value at all
+    unitekModel->setSpeedCalculationFactor(1);
 }
 
 
@@ -94,6 +96,7 @@ int UnitekController::calculateSpeedValue(float rpm)
 float UnitekController::calculateRpm(int speedValue)
 {
     float percentage = (float)speedValue / unitekModel->MAX_VALUE;
+    percentage = percentage / unitekModel->getSpeedCalculationFactor();
     return percentage * unitekModel->getRpmLimit();
 }
 
@@ -286,8 +289,16 @@ void UnitekController::storeTempInterior(uint16_t interiorTemp)
 {
     unitekModel->setTemperatureInterior(interiorTemp);
 }
-
-
+/** 
+ * @brief  update the speed calculation factor in the model using this function
+ * @note   N/A
+ * @param  newSpeedCalculationFactor: the new speed calculation factor to be set
+ * @retval None
+ */
+void UnitekController::storeSpeedCalculationFactor(float newSpeedCalculationFactor)
+{
+    unitekModel->setSpeedCalculationFactor(newSpeedCalculationFactor);
+}
 /** 
  * @brief  checks the warning and error registers to see if shutdown is needed
  * @note   prior to using this function update the registers via CAN and store function
