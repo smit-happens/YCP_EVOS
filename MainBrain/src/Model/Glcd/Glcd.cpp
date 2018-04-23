@@ -107,6 +107,7 @@ void Glcd::drawBattBars(uint8_t lvBattPercent, uint8_t hvBattPercent)
         //display->setDrawColor(1); //now drawing black pixels
         //display->drawRBox(BATT_BAR_START_X+1, LV_BAR_START_Y+3, hvBarLength, LV_Batt_height-4, 3);
     //}
+    display->setDrawColor(1); //draw black now
    
     dirtyBit = true;
 }
