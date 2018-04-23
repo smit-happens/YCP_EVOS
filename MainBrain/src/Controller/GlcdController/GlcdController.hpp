@@ -43,6 +43,8 @@ private:
     //copy constructor is private
     GlcdController(GlcdController const&) {};
 
+    void setupDashMode();
+
     //static instance pointer
     static GlcdController* _pInstance;
 

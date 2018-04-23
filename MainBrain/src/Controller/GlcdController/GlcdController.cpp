@@ -58,6 +58,7 @@ void GlcdController::init(void)
  */
 void GlcdController::poll(void)
 {
+    //glcdModel->drawBattBars(30, 60);
     if(glcdModel->getDirtyBit()){
         glcdModel->flushGlcdBuffer();
     }
@@ -76,10 +77,18 @@ void GlcdController::shutdown(void)
 
 
 void GlcdController::setNewState(Stage stage) {
-    Logger::getInstance()->log("GLCD_Controller", "Setting Mode", MSG_DEBUG);
+    //Logger::getInstance()->log("GLCD_Controller", "Setting Mode", MSG_DEBUG);
     if(mode == MODE_DASH){ //TODO: set mode here? or just display if already in dash?
         glcdModel->drawModeSelection(stage);
+        setupDashMode(); //screen reset we need to re-setup the dash
+    
     } 
+}
+
+void GlcdController::setupDashMode()
+{
+    glcdModel->setupBattBars(); //screen cleared we need to resetup the dash
+    glcdModel->drawBattBars(30, 60);
 }
 
 /** 
