@@ -89,25 +89,20 @@ bool Glcd::getDirtyBit(void)
 void Glcd::drawBattBars(uint8_t lvBattPercent, uint8_t hvBattPercent)
 { 
     char buf[50];
-   // int lvBarLength = ((BAR_LENGTH-2)*lvBattPercent) / 100;
-    //int hvBarLength = ((BAR_LENGTH-2)*hvBattPercent) / 100;
-
-    //sprintf(buf, "LV_Bar: %d, HV bar %d", lvBarLength, hvBarLength);
-    //Logger::getInstance()->log("GLCD", buf, MSG_DEBUG);
+    int lvBarLength = ((BAR_LENGTH-2)*lvBattPercent) / 100;
+    int hvBarLength = ((BAR_LENGTH-2)*hvBattPercent) / 100;
 
     display->setDrawColor(0); //now drawing blank pixels, clear old bar
     display->drawRBox(BATT_BAR_START_X+1, HV_BAR_START_Y+3, BAR_LENGTH-2, HV_batt_height-4, 3);
     display->drawRBox(BATT_BAR_START_X+1, LV_BAR_START_Y+3, BAR_LENGTH-2, LV_Batt_height-4, 3);
-
-   // if(hvBarLength > 2){
-       // display->setDrawColor(1); //now drawing black
-        //display->drawRBox(BATT_BAR_START_X+1, HV_BAR_START_Y+3, lvBarLength, HV_batt_height-4, 3);
-    //}
-    //else if(lvBarLength > 2) {
-        //display->setDrawColor(1); //now drawing black pixels
-        //display->drawRBox(BATT_BAR_START_X+1, LV_BAR_START_Y+3, hvBarLength, LV_Batt_height-4, 3);
-    //}
     display->setDrawColor(1); //draw black now
+   if(hvBarLength > 2){
+        display->drawRBox(BATT_BAR_START_X+1, HV_BAR_START_Y+3, lvBarLength, HV_batt_height-4, 3);
+    }
+    else if(lvBarLength > 2) {
+        display->drawRBox(BATT_BAR_START_X+1, LV_BAR_START_Y+3, hvBarLength, LV_Batt_height-4, 3);
+    }
+    
    
     dirtyBit = true;
 }

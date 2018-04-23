@@ -58,7 +58,7 @@ void GlcdController::init(void)
  */
 void GlcdController::poll(void)
 {
-    //glcdModel->drawBattBars(30, 60);
+    glcdModel->drawBattBars(30, 60);
     if(glcdModel->getDirtyBit()){
         glcdModel->flushGlcdBuffer();
     }
