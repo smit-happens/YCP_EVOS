@@ -12,8 +12,9 @@
 #include "../BaseController/BaseController.hpp"
 #include "../../Model/BrakePedal/BrakePedal.hpp"
 #include "../../Model/GasPedal/GasPedal.hpp"
+#include "../LightController/LightController.hpp"
 
-//Error if there's an implausibility or a short in the wires
+
 class PedalController : public BaseController
 {
 public:
@@ -23,13 +24,14 @@ public:
 
     void init(void);
     void poll(void);
-    void shutdown(void);    //TODO: implement
 
     float getPercentageGas(void);
     bool isImplausibilityGas(void);
 
     float getPercentageBrake(void);
     bool isImplausibilityBrake(void);
+
+    void CheckBrakeLight(void);
 
 private:
     //Private contstructor so that it can't be called
@@ -39,7 +41,6 @@ private:
 
     //static instance pointer
     static PedalController* _pInstance;
-
 
     //private instance of models
     BrakePedal* brakeModel;

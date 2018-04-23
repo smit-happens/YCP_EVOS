@@ -620,17 +620,19 @@ void StageManager::processOrion(uint8_t* taskFlags)
  */
 void StageManager::processPedal(uint32_t* eventFlags, uint8_t* taskFlags)
 {
+    //polling the pedals updating the model    
+    PedalController::getInstance()->poll();
+
+    //seeing if we need to turn on the brake light
+    PedalController::getInstance()->CheckBrakeLight();
+
 
     if(currentStage == STAGE_DRIVING)
     {
-        //read and store the pedal value
-
-        //polling the pedals updating the model
-        PedalController::getInstance()->poll();
-
+        //need to send pedal value over CAN
         *eventFlags |= EF_CAN;
 
-        //taskflag setting for pedal value sending
+        //taskflag setting for sending the gas pedal value to unitek
         taskFlags[CAN] |= TF_CAN_SEND_PEDAL;
     }
 }
