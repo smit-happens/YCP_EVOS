@@ -127,6 +127,7 @@ void StageManager::shutdown(void)
 
     //close SD card. TODO: shutdown other things?
     SdCardController::getInstance()->shutdown(); 
+    GlcdController::getInstance()->shutdown();
 
     //turn off all dash lights except for Error lights
     LightController::getInstance()->turnNonErrorOff();

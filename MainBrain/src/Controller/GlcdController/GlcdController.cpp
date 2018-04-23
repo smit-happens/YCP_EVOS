@@ -68,7 +68,7 @@ void GlcdController::poll(void)
  */
 void GlcdController::shutdown(void)
 {
-    
+    glcdModel->showShutdownLogo();
 }
 
 
