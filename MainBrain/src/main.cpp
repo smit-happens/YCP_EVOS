@@ -58,6 +58,13 @@ void btnWayneWorldISR() {
 }
 
 
+//encoder button press servicing ISR
+void btnEncoderISR() {
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_ENCODER;
+}
+
+
 //triggered when TSCB says we're done precharging
 void donePrechargeISR() {
     globalEventFlags        |= EF_UNITEK;
@@ -160,6 +167,7 @@ int main(void)
     attachInterrupt(MB_SHUTDOWN_BTN, btnShutdownISR, RISING);
     attachInterrupt(MB_STANDBY_BTN, btnStandbyISR, RISING);
     attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
+    attachInterrupt(MB_ENC_BTN, btnEncoderISR, RISING);
 
     //Unitek interrupts
     attachInterrupt(MB_DONE_PRE, donePrechargeISR, FALLING);    //LOW == we are done precharging

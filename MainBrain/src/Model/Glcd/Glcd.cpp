@@ -81,6 +81,12 @@ void Glcd::flushGlcdBuffer(void)
     dirtyBit = false;
 }
 
+void Glcd::clearGlcdBuffer(void)
+{
+    display->clearBuffer();
+    dirtyBit = true;
+}
+
 bool Glcd::getDirtyBit(void)
 {
     return dirtyBit;

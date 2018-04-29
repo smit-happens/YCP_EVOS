@@ -514,6 +514,16 @@ void StageManager::processDash(uint8_t* taskFlags)
         shutdown();
     }
 
+    if(taskFlags[DASH] & TF_DASH_ENCODER)
+    {
+        logger->log("STAGE_MGR", "Dash - TF_DASH_ENCODER", MSG_DEBUG);
+        
+        GlcdController::getInstance()->advanceMode();
+    
+        taskFlags[DASH] &= ~TF_DASH_ENCODER;
+    }
+
+
     //checks in standby stage
     if(currentStage == STAGE_STANDBY)
     {

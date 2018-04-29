@@ -60,7 +60,8 @@ void GlcdController::poll(void)
 {
     if(mode == MODE_DASH) 
     {
-        glcdModel->drawBattBars(0, 95);
+        // glcdModel->drawBattBars(0, 95);
+        glcdModel->drawBattBars(0, (uint8_t)OrionController::getInstance()->getStateOfCharge() *100);
     }
     if(glcdModel->getDirtyBit()){
         glcdModel->flushGlcdBuffer();
@@ -81,7 +82,8 @@ void GlcdController::shutdown(void)
 
 
 void GlcdController::setNewMode(DispMode theMode) 
-{ //TODO: Clear screen buffer!
+{ 
+    glcdModel->clearGlcdBuffer();
     mode = theMode;
     switch(mode) 
     {
@@ -113,7 +115,7 @@ GlcdController::DispMode GlcdController::advanceMode()
             //do nothing
         break;
         case MODE_BEGIN:
-            setNewMode(MODE_BEGIN);
+            setNewMode(MODE_DASH);
         break;
         case MODE_TEMP:
             setNewMode(MODE_DASH);  

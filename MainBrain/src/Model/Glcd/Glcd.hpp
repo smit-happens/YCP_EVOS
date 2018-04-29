@@ -251,6 +251,7 @@ public:
 
     bool getDirtyBit(void); //if the buffer has been written to.
     void flushGlcdBuffer(void);
+    void clearGlcdBuffer(void);
 
 private:
     bool dirtyBit = false; //if buffer has been modified
