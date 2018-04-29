@@ -29,7 +29,9 @@ public:
 
     void init(void);
     void poll(void);
-    void shutdown(void);    //TODO: implement
+    void shutdown(void); 
+    void setShutdownError(err_type err);
+
 
 
     void onLogFiled(const char* key, const char* message,  msg_type type);

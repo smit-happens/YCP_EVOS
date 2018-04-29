@@ -78,7 +78,7 @@ void GlcdController::poll(void)
  * @note   
  * @retval None
  */
-void GlcdController::shutdown(void)
+void GlcdController::shutdown(void) 
 {
     glcdModel->showShutdownLogo();
 }
@@ -95,7 +95,7 @@ void GlcdController::setNewMode(DispMode theMode)
             setupDashMode();
         break;
         case MODE_ERR:
-            //TODO: draw errors
+            shutdown();
         break;
         case MODE_BEGIN:
             //draw accept screen
@@ -141,6 +141,13 @@ void GlcdController::setNewState(Stage stage) {
     }
 }
 
+
+void GlcdController::setShutdownError(err_type err) 
+{
+    setNewMode(MODE_ERR);
+    glcdModel->drawErrors(err);
+    glcdModel->flushGlcdBuffer(); // since we're in shutdown force it out!
+}
 
 
 void GlcdController::setupDashMode()

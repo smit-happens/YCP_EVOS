@@ -51,27 +51,27 @@ void Glcd::drawModeSelection(Stage stage)
     //display->clearBuffer(); //clear the screen
     display->setDrawColor(0); //clear the previous mode
     //how wide x tall should this box be?
-    display->drawBox(MODE_START_X, MODE_START_Y-48, 50, 50);
+    display->drawBox(MODE_START_X, MODE_START_Y-48, 50, 52);
     display->setDrawColor(1);
     switch(stage){
         case STAGE_STANDBY:
             display->drawStr(MODE_START_X, MODE_START_Y, "S");
-            display->setFont(u8g2_font_profont10_tr);
+            display->setFont(u8g2_font_profont12_tr);
             display->drawStr(MODE_START_X+14, MODE_START_Y, "stdby");
         break;
         case STAGE_PRECHARGE:
             display->drawStr(MODE_START_X, MODE_START_Y, "P");
-            display->setFont(u8g2_font_profont10_tr);
+            display->setFont(u8g2_font_profont12_tr);
             display->drawStr(MODE_START_X+14, MODE_START_Y, "re");
         break;
         case STAGE_ENERGIZED:
             display->drawStr(MODE_START_X, MODE_START_Y, "E");
-            display->setFont(u8g2_font_profont10_tr);
+            display->setFont(u8g2_font_profont12_tr);
             display->drawStr(MODE_START_X+14, MODE_START_Y, "nergize");
         break;
         case STAGE_DRIVING:
             display->drawStr(MODE_START_X, MODE_START_Y, "D");
-            display->setFont(u8g2_font_profont10_tr);
+            display->setFont(u8g2_font_profont12_tr);
             display->drawStr(MODE_START_X+14, MODE_START_Y, "rive");
         break;
         default: break;
@@ -157,8 +157,10 @@ void Glcd::drawTemps(uint8_t HV_max, uint8_t Unitek_temp, uint8_t Motor_temp, ui
 void Glcd::showShutdownLogo(void)
 {
     display->clearBuffer();
-    display->drawXBM(25, 5, Shutdown_width, Shutdown_height, Shutdown_bits);
-    display->sendBuffer(); //this is ok since everthing is shutdown
+    display->drawXBM(0, 0, Shutdown_width, Shutdown_height, Shutdown_bits);
+    display->setFont(u8g2_font_profont12_tr);
+    display->drawStr(35, 15, "Power Cycle Req.");
+    dirtyBit = true;
 }
 
 void Glcd::drawOkIcon(void) 

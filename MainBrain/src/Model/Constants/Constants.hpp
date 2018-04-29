@@ -23,6 +23,7 @@ enum err_type {
     ERR_IMD,
     ERR_UNITEK,
     ERR_TMP,
+    ERR_NONE,
     ERR_ALL
 };
 
