@@ -48,12 +48,16 @@ void Glcd::update(void)
 void Glcd::drawModeSelection(Stage stage)
 {
     display->setFont(u8g2_font_profont29_tr);
-    display->clearBuffer();
+    //display->clearBuffer(); //clear the screen
+    display->setDrawColor(0); //clear the previous mode
+    //how wide x tall should this box be?
+    display->drawBox(MODE_START_X, MODE_START_Y-48, 50, 50);
+    display->setDrawColor(1);
     switch(stage){
         case STAGE_STANDBY:
             display->drawStr(MODE_START_X, MODE_START_Y, "S");
             display->setFont(u8g2_font_profont10_tr);
-            display->drawStr(MODE_START_X+14, MODE_START_Y, "tdby");
+            display->drawStr(MODE_START_X+14, MODE_START_Y, "stdby");
         break;
         case STAGE_PRECHARGE:
             display->drawStr(MODE_START_X, MODE_START_Y, "P");
@@ -63,7 +67,7 @@ void Glcd::drawModeSelection(Stage stage)
         case STAGE_ENERGIZED:
             display->drawStr(MODE_START_X, MODE_START_Y, "E");
             display->setFont(u8g2_font_profont10_tr);
-            display->drawStr(MODE_START_X+14, MODE_START_Y, "nergized");
+            display->drawStr(MODE_START_X+14, MODE_START_Y, "nergize");
         break;
         case STAGE_DRIVING:
             display->drawStr(MODE_START_X, MODE_START_Y, "D");
@@ -95,7 +99,6 @@ bool Glcd::getDirtyBit(void)
 //took out LV batt bar
 void Glcd::drawBattBars(uint8_t lvBattPercent, uint8_t hvBattPercent)
 { 
-    char buf[50];
    // int lvBarLength = ((BAR_LENGTH-2)*lvBattPercent) / 100;
     int hvBarLength = ((BAR_LENGTH-2)*hvBattPercent) / 100;
 
@@ -122,7 +125,34 @@ void Glcd::setupBattBars(){
     dirtyBit = true;
 }
 
+void Glcd::setupTempScreen(void)
+{
+    display->setFont(u8g2_font_profont12_tr);
+    display->drawXBM(TEMP_LIST_START_X, TEMP_LIST_START_Y, HV_batt_width, HV_batt_height, HV_batt_bits);
+    display->drawStr(TEMP_LIST_START_X+(TEMP_LIST_PADDING), TEMP_LIST_START_Y+(TEMP_LIST_TEXT_PADDING), "HV MAX: ");
 
+    display->drawStr(TEMP_LIST_START_X+(TEMP_LIST_PADDING), TEMP_LIST_START_Y+(TEMP_LIST_TEXT_PADDING*2), "MC: ");
+
+    display->drawStr(TEMP_LIST_START_X+(TEMP_LIST_PADDING), TEMP_LIST_START_Y+(TEMP_LIST_TEXT_PADDING*3), "Water: ");
+    display->drawStr(TEMP_LIST_START_X+(TEMP_LIST_PADDING), TEMP_LIST_START_Y+(TEMP_LIST_TEXT_PADDING*4), "Motor: ");
+
+    dirtyBit = true;
+}
+
+void Glcd::drawTemps(uint8_t HV_max, uint8_t Unitek_temp, uint8_t Motor_temp, uint8_t water_temp)
+{
+    char buf[8]; 
+    sprintf(buf, "%d C", HV_max);
+    display->drawStr(TEMP_LIST_TEMP_X, TEMP_LIST_START_Y+(TEMP_LIST_TEXT_PADDING), buf);
+    sprintf(buf, "%d C", Unitek_temp);
+    display->drawStr(TEMP_LIST_TEMP_X, TEMP_LIST_START_Y+(TEMP_LIST_TEXT_PADDING*2), buf);
+    sprintf(buf, "%d C", Motor_temp);
+    display->drawStr(TEMP_LIST_TEMP_X, TEMP_LIST_START_Y+(TEMP_LIST_TEXT_PADDING*3), buf);
+    sprintf(buf, "%d C", water_temp);
+    display->drawStr(TEMP_LIST_TEMP_X, TEMP_LIST_START_Y+(TEMP_LIST_TEXT_PADDING*4), buf);
+
+    dirtyBit = true;
+}
 
 void Glcd::showShutdownLogo(void)
 {
@@ -133,7 +163,7 @@ void Glcd::showShutdownLogo(void)
 
 void Glcd::drawOkIcon(void) 
 {
-      display->drawXBM(110, 6, OK_icon_width, OK_icon_height, OK_icon_bits);
+      display->drawXBM(OK_ICON_X, OK_ICON_Y, OK_icon_width, OK_icon_height, OK_icon_bits);
       dirtyBit = true;
 }
 
@@ -143,22 +173,22 @@ void Glcd::drawErrors(err_type err)
     switch(err) 
     {
         case ERR_ORION:
-            display->drawXBM(ERR_START_X+(16), ERR_START_Y, HV_batt_width, HV_batt_height, HV_batt_bits);
-            display->drawXBM(ERR_START_X+(16*2), ERR_START_Y, BMS_ERR_width, BMS_ERR_height, BMS_ERR_bits);
+            display->drawXBM(ERR_START_X+(ERR_PADDING), ERR_START_Y, HV_batt_width, HV_batt_height, HV_batt_bits);
+            display->drawXBM(ERR_START_X+(ERR_PADDING*2), ERR_START_Y, BMS_ERR_width, BMS_ERR_height, BMS_ERR_bits);
         break;
         case ERR_IMD:
-            display->drawXBM(ERR_START_X+(16*3), ERR_START_Y, IMD_ERR_width, IMD_ERR_height, IMD_ERR_bits);
+            display->drawXBM(ERR_START_X+(ERR_PADDING*3), ERR_START_Y, IMD_ERR_width, IMD_ERR_height, IMD_ERR_bits);
         break;
         case ERR_TMP:
-            display->drawXBM(ERR_START_X+(16*4), ERR_START_Y, water_temp_width, water_temp_height, water_temp_bits);
+            display->drawXBM(ERR_START_X+(ERR_PADDING*4), ERR_START_Y, water_temp_width, water_temp_height, water_temp_bits);
         case ERR_UNITEK:
-           // display->drawXBM(ERR_START_X+(16*5), ERR_START_Y, MC_err_width, MC_err_heigh, MC_err_bits);
+           // display->drawXBM(ERR_START_X+(ERR_PADDING*5), ERR_START_Y, MC_err_width, MC_err_heigh, MC_err_bits);
         break;
         case ERR_ALL:
-            display->drawXBM(ERR_START_X+(16), ERR_START_Y, HV_batt_width, HV_batt_height, HV_batt_bits);
-            display->drawXBM(ERR_START_X+(16*2), ERR_START_Y, BMS_ERR_width, BMS_ERR_height, BMS_ERR_bits);
-            display->drawXBM(ERR_START_X+(16*3), ERR_START_Y, IMD_ERR_width, IMD_ERR_height, IMD_ERR_bits);
-            display->drawXBM(ERR_START_X+(16*4), ERR_START_Y, water_temp_width, water_temp_height, water_temp_bits);
+            display->drawXBM(ERR_START_X+(ERR_PADDING), ERR_START_Y, HV_batt_width, HV_batt_height, HV_batt_bits);
+            display->drawXBM(ERR_START_X+(ERR_PADDING*2), ERR_START_Y, BMS_ERR_width, BMS_ERR_height, BMS_ERR_bits);
+            display->drawXBM(ERR_START_X+(ERR_PADDING*3), ERR_START_Y, IMD_ERR_width, IMD_ERR_height, IMD_ERR_bits);
+            display->drawXBM(ERR_START_X+(ERR_PADDING*4), ERR_START_Y, water_temp_width, water_temp_height, water_temp_bits);
         break;
         default: break;
     }
@@ -168,7 +198,7 @@ void Glcd::drawErrors(err_type err)
 void Glcd::clearAllErrors(void)
 {
     display->setDrawColor(0);
-    display->drawBox(ERR_START_X, ERR_START_Y, ERR_START_Y+(16*6), 18);
+    display->drawBox(ERR_START_X, ERR_START_Y, ERR_START_Y+(ERR_PADDING*6), 18);
     dirtyBit = true;
     display->setDrawColor(1);
 }

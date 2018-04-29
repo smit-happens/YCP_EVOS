@@ -218,8 +218,19 @@ static unsigned char OK_icon_bits[] = {
 #define HV_BAR_START_Y 48
 #define LV_BAR_START_Y 48 //DEPRICATED
 #define BAR_LENGTH 90
+
+#define OK_ICON_X 110
+#define OK_ICON_Y 6
+
 #define ERR_START_X 25
 #define ERR_START_Y 45
+#define ERR_PADDING 18
+
+#define TEMP_LIST_START_Y 1
+#define TEMP_LIST_TEMP_X 65 //move?
+#define TEMP_LIST_START_X 0
+#define TEMP_LIST_PADDING 18
+#define TEMP_LIST_TEXT_PADDING 14
 
 class Glcd : public BaseModel
 {
@@ -233,10 +244,12 @@ public:
     void showShutdownLogo(void);
     void drawModeSelection(Stage);
     void drawBattBars(uint8_t lvBattPercent, uint8_t hvBattPercent);
+    void drawTemps(uint8_t HV_max, uint8_t Unitek_temp, uint8_t Motor_temp, uint8_t water_temp);
     void setupBattBars(void);
     void drawOkIcon(void);
     void drawErrors(err_type);
     void clearAllErrors(void);
+    void setupTempScreen(void);
     /**  
      * Drafting up possible functions
      * 

@@ -62,6 +62,10 @@ void GlcdController::poll(void)
     {
         // glcdModel->drawBattBars(0, 95);
         glcdModel->drawBattBars(0, (uint8_t)OrionController::getInstance()->getStateOfCharge() *100);
+        //TODO: Draw speed
+    } else if(mode == MODE_TEMP) 
+    { //TODO: import actual temps
+        glcdModel->drawTemps(37, 35, 40, 28);
     }
     if(glcdModel->getDirtyBit()){
         glcdModel->flushGlcdBuffer();
@@ -98,7 +102,7 @@ void GlcdController::setNewMode(DispMode theMode)
             justBarelyLogo();
         break;
         case MODE_TEMP:
-            //TODO: Draw temperatures  
+            setupTempMode(); 
         break;
         default: break; 
     }
@@ -106,13 +110,14 @@ void GlcdController::setNewMode(DispMode theMode)
 
 GlcdController::DispMode GlcdController::advanceMode() 
 {
+    Logger::getInstance()->log("GLCD_C", "GLCD display mode advanced", MSG_LOG);
     switch(mode) 
     {
         case MODE_DASH:
             setNewMode(MODE_TEMP);
         break;
         case MODE_ERR:
-            //do nothing
+            //do nothing, can't advance out of here
         break;
         case MODE_BEGIN:
             setNewMode(MODE_DASH);
@@ -126,8 +131,9 @@ GlcdController::DispMode GlcdController::advanceMode()
 
 
 void GlcdController::setNewState(Stage stage) {
-    //Logger::getInstance()->log("GLCD_Controller", "Setting Mode", MSG_DEBUG);
-    if(mode == MODE_DASH){ //TODO: set mode here? or just display if already in dash?
+
+    this->stage = stage;
+    if(mode == MODE_DASH){
         glcdModel->drawModeSelection(stage);
         setupDashMode(); //screen reset we need to re-setup the dash
     }  else if(mode == MODE_BEGIN && stage == STAGE_STANDBY) {
@@ -141,6 +147,14 @@ void GlcdController::setupDashMode()
 {
     glcdModel->setupBattBars(); //screen cleared we need to resetup the dash
     glcdModel->drawBattBars(30, 60);
+    glcdModel->drawOkIcon();
+    glcdModel->drawModeSelection(stage); //redraw the current mode, make sure its there. 
+}
+
+void GlcdController::setupTempMode(void)
+{
+    glcdModel->setupTempScreen();
+    glcdModel->drawOkIcon();
 }
 
 /** 
@@ -156,11 +170,11 @@ void GlcdController::justBarelyLogo(void)
     glcdModel->drawErrors(ERR_ALL);
     glcdModel->flushGlcdBuffer();
     
-    analogWrite(MB_B, 65535);
-    analogWrite(MB_G, 65535);
+    analogWrite(MB_B, 0);
+    analogWrite(MB_G, 0);
     analogWrite(MB_R, 65535);
 }
 
 void GlcdController::onLogFiled(const char* key, const char* message,  msg_type type) {
-    //TODO: print messages to screen
+    //depricated, logger will log to SD card only
 }

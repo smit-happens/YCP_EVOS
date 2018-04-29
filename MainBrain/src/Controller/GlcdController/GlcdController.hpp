@@ -44,6 +44,7 @@ private:
     GlcdController(GlcdController const&) {};
 
     void setupDashMode();
+    void setupTempMode();
     void setNewMode(DispMode mode);
 
     void justBarelyLogo(void);
@@ -55,6 +56,7 @@ private:
     Glcd* glcdModel;
 
     DispMode mode = MODE_DASH;
+    Stage stage = STAGE_BOOTTEST;
     
 };
 
