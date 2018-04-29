@@ -29,4 +29,7 @@ enum err_type {
 //percent threshold that the brake light activates
 const int BRAKE_LIGHT_PERCENT = 90;
 
+//this value is the max temperature for the batteries that is allowed before the car will shut down
+const int MAXCELLTEMPERATURECELCIUS = 60;
+
 #endif  //CONSTANTS_HPP

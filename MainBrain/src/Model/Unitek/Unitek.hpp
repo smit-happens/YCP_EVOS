@@ -209,6 +209,9 @@ public:
     void pollingStart(void);
     void pollingStop(void);
 
+    //functions to get and set the speed calculation factor
+    void setSpeedCalculationFactor(float newSpeedCalculationFactor);
+    float getSpeedCalculationFactor(void);
 private:
     //this could be changed through CAN but for now it's just set here
     int rpmLimitReg_C8;
@@ -231,6 +234,10 @@ private:
     uint16_t tempInteriorMCReg_0x4B;        //Active
     uint16_t tempLimitMotorReg_0xA3;        //
 
+    //variable to control the speed calculation 
+    //used to cut the speed from 100% possible speed to whatever fraction of the speed is desired
+    //divide the rpm that will be sent by this factor
+    float speedCalculationFactor;
 };
 
 
