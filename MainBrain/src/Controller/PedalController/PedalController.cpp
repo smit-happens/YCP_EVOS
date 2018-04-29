@@ -75,12 +75,10 @@ void PedalController::poll(void)
  */
 float PedalController::getPercentageGas(void)
 {
-    float percentageValue = ((float)gasModel->getRawValue()) / MAX_ANALOGREAD;
+    float percentageValue = ((float)gasModel->getRawValue()) / MAX_GAS_PEDAL;
 
-    //FIXME: uncomment this stuff and fix this
     //tolerance for gas pedal and handles brake pressed
-    // if (percentageValue<=2 || PedalController::getPercentageBrake()>0){
-    if (percentageValue <= 2)
+    if (percentageValue < 3 || getPercentageBrake() > 0)
     {
         percentageValue = 0;
     }
@@ -113,9 +111,9 @@ bool PedalController::isImplausibilityGas(void)
  */
 float PedalController::getPercentageBrake(void)
 {
-    float percentageValue = ((float)brakeModel->getRawValue()) / MAX_ANALOGREAD;
+    float percentageValue = ((float)brakeModel->getRawValue()) / MAX_BRAKE_PEDAL;
 
-    if (percentageValue <= 2)    //this number may need to be change on how the brake pot acts
+    if (percentageValue < 3)    //this number may need to be change on how the brake pot acts
     {
         percentageValue = 0;
     }
@@ -143,7 +141,7 @@ bool PedalController::isImplausibilityBrake(void)
 void PedalController::CheckBrakeLight(void)
 {
     //checks if the brake pedal has been pressed far enough to turn on the brake light
-    if(getPercentageBrake() < BRAKE_LIGHT_PERCENT)
+    if(getPercentageBrake() > BRAKE_LIGHT_PERCENT)
         LightController::getInstance()->turnOn(LightController::LIGHT_BRAKE);
     else
         LightController::getInstance()->turnOff(LightController::LIGHT_BRAKE);
