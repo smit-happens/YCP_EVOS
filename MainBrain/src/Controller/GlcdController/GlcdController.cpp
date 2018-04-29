@@ -47,7 +47,7 @@ void GlcdController::init(void)
 {
     //Logger::getInstance()->addSubscriber(_pInstance);
     glcdModel = new Glcd();
-    mode = MODE_DASH; //start the mode off at dashboard
+    setNewMode(MODE_BEGIN);
 }
 
 
@@ -58,7 +58,10 @@ void GlcdController::init(void)
  */
 void GlcdController::poll(void)
 {
-    glcdModel->drawBattBars(30, 60);
+    if(mode == MODE_DASH) 
+    {
+        glcdModel->drawBattBars(0, 95);
+    }
     if(glcdModel->getDirtyBit()){
         glcdModel->flushGlcdBuffer();
     }
@@ -76,14 +79,61 @@ void GlcdController::shutdown(void)
 }
 
 
+
+void GlcdController::setNewMode(DispMode theMode) 
+{ //TODO: Clear screen buffer!
+    mode = theMode;
+    switch(mode) 
+    {
+        case MODE_DASH:
+            setupDashMode();
+        break;
+        case MODE_ERR:
+            //TODO: draw errors
+        break;
+        case MODE_BEGIN:
+            //draw accept screen
+            justBarelyLogo();
+        break;
+        case MODE_TEMP:
+            //TODO: Draw temperatures  
+        break;
+        default: break; 
+    }
+}
+
+GlcdController::DispMode GlcdController::advanceMode() 
+{
+    switch(mode) 
+    {
+        case MODE_DASH:
+            setNewMode(MODE_TEMP);
+        break;
+        case MODE_ERR:
+            //do nothing
+        break;
+        case MODE_BEGIN:
+            setNewMode(MODE_BEGIN);
+        break;
+        case MODE_TEMP:
+            setNewMode(MODE_DASH);  
+        break;
+        default: break; 
+    }
+}
+
+
 void GlcdController::setNewState(Stage stage) {
     //Logger::getInstance()->log("GLCD_Controller", "Setting Mode", MSG_DEBUG);
     if(mode == MODE_DASH){ //TODO: set mode here? or just display if already in dash?
         glcdModel->drawModeSelection(stage);
         setupDashMode(); //screen reset we need to re-setup the dash
-    
-    } 
+    }  else if(mode == MODE_BEGIN && stage == STAGE_STANDBY) {
+        glcdModel->clearAllErrors();
+    }
 }
+
+
 
 void GlcdController::setupDashMode()
 {
@@ -100,28 +150,13 @@ void GlcdController::justBarelyLogo(void)
 {
 
     glcdModel->showBootLogo();
-
+    glcdModel->drawOkIcon();
+    glcdModel->drawErrors(ERR_ALL);
+    glcdModel->flushGlcdBuffer();
+    
     analogWrite(MB_B, 65535);
     analogWrite(MB_G, 65535);
     analogWrite(MB_R, 65535);
-
-    // for(int i =0; i<65535; i++)
-    // {
-    //     analogWrite(MB_B, i);
-    //     delayMicroseconds(10);
-    // }
-    
-    // for(int i =0; i<65535; i++)
-    // {
-    //     analogWrite(MB_G, i);
-    //     delayMicroseconds(10);
-    // }
-
-    // for(int i =0; i<65535; i++)
-    // {
-    //     analogWrite(MB_R, i);
-    //     delayMicroseconds(10);
-    // }
 }
 
 void GlcdController::onLogFiled(const char* key, const char* message,  msg_type type) {

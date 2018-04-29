@@ -121,8 +121,50 @@ void Glcd::setupBattBars(){
 void Glcd::showShutdownLogo(void)
 {
     display->clearBuffer();
-    display->drawXBM(46, 5, Shutdown_width, Shutdown_height, Shutdown_bits);
+    display->drawXBM(25, 5, Shutdown_width, Shutdown_height, Shutdown_bits);
     display->sendBuffer(); //this is ok since everthing is shutdown
+}
+
+void Glcd::drawOkIcon(void) 
+{
+      display->drawXBM(110, 6, OK_icon_width, OK_icon_height, OK_icon_bits);
+      dirtyBit = true;
+}
+
+void Glcd::drawErrors(err_type err) 
+{
+    display->drawXBM(ERR_START_X, ERR_START_Y, o_fok_width, o_fok_height, o_fok_bits);
+    switch(err) 
+    {
+        case ERR_ORION:
+            display->drawXBM(ERR_START_X+(16), ERR_START_Y, HV_batt_width, HV_batt_height, HV_batt_bits);
+            display->drawXBM(ERR_START_X+(16*2), ERR_START_Y, BMS_ERR_width, BMS_ERR_height, BMS_ERR_bits);
+        break;
+        case ERR_IMD:
+            display->drawXBM(ERR_START_X+(16*3), ERR_START_Y, IMD_ERR_width, IMD_ERR_height, IMD_ERR_bits);
+        break;
+        case ERR_TMP:
+            display->drawXBM(ERR_START_X+(16*4), ERR_START_Y, water_temp_width, water_temp_height, water_temp_bits);
+        case ERR_UNITEK:
+           // display->drawXBM(ERR_START_X+(16*5), ERR_START_Y, MC_err_width, MC_err_heigh, MC_err_bits);
+        break;
+        case ERR_ALL:
+            display->drawXBM(ERR_START_X+(16), ERR_START_Y, HV_batt_width, HV_batt_height, HV_batt_bits);
+            display->drawXBM(ERR_START_X+(16*2), ERR_START_Y, BMS_ERR_width, BMS_ERR_height, BMS_ERR_bits);
+            display->drawXBM(ERR_START_X+(16*3), ERR_START_Y, IMD_ERR_width, IMD_ERR_height, IMD_ERR_bits);
+            display->drawXBM(ERR_START_X+(16*4), ERR_START_Y, water_temp_width, water_temp_height, water_temp_bits);
+        break;
+        default: break;
+    }
+    dirtyBit = true;
+}
+
+void Glcd::clearAllErrors(void)
+{
+    display->setDrawColor(0);
+    display->drawBox(ERR_START_X, ERR_START_Y, ERR_START_Y+(16*6), 18);
+    dirtyBit = true;
+    display->setDrawColor(1);
 }
 
 /** 
