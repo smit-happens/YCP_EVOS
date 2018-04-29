@@ -14,6 +14,7 @@
 #include <SPI.h>
 #include "../BaseModel/BaseModel.hpp"
 #include "../Constants/Port.hpp"
+#include "../Constants/Constants.hpp"
 //#include "../../Controller/Logger/Logger.hpp"
 
 
@@ -193,8 +194,8 @@ static const unsigned char water_temp_bits[] = {
 #define MODE_START_Y 20
 
 #define BATT_BAR_START_X 19
-#define HV_BAR_START_Y 30
-#define LV_BAR_START_Y 48
+#define HV_BAR_START_Y 48
+#define LV_BAR_START_Y 48 //DEPRICATED
 #define BAR_LENGTH 90
 
 class Glcd : public BaseModel
