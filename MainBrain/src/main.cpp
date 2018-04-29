@@ -81,10 +81,10 @@ void errorImdISR() {
 // Begin main function
 int main(void)
 {
-    Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect
-    }
+    // Serial.begin(9600);
+    // while (!Serial) {
+    //     ; // wait for serial port to connect
+    // }
     
     uint32_t bootStart = millis();  //tracks boot time
     char buf[30];                   //output buffer for sprintf
