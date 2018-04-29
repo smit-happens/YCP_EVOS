@@ -48,11 +48,11 @@ void Logger::msgPump(const char* key, const char* message, msg_type type)
     }
 }
 
-
+//FIXME: having serial logger here causes crashes
 bool Logger::log(const char* key, const char* message, msg_type type)
 {
     //msgPump(key, message, type); //instead simply add your listener here manually
-    // SerialLogger::getInstance()->onLogFiled(key, message, type);
+    //SerialLogger::getInstance()->onLogFiled(key, message, type);
     SdCardController::getInstance()->onLogFiled(key, message, type);
     return true;
 }

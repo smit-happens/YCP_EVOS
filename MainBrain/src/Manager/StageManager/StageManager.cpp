@@ -78,7 +78,7 @@ uint32_t StageManager::processTimers(void)
 void StageManager::bootTest(uint32_t* eventFlags)
 {
     //LCD (boot logo)
-    GlcdController::getInstance()->justBarelyLogo();
+    //GlcdController::getInstance()->setNewState(); //should be handled by init now. 
 
     //Teensy SelfTest (internal functions if any)
     
@@ -93,16 +93,14 @@ void StageManager::bootTest(uint32_t* eventFlags)
     if(digitalReadFast(MB_BMS_STATUS) == LOW)
     {
         logger->log("BOOT", "Orion error line", MSG_ERR);
-        
-        shutdown();
+        shutdown(ERR_ORION);
     }
 
     //IMD boot check
     if(digitalReadFast(MB_IMD_STATUS) == LOW)
     {
         logger->log("BOOT", "IMD error line", MSG_ERR);
-        
-        shutdown();
+        shutdown(ERR_IMD);
     }
     
     //Cooling check if working
@@ -116,10 +114,12 @@ void StageManager::bootTest(uint32_t* eventFlags)
 
     //checking if the shutdown EF triggered
     if(*eventFlags & EF_SHUTDOWN)
-        shutdown();
-    else
+    {
+        shutdown(ERR_NONE);
+    }
+    else {
         currentStage = STAGE_STANDBY;
-
+    }
 }
 
 
@@ -128,7 +128,7 @@ void StageManager::bootTest(uint32_t* eventFlags)
  * @note   
  * @retval None
  */
-void StageManager::shutdown(void)
+void StageManager::shutdown(err_type err)
 {
     //SCADA_OK signal to false
     digitalWriteFast(MB_SCADA_OK, LOW);
@@ -140,6 +140,7 @@ void StageManager::shutdown(void)
 
     //close SD card. TODO: shutdown other things?
     SdCardController::getInstance()->shutdown(); 
+    GlcdController::getInstance()->setShutdownError(err);
 
     //turn off all dash lights except for Error lights
     LightController::getInstance()->turnNonErrorOff();
@@ -170,8 +171,10 @@ void StageManager::configureStage(void)
                 //set variable to "configured"
                 resetAllStagesExcept(STAGE_STANDBY);
 
-                //Standby setup code
-                logger->log("STAGE_CONFIG", "Stage: Standby", MSG_LOG);
+
+                //TODO: Standby setup code
+                Logger::getInstance()->log("STAGE_MGR", "Stage: Standby", MSG_LOG);
+                GlcdController::getInstance()->setNewState(STAGE_STANDBY);
 
                 //go out of driving state
                 digitalWriteFast(MB_DRIVE_EN, LOW);
@@ -197,8 +200,9 @@ void StageManager::configureStage(void)
                 //set variable to "configured"
                 resetAllStagesExcept(STAGE_PRECHARGE);
 
-                //Precharge setup code
-                logger->log("STAGE_CONFIG", "Stage: Precharge", MSG_LOG);
+                //TODO: Precharge setup code
+                Logger::getInstance()->log("STAGE_MGR", "Stage: Precharge", MSG_LOG);
+                GlcdController::getInstance()->setNewState(STAGE_PRECHARGE);
 
                 //TODO: check for specific error in the future before setting high
 
@@ -243,7 +247,7 @@ void StageManager::configureStage(void)
                 if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
                 {
                     //error state
-                    shutdown();
+                    shutdown(ERR_ORION);
                 }
 
                 //sending 0 to VAR1 in Unitek, indicating that precharge is done
@@ -266,7 +270,9 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_ENERGIZED);
 
                 //TODO: Energized setup code
-                logger->log("STAGE_CONFIG", "Stage: Energized", MSG_LOG);
+                Logger::getInstance()->log("STAGE_MGR", "Stage: Energized", MSG_LOG);
+                GlcdController::getInstance()->setNewState(STAGE_ENERGIZED);
+
 
                 //indicate to Driver that car is energized
                 LightController::getInstance()->turnOn(LightController::LIGHT_ENERGIZE);
@@ -286,7 +292,10 @@ void StageManager::configureStage(void)
                 resetAllStagesExcept(STAGE_DRIVING);
 
                 //TODO: Driving setup code
-                logger->log("STAGE_CONFIG", "Stage: Driving", MSG_LOG);
+                //Serial.println("Driving Stage");
+                Logger::getInstance()->log("STAGE_MGR", "Stage: Driving", MSG_LOG);
+                GlcdController::getInstance()->setNewState(STAGE_DRIVING);
+
 
                 //Set Drive to high to go into 'Drive'
                 digitalWriteFast(MB_DRIVE_EN, HIGH);
@@ -318,7 +327,7 @@ void StageManager::configureStage(void)
  * @param  taskFlags: 
  * @retval 
  */
-StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags)
+Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags)
 {
     configureStage();
     
@@ -331,7 +340,7 @@ StageManager::Stage StageManager::processStage(Priority urgencyLevel, uint32_t* 
         {
             if(*eventFlags & EF_SHUTDOWN)
             {
-                shutdown();
+                shutdown(ERR_NONE);
             }
 
 
@@ -519,8 +528,18 @@ void StageManager::processDash(uint8_t* taskFlags)
     if(taskFlags[DASH] & TF_DASH_SHUTDOWN)
     {
         //user wants to halt the system
-        shutdown();
+        shutdown(ERR_NONE);
     }
+
+    if(taskFlags[DASH] & TF_DASH_ENCODER)
+    {
+        logger->log("STAGE_MGR", "Dash - TF_DASH_ENCODER", MSG_DEBUG);
+        
+        GlcdController::getInstance()->advanceMode();
+    
+        taskFlags[DASH] &= ~TF_DASH_ENCODER;
+    }
+
 
     //checks in standby stage
     if(currentStage == STAGE_STANDBY)
@@ -578,7 +597,8 @@ void StageManager::processDash(uint8_t* taskFlags)
 void StageManager::processGlcd(uint8_t* taskFlags)
 {
     //glcd view display updating
-
+    GlcdController::getInstance()->poll(); //will flush buffer if required.
+    return;
 }
 
 
@@ -596,7 +616,7 @@ void StageManager::processImd(uint8_t* taskFlags)
     LightController::getInstance()->turnOn(LightController::LIGHT_ERR_IMD);
 
     //required to shutdown based on error
-    shutdown();
+    shutdown(ERR_IMD);
 
 }
 
@@ -619,7 +639,7 @@ void StageManager::processOrion(uint8_t* taskFlags)
         LightController::getInstance()->turnOn(LightController::LIGHT_ERR_BMS);
 
         //required to shutdown based on error
-        shutdown();
+        shutdown(ERR_ORION);
     }
 
 
@@ -657,7 +677,7 @@ void StageManager::processOrion(uint8_t* taskFlags)
             sprintf(buf, "Battery SOC at %.2f percent, shutting off tractive system", packSOC);
             Logger::getInstance()->log("ORION", buf, MSG_ERR);
             //shut down the car immediately
-            shutdown();
+            shutdown(ERR_ORION);
         }
         else
         {
@@ -672,7 +692,7 @@ void StageManager::processOrion(uint8_t* taskFlags)
             //log the high temperature value
             sprintf(buf, "Cell temp too high: %d", highestTempOfPack);
             Logger::getInstance()->log("ORION", buf, MSG_ERR);
-            shutdown();
+            shutdown(ERR_ORION);
         }
     }
 }
@@ -740,7 +760,7 @@ void StageManager::processUnitek(uint8_t* taskFlags)
     if(UnitekController::getInstance()->checkErrorWarningForShutdown())
     {
         logger->log("UNITEK", "Error in MC. Shutdown Required", MSG_ERR);
-        shutdown();
+        shutdown(ERR_UNITEK);
     }
 
 

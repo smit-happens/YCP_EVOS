@@ -58,6 +58,13 @@ void btnWayneWorldISR() {
 }
 
 
+//encoder button press servicing ISR
+void btnEncoderISR() {
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_ENCODER;
+}
+
+
 //triggered when TSCB says we're done precharging
 void donePrechargeISR() {
     globalEventFlags        |= EF_UNITEK;
@@ -81,7 +88,7 @@ void errorImdISR() {
 // Begin main function
 int main(void)
 {
-    // Serial.begin(9600);
+    Serial.begin(9600);
     // while (!Serial) {
     //     ; // wait for serial port to connect
     // }
@@ -109,17 +116,17 @@ int main(void)
     logger->init();
     serialLog->init();     //begins serial logger
     sdCardC->init();
-    glcdC->init();
 
     sprintf(buf, "Bootup begin at %lu ms", bootStart);
     logger->log("MAIN", buf, MSG_LOG);
 
+    lightC->init(); //must be init before GLCD
+    dashC->init();
+    glcdC->init();
     canC->init();
     unitekC->init();
     orionC->init();
     coolingC->init();
-    dashC->init();
-    lightC->init();
     pedalC->init();
     batlogC->init();
     
@@ -160,6 +167,7 @@ int main(void)
     attachInterrupt(MB_SHUTDOWN_BTN, btnShutdownISR, RISING);
     attachInterrupt(MB_STANDBY_BTN, btnStandbyISR, RISING);
     attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
+    attachInterrupt(MB_ENC_BTN, btnEncoderISR, RISING);
 
     //Unitek interrupts
     attachInterrupt(MB_DONE_PRE, donePrechargeISR, FALLING);    //LOW == we are done precharging
@@ -181,7 +189,7 @@ int main(void)
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
-    while(localStage.currentStage != StageManager::STAGE_SHUTDOWN)
+    while(localStage.currentStage != STAGE_SHUTDOWN)
     {
         noInterrupts();
         
@@ -230,7 +238,7 @@ int main(void)
 
 
     //SHUTDOWN function
-    localStage.shutdown();
+    localStage.shutdown(ERR_NONE);
 
 
     return 0;

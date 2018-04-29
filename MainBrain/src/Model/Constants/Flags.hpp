@@ -37,6 +37,7 @@ const uint8_t TF_DASH_RTD           = 0b10;
 const uint8_t TF_DASH_SHUTDOWN      = 0b100;
 const uint8_t TF_DASH_STANDBY       = 0b1000;
 const uint8_t TF_DASH_WAYNE_WORLD   = 0b10000;
+const uint8_t TF_DASH_ENCODER       = 0b100000;
 
 //TF for CAN
 const uint8_t TF_CAN_NEW_MAIL    = 0b1;
@@ -69,7 +70,6 @@ enum DeviceName
     COOLING,
     DASH,
     GLCD,
-    IMD,
     ORION,
     SDCARD,
     UNITEK,

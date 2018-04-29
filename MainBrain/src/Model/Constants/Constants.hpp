@@ -9,6 +9,7 @@
 
 //Max analog read value
 const int MAX_ANALOGREAD = 8195;    //(2^13)-1
+const int MAX_BACKLIGHT_BR = 65535;
 
 const int MAX_GAS_PEDAL = 800;      //measured empirically
 
@@ -28,7 +29,18 @@ enum err_type {
     ERR_IMD,
     ERR_UNITEK,
     ERR_TMP,
+    ERR_NONE,
     ERR_ALL
+};
+
+enum Stage
+{
+    STAGE_BOOTTEST,
+    STAGE_STANDBY,
+    STAGE_PRECHARGE,
+    STAGE_ENERGIZED,
+    STAGE_DRIVING,
+    STAGE_SHUTDOWN
 };
 
 //percent threshold that the brake light activates

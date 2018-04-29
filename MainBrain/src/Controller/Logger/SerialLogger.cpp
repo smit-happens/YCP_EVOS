@@ -82,7 +82,7 @@ bool SerialLogger::printMessage(msg_type type)
     }
 }
 
-
+//FIXME: system crashes in this method... sometimes. Long messages excced buffers??
 void SerialLogger::onLogFiled(const char* key, const char* message, msg_type type)
 {
     if(!printMessage(type)) { return;} //if certain log 

@@ -53,6 +53,9 @@ install:
     # https://platformio.org/lib/show/322/SdFat
     - platformio lib -g install 322
 
+    # https://platformio.org/lib/show/942/U8g2
+    - platformio lib -g install 942
+
 script:
     - echo "Building project for Teensy 3.6"
     - platformio ci --board=teensy36
