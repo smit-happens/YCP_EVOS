@@ -93,16 +93,14 @@ void StageManager::bootTest(uint32_t* eventFlags)
     if(digitalReadFast(MB_BMS_STATUS) == LOW)
     {
         logger->log("BOOT", "Orion error line", MSG_ERR);
-        
-        shutdown();
+        shutdown(ERR_ORION);
     }
 
     //IMD boot check
     if(digitalReadFast(MB_IMD_STATUS) == LOW)
     {
         logger->log("BOOT", "IMD error line", MSG_ERR);
-        
-        shutdown();
+        shutdown(ERR_IMD);
     }
     
     //Cooling check if working
@@ -116,10 +114,12 @@ void StageManager::bootTest(uint32_t* eventFlags)
 
     //checking if the shutdown EF triggered
     if(*eventFlags & EF_SHUTDOWN)
-        shutdown();
-    else
+    {
+        shutdown(ERR_NONE);
+    }
+    else {
         currentStage = STAGE_STANDBY;
-
+    }
 }
 
 
@@ -128,7 +128,7 @@ void StageManager::bootTest(uint32_t* eventFlags)
  * @note   
  * @retval None
  */
-void StageManager::shutdown(void)
+void StageManager::shutdown(err_type err)
 {
     //SCADA_OK signal to false
     digitalWriteFast(MB_SCADA_OK, LOW);
@@ -140,7 +140,7 @@ void StageManager::shutdown(void)
 
     //close SD card. TODO: shutdown other things?
     SdCardController::getInstance()->shutdown(); 
-    GlcdController::getInstance()->setShutdownError(ERR_ALL);
+    GlcdController::getInstance()->setShutdownError(err);
 
     //turn off all dash lights except for Error lights
     LightController::getInstance()->turnNonErrorOff();
@@ -247,7 +247,7 @@ void StageManager::configureStage(void)
                 if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
                 {
                     //error state
-                    shutdown();
+                    shutdown(ERR_ORION);
                 }
 
                 //sending 0 to VAR1 in Unitek, indicating that precharge is done
@@ -340,7 +340,7 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
         {
             if(*eventFlags & EF_SHUTDOWN)
             {
-                shutdown();
+                shutdown(ERR_NONE);
             }
 
 
@@ -528,7 +528,7 @@ void StageManager::processDash(uint8_t* taskFlags)
     if(taskFlags[DASH] & TF_DASH_SHUTDOWN)
     {
         //user wants to halt the system
-        shutdown();
+        shutdown(ERR_NONE);
     }
 
     if(taskFlags[DASH] & TF_DASH_ENCODER)
@@ -616,7 +616,7 @@ void StageManager::processImd(uint8_t* taskFlags)
     LightController::getInstance()->turnOn(LightController::LIGHT_ERR_IMD);
 
     //required to shutdown based on error
-    shutdown();
+    shutdown(ERR_IMD);
 
 }
 
@@ -639,7 +639,7 @@ void StageManager::processOrion(uint8_t* taskFlags)
         LightController::getInstance()->turnOn(LightController::LIGHT_ERR_BMS);
 
         //required to shutdown based on error
-        shutdown();
+        shutdown(ERR_ORION);
     }
 
 
@@ -677,7 +677,7 @@ void StageManager::processOrion(uint8_t* taskFlags)
             sprintf(buf, "Battery SOC at %.2f percent, shutting off tractive system", packSOC);
             Logger::getInstance()->log("ORION", buf, MSG_ERR);
             //shut down the car immediately
-            shutdown();
+            shutdown(ERR_ORION);
         }
         else
         {
@@ -692,7 +692,7 @@ void StageManager::processOrion(uint8_t* taskFlags)
             //log the high temperature value
             sprintf(buf, "Cell temp too high: %d", highestTempOfPack);
             Logger::getInstance()->log("ORION", buf, MSG_ERR);
-            shutdown();
+            shutdown(ERR_ORION);
         }
     }
 }
@@ -760,7 +760,7 @@ void StageManager::processUnitek(uint8_t* taskFlags)
     if(UnitekController::getInstance()->checkErrorWarningForShutdown())
     {
         logger->log("UNITEK", "Error in MC. Shutdown Required", MSG_ERR);
-        shutdown();
+        shutdown(ERR_UNITEK);
     }
 
 

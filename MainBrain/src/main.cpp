@@ -238,7 +238,7 @@ int main(void)
 
 
     //SHUTDOWN function
-    localStage.shutdown();
+    localStage.shutdown(ERR_NONE);
 
 
     return 0;
