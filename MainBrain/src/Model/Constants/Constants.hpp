@@ -17,4 +17,7 @@ enum msg_type{
     MSG_ERR
 };
 
+//this value is the max temperature for the batteries that is allowed before the car will shut down
+const int MAXCELLTEMPERATURECELCIUS = 60;
+
 #endif  //CONSTANTS_HPP
