@@ -27,6 +27,7 @@ const uint32_t EF_SHUTDOWN          = 0b100000000;  //Shutdown EF mask
 const uint32_t TIMER_F_GLCD         = 0b1 << 16;  //Glcd Timer mask
 const uint32_t TIMER_F_SDCARD       = 0b10 << 16;  //SdCard Timer mask
 const uint32_t TIMER_F_PEDAL        = 0b100 << 16;  //Pedal Timer mask
+const uint32_t TIMER_F_ORION        = 0b1000 << 16;  //Orion Timer mask NOTE: this is for the temperature & charge checking on the HV batteries
 
 
 //task flags (TF) for specific tasks a device can do

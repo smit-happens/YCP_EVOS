@@ -28,10 +28,12 @@ StageManager::StageManager(void)
     timerList[0].limit = POLL_TIME_GLCD;
     timerList[1].limit = POLL_TIME_SDCARD;
     timerList[2].limit = POLL_TIME_PEDAL;
+    timerList[3].limit = POLL_TIME_ORION;
     
     timerList[0].TFmask = TIMER_F_GLCD;
     timerList[1].TFmask = TIMER_F_SDCARD;
     timerList[2].TFmask = TIMER_F_PEDAL;
+    timerList[3].TFmask = TIMER_F_ORION;
 
     //initializing the variables in the Timer array
     for(int i = 0; i < TIMER_NUM; i++) 
@@ -90,7 +92,7 @@ void StageManager::bootTest(uint32_t* eventFlags)
     //Orion check if okay
     if(digitalReadFast(MB_BMS_STATUS) == LOW)
     {
-        logger->log("STAGE_MGR", "Orion error line", MSG_ERR);
+        logger->log("BOOT", "Orion error line", MSG_ERR);
         
         shutdown();
     }
@@ -98,7 +100,7 @@ void StageManager::bootTest(uint32_t* eventFlags)
     //IMD boot check
     if(digitalReadFast(MB_IMD_STATUS) == LOW)
     {
-        logger->log("STAGE_MGR", "IMD error line", MSG_ERR);
+        logger->log("BOOT", "IMD error line", MSG_ERR);
         
         shutdown();
     }
@@ -134,7 +136,7 @@ void StageManager::shutdown(void)
     //Resetting VAR1 precharge value to the "off" state
     CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
 
-    logger->log("STAGE_MGR", "Stage: shutdown", MSG_LOG);
+    logger->log("STAGE_CONFIG", "Stage: shutdown", MSG_LOG);
 
     //close SD card. TODO: shutdown other things?
     SdCardController::getInstance()->shutdown(); 
@@ -169,9 +171,13 @@ void StageManager::configureStage(void)
                 //set variable to "configured"
                 resetAllStagesExcept(STAGE_STANDBY);
 
+
                 //TODO: Standby setup code
                 Logger::getInstance()->log("STAGE_MGR", "Stage: Standby", MSG_LOG);
                 GlcdController::getInstance()->setNewState(STAGE_STANDBY);
+
+                //go out of driving state
+                digitalWriteFast(MB_DRIVE_EN, LOW);
 
                 //Resetting VAR1 precharge value to the "off" state
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
@@ -216,12 +222,12 @@ void StageManager::configureStage(void)
                 char buf[60]; //string buffer for sprintf
                 
                 sprintf(buf, "Full Numeric battery voltage %d", numericVoltage);
-                logger->log("STAGE_MGR", buf, MSG_LOG);
+                logger->log("STAGE_CONFIG", buf, MSG_LOG);
                 
                 numericVoltage *= 0.75;
 
                 sprintf(buf, "75 percent numeric battery voltage %d", numericVoltage);
-                logger->log("STAGE_MGR", buf, MSG_LOG);
+                logger->log("STAGE_CONFIG", buf, MSG_LOG);
 
                 CanController::getInstance()->sendUnitekRead(REG_HVBUS);
                 
@@ -236,7 +242,7 @@ void StageManager::configureStage(void)
                 CanController::getInstance()->distributeMail();
 
                 sprintf(buf, "Current HV-bus numeric voltage %d", UnitekController::getInstance()->getHvBusNumeric());
-                logger->log("STAGE_MGR", buf, MSG_LOG);
+                logger->log("STAGE_CONFIG", buf, MSG_LOG);
 
                 if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
                 {
@@ -245,7 +251,7 @@ void StageManager::configureStage(void)
                 }
 
                 //sending 0 to VAR1 in Unitek, indicating that precharge is done
-                logger->log("STAGE_MGR", "Sending 0 to MC: Precharge complete", MSG_LOG);
+                logger->log("STAGE_CONFIG", "Sending 0 to MC: Precharge complete", MSG_LOG);
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0, 0);                
 
             }   
@@ -266,6 +272,7 @@ void StageManager::configureStage(void)
                 //TODO: Energized setup code
                 Logger::getInstance()->log("STAGE_MGR", "Stage: Energized", MSG_LOG);
                 GlcdController::getInstance()->setNewState(STAGE_ENERGIZED);
+
 
                 //indicate to Driver that car is energized
                 LightController::getInstance()->turnOn(LightController::LIGHT_ENERGIZE);
@@ -288,6 +295,7 @@ void StageManager::configureStage(void)
                 //Serial.println("Driving Stage");
                 Logger::getInstance()->log("STAGE_MGR", "Stage: Driving", MSG_LOG);
                 GlcdController::getInstance()->setNewState(STAGE_DRIVING);
+
 
                 //Set Drive to high to go into 'Drive'
                 digitalWriteFast(MB_DRIVE_EN, HIGH);
@@ -411,12 +419,21 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
 
         case PRIORITY_LOW:
         {
+            if(*eventFlags & TIMER_F_ORION)
+            {
+                processOrion(taskFlags);
+
+                *eventFlags &= ~TIMER_F_ORION;
+            }
+
+
             if(*eventFlags & TIMER_F_PEDAL)
             {
                 processPedal(eventFlags, taskFlags);
 
                 *eventFlags &= ~TIMER_F_PEDAL;
             }
+
 
             if(*eventFlags & TIMER_F_GLCD)
             {
@@ -530,7 +547,7 @@ void StageManager::processDash(uint8_t* taskFlags)
         //precharge button is pressed
         if(taskFlags[DASH] & TF_DASH_PRECHARGE)
         {
-            logger->log("STAGE_MGR", "Dash - TF_DASH_PRECHARGE", MSG_DEBUG);
+            logger->log("DASH", "Dash - TF_DASH_PRECHARGE", MSG_DEBUG);
 
             //change stage to precharging
             changeStage = STAGE_PRECHARGE;
@@ -544,7 +561,7 @@ void StageManager::processDash(uint8_t* taskFlags)
     {
         if(taskFlags[DASH] & TF_DASH_RTD)
         {
-            logger->log("STAGE_MGR", "Dash - TF_DASH_RTD", MSG_DEBUG);
+            logger->log("DASH", "Dash - TF_DASH_RTD", MSG_DEBUG);
             
             //Changing the stage
             changeStage = STAGE_DRIVING;
@@ -559,7 +576,7 @@ void StageManager::processDash(uint8_t* taskFlags)
     {
         if(taskFlags[DASH] & TF_DASH_STANDBY)
         {
-            logger->log("STAGE_MGR", "Dash - TF_DASH_STANDBY", MSG_DEBUG);
+            logger->log("DASH", "Dash - TF_DASH_STANDBY", MSG_DEBUG);
             
             //Changing the stage
             changeStage = STAGE_STANDBY;
@@ -593,7 +610,7 @@ void StageManager::processGlcd(uint8_t* taskFlags)
 void StageManager::processImd(uint8_t* taskFlags)
 {
     //TODO: have this drop to standby rather than shutdown, but that's TBD
-    logger->log("STAGE_MGR", "IMD Error", MSG_ERR);
+    logger->log("IMD", "IMD Error", MSG_ERR);
 
     //activate the error light
     LightController::getInstance()->turnOn(LightController::LIGHT_ERR_IMD);
@@ -605,9 +622,9 @@ void StageManager::processImd(uint8_t* taskFlags)
 
 
 /** 
- * @brief  
- * @note   
- * @retval 
+ * @brief  Process the Orion BMS data
+ * @note   Process the Orion data for error conditions
+ * @retval 0
  */
 void StageManager::processOrion(uint8_t* taskFlags)
 {
@@ -616,13 +633,67 @@ void StageManager::processOrion(uint8_t* taskFlags)
     if(taskFlags[ORION] & TF_ORION_ERROR)
     {
         //logging the error
-        logger->log("STAGE_MGR", "ORION ERROR", MSG_ERR);
+        logger->log("ORION", "ORION ERROR", MSG_ERR);
 
         //indicating to the driver that an orion error has occured
         LightController::getInstance()->turnOn(LightController::LIGHT_ERR_BMS);
 
         //required to shutdown based on error
         shutdown();
+    }
+
+
+    //performing the HV charge and temperature checking during all the stages except for standby
+    if(currentStage != STAGE_STANDBY)
+    {
+        //first check for pack state of charge issues
+        float packSOC = OrionController::getInstance()->getStateOfCharge();
+
+        char buf[60]; //string buffer for sprintf
+                
+        //if the pack is greater than 20% and less than 25%, change the view on the GLCD to notify the driver
+        if(packSOC > 20 && packSOC <= 25)
+        {
+            //the GLCD will update with a change on the user interface for the driver to know the battery is getting low
+            //GLCD_warnSocLow()
+            
+            //logging the percent
+            sprintf(buf, "Pack SoC getting low: %.2f percent", packSOC);
+            Logger::getInstance()->log("ORION", buf, MSG_WARN);
+        }
+        //if the pack is greater than 15% and less than 20%, cut the max RPM to 1000 to conserve power and be able to return to the original location without pulling as much power
+        else if(packSOC > 15 && packSOC <= 20)
+        {
+            //set the speed calculation factor to 8 which will make the max rpm sent be 6600/8 = 825 rpms
+            UnitekController::getInstance()->storeSpeedCalculationFactor(8);
+            
+            //logging the percent
+            sprintf(buf, "Pack SoC very low: %.2f percent, limp mode engaged", packSOC);
+            Logger::getInstance()->log("ORION", buf, MSG_WARN);
+        }
+        //if the pack is at 15%, shut off the tractive system and continually flash the Orion error light until the GLV system is shut off
+        else if(packSOC <= 15)
+        {
+            sprintf(buf, "Battery SOC at %.2f percent, shutting off tractive system", packSOC);
+            Logger::getInstance()->log("ORION", buf, MSG_ERR);
+            //shut down the car immediately
+            shutdown();
+        }
+        else
+        {
+            //battery is still at a good charge percentage so there is nothing to do
+        }
+
+        //second check for pack temperature issues
+        uint8_t highestTempOfPack = OrionController::getInstance()->getHighestCellTemp();
+        //if the highest temperature in the pack is greater than 60 degrees celcius, shut off the car
+        if(highestTempOfPack > MAXCELLTEMPERATURECELCIUS)
+        {
+            //log the high temperature value
+            sprintf(buf, "Cell temp too high: %d", highestTempOfPack);
+            Logger::getInstance()->log("ORION", buf, MSG_ERR);
+            shutdown();
+        }
     }
 }
 
@@ -688,7 +759,7 @@ void StageManager::processUnitek(uint8_t* taskFlags)
     //check if shutdown is needed
     if(UnitekController::getInstance()->checkErrorWarningForShutdown())
     {
-        logger->log("STAGE_MGR", "Error in MC. Shutdown Required", MSG_ERR);
+        logger->log("UNITEK", "Error in MC. Shutdown Required", MSG_ERR);
         shutdown();
     }
 
@@ -703,7 +774,7 @@ void StageManager::processUnitek(uint8_t* taskFlags)
 
             //Clearing event flag
             taskFlags[UNITEK] &= ~TF_UNITEK_DONE_PRECHARGE;
-            logger->log("STAGE_MGR", "Precharge task complete", MSG_LOG);
+            logger->log("UNITEK", "Precharge task complete", MSG_LOG);
         }
     }
 
