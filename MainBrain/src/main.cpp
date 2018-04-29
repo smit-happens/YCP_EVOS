@@ -58,28 +58,41 @@ void btnWayneWorldISR() {
 }
 
 
+//triggered when TSCB says we're done precharging
 void donePrechargeISR() {
     globalEventFlags        |= EF_UNITEK;
     globalTaskFlags[UNITEK] |= TF_UNITEK_DONE_PRECHARGE;
 }
 
 
+//triggered when the shutdown board senses an Orion error
+void errorBmsISR() {
+    globalEventFlags        |= EF_ORION;
+    globalTaskFlags[ORION]  |= TF_ORION_ERROR;
+}
+
+
+//triggered when the shutdown board senses an IMD error
+void errorImdISR() {
+    globalEventFlags        |= EF_IMD;
+}
+
 //---------------------------------------------------------------
 // Begin main function
 int main(void)
 {
-    Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect
-    }
+    // Serial.begin(9600);
+    // while (!Serial) {
+    //     ; // wait for serial port to connect
+    // }
     
     uint32_t bootStart = millis();  //tracks boot time
     char buf[30];                   //output buffer for sprintf
 
     //Creating the controller singletons
     //Copying each controller location in memory
-    Logger* loggerC             = Logger::getInstance();
-    SerialLogger* serialLogC    = SerialLogger::getInstance();
+    Logger* logger              = Logger::getInstance();
+    SerialLogger* serialLog     = SerialLogger::getInstance();
     CanController* canC         = CanController::getInstance();
     UnitekController* unitekC   = UnitekController::getInstance();
     OrionController* orionC     = OrionController::getInstance();
@@ -93,13 +106,13 @@ int main(void)
 
     
     //Calling init functions for each controller
-    loggerC->init();
-    serialLogC->init();     //begins serial logger
+    logger->init();
+    serialLog->init();     //begins serial logger
     sdCardC->init();
     glcdC->init();
 
     sprintf(buf, "Bootup begin at %lu ms", bootStart);
-    loggerC->log("MAIN", buf, MSG_LOG);
+    logger->log("MAIN", buf, MSG_LOG);
 
     canC->init();
     unitekC->init();
@@ -149,7 +162,11 @@ int main(void)
     attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
 
     //Unitek interrupts
-    attachInterrupt(MB_DONE_PRE, donePrechargeISR, FALLING);
+    attachInterrupt(MB_DONE_PRE, donePrechargeISR, FALLING);    //LOW == we are done precharging
+
+    //shutdown board interrupts
+    attachInterrupt(MB_BMS_STATUS, errorBmsISR, FALLING);       //LOW == Orion error occured
+    attachInterrupt(MB_IMD_STATUS, errorImdISR, FALLING);       //LOW == IMD error occured
 
 
     //initializing all the hardware
@@ -160,7 +177,7 @@ int main(void)
     myTimer.begin(timerISR, 1000);
     
     sprintf(buf, "Bootup complete at %lu ms, took %lu ms", millis(), (millis()- bootStart));
-    loggerC->log("MAIN", buf, MSG_LOG);
+    logger->log("MAIN", buf, MSG_LOG);
 
     //---------------------------------------------------------------
     // Begin main program Super Loop

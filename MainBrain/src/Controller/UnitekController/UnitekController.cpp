@@ -226,10 +226,7 @@ void UnitekController::storeModeReg(uint16_t modeReg)
  */
 void UnitekController::storeVoltageHvBus(uint8_t* messageToParse)
 {
-    //FIXME: convert to logger call instead of Serial.print
-    Serial.println((messageToParse[2] << 8) | messageToParse[1]);
     unitekModel->setHvBus((messageToParse[2] << 8) | messageToParse[1]);
-
 }
 
 

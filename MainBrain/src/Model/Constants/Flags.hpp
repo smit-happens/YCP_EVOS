@@ -27,22 +27,26 @@ const uint32_t EF_SHUTDOWN          = 0b100000000;  //Shutdown EF mask
 const uint32_t TIMER_F_GLCD         = 0b1 << 16;  //Glcd Timer mask
 const uint32_t TIMER_F_SDCARD       = 0b10 << 16;  //SdCard Timer mask
 const uint32_t TIMER_F_PEDAL        = 0b100 << 16;  //Pedal Timer mask
+const uint32_t TIMER_F_ORION        = 0b1000 << 16;  //Orion Timer mask NOTE: this is for the temperature & charge checking on the HV batteries
 
 
 //task flags (TF) for specific tasks a device can do
+//TF for Dash
 const uint8_t TF_DASH_PRECHARGE     = 0b1;
 const uint8_t TF_DASH_RTD           = 0b10;
 const uint8_t TF_DASH_SHUTDOWN      = 0b100;
 const uint8_t TF_DASH_STANDBY       = 0b1000;
 const uint8_t TF_DASH_WAYNE_WORLD   = 0b10000;
 
-
-//task flag (TF) for Unitek
-const uint8_t TF_UNITEK_DONE_PRECHARGE  = 0b1;
-
 //TF for CAN
 const uint8_t TF_CAN_NEW_MAIL    = 0b1;
 const uint8_t TF_CAN_SEND_PEDAL  = 0b10;
+
+//TF for Unitek
+const uint8_t TF_UNITEK_DONE_PRECHARGE  = 0b1;
+
+//TF for Orion
+const uint8_t TF_ORION_ERROR  = 0b1;
 
 
 //as of right now, we have 4 levels of priority

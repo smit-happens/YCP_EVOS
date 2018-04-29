@@ -12,7 +12,7 @@
 #include <Arduino.h>
 
 
-const int TIMER_NUM     = 3;    //number of timers in use
+const int TIMER_NUM     = 4;    //number of timers in use
 
 //Ready to drive Siren time
 const int TIME_SIREN    = 2000;
@@ -33,5 +33,7 @@ const int POLL_TIME_SDCARD  = 500;
 //Pedal polling delay
 const int POLL_TIME_PEDAL   = 20;
 
+//Orion polling delay for battery charge and temperature
+const int POLL_TIME_ORION   = 1000;
 
 #endif  //TIMEDELAY_HPP
