@@ -33,7 +33,7 @@ const int POLL_TIME_SDCARD  = 500;
 //Pedal polling delay
 const int POLL_TIME_PEDAL   = 20;
 
-//Orion polling delay for battery charge and tempurature
+//Orion polling delay for battery charge and temperature
 const int POLL_TIME_ORION   = 1000;
 
 #endif  //TIMEDELAY_HPP

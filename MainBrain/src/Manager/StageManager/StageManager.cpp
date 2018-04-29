@@ -623,7 +623,7 @@ void StageManager::processOrion(uint8_t* taskFlags)
     }
 
 
-    //performing the HV charge and tempurature checking during all the stages except for standby
+    //performing the HV charge and temperature checking during all the stages except for standby
     if(currentStage != STAGE_STANDBY)
     {
         //first check for pack state of charge issues
@@ -664,7 +664,7 @@ void StageManager::processOrion(uint8_t* taskFlags)
         //if the highest temperature in the pack is greater than 60 degrees celcius, shut off the car
         if(highestTempOfPack > MAXCELLTEMPERATURECELCIUS)
         {
-            //log the high tempurature value
+            //log the high temperature value
             sprintf(buf, "Cell temp too high: %d", highestTempOfPack);
             Logger::getInstance()->log("ORION", buf, MSG_ERR);
             shutdown();
