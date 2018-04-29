@@ -639,18 +639,23 @@ void StageManager::processOrion(uint8_t* taskFlags)
             
             //logging the percent
             sprintf(buf, "Pack SoC getting low: %.2f percent", packSOC);
-            Logger::getInstance()->log("ORION", buf, MSG_LOG);
+            Logger::getInstance()->log("ORION", buf, MSG_WARN);
         }
         //if the pack is greater than 15% and less than 20%, cut the max RPM to 1000 to conserve power and be able to return to the original location without pulling as much power
         else if(packSOC > 15 && packSOC <= 20)
         {
             //set the speed calculation factor to 8 which will make the max rpm sent be 6600/8 = 825 rpms
             UnitekController::getInstance()->storeSpeedCalculationFactor(8);
+            
+            //logging the percent
+            sprintf(buf, "Pack SoC very low: %.2f percent, limp mode engaged", packSOC);
+            Logger::getInstance()->log("ORION", buf, MSG_WARN);
         }
         //if the pack is at 15%, shut off the tractive system and continually flash the Orion error light until the GLV system is shut off
         else if(packSOC <= 15)
         {
-            Logger::getInstance()->log("ORION", "Battery SOC at 15 percent, shutting off tractive system", MSG_LOG);
+            sprintf(buf, "Battery SOC at %.2f percent, shutting off tractive system", packSOC);
+            Logger::getInstance()->log("ORION", buf, MSG_ERR);
             //shut down the car immediately
             shutdown();
         }
