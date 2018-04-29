@@ -89,7 +89,7 @@ void SdCardController::shutdown(void)
 void SdCardController::onLogFiled(const char* key, const char* message,  msg_type type) 
 {
     //TODO: Log to SD Card file
-    if(strcmp(key, "SD_CARD") == 0) {return;} // do not log any SD card messages to the SD card.
+    if(strcmp(key, "SDCARD_C") == 0) {return;} // do not log any SD card messages to the SD card.
 
     if(sdCardModel->hasCardBegun() && sdCardModel->isFileOpen())
     {

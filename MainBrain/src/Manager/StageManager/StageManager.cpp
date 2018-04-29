@@ -21,6 +21,9 @@ StageManager::StageManager(void)
     //changing stage if any events trigger it
     changeStage = currentStage;
 
+    //local instance of Logger
+    logger = Logger::getInstance();
+
     timerList = new Timer[TIMER_NUM];
     timerList[0].limit = POLL_TIME_GLCD;
     timerList[1].limit = POLL_TIME_SDCARD;
@@ -73,24 +76,32 @@ uint32_t StageManager::processTimers(void)
 void StageManager::bootTest(uint32_t* eventFlags)
 {
     //LCD (boot logo)
-    GlcdController::getInstance()->justBarelyLogo();
-
+    //GlcdController::getInstance()->setNewState(); //should be handled by init now. 
 
     //Teensy SelfTest (internal functions if any)
-
     
     //SdCard check (read data, check if good)
-
 
     //Dash test (turn on all LEDS, user confirmation w/ encoder)
     LightController::getInstance()->test();
 
-
     //Unitek Boot/check if okay
 
-
     //Orion check if okay
+    if(digitalReadFast(MB_BMS_STATUS) == LOW)
+    {
+        logger->log("STAGE_MGR", "Orion error line", MSG_ERR);
+        
+        shutdown();
+    }
 
+    //IMD boot check
+    if(digitalReadFast(MB_IMD_STATUS) == LOW)
+    {
+        logger->log("STAGE_MGR", "IMD error line", MSG_ERR);
+        
+        shutdown();
+    }
     
     //Cooling check if working
     
@@ -123,7 +134,7 @@ void StageManager::shutdown(void)
     //Resetting VAR1 precharge value to the "off" state
     CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
 
-    Logger::getInstance()->log("STAGE_MGR", "Stage: shutdown", MSG_LOG);
+    logger->log("STAGE_MGR", "Stage: shutdown", MSG_LOG);
 
     //close SD card. TODO: shutdown other things?
     SdCardController::getInstance()->shutdown(); 
@@ -165,6 +176,9 @@ void StageManager::configureStage(void)
                 //Resetting VAR1 precharge value to the "off" state
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
 
+                //ressetting the precharge process
+                digitalWriteFast(MB_START_PRE, LOW);
+
             }
         }
         break;
@@ -189,8 +203,6 @@ void StageManager::configureStage(void)
                 //Initiatiting the precharge process
                 digitalWriteFast(MB_START_PRE, HIGH);
 
-                //TODO: blink Energized Light to indicate to user that car is precharging
-
                 //record the current time in milliseconds
                 uint32_t currentTime = millis();
 
@@ -204,13 +216,12 @@ void StageManager::configureStage(void)
                 char buf[60]; //string buffer for sprintf
                 
                 sprintf(buf, "Full Numeric battery voltage %d", numericVoltage);
-                Logger::getInstance()->log("STAGE_MGR", buf, MSG_LOG);
+                logger->log("STAGE_MGR", buf, MSG_LOG);
                 
-
                 numericVoltage *= 0.75;
 
                 sprintf(buf, "75 percent numeric battery voltage %d", numericVoltage);
-                Logger::getInstance()->log("STAGE_MGR", buf, MSG_LOG);
+                logger->log("STAGE_MGR", buf, MSG_LOG);
 
                 CanController::getInstance()->sendUnitekRead(REG_HVBUS);
                 
@@ -225,7 +236,7 @@ void StageManager::configureStage(void)
                 CanController::getInstance()->distributeMail();
 
                 sprintf(buf, "Current HV-bus numeric voltage %d", UnitekController::getInstance()->getHvBusNumeric());
-                Logger::getInstance()->log("STAGE_MGR", buf, MSG_LOG);
+                logger->log("STAGE_MGR", buf, MSG_LOG);
 
                 if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
                 {
@@ -234,7 +245,7 @@ void StageManager::configureStage(void)
                 }
 
                 //sending 0 to VAR1 in Unitek, indicating that precharge is done
-                Logger::getInstance()->log("STAGE_MGR", "Sending 0 to MC: Precharge complete", MSG_LOG);
+                logger->log("STAGE_MGR", "Sending 0 to MC: Precharge complete", MSG_LOG);
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0, 0);                
 
             }   
@@ -327,7 +338,7 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
 
             if(*eventFlags & EF_IMD)
             {
-                processImd();
+                processImd(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_IMD;
@@ -340,7 +351,7 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
         {
             if(*eventFlags & EF_CAN)
             {
-                *eventFlags |= processCan(taskFlags);
+                processCan(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_CAN;
@@ -349,7 +360,7 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
 
             if(*eventFlags & EF_UNITEK)
             {
-                *eventFlags |= processUnitek(taskFlags);
+                processUnitek(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_UNITEK;
@@ -358,7 +369,7 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
 
             if(*eventFlags & EF_ORION)
             {
-                processOrion();
+                processOrion(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_ORION;
@@ -371,7 +382,7 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
         {
             if(*eventFlags & EF_COOLING)
             {
-                processCooling();
+                processCooling(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_COOLING;
@@ -380,7 +391,7 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
 
             if(*eventFlags & EF_BATLOG)
             {
-                processBatlog();
+                processBatlog(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~EF_BATLOG;
@@ -402,8 +413,6 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
         {
             if(*eventFlags & TIMER_F_PEDAL)
             {
-                // Serial.println("pedal event");
-
                 processPedal(eventFlags, taskFlags);
 
                 *eventFlags &= ~TIMER_F_PEDAL;
@@ -411,7 +420,7 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
 
             if(*eventFlags & TIMER_F_GLCD)
             {
-                processGlcd();
+                processGlcd(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~TIMER_F_GLCD;
@@ -420,7 +429,7 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
 
             if(*eventFlags & TIMER_F_SDCARD)
             {
-                processSdCard();
+                processSdCard(taskFlags);
                 
                 //clearing the EF so we don't trigger this again
                 *eventFlags &= ~TIMER_F_SDCARD;
@@ -444,7 +453,7 @@ Stage StageManager::processStage(Priority urgencyLevel, uint32_t* eventFlags, ui
  * @note   
  * @retval 
  */
-uint32_t StageManager::processCan(uint8_t* taskFlags)
+void StageManager::processCan(uint8_t* taskFlags)
 {
     if(taskFlags[CAN] & TF_CAN_NEW_MAIL)
     {
@@ -456,7 +465,7 @@ uint32_t StageManager::processCan(uint8_t* taskFlags)
     //checks in driving stage
     if(currentStage == STAGE_DRIVING)
     {
-        //TODO: send pedal value over CAN
+        //send pedal value over CAN if the timer popped
         if(taskFlags[CAN] & TF_CAN_SEND_PEDAL)
         {
             //set RPM Setpoint in MC
@@ -473,7 +482,6 @@ uint32_t StageManager::processCan(uint8_t* taskFlags)
         //TODO: add function to poll unitek so we update our local pedal value
     }
 
-    return 0;
 }
 
 
@@ -482,12 +490,11 @@ uint32_t StageManager::processCan(uint8_t* taskFlags)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processCooling(void)
+void StageManager::processCooling(uint8_t* taskFlags)
 {
     //insert code here that executes for any stage
 
 
-    return 0;
 }
 
 
@@ -498,7 +505,7 @@ uint32_t StageManager::processCooling(void)
  * @param  tasks: 
  * @retval 
  */
-uint32_t StageManager::processDash(uint8_t* taskFlags)
+void StageManager::processDash(uint8_t* taskFlags)
 {
     //shutdown check performed for any stage
     if(taskFlags[DASH] & TF_DASH_SHUTDOWN)
@@ -513,7 +520,7 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
         //precharge button is pressed
         if(taskFlags[DASH] & TF_DASH_PRECHARGE)
         {
-            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_PRECHARGE", MSG_LOG);
+            logger->log("STAGE_MGR", "Dash - TF_DASH_PRECHARGE", MSG_DEBUG);
 
             //change stage to precharging
             changeStage = STAGE_PRECHARGE;
@@ -527,7 +534,7 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
     {
         if(taskFlags[DASH] & TF_DASH_RTD)
         {
-            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_RTD", MSG_LOG);
+            logger->log("STAGE_MGR", "Dash - TF_DASH_RTD", MSG_DEBUG);
             
             //Changing the stage
             changeStage = STAGE_DRIVING;
@@ -542,7 +549,7 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
     {
         if(taskFlags[DASH] & TF_DASH_STANDBY)
         {
-            Logger::getInstance()->log("STAGE_MGR", "Dash - TF_DASH_STANDBY", MSG_LOG);
+            logger->log("STAGE_MGR", "Dash - TF_DASH_STANDBY", MSG_DEBUG);
             
             //Changing the stage
             changeStage = STAGE_STANDBY;
@@ -552,8 +559,6 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
         }
     }
 
-
-    return 0;
 }
 
 
@@ -562,11 +567,11 @@ uint32_t StageManager::processDash(uint8_t* taskFlags)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processGlcd(void)
+void StageManager::processGlcd(uint8_t* taskFlags)
 {
     //glcd view display updating
     GlcdController::getInstance()->poll(); //will flush buffer if required.
-    return 0;
+    return;
 }
 
 
@@ -575,29 +580,40 @@ uint32_t StageManager::processGlcd(void)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processImd(void)
-{    
-    //this will only have like one thing that happens if called
-    //TODO: flesh out IMD event handling 
+void StageManager::processImd(uint8_t* taskFlags)
+{
+    //TODO: have this drop to standby rather than shutdown, but that's TBD
+    logger->log("STAGE_MGR", "IMD Error", MSG_ERR);
 
+    //activate the error light
     LightController::getInstance()->turnOn(LightController::LIGHT_ERR_IMD);
 
+    //required to shutdown based on error
     shutdown();
 
-    return 0;
-
 }
+
 
 /** 
  * @brief  
  * @note   
  * @retval 
  */
-uint32_t StageManager::processOrion(void)
+void StageManager::processOrion(uint8_t* taskFlags)
 {
-    //insert code here that executes for any stage
+    //TODO: have this drop to standby rather than shutdown, but that's TBD    
+    //checking the status of the Orion error line during any stage
+    if(taskFlags[ORION] & TF_ORION_ERROR)
+    {
+        //logging the error
+        logger->log("STAGE_MGR", "ORION ERROR", MSG_ERR);
 
-    return 0;
+        //indicating to the driver that an orion error has occured
+        LightController::getInstance()->turnOn(LightController::LIGHT_ERR_BMS);
+
+        //required to shutdown based on error
+        shutdown();
+    }
 }
 
 
@@ -608,21 +624,21 @@ uint32_t StageManager::processOrion(void)
  */
 void StageManager::processPedal(uint32_t* eventFlags, uint8_t* taskFlags)
 {
+    //polling the pedals updating the model    
+    PedalController::getInstance()->poll();
+
+    //seeing if we need to turn on the brake light
+    PedalController::getInstance()->CheckBrakeLight();
+
 
     if(currentStage == STAGE_DRIVING)
     {
-        //read and store the pedal value
-        //set the apropiate can ef and tf for sending the value to the unitek
-
-        //polling the pedals updating the model
-        PedalController::getInstance()->poll();
-
+        //need to send pedal value over CAN
         *eventFlags |= EF_CAN;
 
-        //taskflag setting for pedal value sending
+        //taskflag setting for sending the gas pedal value to unitek
         taskFlags[CAN] |= TF_CAN_SEND_PEDAL;
     }
-
 }
 
 
@@ -631,12 +647,12 @@ void StageManager::processPedal(uint32_t* eventFlags, uint8_t* taskFlags)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processSdCard(void)
+void StageManager::processSdCard(uint8_t* taskFlags)
 {
     //insert code here that executes for any stage
 
-    return 0;
 }
+
 
 /** 
  * @brief  
@@ -644,10 +660,8 @@ uint32_t StageManager::processSdCard(void)
  * @retval 
  */
 
-uint32_t StageManager::processUnitek(uint8_t* taskFlags)
+void StageManager::processUnitek(uint8_t* taskFlags)
 {
-    //PROCESSES FOR ANY STAGE
-
     //need to update error/warning reg prior to checking for errors
     CanController::getInstance()->sendUnitekRead(REG_ERROR);
                 
@@ -662,11 +676,10 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
     CanController::getInstance()->distributeMail();
 
     //check if shutdown is needed
-    if(UnitekController::getInstance()->checkErrorWarningForShutdown() == true)
+    if(UnitekController::getInstance()->checkErrorWarningForShutdown())
     {
-        //Serial.println("Problem in MC. Shutdown Required.");
-        Logger::getInstance()->log("STAGE_MGR", "Error in MC. Shutdown Required", MSG_ERR);
-        return EF_SHUTDOWN;
+        logger->log("STAGE_MGR", "Error in MC. Shutdown Required", MSG_ERR);
+        shutdown();
     }
 
 
@@ -680,12 +693,10 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
 
             //Clearing event flag
             taskFlags[UNITEK] &= ~TF_UNITEK_DONE_PRECHARGE;
-            Logger::getInstance()->log("STAGE_MGR", "Precharge task complete", MSG_LOG);
+            logger->log("STAGE_MGR", "Precharge task complete", MSG_LOG);
         }
     }
 
-
-    return 0;
 }
 
 
@@ -694,14 +705,12 @@ uint32_t StageManager::processUnitek(uint8_t* taskFlags)
  * @note   
  * @retval 
  */
-uint32_t StageManager::processBatlog(void)
+void StageManager::processBatlog(uint8_t* taskFlags)
 {
     //insert code here that executes for any stage
 
     //TODO: analog read MB_BAT_MEASURE and store in model
-    
 
-    return 0;
 }
 
 
@@ -726,7 +735,7 @@ void StageManager::resetAllStagesExcept(Stage nonResetStage)
         //Standby stage is configured
         case Stage::STAGE_STANDBY:
         {
-            Logger::getInstance()->log("STAGE_MGR", "Started configuring STAGE_STANDBY", MSG_LOG);
+            logger->log("STAGE_MGR", "Started configuring STAGE_STANDBY", MSG_LOG);
             isStandbyConfigured = true;
         }
         break;
@@ -735,7 +744,7 @@ void StageManager::resetAllStagesExcept(Stage nonResetStage)
         //Precharge stage is configured
         case Stage::STAGE_PRECHARGE:
         {
-            Logger::getInstance()->log("STAGE_MGR", "Started configuring STAGE_PRECHARGE", MSG_LOG);
+            logger->log("STAGE_MGR", "Started configuring STAGE_PRECHARGE", MSG_LOG);
             isPrechargeConfigured = true;
         }
         break;
@@ -744,7 +753,7 @@ void StageManager::resetAllStagesExcept(Stage nonResetStage)
         //Energized stage is configured
         case Stage::STAGE_ENERGIZED:
         {
-            Logger::getInstance()->log("STAGE_MGR", "Started configuring STAGE_ENERGIZED", MSG_LOG);    
+            logger->log("STAGE_MGR", "Started configuring STAGE_ENERGIZED", MSG_LOG);    
             isEnergizedConfigured = true;
         }
         break;
@@ -753,7 +762,7 @@ void StageManager::resetAllStagesExcept(Stage nonResetStage)
         //Driving stage is configured
         case Stage::STAGE_DRIVING:
         {
-            Logger::getInstance()->log("STAGE_MGR", "Started configuring STAGE_DRIVING", MSG_LOG);            
+            logger->log("STAGE_MGR", "Started configuring STAGE_DRIVING", MSG_LOG);            
             isDrivingConfigured = true;
         }
         break;

@@ -10,11 +10,20 @@
 //Max analog read value
 const int MAX_ANALOGREAD = 8195;    //(2^13)-1
 
+//types of log statements we can use
 enum msg_type{
     MSG_LOG,
     MSG_DEBUG,
     MSG_WARN,
     MSG_ERR
+};
+
+enum err_type {
+    ERR_ORION,
+    ERR_IMD,
+    ERR_UNITEK,
+    ERR_TMP,
+    ERR_ALL
 };
 
 enum Stage
@@ -26,5 +35,8 @@ enum Stage
     STAGE_DRIVING,
     STAGE_SHUTDOWN
 };
+
+//percent threshold that the brake light activates
+const int BRAKE_LIGHT_PERCENT = 90;
 
 #endif  //CONSTANTS_HPP
