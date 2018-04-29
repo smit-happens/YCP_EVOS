@@ -96,6 +96,8 @@ int UnitekController::calculateSpeedValue(float rpm)
 float UnitekController::calculateRpm(int speedValue)
 {
     float percentage = (float)speedValue / unitekModel->MAX_VALUE;
+    //divide the percentage by the speed calculation factor, in most cases, this will be 1 to keep the max RPM at
+    // 6600 but when the battery reaches 20% charge the factor changes to 8 to set a max RPM of 825 (6600 / 8)
     percentage = percentage / unitekModel->getSpeedCalculationFactor();
     return percentage * unitekModel->getRpmLimit();
 }

@@ -621,8 +621,6 @@ uint32_t StageManager::processOrion(void)
 {
     //first check for pack state of charge issues
     float packSOC = OrionController::getInstance()->getStateOfCharge();
-    //maxCellTemperature represents the maximum temperature that we will allow a battery to reach before shutting off the car
-    uint8_t maxCellTemperatureCelcius = 60;
 
     //if the pack is greater than 20% and less than 25%, change the view on the GLCD to notify the driver
     if(packSOC > 20 && packSOC <= 25)
@@ -651,7 +649,7 @@ uint32_t StageManager::processOrion(void)
     //second check for pack temperature issues
     uint8_t highestTempOfPack = OrionController::getInstance()->getHighestCellTemp();
     //if the highest temperature in the pack is greater than 60 degrees celcius, shut off the car
-    if(highestTempOfPack > maxCellTemperatureCelcius)
+    if(highestTempOfPack > MAXCELLTEMPERATURECELCIUS)
     {
         Logger::getInstance()->log("ORION", "Highest cell temp too high: " + highestTempOfPack, MSG_LOG);
         StageManager::shutdown();
