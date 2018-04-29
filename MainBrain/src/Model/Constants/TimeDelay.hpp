@@ -12,7 +12,7 @@
 #include <Arduino.h>
 
 
-const int TIMER_NUM     = 3;    //number of timers in use
+const int TIMER_NUM     = 4;    //number of timers in use
 
 //Ready to drive Siren time
 const int TIME_SIREN    = 2000;
