@@ -246,11 +246,11 @@ void StageManager::configureStage(void)
 
                 if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
                 {
-                    //error state
-                    shutdown(ERR_UNITEK);
-
                     sprintf(buf, "Expected HV-bus numeric voltage: %d, actual is: %d", numericVoltage, UnitekController::getInstance()->getHvBusNumeric());
                     logger->log("UNITEK", buf, MSG_ERR);
+
+                    //error state
+                    shutdown(ERR_UNITEK);
                 }
 
                 //sending 0 to VAR1 in Unitek, indicating that precharge is done
