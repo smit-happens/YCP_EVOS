@@ -182,8 +182,9 @@ void StageManager::configureStage(void)
                 //Resetting VAR1 precharge value to the "off" state
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
 
-                //ressetting the precharge process
-                digitalWriteFast(MB_START_PRE, LOW);
+                //setting the Dash lights correctly 
+                LightController::getInstance()->turnOff(LightController::LIGHT_RTD);
+                LightController::getInstance()->turnOff(LightController::LIGHT_ENERGIZE);
 
             }
         }

@@ -41,7 +41,7 @@ public:
 
     void init(void);
     void shutdown(void);
-    
+    bool isCardWorking();
 
     /** 
      * Drafting up possible functions

@@ -61,7 +61,8 @@ void GlcdController::poll(void)
     if(mode == MODE_DASH) 
     {
         // glcdModel->drawBattBars(0, 95);
-        glcdModel->drawBattBars(0, (uint8_t)OrionController::getInstance()->getStateOfCharge() *100);
+        glcdModel->drawBattBars(0, (uint8_t)OrionController::getInstance()->getStateOfCharge());
+        glcdModel->drawRpm(3300, 3300);
         //TODO: Draw speed
     } else if(mode == MODE_TEMP) 
     { //TODO: import actual temps
@@ -156,6 +157,9 @@ void GlcdController::setupDashMode()
     glcdModel->setupBattBars(); //screen cleared we need to resetup the dash
     glcdModel->drawBattBars(30, 60);
     glcdModel->drawOkIcon();
+    if(!SdCardController::getInstance()->isCardWorking()) {
+        glcdModel->drawSDIcon();
+    }
     glcdModel->drawModeSelection(stage); //redraw the current mode, make sure its there. 
     glcdModel->setBacklightRgb(MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR);
 }
@@ -178,6 +182,10 @@ void GlcdController::justBarelyLogo(void)
     glcdModel->showBootLogo();
     glcdModel->drawOkIcon();
     glcdModel->drawErrors(ERR_ALL);
+    if(!SdCardController::getInstance()->isCardWorking()) {
+        glcdModel->drawSDIcon();
+    }
+    
     glcdModel->flushGlcdBuffer();
     
     glcdModel->setBacklightRgb(0, 0, MAX_BACKLIGHT_BR);
