@@ -156,6 +156,9 @@ void GlcdController::setupDashMode()
     glcdModel->setupBattBars(); //screen cleared we need to resetup the dash
     glcdModel->drawBattBars(30, 60);
     glcdModel->drawOkIcon();
+    if(!SdCardController::getInstance()->isCardWorking()) {
+        glcdModel->drawSDIcon();
+    }
     glcdModel->drawModeSelection(stage); //redraw the current mode, make sure its there. 
     glcdModel->setBacklightRgb(MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR);
 }
@@ -178,6 +181,10 @@ void GlcdController::justBarelyLogo(void)
     glcdModel->showBootLogo();
     glcdModel->drawOkIcon();
     glcdModel->drawErrors(ERR_ALL);
+    if(!SdCardController::getInstance()->isCardWorking()) {
+        glcdModel->drawSDIcon();
+    }
+    
     glcdModel->flushGlcdBuffer();
     
     glcdModel->setBacklightRgb(0, 0, MAX_BACKLIGHT_BR);

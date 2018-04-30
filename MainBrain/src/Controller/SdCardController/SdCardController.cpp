@@ -74,6 +74,10 @@ void SdCardController::setupLogFileHeader()
 }
 
 
+bool SdCardController::isCardWorking(void) {
+    return sdCardModel->hasCardBegun() && sdCardModel->isFileOpen();
+}
+
 /** 
  * @brief  
  * @note   

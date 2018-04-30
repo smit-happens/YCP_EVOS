@@ -179,6 +179,13 @@ void Glcd::drawOkIcon(void)
       dirtyBit = true;
 }
 
+void Glcd::drawSDIcon(void) 
+{
+      display->drawXBM(SD_ICON_X, SD_ICON_Y, SDCard_width, SDCard_height, SDCard_bits);
+      dirtyBit = true;
+}
+
+
 void Glcd::drawErrors(err_type err) 
 {
     if(err == ERR_NONE) {return;}
