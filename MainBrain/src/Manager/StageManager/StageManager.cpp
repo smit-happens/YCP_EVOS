@@ -90,14 +90,14 @@ void StageManager::bootTest(uint32_t* eventFlags)
     //Unitek Boot/check if okay
 
     //Orion check if okay
-    if(digitalReadFast(MB_BMS_STATUS) == LOW)
+    if(digitalReadFast(MB_BMS_STATUS) == HIGH)
     {
         logger->log("BOOT", "Orion error line", MSG_ERR);
         shutdown(ERR_ORION);
     }
 
     //IMD boot check
-    if(digitalReadFast(MB_IMD_STATUS) == LOW)
+    if(digitalReadFast(MB_IMD_STATUS) == HIGH)
     {
         logger->log("BOOT", "IMD error line", MSG_ERR);
         shutdown(ERR_IMD);
@@ -247,7 +247,10 @@ void StageManager::configureStage(void)
                 if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
                 {
                     //error state
-                    shutdown(ERR_ORION);
+                    shutdown(ERR_UNITEK);
+
+                    sprintf(buf, "Expected HV-bus numeric voltage: %d, actual is: %d", numericVoltage, UnitekController::getInstance()->getHvBusNumeric());
+                    logger->log("UNITEK", buf, MSG_ERR);
                 }
 
                 //sending 0 to VAR1 in Unitek, indicating that precharge is done
