@@ -21,6 +21,11 @@ Glcd::Glcd(void)
     display->begin();
     display->clearBuffer();
     display->setContrast(130);
+
+    pinMode(MB_R, OUTPUT);
+    pinMode(MB_G, OUTPUT);
+    pinMode(MB_B, OUTPUT);
+    
 }
 
 
@@ -171,6 +176,7 @@ void Glcd::drawOkIcon(void)
 
 void Glcd::drawErrors(err_type err) 
 {
+    if(err == ERR_NONE) {return;}
     display->drawXBM(ERR_START_X, ERR_START_Y, o_fok_width, o_fok_height, o_fok_bits);
     switch(err) 
     {
@@ -184,13 +190,14 @@ void Glcd::drawErrors(err_type err)
         case ERR_TMP:
             display->drawXBM(ERR_START_X+(ERR_PADDING*4), ERR_START_Y, water_temp_width, water_temp_height, water_temp_bits);
         case ERR_UNITEK:
-           // display->drawXBM(ERR_START_X+(ERR_PADDING*5), ERR_START_Y, MC_err_width, MC_err_heigh, MC_err_bits);
+            display->drawXBM(ERR_START_X+(ERR_PADDING*5), ERR_START_Y, MC_ERR_width, MC_ERR_height, MC_ERR_bits);
         break;
         case ERR_ALL:
             display->drawXBM(ERR_START_X+(ERR_PADDING), ERR_START_Y, HV_batt_width, HV_batt_height, HV_batt_bits);
             display->drawXBM(ERR_START_X+(ERR_PADDING*2), ERR_START_Y, BMS_ERR_width, BMS_ERR_height, BMS_ERR_bits);
             display->drawXBM(ERR_START_X+(ERR_PADDING*3), ERR_START_Y, IMD_ERR_width, IMD_ERR_height, IMD_ERR_bits);
             display->drawXBM(ERR_START_X+(ERR_PADDING*4), ERR_START_Y, water_temp_width, water_temp_height, water_temp_bits);
+            display->drawXBM(ERR_START_X+(ERR_PADDING*5), ERR_START_Y, MC_ERR_width, MC_ERR_height, MC_ERR_bits);
         break;
         default: break;
     }
@@ -203,6 +210,13 @@ void Glcd::clearAllErrors(void)
     display->drawBox(ERR_START_X, ERR_START_Y, ERR_START_Y+(ERR_PADDING*6), 18);
     dirtyBit = true;
     display->setDrawColor(1);
+}
+
+void Glcd::setBacklightRgb(int r, int g, int b)
+{
+    analogWrite(MB_R, r);
+    analogWrite(MB_G, g);
+    analogWrite(MB_B, b);
 }
 
 /** 

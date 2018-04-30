@@ -9,6 +9,7 @@
 
 //Max analog read value
 const int MAX_ANALOGREAD = 8195;    //(2^13)-1
+const int MAX_BACKLIGHT_BR = 65535;
 
 //types of log statements we can use
 enum msg_type{

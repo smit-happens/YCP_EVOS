@@ -116,17 +116,17 @@ int main(void)
     logger->init();
     serialLog->init();     //begins serial logger
     sdCardC->init();
-    glcdC->init();
 
     sprintf(buf, "Bootup begin at %lu ms", bootStart);
     logger->log("MAIN", buf, MSG_LOG);
 
+    lightC->init(); //must be init before GLCD
+    dashC->init();
+    glcdC->init();
     canC->init();
     unitekC->init();
     orionC->init();
     coolingC->init();
-    dashC->init();
-    lightC->init();
     pedalC->init();
     batlogC->init();
     

@@ -65,7 +65,7 @@ void GlcdController::poll(void)
         //TODO: Draw speed
     } else if(mode == MODE_TEMP) 
     { //TODO: import actual temps
-        glcdModel->drawTemps(37, 35, 40, 28);
+        glcdModel->drawTemps(OrionController::getInstance()->getHighestCellTemp(), 0, 0, 0);
     }
     if(glcdModel->getDirtyBit()){
         glcdModel->flushGlcdBuffer();
@@ -146,6 +146,7 @@ void GlcdController::setShutdownError(err_type err)
 {
     setNewMode(MODE_ERR);
     glcdModel->drawErrors(err);
+    glcdModel->setBacklightRgb(MAX_BACKLIGHT_BR, 0, 0);
     glcdModel->flushGlcdBuffer(); // since we're in shutdown force it out!
 }
 
@@ -156,12 +157,14 @@ void GlcdController::setupDashMode()
     glcdModel->drawBattBars(30, 60);
     glcdModel->drawOkIcon();
     glcdModel->drawModeSelection(stage); //redraw the current mode, make sure its there. 
+    glcdModel->setBacklightRgb(MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR);
 }
 
 void GlcdController::setupTempMode(void)
 {
     glcdModel->setupTempScreen();
     glcdModel->drawOkIcon();
+    glcdModel->setBacklightRgb(MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR);
 }
 
 /** 
@@ -177,9 +180,7 @@ void GlcdController::justBarelyLogo(void)
     glcdModel->drawErrors(ERR_ALL);
     glcdModel->flushGlcdBuffer();
     
-    analogWrite(MB_B, 0);
-    analogWrite(MB_G, 0);
-    analogWrite(MB_R, 65535);
+    glcdModel->setBacklightRgb(0, 0, MAX_BACKLIGHT_BR);
 }
 
 void GlcdController::onLogFiled(const char* key, const char* message,  msg_type type) {
