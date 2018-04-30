@@ -104,6 +104,11 @@ bool Glcd::getDirtyBit(void)
 //took out LV batt bar
 void Glcd::drawBattBars(uint8_t lvBattPercent, uint8_t hvBattPercent)
 { 
+    //clamp % to 0-100 range. 
+    if(lvBattPercent < 0) {lvBattPercent = 0; }
+    if(hvBattPercent < 0) {hvBattPercent = 0; }
+    if(hvBattPercent > 100) {hvBattPercent = 100; }
+    if(lvBattPercent > 100) {lvBattPercent = 100; }
    // int lvBarLength = ((BAR_LENGTH-2)*lvBattPercent) / 100;
     int hvBarLength = ((BAR_LENGTH-2)*hvBattPercent) / 100;
 
