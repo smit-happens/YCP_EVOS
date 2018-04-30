@@ -61,7 +61,7 @@ void GlcdController::poll(void)
     if(mode == MODE_DASH) 
     {
         // glcdModel->drawBattBars(0, 95);
-        glcdModel->drawBattBars(0, (uint8_t)OrionController::getInstance()->getStateOfCharge() *100);
+        glcdModel->drawBattBars(0, (uint8_t)OrionController::getInstance()->getStateOfCharge());
         //TODO: Draw speed
     } else if(mode == MODE_TEMP) 
     { //TODO: import actual temps
