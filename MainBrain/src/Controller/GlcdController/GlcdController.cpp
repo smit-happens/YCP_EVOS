@@ -45,7 +45,9 @@ GlcdController::~GlcdController(void)
  */
 void GlcdController::init(void)
 {
+    //Logger::getInstance()->addSubscriber(_pInstance);
     glcdModel = new Glcd();
+    setNewMode(MODE_BEGIN);
 }
 
 
@@ -56,7 +58,18 @@ void GlcdController::init(void)
  */
 void GlcdController::poll(void)
 {
-
+    if(mode == MODE_DASH) 
+    {
+        // glcdModel->drawBattBars(0, 95);
+        glcdModel->drawBattBars(0, (uint8_t)OrionController::getInstance()->getStateOfCharge() *100);
+        //TODO: Draw speed
+    } else if(mode == MODE_TEMP) 
+    { //TODO: import actual temps
+        glcdModel->drawTemps(OrionController::getInstance()->getHighestCellTemp(), 0, 0, 0);
+    }
+    if(glcdModel->getDirtyBit()){
+        glcdModel->flushGlcdBuffer();
+    }
 }
 
 
@@ -65,11 +78,94 @@ void GlcdController::poll(void)
  * @note   
  * @retval None
  */
-void GlcdController::shutdown(void)
+void GlcdController::shutdown(void) 
 {
-    
+    glcdModel->showShutdownLogo();
 }
 
+
+
+void GlcdController::setNewMode(DispMode theMode) 
+{ 
+    glcdModel->clearGlcdBuffer();
+    mode = theMode;
+    switch(mode) 
+    {
+        case MODE_DASH:
+            setupDashMode();
+        break;
+        case MODE_ERR:
+            shutdown();
+        break;
+        case MODE_BEGIN:
+            //draw accept screen
+            justBarelyLogo();
+        break;
+        case MODE_TEMP:
+            setupTempMode(); 
+        break;
+        default: break; 
+    }
+}
+
+GlcdController::DispMode GlcdController::advanceMode() 
+{
+    Logger::getInstance()->log("GLCD_C", "GLCD display mode advanced", MSG_LOG);
+    switch(mode) 
+    {
+        case MODE_DASH:
+            setNewMode(MODE_TEMP);
+        break;
+        case MODE_ERR:
+            //do nothing, can't advance out of here
+        break;
+        case MODE_BEGIN:
+            setNewMode(MODE_DASH);
+        break;
+        case MODE_TEMP:
+            setNewMode(MODE_DASH);  
+        break;
+        default: break; 
+    }
+}
+
+
+void GlcdController::setNewState(Stage stage) {
+
+    this->stage = stage;
+    if(mode == MODE_DASH){
+        glcdModel->drawModeSelection(stage);
+        setupDashMode(); //screen reset we need to re-setup the dash
+    }  else if(mode == MODE_BEGIN && stage == STAGE_STANDBY) {
+        glcdModel->clearAllErrors();
+    }
+}
+
+
+void GlcdController::setShutdownError(err_type err) 
+{
+    setNewMode(MODE_ERR);
+    glcdModel->drawErrors(err);
+    glcdModel->setBacklightRgb(MAX_BACKLIGHT_BR, 0, 0);
+    glcdModel->flushGlcdBuffer(); // since we're in shutdown force it out!
+}
+
+
+void GlcdController::setupDashMode()
+{
+    glcdModel->setupBattBars(); //screen cleared we need to resetup the dash
+    glcdModel->drawBattBars(30, 60);
+    glcdModel->drawOkIcon();
+    glcdModel->drawModeSelection(stage); //redraw the current mode, make sure its there. 
+    glcdModel->setBacklightRgb(MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR);
+}
+
+void GlcdController::setupTempMode(void)
+{
+    glcdModel->setupTempScreen();
+    glcdModel->drawOkIcon();
+    glcdModel->setBacklightRgb(MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR, MAX_BACKLIGHT_BR);
+}
 
 /** 
  * @brief  Displays the just barely logo
@@ -80,22 +176,13 @@ void GlcdController::justBarelyLogo(void)
 {
 
     glcdModel->showBootLogo();
-
-    for(int i =0; i<65535; i++)
-    {
-        analogWrite(MB_B, i);
-        delayMicroseconds(10);
-    }
+    glcdModel->drawOkIcon();
+    glcdModel->drawErrors(ERR_ALL);
+    glcdModel->flushGlcdBuffer();
     
-    for(int i =0; i<65535; i++)
-    {
-        analogWrite(MB_G, i);
-        delayMicroseconds(10);
-    }
+    glcdModel->setBacklightRgb(0, 0, MAX_BACKLIGHT_BR);
+}
 
-    for(int i =0; i<65535; i++)
-    {
-        analogWrite(MB_R, i);
-        delayMicroseconds(10);
-    }
+void GlcdController::onLogFiled(const char* key, const char* message,  msg_type type) {
+    //depricated, logger will log to SD card only
 }

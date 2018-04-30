@@ -12,8 +12,7 @@
 
 #include "SdFat.h"
 #include "../Constants/Port.hpp"
-
-//Might need additional methods to flesh out all the functionality
+#include "../Constants/Constants.hpp"
 
 
 
@@ -21,19 +20,30 @@ class SdCard
 {
 public:
     SdCard(void);
+    virtual ~SdCard();
 
-    /** 
-     * Drafting up possible functions
-     * 
-     * newFile()
-     * newFolder()
-     * mount()
-     * openFile()
-     * 
-     * 
-     */
+    bool beginCard();
+    bool openFile();
+    bool writeMessage(const char* message, bool writeOut = false);
+    void closeFile();
+
+    bool hasCardBegun();
+    bool isFileOpen();
+
+    char* getFileName(void);
+
 private:
-    SdFatSdioEX* storageCard;
+    uint32_t writeCount; //buffered write counter.
+    const uint32_t WRITE_THRESH = 2; //how many buffered writes before we sync the card. 
+    const char* FILE_BASE_NAME = "EVOS_LOG";
+    char fileName[30];
+    bool hasBegun = false;
+    bool fileOpen = false;
+    SdFatSdioEX* sdEx;
+    SdFile logFile;
+
+    void determineFileName(void);
+
 };
 
 
