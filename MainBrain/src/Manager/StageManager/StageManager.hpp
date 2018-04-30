@@ -12,21 +12,12 @@
 #include "../../Controller/Controller.hpp"
 #include "../../Model/Constants/TimeDelay.hpp"
 #include "../../Model/Constants/Flags.hpp"
+#include "../../Model/Constants/Constants.hpp"
 
 
 class StageManager
 {
 public:
-
-    enum Stage
-    {
-        STAGE_BOOTTEST,
-        STAGE_STANDBY,
-        STAGE_PRECHARGE,
-        STAGE_ENERGIZED,
-        STAGE_DRIVING,
-        STAGE_SHUTDOWN
-    };
 
     //current stage that we're processing
     Stage currentStage;
@@ -43,19 +34,15 @@ public:
     uint32_t processTimers(void);
 
     //Boot for each device
-    void bootTest(void);
+    void bootTest(uint32_t* eventFlags);
 
-    void shutdown(void);
+    void shutdown(err_type err);
 
     //contains code that is executed once at the beginning of a stage
     void configureStage(void);
 
     //handles the excecution of the various stages
     Stage processStage(Priority urgencyLevel, uint32_t* eventFlags, uint8_t* taskFlags);
-
-
-    //for correctly setting the next stage based off the current one
-    // void transitionStageToFrom(Stage nextStage, Stage currentStage);
 
 
 private:
@@ -71,18 +58,20 @@ private:
 
     Stage changeStage;
 
+    //Logger instance
+    Logger* logger;
 
     //Processing functions for the various devices
-    uint32_t processCan(uint8_t* taskFlags);
-    uint32_t processCooling(void);
-    uint32_t processDash(uint8_t* taskFlags);
-    uint32_t processGlcd(void);
-    uint32_t processImd(void);
-    uint32_t processOrion(void);
+    void processCan(uint8_t* taskFlags);
+    void processCooling(uint8_t* taskFlags);
+    void processDash(uint8_t* taskFlags);
+    void processGlcd(uint8_t* taskFlags);
+    void processImd(uint8_t* taskFlags);
+    void processOrion(uint8_t* taskFlags);
     void processPedal(uint32_t* eventFlags, uint8_t* taskFlags);
-    uint32_t processSdCard(void);
-    uint32_t processUnitek(uint8_t* taskFlags);
-    uint32_t processBatlog(void);
+    void processSdCard(uint8_t* taskFlags);
+    void processUnitek(uint8_t* taskFlags);
+    void processBatlog(uint8_t* taskFlags);
 
 
     //for making sure that all the stages except the currently executing one needs to be reconfigured

@@ -19,50 +19,70 @@ uint8_t globalTaskFlags [NUM_DEVICES] = { 0 };
 
 //Start of ISR declarations
 void timerISR() {
-    globalEventFlags |= EF_TIMER;
+    globalEventFlags        |= EF_TIMER;
 }
 
 
 //setting the appropiate event and task flags for Precharge btn press
 void btnPrechargeISR() {
-    globalEventFlags      |= EF_DASH;
-    globalTaskFlags[DASH] |= TF_DASH_PRECHARGE;
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_PRECHARGE;
 }
 
 
 //setting the appropiate event and task flags for Ready to drive (RTD) btn press
 void btnRtdISR() {
-    globalEventFlags      |= EF_DASH;
-    globalTaskFlags[DASH] |= TF_DASH_RTD;
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_RTD;
 }
 
 
 //setting the appropiate event and task flags for Shutdown btn press
 void btnShutdownISR() {
-    globalEventFlags      |= EF_DASH;
-    globalTaskFlags[DASH] |= TF_DASH_SHUTDOWN;
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_SHUTDOWN;
 }
 
 
 //setting the appropiate event and task flags for standby btn press
 void btnStandbyISR() {
-    globalEventFlags      |= EF_DASH;
-    globalTaskFlags[DASH] |= TF_DASH_STANDBY;
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_STANDBY;
 }
 
 
 //setting the appropiate event and task flags for Wayne World btn press
 void btnWayneWorldISR() {
-    globalEventFlags      |= EF_DASH;
-    globalTaskFlags[DASH] |= TF_DASH_WAYNE_WORLD;
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_WAYNE_WORLD;
 }
 
 
+//encoder button press servicing ISR
+void btnEncoderISR() {
+    globalEventFlags        |= EF_DASH;
+    globalTaskFlags[DASH]   |= TF_DASH_ENCODER;
+}
+
+
+//triggered when TSCB says we're done precharging
 void donePrechargeISR() {
-    globalEventFlags              |= EF_UNITEK;
-    globalTaskFlags[UNITEK]       |= TF_UNITEK_DONE_PRECHARGE;
+    globalEventFlags        |= EF_UNITEK;
+    globalTaskFlags[UNITEK] |= TF_UNITEK_DONE_PRECHARGE;
 }
 
+
+//triggered when the shutdown board senses an Orion error
+void errorBmsISR() {
+    globalEventFlags        |= EF_ORION;
+    globalTaskFlags[ORION]  |= TF_ORION_ERROR;
+}
+
+
+//triggered when the shutdown board senses an IMD error
+void errorImdISR() {
+    globalEventFlags        |= EF_IMD;
+}
 
 //---------------------------------------------------------------
 // Begin main function
@@ -72,12 +92,14 @@ int main(void)
     // while (!Serial) {
     //     ; // wait for serial port to connect
     // }
-
-    Serial.println("Bootup stage");
     
+    uint32_t bootStart = millis();  //tracks boot time
+    char buf[30];                   //output buffer for sprintf
 
     //Creating the controller singletons
     //Copying each controller location in memory
+    Logger* logger              = Logger::getInstance();
+    SerialLogger* serialLog     = SerialLogger::getInstance();
     CanController* canC         = CanController::getInstance();
     UnitekController* unitekC   = UnitekController::getInstance();
     OrionController* orionC     = OrionController::getInstance();
@@ -89,22 +111,28 @@ int main(void)
     SdCardController* sdCardC   = SdCardController::getInstance();
     BatlogController* batlogC   = BatlogController::getInstance();
 
+    
     //Calling init functions for each controller
+    logger->init();
+    serialLog->init();     //begins serial logger
+    sdCardC->init();
+
+    sprintf(buf, "Bootup begin at %lu ms", bootStart);
+    logger->log("MAIN", buf, MSG_LOG);
+
+    lightC->init(); //must be init before GLCD
+    dashC->init();
+    glcdC->init();
     canC->init();
     unitekC->init();
     orionC->init();
     coolingC->init();
-    dashC->init();
-    lightC->init();
-    glcdC->init();
     pedalC->init();
-    sdCardC->init();
     batlogC->init();
-
+    
 
     //local instance of the Stage manager class
     StageManager localStage = StageManager();
-
 
     //initialize the local and timer event flag variables
     uint32_t localEventFlags = 0;
@@ -125,29 +153,43 @@ int main(void)
     IntervalTimer myTimer;
 
     
-    //attaching interrupts
+    /*
+            _   _             _     _                _       _                             _
+       __ _| |_| |_ __ _  ___| |__ (_)_ __   __ _   (_)_ __ | |_ ___ _ __ _ __ _   _ _ __ | |_ ___
+      / _` | __| __/ _` |/ __| '_ \| | '_ \ / _` |  | | '_ \| __/ _ \ '__| '__| | | | '_ \| __/ __|
+     | (_| | |_| || (_| | (__| | | | | | | | (_| |  | | | | | ||  __/ |  | |  | |_| | |_) | |_\__ \
+      \__,_|\__|\__\__,_|\___|_| |_|_|_| |_|\__, |  |_|_| |_|\__\___|_|  |_|   \__,_| .__/ \__|___/
+                                            |___/                                   |_|
+    */
     //Button interrupts
     attachInterrupt(MB_PRE_BTN, btnPrechargeISR, RISING);
     attachInterrupt(MB_RTD_BTN, btnRtdISR, RISING);
     attachInterrupt(MB_SHUTDOWN_BTN, btnShutdownISR, RISING);
     attachInterrupt(MB_STANDBY_BTN, btnStandbyISR, RISING);
     attachInterrupt(MB_WAYNE_BTN, btnWayneWorldISR, RISING);
+    attachInterrupt(MB_ENC_BTN, btnEncoderISR, RISING);
 
     //Unitek interrupts
-    attachInterrupt(MB_DONE_PRE, donePrechargeISR, FALLING);
+    attachInterrupt(MB_DONE_PRE, donePrechargeISR, FALLING);    //LOW == we are done precharging
+
+    //shutdown board interrupts
+    attachInterrupt(MB_BMS_STATUS, errorBmsISR, FALLING);       //LOW == Orion error occured
+    attachInterrupt(MB_IMD_STATUS, errorImdISR, FALLING);       //LOW == IMD error occured
 
 
     //initializing all the hardware
-    localStage.bootTest();
-
+    localStage.bootTest(&localEventFlags);
+    
 
     //Start 1ms timer (1000 usec)
     myTimer.begin(timerISR, 1000);
-
+    
+    sprintf(buf, "Bootup complete at %lu ms, took %lu ms", millis(), (millis()- bootStart));
+    logger->log("MAIN", buf, MSG_LOG);
 
     //---------------------------------------------------------------
     // Begin main program Super Loop
-    while(localStage.currentStage != StageManager::STAGE_SHUTDOWN)
+    while(localStage.currentStage != STAGE_SHUTDOWN)
     {
         noInterrupts();
         
@@ -192,11 +234,11 @@ int main(void)
             }
         }
 
-    } //end of loop
+    } //end while()
 
 
     //SHUTDOWN function
-    localStage.shutdown();
+    localStage.shutdown(ERR_NONE);
 
 
     return 0;

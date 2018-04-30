@@ -69,28 +69,19 @@ void PedalController::poll(void)
 
 
 /** 
- * @brief  
- * @note   
- * @retval None
- */
-void PedalController::shutdown(void)
-{
-    //TODO: Implement
-}
-
-
-/** 
  * @brief  Retrieves the evaluated Gas percentage
  * @note   Values returned depend on the Analog Read Resolution being 13 bits!!
  * @retval GasPedal percentage
  */
 float PedalController::getPercentageGas(void)
 {
-    gasModel->update();
+    float percentageValue = (((float)gasModel->getRawValue()) / MAX_GAS_PEDAL) *100;
 
-    //percent = (current pedal value - origin pedal value)/((2^13-1) - origin pedal value)
-    // float percentageValue = ((float)gasModel->getRawValue() - (float)gasModel->getRawOrigin()) / (MAX_ANALOGREAD - (float)gasModel->getRawOrigin());    
-    float percentageValue = ((float)gasModel->getRawValue()) / MAX_ANALOGREAD;
+    //tolerance for gas pedal and handles brake pressed
+    if (percentageValue < 3 || getPercentageBrake() > 0)
+    {
+        percentageValue = 0;
+    }
 
     return percentageValue; 
 }
@@ -120,7 +111,14 @@ bool PedalController::isImplausibilityGas(void)
  */
 float PedalController::getPercentageBrake(void)
 {
-    return 0.0; //TODO: Implement
+    float percentageValue = (((float)brakeModel->getRawValue()) / MAX_BRAKE_PEDAL) *100;
+
+    if (percentageValue < 3)    //this number may need to be change on how the brake pot acts
+    {
+        percentageValue = 0;
+    }
+
+    return percentageValue; 
 }
 
 
@@ -132,4 +130,19 @@ float PedalController::getPercentageBrake(void)
 bool PedalController::isImplausibilityBrake(void)
 {
     return false;   //TODO: Implement
+}
+
+
+/** 
+ * @brief  handles turning on/off the brake light
+ * @note   
+ * @retval None
+ */
+void PedalController::CheckBrakeLight(void)
+{
+    //checks if the brake pedal has been pressed far enough to turn on the brake light
+    if(getPercentageBrake() > BRAKE_LIGHT_PERCENT)
+        LightController::getInstance()->turnOn(LightController::LIGHT_BRAKE);
+    else
+        LightController::getInstance()->turnOff(LightController::LIGHT_BRAKE);
 }

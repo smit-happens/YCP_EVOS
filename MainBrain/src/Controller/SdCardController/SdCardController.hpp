@@ -11,13 +11,16 @@
 
 #include "../BaseController/BaseController.hpp"
 #include "../../Model/SdCard/SdCard.hpp"
+#include "../Logger/Logger.hpp"
+#include "../Logger/LogListener.hpp"
+
 
 /**  
  * Example of possible log file:
  * ╔════════════════════════════╦══════════════╦═══════════════╦═════════════════════════════════════════════════════════╦═════╗
  * ║ Millis since program start ║ Category     ║ Calling Class ║ Message                                                 ║ ... ║
  * ╠════════════════════════════╬══════════════╬═══════════════╬═════════════════════════════════════════════════════════╬═════╣
- * ║ 1145                       ║ Notification ║ Unitek        ║ No errors/warnings found                                ║     ║
+ * ║ 1145                       ║ Log          ║ Unitek        ║ No errors/warnings found                                ║     ║
  * ╠════════════════════════════╬══════════════╬═══════════════╬═════════════════════════════════════════════════════════╬═════╣
  * ║ 1650                       ║ Warning      ║ Orion         ║ Average cell temperature of 45°C close to limit of 60°C ║     ║
  * ╠════════════════════════════╬══════════════╬═══════════════╬═════════════════════════════════════════════════════════╬═════╣
@@ -27,16 +30,17 @@
  * ╚════════════════════════════╩══════════════╩═══════════════╩═════════════════════════════════════════════════════════╩═════╝
  */
 
-class SdCardController  : public BaseController
+//class LogListener;
+
+class SdCardController  : public BaseController, public LogListener
 {
 public:
-    ~SdCardController(void);
+    ~SdCardController(void) { delete sdCardModel; };
 
     static SdCardController*   getInstance();
 
     void init(void);
-    void poll(void);
-    void shutdown(void);    //TODO: implement
+    void shutdown(void);
     
 
     /** 
@@ -48,9 +52,13 @@ public:
      * 
      * millisSinceStart()
      */
+    void onLogFiled(const char* key, const char* message,  msg_type type);
 
 
 private:
+    const uint8_t MSG_STR_BUF_LEN = 100;
+    const char* DELIM = "|"; //NOTE this MUST be of length 1!!
+
     //Private contstructor so that it can't be called
     SdCardController() {};
     //copy constructor is private
@@ -62,6 +70,7 @@ private:
     //private instance of model
     SdCard* sdCardModel;
 
+    void setupLogFileHeader();
 };
 
 #endif  //SDCARDCONTROLLER_HPP

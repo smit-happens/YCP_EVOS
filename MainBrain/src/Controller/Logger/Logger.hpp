@@ -9,29 +9,43 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 
-#include "../../Controller/SdCardController/SdCardController.hpp"
+#include "../../Controller/BaseController/BaseController.hpp"
+#include "LogListener.hpp"
+#include "SerialLogger.hpp"
+#include "../SdCardController/SdCardController.hpp"
 
 
-class Logger
+class LogListener; //forward declaration of logListener
+
+
+class Logger: BaseController
 {
 public:
-    Logger();
+    //maximum number of broadcast subscribers
 
-    //public logging functions
+    static const int MAX_SUBSCRIBERS = 20;
+    ~Logger(void) {};
 
-    /** 
-     * Drafting up possible functions
-     * 
-     * newDataPoint()
-     * newLogFile()         //name log file based on current date/time
-     * openLogFile()
-     * LogChunk()
-     * 
-     * 
-     */
+    void init(void); //we do need an init to setup the singleton.
 
+
+    //singleton getter
+    static Logger* getInstance();
+    //logs message 
+    bool log(const char* key, const char* message,  msg_type type);
+    //adds new subscribers to list 
+    bool addSubscriber(LogListener *listener);
+    
 
 private:
+    Logger() {};
+    Logger(Logger const&) {};
+    
+    int mNumSubscribers;
+    LogListener* mSubscribers[MAX_SUBSCRIBERS];
+    void msgPump(const char* key, const char* message,  msg_type type);
+
+    static Logger* _pInstance;
     //private logging functions/ variables
 
 };

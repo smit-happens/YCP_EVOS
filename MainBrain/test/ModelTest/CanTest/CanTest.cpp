@@ -60,13 +60,6 @@ void CanTest::gotFrame(CAN_message_t &frame, int mailbox)
     //TODO: message just came in, check ID and send data to Unitek or Orion
     //check id, store in orion or unitek queue, (maybe) set queueHasDataFlag
     //globalEventFlags = 0;
-    //FIXME: TESTING CODE
-    // Serial.println("Entered CAN interrupt");
-    // Serial.println(frame.buf[0]);
-    // Serial.println(frame.buf[1]);
-    // Serial.println(frame.buf[2]);
-    // Serial.println(frame.buf[3]);
-    //FIXME: TESTING CODE
 }
 
 

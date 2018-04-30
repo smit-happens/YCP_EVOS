@@ -41,18 +41,7 @@ Can::~Can(void)
  */
 void Can::gotFrame(CAN_message_t &frame, int mailbox)
 {
-    //TODO: message just came in, store it and set EF/TF 
-
     volatileMailbox->enqueue(frame);
-
-    //FIXME: TESTING CODE
-    // Serial.println("Entered CAN interrupt");
-    // Serial.println(frame.id, HEX);
-    // Serial.println(frame.buf[0], HEX);
-    // Serial.println(frame.buf[1], HEX);
-    // Serial.println(frame.buf[2], HEX);
-    // Serial.println(frame.buf[3], HEX);
-    //FIXME: TESTING CODE
 }
 
 

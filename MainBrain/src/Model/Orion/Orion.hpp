@@ -18,6 +18,7 @@ public:
     Orion(void);
     ~Orion(void);
 
+    void update(void);
 
     //all of the public get functions
     //gets for values from message 0x420

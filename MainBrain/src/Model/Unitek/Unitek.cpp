@@ -356,6 +356,27 @@ void Unitek::setDigitalPort(void)
 
 
 /** 
+ * @brief  sets the speed calculation factor
+ * @note N/A  
+ * @param  newSpeedCalculationFactor: the new value for speed calculation factor
+ * @retval None
+ */
+void Unitek::setSpeedCalculationFactor(float newSpeedCalculationFactor)
+{
+    speedCalculationFactor = newSpeedCalculationFactor;
+}
+/** 
+ * @brief  get the current speed calculation factor
+ * @note   N/A
+ * @retval the speed calculation factor
+ */
+float Unitek::getSpeedCalculationFactor(void)
+{
+    return speedCalculationFactor;
+}
+
+
+/** 
  * @brief  Handles the Precharging logic
  * @note   Change return value to void and throw exceptions that the calling function would have to handle
  * @retval Success or failure (1 or 0)
