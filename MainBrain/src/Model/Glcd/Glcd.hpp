@@ -242,6 +242,9 @@ static const unsigned char SDCard_bits[] = {
 #define TEMP_LIST_PADDING 18
 #define TEMP_LIST_TEXT_PADDING 14
 
+#define RPM_START_X 20 
+#define RPM_START_Y 42
+
 class Glcd : public BaseModel
 {
 public:
@@ -261,6 +264,7 @@ public:
     void drawErrors(err_type);
     void clearAllErrors(void);
     void setupTempScreen(void);
+    void drawRpm(uint32_t, uint32_t);
     /**  
      * Drafting up possible functions
      * 

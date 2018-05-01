@@ -56,13 +56,13 @@ void Glcd::drawModeSelection(Stage stage)
     //display->clearBuffer(); //clear the screen
     display->setDrawColor(0); //clear the previous mode
     //how wide x tall should this box be?
-    display->drawBox(MODE_START_X, MODE_START_Y-48, 50, 52);
+    display->drawBox(MODE_START_X, MODE_START_Y-48, 65, 52);
     display->setDrawColor(1);
     switch(stage){
         case STAGE_STANDBY:
             display->drawStr(MODE_START_X, MODE_START_Y, "S");
             display->setFont(u8g2_font_profont12_tr);
-            display->drawStr(MODE_START_X+14, MODE_START_Y, "stdby");
+            display->drawStr(MODE_START_X+14, MODE_START_Y, "tdby");
         break;
         case STAGE_PRECHARGE:
             display->drawStr(MODE_START_X, MODE_START_Y, "P");
@@ -135,6 +135,15 @@ void Glcd::setupBattBars(){
     dirtyBit = true;
 }
 
+void Glcd::drawRpm(uint32_t pedalValue, uint32_t rpm) {
+    display->setDrawColor(0);
+    display->drawBox(RPM_START_X-1, RPM_START_Y-12, 80, 16);
+    display->setDrawColor(1);
+    char buf[50]; 
+    sprintf(buf, "%lu | %lu", pedalValue, rpm);
+    display->drawStr(RPM_START_X, RPM_START_Y, buf);
+}
+
 void Glcd::setupTempScreen(void)
 {
     display->setFont(u8g2_font_profont12_tr);
@@ -151,6 +160,9 @@ void Glcd::setupTempScreen(void)
 
 void Glcd::drawTemps(uint8_t HV_max, uint8_t Unitek_temp, uint8_t Motor_temp, uint8_t water_temp)
 {
+    display->setDrawColor(0);
+    display->drawBox(TEMP_LIST_TEMP_X-1, TEMP_LIST_START_Y, 25, TEMP_LIST_START_Y+(TEMP_LIST_TEXT_PADDING*4)+1);
+    display->setDrawColor(1);
     char buf[8]; 
     sprintf(buf, "%d C", HV_max);
     display->drawStr(TEMP_LIST_TEMP_X, TEMP_LIST_START_Y+(TEMP_LIST_TEXT_PADDING), buf);
