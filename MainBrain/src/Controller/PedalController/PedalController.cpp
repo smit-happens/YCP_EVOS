@@ -71,19 +71,25 @@ void PedalController::poll(void)
 /** 
  * @brief  Retrieves the evaluated Gas percentage
  * @note   Values returned depend on the Analog Read Resolution being 13 bits!!
- * @retval GasPedal percentage
+ * @retval GasPedal percentage (0.0 to 1.0)
  */
 float PedalController::getPercentageGas(void)
 {
-    float percentageValue = (((float)gasModel->getRawValue()) / MAX_GAS_PEDAL) *100;
+    float percentageValue = (((float)gasModel->getRawValue()) / (float)MAX_GAS_PEDAL);
 
     //tolerance for gas pedal and handles brake pressed
-    if (percentageValue < 3 || getPercentageBrake() > 0)
+    if (percentageValue < 0.03 || getPercentageBrake() > 0)
     {
         percentageValue = 0;
     }
 
     return percentageValue; 
+}
+
+
+uint PedalController::getRawGas(void)
+{
+    return gasModel->getRawValue(); 
 }
 
 
@@ -111,9 +117,9 @@ bool PedalController::isImplausibilityGas(void)
  */
 float PedalController::getPercentageBrake(void)
 {
-    float percentageValue = (((float)brakeModel->getRawValue()) / MAX_BRAKE_PEDAL) *100;
+    float percentageValue = (((float)brakeModel->getRawValue()) / (float)MAX_BRAKE_PEDAL);
 
-    if (percentageValue < 3)    //this number may need to be change on how the brake pot acts
+    if (percentageValue < 0.03)    //this number may need to be change on how the brake pot acts
     {
         percentageValue = 0;
     }

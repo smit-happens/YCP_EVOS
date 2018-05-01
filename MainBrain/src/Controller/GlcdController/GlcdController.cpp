@@ -62,13 +62,16 @@ void GlcdController::poll(void)
     {
         // glcdModel->drawBattBars(0, 95);
         glcdModel->drawBattBars(0, (uint8_t)OrionController::getInstance()->getStateOfCharge());
-        glcdModel->drawRpm(3300, 3300);
+        glcdModel->drawRpm(PedalController::getInstance()->getRawGas(), MAX_GAS_PEDAL);
         //TODO: Draw speed
-    } else if(mode == MODE_TEMP) 
-    { //TODO: import actual temps
+    } 
+    else if(mode == MODE_TEMP) 
+    { 
+        //TODO: import actual temps
         glcdModel->drawTemps(OrionController::getInstance()->getHighestCellTemp(), 0, 0, 0);
     }
-    if(glcdModel->getDirtyBit()){
+    if(glcdModel->getDirtyBit())
+    {
         glcdModel->flushGlcdBuffer();
     }
 }

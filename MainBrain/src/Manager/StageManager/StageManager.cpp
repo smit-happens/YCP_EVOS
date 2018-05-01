@@ -493,6 +493,19 @@ void StageManager::processCan(uint8_t* taskFlags)
             float pedalPercent = PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
             uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
 
+            //this is called 50 times every second, have this code execute once a second
+            if(logCanPedalInterval % 50 == 0)
+            {
+                //interval reset
+                logCanPedalInterval = 0;
+
+                //for sprintf
+                char buf[80];
+
+                sprintf(buf, "Calculated numericSpeedSetPoint %d, pedalPercent: %.5f", numericSpeedSetPoint, pedalPercent);
+                logger->log("PEDAL", buf, MSG_DEBUG);
+            }
+
             //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
             CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
 
@@ -710,7 +723,7 @@ void StageManager::processOrion(uint8_t* taskFlags)
 void StageManager::processPedal(uint32_t* eventFlags, uint8_t* taskFlags)
 {
     //polling the pedals updating the model    
-    PedalController::getInstance()->poll();
+    PedalController::getInstance()->poll();   
 
     //seeing if we need to turn on the brake light
     PedalController::getInstance()->CheckBrakeLight();
