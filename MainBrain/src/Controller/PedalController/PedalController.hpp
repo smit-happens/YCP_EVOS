@@ -26,6 +26,7 @@ public:
     void poll(void);
 
     float getPercentageGas(void);
+    uint getRawGas(void);
     bool isImplausibilityGas(void);
 
     float getPercentageBrake(void);
