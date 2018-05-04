@@ -110,7 +110,7 @@ void Glcd::drawBattBars(uint8_t lvBattPercent, uint8_t hvBattPercent)
     if(hvBattPercent > 100) {hvBattPercent = 100; }
     if(lvBattPercent > 100) {lvBattPercent = 100; }
    // int lvBarLength = ((BAR_LENGTH-2)*lvBattPercent) / 100;
-    int hvBarLength = ((BAR_LENGTH-2)*hvBattPercent) / 100;
+    int hvBarLength = (float)(BAR_LENGTH-2)*((float)hvBattPercent/100.0);
 
     display->setDrawColor(0); //now drawing blank pixels, clear old bar
     display->drawRBox(BATT_BAR_START_X+1, HV_BAR_START_Y+3, BAR_LENGTH-2, HV_batt_height-4, 3);

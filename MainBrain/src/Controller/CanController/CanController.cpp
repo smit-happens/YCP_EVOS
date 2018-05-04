@@ -86,12 +86,10 @@ void CanController::distributeMail(void)
 
         if(canMessage.id == canModel->ORIONID1)
         {
-            // Serial.println("Storing Orion message 0x420");
             OrionController::getInstance()->updateModelMessage_0x420(canMessage.buf);
         }
         else if(canMessage.id == canModel->ORIONID2)
         {
-            // Serial.println("Storing Orion message 0x421");
             OrionController::getInstance()->updateModelMessage_0x421(canMessage.buf);
         }
         else if(canMessage.id == canModel->UNITEKREADID)

@@ -3,7 +3,7 @@
  * #include "Rtc.hpp"
  * Created 1-14-18  By: Smitty
  *
- * A longer description.
+ * https://www.pjrc.com/teensy/td_libs_Time.html
  */
 
 
