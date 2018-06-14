@@ -494,8 +494,8 @@ void StageManager::processCan(uint8_t* taskFlags)
             uint16_t rawGas = PedalController::getInstance()->getRawGas();              //get raw gas at the same time
             uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
 
-            //this is called 50 times every second, have this code execute twice a second
-            if(logCanPedalInterval % 25 == 0)
+            //this is called 50 times every second, have this code execute 4 times a second
+            if(logCanPedalInterval % 12 == 0)
             {
                 //interval reset
                 logCanPedalInterval = 0;
