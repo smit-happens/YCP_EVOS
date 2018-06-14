@@ -13,6 +13,7 @@
 #include "../../Model/BrakePedal/BrakePedal.hpp"
 #include "../../Model/GasPedal/GasPedal.hpp"
 #include "../LightController/LightController.hpp"
+#include "../Logger/Logger.hpp"
 
 
 class PedalController : public BaseController
