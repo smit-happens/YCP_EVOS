@@ -44,12 +44,6 @@ IntQueue::IntQueue(int length)
  */
 void IntQueue::enqueue(int item)
 {
-    //queue is filled up or has already started overwriting data
-    if ((front == 0 && rear == _length-1) || (front == rear+1))
-    {
-        return;
-    }
-
     //queue is empty
     if (front == -1)
     {
@@ -70,7 +64,6 @@ void IntQueue::enqueue(int item)
     }
 
     _queueArray[rear] = item;
-
 }
 
 
