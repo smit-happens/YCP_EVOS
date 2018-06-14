@@ -17,7 +17,9 @@ class IntQueue
 {
 public:
     IntQueue();
-    IntQueue(int size);
+    IntQueue(int length);
+
+    ~IntQueue() { delete[] _queueArray; };
 
     void enqueue(int item);
     int dequeue(void);
@@ -27,14 +29,18 @@ public:
 
     int peek(void) { return _queueArray[front]; };
 
-    int getSize(void) {return _size; };
+    int getLength(void) { return _length; };
+
+    int getSize(void);
+    int getSum(void);
+    int getAverage(void);
 
     // void display(void);
 
 private:
     int *_queueArray;
     int front, rear;
-    int _size;
+    int _length;
 };
 
 

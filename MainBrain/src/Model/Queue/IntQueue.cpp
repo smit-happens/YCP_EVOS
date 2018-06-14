@@ -21,15 +21,15 @@ IntQueue::IntQueue()
 /** 
  * @brief  IntQueue constructor
  */
-IntQueue::IntQueue(int size)
+IntQueue::IntQueue(int length)
 {
-    //set size of the circular buffer
-    if(size <= MAX)
-        _size = size;
+    //set length of the circular buffer
+    if(length <= MAX)
+        _length = length;
     else
-        _size = MAX;
+        _length = MAX;
 
-    _queueArray = new int[_size];
+    _queueArray = new int[_length];
 
     //empty if rear and front are -1
     rear = front = -1;
@@ -45,7 +45,7 @@ IntQueue::IntQueue(int size)
 void IntQueue::enqueue(int item)
 {
     //queue is filled up or has already started overwriting data
-    if ((front == 0 && rear == MAX-1) || (front == rear+1))
+    if ((front == 0 && rear == _length-1) || (front == rear+1))
     {
         return;
     }
@@ -58,7 +58,7 @@ void IntQueue::enqueue(int item)
     }
     else
     {
-        if (rear == MAX - 1)
+        if (rear == _length - 1)
         {
             //circle around
             rear = 0;
@@ -77,19 +77,19 @@ void IntQueue::enqueue(int item)
 /** 
  * @brief  
  * @note   
- * @retval CAN Message popped from queue
+ * @retval integer popped from queue
  */
 int IntQueue::dequeue(void)
 {
-    int poppedMessage;
+    int poppedMessage = -1;
 
-    //nothing to pop, return blank message
+    //nothing to pop, return -1
     if (front == -1)
     {
         return poppedMessage;
     }
 
-    //message to pop
+    //number to pop
     poppedMessage = _queueArray[front];
 
     //queue had one element, set to empty
@@ -100,7 +100,7 @@ int IntQueue::dequeue(void)
     }
     else
     {
-        if (front == MAX - 1)
+        if (front == _length - 1)
         {
             front = 0;
         }
@@ -111,4 +111,87 @@ int IntQueue::dequeue(void)
     }
 
     return poppedMessage;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval The total amount of elements in the queue
+ */
+int IntQueue::getSize(void)
+{
+    //error if -1
+    int currentSize = -1;
+
+    //queue is empty
+    if (front == -1)
+    {
+        currentSize = 0;
+    }
+
+    //normal order, front is ahead of rear
+    if (front <= rear)
+    {
+        currentSize = rear - front;
+    }
+    else
+    {
+        //buffer has looped around, front is behind rear
+        currentSize = (_length - front) + rear;
+    }
+    
+    return currentSize;
+}
+
+
+/** 
+ * @brief  
+ * @note   
+ * @retval average of all the integers in the buffer
+ */
+int IntQueue::getAverage(void)
+{
+    return getSum() / getSize();
+}
+
+
+int IntQueue::getSum()
+{
+    int sum = 0;
+    int frontPosition = front, rearPosition = rear;
+
+    //nothing to sum up, return 0
+    if (frontPosition == -1)
+    {
+        return sum;
+    }
+
+    //while there are still elements in the queue
+    while(frontPosition != -1)
+    {
+        //number to pop
+        sum += _queueArray[frontPosition];
+
+        //queue had one element, set to empty
+        if (frontPosition == rearPosition)
+        {
+            frontPosition = -1;
+            rearPosition = -1;
+        }
+        else
+        {
+            //looping the front back around
+            if (frontPosition == _length - 1)
+            {
+                frontPosition = 0;
+            }
+            else
+            {
+                frontPosition++;
+            }
+        }
+    }
+
+    return sum;
 }
