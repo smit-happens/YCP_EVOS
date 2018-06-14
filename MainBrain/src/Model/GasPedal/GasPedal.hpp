@@ -22,11 +22,6 @@ public:
 
     void setRawOrigin(void);
 
-    uint16_t getLastValue();
-
-private:
-    uint16_t lastValue;
-
 };
 
 #endif  //GASPEDAL_HPP

@@ -36,6 +36,7 @@ PedalController::~PedalController(void)
 {
     delete brakeModel;
     delete gasModel;
+    delete gasBuffer;
 }
 
 
@@ -49,6 +50,7 @@ void PedalController::init(void)
     // Initialize models
     brakeModel = new BrakePedal();
     gasModel = new GasPedal();
+    gasBuffer = new IntQueue(10);   //buffer of size 10
 
     // Determine resting position of pedals
     gasModel->setRawOrigin();
@@ -63,8 +65,9 @@ void PedalController::init(void)
  */
 void PedalController::poll(void)
 {
-    gasModel->update();
     brakeModel->update();
+    gasModel->update();
+    gasBuffer->enqueue(gasModel->getRawValue());
 }
 
 
@@ -90,7 +93,7 @@ void PedalController::poll(void)
 float PedalController::getPercentageGas(void)
 {
     //calculate moving average
-    float averageValue = (float)(gasModel->getLastValue() + gasModel->getRawValue()) /2;
+    float averageValue = (float)gasBuffer->getAverage();
 
     float percentageValue = (averageValue / (float)MAX_GAS_PEDAL);
 

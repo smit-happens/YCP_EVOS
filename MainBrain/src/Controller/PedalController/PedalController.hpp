@@ -13,8 +13,7 @@
 #include "../../Model/BrakePedal/BrakePedal.hpp"
 #include "../../Model/GasPedal/GasPedal.hpp"
 #include "../LightController/LightController.hpp"
-#include "../Logger/Logger.hpp"
-
+#include "../../Model/Queue/IntQueue.hpp"
 
 class PedalController : public BaseController
 {
@@ -47,6 +46,8 @@ private:
     //private instance of models
     BrakePedal* brakeModel;
     GasPedal* gasModel;
+
+    IntQueue* gasBuffer;
 
 };
 

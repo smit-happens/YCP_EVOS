@@ -15,7 +15,6 @@
 GasPedal::GasPedal(void)
 {
     //initialized in the base pedal class
-    lastValue = 0;
 }
 
 
@@ -35,7 +34,6 @@ GasPedal::~GasPedal(void)
  */
 void GasPedal::update(void)
 {
-    lastValue = _rawValue;
     _rawValue = analogRead(MB_GAS_LIN);
 }
 
@@ -48,10 +46,4 @@ void GasPedal::update(void)
 void GasPedal::setRawOrigin(void)
 {
     _rawOrigin = analogRead(MB_GAS_LIN);
-}
-
-
-uint16_t GasPedal::getLastValue() 
-{
-    return lastValue;
 }
