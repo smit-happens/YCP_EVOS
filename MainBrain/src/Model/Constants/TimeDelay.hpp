@@ -31,7 +31,7 @@ const int POLL_TIME_GLCD    = 300;
 const int POLL_TIME_SDCARD  = 500;
 
 //Pedal polling delay
-const int POLL_TIME_PEDAL   = 20;
+const int POLL_TIME_PEDAL   = 10;
 
 //Orion polling delay for battery charge and temperature
 const int POLL_TIME_ORION   = 1000;
