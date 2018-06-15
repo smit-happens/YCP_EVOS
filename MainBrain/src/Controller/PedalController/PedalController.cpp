@@ -36,6 +36,8 @@ PedalController::~PedalController(void)
 {
     delete brakeModel;
     delete gasModel;
+    delete gasBuffer;
+    delete brakeBuffer;
 }
 
 
@@ -49,6 +51,8 @@ void PedalController::init(void)
     // Initialize models
     brakeModel = new BrakePedal();
     gasModel = new GasPedal();
+    gasBuffer = new IntQueue(10);   //buffer of size 10
+    brakeBuffer = new IntQueue(10);   //buffer of size 10
 
     // Determine resting position of pedals
     gasModel->setRawOrigin();
@@ -63,27 +67,38 @@ void PedalController::init(void)
  */
 void PedalController::poll(void)
 {
-    gasModel->update();
     brakeModel->update();
+    gasModel->update();
+    gasBuffer->enqueue(gasModel->getRawValue());
+    brakeBuffer->enqueue(brakeModel->getRawValue());
 }
 
 
 /** 
  * @brief  Retrieves the evaluated Gas percentage
  * @note   Values returned depend on the Analog Read Resolution being 13 bits!!
- * @retval GasPedal percentage
+ * @retval GasPedal percentage (0.0 to 1.0)
  */
 float PedalController::getPercentageGas(void)
 {
-    float percentageValue = (((float)gasModel->getRawValue()) / MAX_GAS_PEDAL) *100;
+    //calculate moving average
+    float averageValue = (float)gasBuffer->getAverage();
+
+    float percentageValue = (averageValue / (float)MAX_GAS_PEDAL);
 
     //tolerance for gas pedal and handles brake pressed
-    if (percentageValue < 3 || getPercentageBrake() > 0)
+    if (percentageValue < 0.03 || getPercentageBrake() > 0)
     {
         percentageValue = 0;
     }
 
     return percentageValue; 
+}
+
+
+uint16_t PedalController::getRawGas(void)
+{
+    return gasModel->getRawValue(); 
 }
 
 
@@ -111,9 +126,12 @@ bool PedalController::isImplausibilityGas(void)
  */
 float PedalController::getPercentageBrake(void)
 {
-    float percentageValue = (((float)brakeModel->getRawValue()) / MAX_BRAKE_PEDAL) *100;
+    //calculate moving average
+    float averageValue = (float)brakeBuffer->getAverage();
 
-    if (percentageValue < 3)    //this number may need to be change on how the brake pot acts
+    float percentageValue = (averageValue / (float)MAX_BRAKE_PEDAL);
+
+    if (percentageValue < BRAKE_LIGHT_PERCENT)    //this number may need to be change on how the brake pot acts
     {
         percentageValue = 0;
     }
