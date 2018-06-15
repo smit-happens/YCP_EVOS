@@ -61,6 +61,9 @@ private:
     //Logger instance
     Logger* logger;
 
+    //for logging not on every pedal value
+    uint logCanPedalInterval = 0;
+
     //Processing functions for the various devices
     void processCan(uint8_t* taskFlags);
     void processCooling(uint8_t* taskFlags);

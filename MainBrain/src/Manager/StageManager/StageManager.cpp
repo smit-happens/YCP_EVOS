@@ -182,8 +182,9 @@ void StageManager::configureStage(void)
                 //Resetting VAR1 precharge value to the "off" state
                 CanController::getInstance()->sendUnitekWrite(REG_VAR1, 0x7F, 0xFF);
 
-                //ressetting the precharge process
-                digitalWriteFast(MB_START_PRE, LOW);
+                //setting the Dash lights correctly 
+                LightController::getInstance()->turnOff(LightController::LIGHT_RTD);
+                LightController::getInstance()->turnOff(LightController::LIGHT_ENERGIZE);
 
             }
         }
@@ -246,11 +247,11 @@ void StageManager::configureStage(void)
 
                 if(UnitekController::getInstance()->getHvBusNumeric() < numericVoltage)
                 {
-                    //error state
-                    shutdown(ERR_UNITEK);
-
                     sprintf(buf, "Expected HV-bus numeric voltage: %d, actual is: %d", numericVoltage, UnitekController::getInstance()->getHvBusNumeric());
                     logger->log("UNITEK", buf, MSG_ERR);
+
+                    //error state
+                    shutdown(ERR_UNITEK);
                 }
 
                 //sending 0 to VAR1 in Unitek, indicating that precharge is done
@@ -489,8 +490,23 @@ void StageManager::processCan(uint8_t* taskFlags)
         if(taskFlags[CAN] & TF_CAN_SEND_PEDAL)
         {
             //set RPM Setpoint in MC
-            float pedalPercent = PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
+            float pedalPercent = PedalController::getInstance()->getPercentageGas();    //get percentage that the gas pedal is pressed
+            uint16_t rawGas = PedalController::getInstance()->getRawGas();              //get raw gas at the same time
             uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
+
+            //this is called 50 times every second, have this code execute 4 times a second
+            if(logCanPedalInterval % 12 == 0)
+            {
+                //interval reset
+                logCanPedalInterval = 0;
+
+                //for sprintf
+                char buf[80];
+
+                // sprintf(buf, "Calculated numericSpeedSetPoint %d, pedalPercent: %.5f", numericSpeedSetPoint, pedalPercent);
+                sprintf(buf, "raw_pedal: %d, pedalPercent: %.4f", rawGas, pedalPercent);
+                logger->log("PEDAL", buf, MSG_DEBUG);
+            }
 
             //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
             CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
@@ -709,7 +725,7 @@ void StageManager::processOrion(uint8_t* taskFlags)
 void StageManager::processPedal(uint32_t* eventFlags, uint8_t* taskFlags)
 {
     //polling the pedals updating the model    
-    PedalController::getInstance()->poll();
+    PedalController::getInstance()->poll();   
 
     //seeing if we need to turn on the brake light
     PedalController::getInstance()->CheckBrakeLight();

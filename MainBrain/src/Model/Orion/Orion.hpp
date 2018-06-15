@@ -34,8 +34,8 @@ public:
     //gets for values from message 0x421
     uint8_t getPackDischargeCurrentLimit_Byte1(void);
     uint8_t getPackDischargeCurrentLimit_Byte2(void);
-    uint8_t getPackOpenVoltage_Byte1(void);
-    uint8_t getPackOpenVoltage_Byte2(void);
+    uint8_t getPackSummedVoltage_Byte1(void);
+    uint8_t getPackSummedVoltage_Byte2(void);
     uint8_t getPackCurrent_Byte1(void);
     uint8_t getPackCurrent_Byte2(void);
     uint8_t getAverageOpenCellVoltage_Byte1(void);
@@ -55,8 +55,8 @@ public:
     //gets for values from message 0x421
     void setPackDischargeCurrentLimit_Byte1(uint8_t newPackDischargeCurrentLimit_Byte1);
     void setPackDischargeCurrentLimit_Byte2(uint8_t newPackDischargeCurrentLimit_Byte2);
-    void setPackOpenVoltage_Byte1(uint8_t newPackOpenVoltage_Byte1);
-    void setPackOpenVoltage_Byte2(uint8_t newPackOpenVoltage_Byte2);
+    void setPackSummedVoltage_Byte1(uint8_t newPackOpenVoltage_Byte1);
+    void setPackSummedVoltage_Byte2(uint8_t newPackOpenVoltage_Byte2);
     void setPackCurrent_Byte1(uint8_t newPackCurrent_Byte1);
     void setPackCurrent_Byte2(uint8_t newPackCurrent_Byte2);
     void setAverageOpenCellVoltage_Byte1(uint8_t newAverageOpenCellVoltage_Byte1);
@@ -84,8 +84,8 @@ public:
     {
         uint8_t packDischargeCurrentLimit_Byte1; //This value takes 2 bytes to represent and requires no modification, it is the discharge current limit represented in amps 
         uint8_t packDischargeCurrentLimit_Byte2; 
-        uint8_t packOpenVoltage_Byte1; //This value takes 2 bytes to represent and requires dividing the value by 10 (ten) to get the open voltage of the entire pack in volts
-        uint8_t packOpenVoltage_Byte2;
+        uint8_t packSummedVoltage_Byte1; //This value takes 2 bytes to represent and requires dividing the value by 100 (one-hundred) to get the open voltage of the entire pack in volts
+        uint8_t packSummedVoltage_Byte2;
         uint8_t packCurrent_Byte1; //This value takes 2 bytes to represent and requires dividing the value by 10 (ten) to get the current output at the time of the message in amps
         uint8_t packCurrent_Byte2;
         uint8_t averageOpenCellVoltage_Byte1; //This value takes 2 bytes to represent and requires dividing the value by 10,000 (ten-thousand) to get the average open cell voltage of the cells in volts

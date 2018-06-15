@@ -13,6 +13,8 @@
 #include "../Logger/Logger.hpp"
 #include "../OrionController/OrionController.hpp"
 //#include "../UnitekController/UnitekController.hpp"
+#include "../SdCardController/SdCardController.hpp"
+#include "../PedalController/PedalController.hpp"
 
 
 class GlcdController : public BaseController, public LogListener

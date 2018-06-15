@@ -35,8 +35,8 @@ Orion::Orion(void)
     data_0x421->packCurrent_Byte2 = 0;
     data_0x421->packDischargeCurrentLimit_Byte1 = 0;
     data_0x421->packDischargeCurrentLimit_Byte2 = 0;
-    data_0x421->packOpenVoltage_Byte1 = 0;
-    data_0x421->packOpenVoltage_Byte2 = 0;
+    data_0x421->packSummedVoltage_Byte1 = 0;
+    data_0x421->packSummedVoltage_Byte2 = 0;
 }
 
 
@@ -165,24 +165,24 @@ uint8_t Orion::getPackDischargeCurrentLimit_Byte2(void)
 
 
 /** 
- * @brief  
+ * @brief  get the first byte of the pack summed voltage
  * @note   
- * @retval 
+ * @retval first byte of the pack summed voltage
  */
-uint8_t Orion::getPackOpenVoltage_Byte1(void)
+uint8_t Orion::getPackSummedVoltage_Byte1(void)
 {
-    return data_0x421->packOpenVoltage_Byte1;
+    return data_0x421->packSummedVoltage_Byte1;
 }
 
 
 /** 
- * @brief  
+ * @brief  get the second byte of the pack summed voltage
  * @note   
- * @retval 
+ * @retval second byte of the pack summed voltage
  */
-uint8_t Orion::getPackOpenVoltage_Byte2(void)
+uint8_t Orion::getPackSummedVoltage_Byte2(void)
 {
-    return data_0x421->packOpenVoltage_Byte2;
+    return data_0x421->packSummedVoltage_Byte2;
 }
 
 
@@ -361,9 +361,9 @@ void Orion::setPackDischargeCurrentLimit_Byte2(uint8_t newPackDischargeCurrentLi
  * @param  newPackOpenVoltage: 
  * @retval None
  */
-void Orion::setPackOpenVoltage_Byte1(uint8_t newPackOpenVoltage_Byte1)
+void Orion::setPackSummedVoltage_Byte1(uint8_t newPackOpenVoltage_Byte1)
 {
-    data_0x421->packOpenVoltage_Byte1 = newPackOpenVoltage_Byte1;
+    data_0x421->packSummedVoltage_Byte1 = newPackOpenVoltage_Byte1;
 }
 
 
@@ -373,9 +373,9 @@ void Orion::setPackOpenVoltage_Byte1(uint8_t newPackOpenVoltage_Byte1)
  * @param  newPackOpenVoltage: 
  * @retval None
  */
-void Orion::setPackOpenVoltage_Byte2(uint8_t newPackOpenVoltage_Byte2)
+void Orion::setPackSummedVoltage_Byte2(uint8_t newPackOpenVoltage_Byte2)
 {
-    data_0x421->packOpenVoltage_Byte2 = newPackOpenVoltage_Byte2;
+    data_0x421->packSummedVoltage_Byte2 = newPackOpenVoltage_Byte2;
 }
 
 

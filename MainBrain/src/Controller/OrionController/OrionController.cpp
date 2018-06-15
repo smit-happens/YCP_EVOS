@@ -78,8 +78,8 @@ void OrionController::updateModelMessage_0x421(uint8_t* messageToParse)
 {
     orionModel->setPackDischargeCurrentLimit_Byte1(messageToParse[0]);
     orionModel->setPackDischargeCurrentLimit_Byte2(messageToParse[1]);
-    orionModel->setPackOpenVoltage_Byte1(messageToParse[2]);
-    orionModel->setPackOpenVoltage_Byte2(messageToParse[3]);
+    orionModel->setPackSummedVoltage_Byte1(messageToParse[2]);
+    orionModel->setPackSummedVoltage_Byte2(messageToParse[3]);
     orionModel->setPackCurrent_Byte1(messageToParse[4]);
     orionModel->setPackCurrent_Byte2(messageToParse[5]);
     orionModel->setAverageOpenCellVoltage_Byte1(messageToParse[6]);
@@ -196,8 +196,8 @@ uint16_t OrionController::getPackDischargeCurrentLimit(void)
 }
 
 /** 
- * @brief  Retrieve total open pack voltage of the pack to use for the 90% pre-charge setting
- * @note   Range is 0-6553.5 volts
+ * @brief  Retrieve total summed voltage of the pack to use for the 90% pre-charge setting
+ * @note   Range is 0-65535.0 volts
  * @retval total voltage of all batteries
  */
 float OrionController::getPackVoltage(void)
@@ -206,11 +206,11 @@ float OrionController::getPackVoltage(void)
     uint16_t packOpenVoltage = 0;
     //build the 16 bit value
     //shift the first byte over by 8
-    packOpenVoltage = (uint16_t)orionModel->getPackOpenVoltage_Byte1() << 8;
+    packOpenVoltage = (uint16_t)orionModel->getPackSummedVoltage_Byte1() << 8;
     //OR in the second byte
-    packOpenVoltage |= (uint16_t)orionModel->getPackOpenVoltage_Byte2();
-    //now divide this value by 10 and return it
-    return (float)packOpenVoltage / 10.0;
+    packOpenVoltage |= (uint16_t)orionModel->getPackSummedVoltage_Byte2();
+    //now divide this value by 100 and return it
+    return (float)packOpenVoltage / 100.0;
 }
 
 
