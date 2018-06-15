@@ -37,6 +37,7 @@ PedalController::~PedalController(void)
     delete brakeModel;
     delete gasModel;
     delete gasBuffer;
+    delete brakeBuffer;
 }
 
 
