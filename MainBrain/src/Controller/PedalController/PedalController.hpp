@@ -13,7 +13,7 @@
 #include "../../Model/BrakePedal/BrakePedal.hpp"
 #include "../../Model/GasPedal/GasPedal.hpp"
 #include "../LightController/LightController.hpp"
-
+#include "../../Model/Queue/IntQueue.hpp"
 
 class PedalController : public BaseController
 {
@@ -26,7 +26,7 @@ public:
     void poll(void);
 
     float getPercentageGas(void);
-    uint getRawGas(void);
+    uint16_t getRawGas(void);
     bool isImplausibilityGas(void);
 
     float getPercentageBrake(void);
@@ -46,6 +46,9 @@ private:
     //private instance of models
     BrakePedal* brakeModel;
     GasPedal* gasModel;
+
+    IntQueue* gasBuffer;
+    IntQueue* brakeBuffer;
 
 };
 

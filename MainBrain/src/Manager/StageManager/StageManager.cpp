@@ -490,11 +490,12 @@ void StageManager::processCan(uint8_t* taskFlags)
         if(taskFlags[CAN] & TF_CAN_SEND_PEDAL)
         {
             //set RPM Setpoint in MC
-            float pedalPercent = PedalController::getInstance()->getPercentageGas();  //get percentage that the gas pedal is pressed
+            float pedalPercent = PedalController::getInstance()->getPercentageGas();    //get percentage that the gas pedal is pressed
+            uint16_t rawGas = PedalController::getInstance()->getRawGas();              //get raw gas at the same time
             uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
 
-            //this is called 50 times every second, have this code execute once a second
-            if(logCanPedalInterval % 50 == 0)
+            //this is called 50 times every second, have this code execute 4 times a second
+            if(logCanPedalInterval % 12 == 0)
             {
                 //interval reset
                 logCanPedalInterval = 0;
@@ -502,7 +503,8 @@ void StageManager::processCan(uint8_t* taskFlags)
                 //for sprintf
                 char buf[80];
 
-                sprintf(buf, "Calculated numericSpeedSetPoint %d, pedalPercent: %.5f", numericSpeedSetPoint, pedalPercent);
+                // sprintf(buf, "Calculated numericSpeedSetPoint %d, pedalPercent: %.5f", numericSpeedSetPoint, pedalPercent);
+                sprintf(buf, "raw_pedal: %d, pedalPercent: %.4f", rawGas, pedalPercent);
                 logger->log("PEDAL", buf, MSG_DEBUG);
             }
 
