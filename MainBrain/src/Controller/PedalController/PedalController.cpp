@@ -51,8 +51,8 @@ void PedalController::init(void)
     // Initialize models
     brakeModel = new BrakePedal();
     gasModel = new GasPedal();
-    gasBuffer = new IntQueue(10);   //buffer of size 10
-    brakeBuffer = new IntQueue(10);   //buffer of size 10
+    gasBuffer = new IntQueue(5);   //buffer of size 10
+    brakeBuffer = new IntQueue(5);   //buffer of size 10
 
     // Determine resting position of pedals
     gasModel->setRawOrigin();

@@ -217,7 +217,8 @@ void StageManager::configureStage(void)
                 while((millis() - currentTime) < TIME_PRECHARGE)
                 {;}
                 
-                float batteryVoltage = OrionController::getInstance()->getPackVoltage();
+                // float batteryVoltage = OrionController::getInstance()->getPackVoltage();
+                float batteryVoltage = 200.0;   //hard coded to fix battery issues
                 uint16_t numericVoltage = UnitekController::getInstance()->convertVoltageToNumeric(batteryVoltage);
                 
                 char buf[60]; //string buffer for sprintf
@@ -491,22 +492,22 @@ void StageManager::processCan(uint8_t* taskFlags)
         {
             //set RPM Setpoint in MC
             float pedalPercent = PedalController::getInstance()->getPercentageGas();    //get percentage that the gas pedal is pressed
-            uint16_t rawGas = PedalController::getInstance()->getRawGas();              //get raw gas at the same time
+            // uint16_t rawGas = PedalController::getInstance()->getRawGas();              //get raw gas at the same time
             uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
 
             //this is called 100 times every second, have this code execute 2 times a second
-            if(logCanPedalInterval % 50 == 0)
-            {
-                //interval reset
-                logCanPedalInterval = 0;
+            // if(logCanPedalInterval % 50 == 0)
+            // {
+            //     //interval reset
+            //     logCanPedalInterval = 0;
 
-                //for sprintf
-                char buf[80];
+            //     //for sprintf
+            //     char buf[80];
 
-                // sprintf(buf, "Calculated numericSpeedSetPoint %d, pedalPercent: %.5f", numericSpeedSetPoint, pedalPercent);
-                sprintf(buf, "raw_pedal: %d, pedalPercent: %.4f", rawGas, pedalPercent);
-                logger->log("PEDAL", buf, MSG_DEBUG);
-            }
+            //     // sprintf(buf, "Calculated numericSpeedSetPoint %d, pedalPercent: %.5f", numericSpeedSetPoint, pedalPercent);
+            //     sprintf(buf, "raw_pedal: %d, pedalPercent: %.4f", rawGas, pedalPercent);
+            //     logger->log("PEDAL", buf, MSG_DEBUG);
+            // }
 
             //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
             CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
@@ -666,42 +667,42 @@ void StageManager::processOrion(uint8_t* taskFlags)
     if(currentStage != STAGE_STANDBY)
     {
         //first check for pack state of charge issues
-        float packSOC = OrionController::getInstance()->getStateOfCharge();
+        // float packSOC = OrionController::getInstance()->getStateOfCharge();
 
         char buf[60]; //string buffer for sprintf
                 
-        //if the pack is greater than 20% and less than 25%, change the view on the GLCD to notify the driver
-        if(packSOC > 20 && packSOC <= 25)
-        {
-            //the GLCD will update with a change on the user interface for the driver to know the battery is getting low
-            //GLCD_warnSocLow()
+        // //if the pack is greater than 20% and less than 25%, change the view on the GLCD to notify the driver
+        // if(packSOC > 20 && packSOC <= 25)
+        // {
+        //     //the GLCD will update with a change on the user interface for the driver to know the battery is getting low
+        //     //GLCD_warnSocLow()
             
-            //logging the percent
-            sprintf(buf, "Pack SoC getting low: %.2f percent", packSOC);
-            Logger::getInstance()->log("ORION", buf, MSG_WARN);
-        }
-        //if the pack is greater than 15% and less than 20%, cut the max RPM to 1000 to conserve power and be able to return to the original location without pulling as much power
-        else if(packSOC > 15 && packSOC <= 20)
-        {
-            //set the speed calculation factor to 8 which will make the max rpm sent be 6600/8 = 825 rpms
-            UnitekController::getInstance()->storeSpeedCalculationFactor(8);
+        //     //logging the percent
+        //     sprintf(buf, "Pack SoC getting low: %.2f percent", packSOC);
+        //     Logger::getInstance()->log("ORION", buf, MSG_WARN);
+        // }
+        // //if the pack is greater than 15% and less than 20%, cut the max RPM to 1000 to conserve power and be able to return to the original location without pulling as much power
+        // else if(packSOC > 15 && packSOC <= 20)
+        // {
+        //     //set the speed calculation factor to 8 which will make the max rpm sent be 6600/8 = 825 rpms
+        //     UnitekController::getInstance()->storeSpeedCalculationFactor(8);
             
-            //logging the percent
-            sprintf(buf, "Pack SoC very low: %.2f percent, limp mode engaged", packSOC);
-            Logger::getInstance()->log("ORION", buf, MSG_WARN);
-        }
-        //if the pack is at 15%, shut off the tractive system and continually flash the Orion error light until the GLV system is shut off
-        else if(packSOC <= 15)
-        {
-            sprintf(buf, "Battery SOC at %.2f percent, shutting off tractive system", packSOC);
-            Logger::getInstance()->log("ORION", buf, MSG_ERR);
-            //shut down the car immediately
-            shutdown(ERR_ORION);
-        }
-        else
-        {
-            //battery is still at a good charge percentage so there is nothing to do
-        }
+        //     //logging the percent
+        //     sprintf(buf, "Pack SoC very low: %.2f percent, limp mode engaged", packSOC);
+        //     Logger::getInstance()->log("ORION", buf, MSG_WARN);
+        // }
+        // //if the pack is at 15%, shut off the tractive system and continually flash the Orion error light until the GLV system is shut off
+        // else if(packSOC <= 15)
+        // {
+        //     sprintf(buf, "Battery SOC at %.2f percent, shutting off tractive system", packSOC);
+        //     Logger::getInstance()->log("ORION", buf, MSG_ERR);
+        //     //shut down the car immediately
+        //     shutdown(ERR_ORION);
+        // }
+        // else
+        // {
+        //     //battery is still at a good charge percentage so there is nothing to do
+        // }
 
         //second check for pack temperature issues
         uint8_t highestTempOfPack = OrionController::getInstance()->getHighestCellTemp();
