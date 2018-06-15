@@ -11,7 +11,7 @@
 #define INTQUEUE_HPP
 
 
-#define MAX 256
+#define MAXINT 256
 
 class IntQueue
 {

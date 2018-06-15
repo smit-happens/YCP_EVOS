@@ -492,22 +492,22 @@ void StageManager::processCan(uint8_t* taskFlags)
         {
             //set RPM Setpoint in MC
             float pedalPercent = PedalController::getInstance()->getPercentageGas();    //get percentage that the gas pedal is pressed
-            // uint16_t rawGas = PedalController::getInstance()->getRawGas();              //get raw gas at the same time
+            uint16_t rawGas = PedalController::getInstance()->getRawGas();              //get raw gas at the same time
             uint16_t numericSpeedSetPoint = UnitekController::getInstance()->calculateSpeedSetPoint(pedalPercent);   //calculates speed to send to MC from 0-32767
 
             //this is called 100 times every second, have this code execute 2 times a second
-            // if(logCanPedalInterval % 50 == 0)
-            // {
-            //     //interval reset
-            //     logCanPedalInterval = 0;
+            if(logCanPedalInterval % 50 == 0)
+            {
+                //interval reset
+                logCanPedalInterval = 0;
 
-            //     //for sprintf
-            //     char buf[80];
+                //for sprintf
+                char buf[80];
 
-            //     // sprintf(buf, "Calculated numericSpeedSetPoint %d, pedalPercent: %.5f", numericSpeedSetPoint, pedalPercent);
-            //     sprintf(buf, "raw_pedal: %d, pedalPercent: %.4f", rawGas, pedalPercent);
-            //     logger->log("PEDAL", buf, MSG_DEBUG);
-            // }
+                // sprintf(buf, "Calculated numericSpeedSetPoint %d, pedalPercent: %.5f", numericSpeedSetPoint, pedalPercent);
+                sprintf(buf, "raw_pedal: %d, pedalPercent: %.4f", rawGas, pedalPercent);
+                logger->log("PEDAL", buf, MSG_DEBUG);
+            }
 
             //send the speed over CAN to the MC (param: speed value register, upper 8 bits of numeric speed, lower 8 bits of numeric speed)
             CanController::getInstance()->sendUnitekWrite(REG_SPEEDVAL, (uint8_t)(numericSpeedSetPoint >> 8), numericSpeedSetPoint);
@@ -706,6 +706,14 @@ void StageManager::processOrion(uint8_t* taskFlags)
 
         //second check for pack temperature issues
         uint8_t highestTempOfPack = OrionController::getInstance()->getHighestCellTemp();
+        float currentPack = OrionController::getInstance()->getPackCurrent();
+
+        sprintf(buf, "Highest cell temp: %d", highestTempOfPack);
+        Logger::getInstance()->log("ORION", buf, MSG_ERR);
+
+        sprintf(buf, "Pack current: %.3f", currentPack);
+        Logger::getInstance()->log("ORION", buf, MSG_ERR);
+
         //if the highest temperature in the pack is greater than 60 degrees celcius, shut off the car
         if(highestTempOfPack > MAXCELLTEMPERATURECELCIUS)
         {

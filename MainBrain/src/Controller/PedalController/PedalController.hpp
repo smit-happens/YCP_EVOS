@@ -47,7 +47,7 @@ private:
     BrakePedal* brakeModel;
     GasPedal* gasModel;
 
-    IntQueue* gasBuffer;
+    // IntQueue* gasBuffer;
     IntQueue* brakeBuffer;
 
 };

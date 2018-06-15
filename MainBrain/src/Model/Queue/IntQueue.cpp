@@ -24,10 +24,10 @@ IntQueue::IntQueue()
 IntQueue::IntQueue(int length)
 {
     //set length of the circular buffer
-    if(length <= MAX)
+    if(length <= MAXINT)
         _length = length;
     else
-        _length = MAX;
+        _length = MAXINT;
 
     _queueArray = new int[_length];
 
