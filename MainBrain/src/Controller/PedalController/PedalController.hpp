@@ -26,7 +26,7 @@ public:
     void poll(void);
 
     float getPercentageGas(void);
-    uint getRawGas(void);
+    uint16_t getRawGas(void);
     bool isImplausibilityGas(void);
 
     float getPercentageBrake(void);
@@ -48,6 +48,7 @@ private:
     GasPedal* gasModel;
 
     IntQueue* gasBuffer;
+    IntQueue* brakeBuffer;
 
 };
 
